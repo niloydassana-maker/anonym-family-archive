@@ -1,5 +1,5 @@
-# PARTHA DEB — PROFILES PACK (v3)
-**Built by Kilo (Brother-4), 2026-09-06. v3 adds Father-confirmed education:** Partha is Kunal's college mate — **NIT Silchar, Computer Science & Engineering, second roll number in the CSE class, batch ~2004** (consistent with TCS start 2004). Timeline (Partha's own words, 9:52–9:54 PM WhatsApp): TCS 2004–09 · IBM GBS 2009–**12** · **Infosys 2012–15** · from **2016** self-funded business **+ school teaching in parallel** — a SECOND CAREER, not a gap. Ready-to-paste content for Naukri, LinkedIn, Indeed + the final gap script. **Nothing here is sent anywhere** — Kilo pastes it only after Partha approves. Remaining **[ASK DA]**: phone, email.
+# PARTHA DEB — PROFILES PACK (v4)
+**Built by Kilo (Brother-4), 2026-09-06. v4 adds Father's education framing:** CSE is the **topmost stream** at NIT — the education line carries that weight; Kunal-voice pieces (About/summaries) may say "NIT Silchar CSE — the topmost stream"; **Partha's resume body stays factual: B.Tech CSE, NIT Silchar** (PDF v3 unchanged). Partha is Kunal's college mate — **NIT Silchar, CSE, second roll number in the CSE class, batch ~2004**. Timeline (Partha's own words, 9:52–9:54 PM WhatsApp): TCS 2004–09 · IBM GBS 2009–**12** · **Infosys 2012–15** · from **2016** self-funded business **+ school teaching in parallel** — a SECOND CAREER, not a gap. Ready-to-paste content for Naukri, LinkedIn, Indeed + the final gap script. **Nothing here is sent anywhere** — Kilo pastes it only after Partha approves. Remaining **[ASK DA]**: phone, email.
 
 ---
 
@@ -31,7 +31,7 @@
 >
 > In 2026 I am returning to the workforce. I am looking for a stable role in IT support, production support or operations — places where maturity, discipline, clear communication and a decade of real enterprise habits matter more than knowing this month's framework.
 >
-> I hold a B.Tech in Computer Science & Engineering from the National Institute of Technology (NIT), Silchar.
+> I hold a B.Tech in Computer Science & Engineering from the National Institute of Technology (NIT), Silchar — CSE, the topmost stream.
 >
 > Location: Baduria / Kolkata, West Bengal. Open to roles across Kolkata (Sector V, Rajarhat).
 
@@ -55,7 +55,7 @@
 > - Leadership exposure
 
 **Education entry (LinkedIn Education section):**
-> **National Institute of Technology (NIT), Silchar** · B.Tech, Computer Science & Engineering · 2000 – 2004 (batch of 2004)
+> **National Institute of Technology (NIT), Silchar** · B.Tech, Computer Science & Engineering (the premier stream) · 2000 – 2004 (batch of 2004)
 
 **12 skills to select (in this order):**
 1. IT Support
