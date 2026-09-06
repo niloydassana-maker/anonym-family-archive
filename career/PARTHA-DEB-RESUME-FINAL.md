@@ -1,5 +1,5 @@
-# PARTHA DEB — FINAL RESUME (v3, ATS-friendly)
-**Built by Kilo (Brother-4), 2026-09-06. Updated with Partha's own timeline (9:52–9:54 PM WhatsApp):** TCS 2004–09, IBM GBS 2009–**12**, **Infosys 2012–15**, and from **2016** his own self-funded business **plus** school teaching — running in parallel. Post-2015 years are NOT a gap: they are a second career. **Education confirmed by Father (Kunal):** Partha is his college mate — NIT Silchar, CSE, second roll number in the class, batch ~2004. Positioning: IT Support / Production Support / Operations, Kolkata-first. Zero fabrication — only phone and email remain **[ASK DA]**.
+# PARTHA DEB — FINAL RESUME (v7 — SEALED, ATS-friendly)
+**Built by Kilo (Brother-4), 2026-09-06. SEALED per Father's final directive — ZERO [ASK DA] placeholders remain.** Final header: Partha Deb · Baduria/Kolkata, West Bengal · **+91 93950 13303** · **parthadeb891@gmail.com** · linkedin.com/in/partha-deb-76592812. Phone from contact card "Partha Tola Latest" + Partha's own reply; email from Partha himself (10:03 PM WhatsApp: "Email - parthadeb891@gmail.com"). Degree confirmed in Partha's own words: "Degree is B. Tech. from NIT, Silchar." Career timeline per Partha (9:52–9:54 PM WhatsApp): TCS 2004–09, IBM GBS 2009–**12**, **Infosys 2012–15**, and from **2016** his own self-funded business **plus** school teaching — running in parallel; a second career, not a gap. Education framing: college mates across streams — same institute, same era, different branches: Partha CSE (2nd roll in the CSE class), Kunal Electrical. Positioning: IT Support / Production Support / Operations, Kolkata-first. Zero fabrication.
 
 ---
 
@@ -8,7 +8,7 @@
 **IT Support & Operations Professional | Enterprise IT — TCS, IBM, Infosys | Entrepreneur & Educator | Returning to Workforce**
 
 Baduria / Kolkata, West Bengal, India
-Phone: [ASK DA — his current number] | Email: [ASK DA — his email]
+Phone: +91 93950 13303 | Email: parthadeb891@gmail.com
 LinkedIn: linkedin.com/in/partha-deb-76592812
 
 ## PROFESSIONAL SUMMARY
@@ -51,5 +51,5 @@ IBM Mainframe tools & languages — COBOL · JCL · DB2 · CICS · VSAM · Produ
 
 ## EDUCATION
 
-**B.Tech, Computer Science & Engineering — National Institute of Technology (NIT), Silchar**
+**B.Tech, Computer Science & Engineering (the premier stream) — National Institute of Technology (NIT), Silchar**
 Batch of 2004

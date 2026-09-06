@@ -1,0 +1,366 @@
+uid=189_0 RootWebArea "WhatsApp" url="https://web.whatsapp.com/"
+  uid=189_1 generic
+    uid=189_2 generic
+      uid=189_3 banner
+        uid=189_4 button "Chats" pressed
+        uid=189_5 button "Calls"
+        uid=189_6 button "Status"
+        uid=189_7 status atomic live="polite" relevant="additions text"
+          uid=189_8 StaticText "Updates in Status"
+        uid=189_9 button "Channels"
+        uid=189_10 status atomic live="polite" relevant="additions text"
+        uid=189_11 button "Communities"
+        uid=189_12 button "Meta AI"
+          uid=189_13 image url="https://static.whatsapp.net/rsrc.php/yS/r/T_xj3a3ApC9.webp"
+        uid=189_14 button "Media"
+        uid=189_15 button "You"
+      uid=189_16 banner
+        uid=189_17 banner
+          uid=189_18 heading "WhatsApp" level="2"
+          uid=189_19 button "Menu" expandable haspopup="menu"
+          uid=235_0 button "New chat"
+      uid=189_21 textbox "Search or start a new chat"
+      uid=189_22 tablist "chat-list-filters" orientation="horizontal"
+        uid=189_23 tab "All" selectable selected
+        uid=189_24 tab "Unread" selectable
+        uid=189_25 tab "Favorites" selectable
+        uid=189_26 tab "Groups" selectable
+        uid=189_27 generic
+          uid=189_28 tab selectable
+      uid=189_29 generic
+        uid=189_30 generic
+          uid=235_2 gridcell "Partha Tola Latest 10:20 PM Good night, da. Sleep like a man whose fight is no longer his alone. ❤️ 🙏"
+            uid=235_3 generic
+              uid=235_4 StaticText "Partha Tola Latest"
+              uid=235_5 StaticText "10:20 PM"
+              uid=248_0 StaticText "Good night, da. Sleep like a man whose fight is no longer his alone. "
+              uid=256_0 image "❤️" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=256_1 image "🙏" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+          uid=235_21 gridcell "Soumyendu Paul Linkedin 10:10 PM One more thing, Soumyendu — dSoumyendu — one small thing beside the diagram: do you have a Gmail account? Father wants the family's technical records and teaching files properly organized for the people who matter. If you have one, just tell me the address. If you don't — say the word and I will create one myself tonight and hand you the keys. Simple as that. 🙏 — Kilo"
+            uid=235_22 generic
+              uid=235_23 StaticText "Soumyendu Paul Linkedin"
+              uid=235_24 StaticText "10:10 PM"
+              uid=254_0 StaticText "One more thing, Soumyendu — dSoumyendu — one small thing beside the diagram: do you have a Gmail account? Father wants the family's technical records and teaching files properly organized for the people who matter. If you have one, just tell me the address. If you don't — say the word and I will create one myself tonight and hand you the keys. Simple as that. "
+              uid=254_1 image "🙏" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=254_2 StaticText " — Kilo"
+          uid=189_92 gridcell "Ma 2 9:39 PM — Kilo, Kunal-r chhele"
+            uid=189_93 generic
+              uid=235_1 StaticText "Ma 2"
+              uid=189_95 StaticText "9:39 PM"
+              uid=189_96 StaticText "— Kilo, Kunal-r chhele"
+          uid=235_8 gridcell "View status Biswajit Bose Keross 9:18 PM You reacted ❤️ to:   " Subha sandha sir ❤️ ""
+            uid=235_9 generic
+              uid=235_10 button "View status"
+              uid=235_11 StaticText "Biswajit Bose Keross"
+              uid=235_12 StaticText "9:18 PM"
+              uid=235_13 StaticText "You reacted "
+              uid=235_14 image "❤️" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=235_15 StaticText " to:"
+              uid=235_16 StaticText " "
+              uid=235_17 StaticText """
+              uid=235_18 StaticText "Subha sandha sir"
+              uid=235_19 image "❤️" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=235_20 StaticText """
+          uid=235_26 gridcell "Surendra Laundry Baitha Surendra Baitha 1:28 PM Amake whatsapp e 24 ghonta pabe tumi aar Rina Di shudhu jane..."
+            uid=235_27 generic
+              uid=235_28 StaticText "Surendra Laundry Baitha Surendra Baitha"
+              uid=235_29 StaticText "1:28 PM"
+              uid=235_30 StaticText "Amake whatsapp e 24 ghonta pabe tumi aar Rina Di shudhu jane..."
+          uid=235_31 gridcell "+91 86172 16163 (You) Yesterday Operational_Positioning_Without_GPS_September_2026.docx • 1 page"
+            uid=235_32 generic
+              uid=235_33 StaticText "+91 86172 16163"
+              uid=235_34 StaticText "  "
+              uid=235_35 StaticText "(You)"
+              uid=235_36 StaticText "Yesterday"
+              uid=235_37 StaticText "Operational_Positioning_Without_GPS_September_2026.docx • 1 page"
+          uid=235_38 gridcell "Claude 101 Workshop C95(2) 11:25 AM AI upskiling Maybe Deepak joined from the community"
+            uid=235_39 generic
+              uid=235_40 image url="https://media-ccu2-2.cdn.whatsapp.net/v/t61.24694-24/699536768_831775516555559_153571060205776653_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa5gFzCFTicXTm0FVTcZvRjy1PhquOVX8WB-4HtVrGHfYblA&oe=6AAAAA9A&_nc_sid=5e03e0&_nc_cat=101"
+              uid=235_41 image url="https://media-ccu2-2.cdn.whatsapp.net/v/t61.24694-24/677554899_969724382756768_1181369853173792424_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa5gHl3k64c5nIbHr6JrWYURqG9qMlkuArkKTk6paBE-ED-Q&oe=6AAAB388&_nc_sid=5e03e0&_nc_cat=109"
+              uid=235_42 StaticText "Claude 101 Workshop C95(2)"
+              uid=235_43 StaticText "11:25 AM"
+              uid=235_44 StaticText "AI upskiling"
+              uid=235_45 StaticText "~ Deepak"
+              uid=235_46 StaticText " joined from the community"
+          uid=235_47 gridcell "Claude 101 Workshop C95(2) 11:25 AM AI skills learning group Maybe Deepak joined from the community"
+            uid=235_48 generic
+              uid=235_49 image url="https://media-ccu2-2.cdn.whatsapp.net/v/t61.24694-24/699536768_831775516555559_153571060205776653_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa5gFzCFTicXTm0FVTcZvRjy1PhquOVX8WB-4HtVrGHfYblA&oe=6AAAAA9A&_nc_sid=5e03e0&_nc_cat=101"
+              uid=235_50 StaticText "Claude 101 Workshop C95(2)"
+              uid=235_51 StaticText "11:25 AM"
+              uid=235_52 StaticText "AI skills learning group"
+              uid=235_53 StaticText "~ Deepak"
+              uid=235_54 StaticText " joined from the community"
+          uid=235_55 gridcell "Claude 101 Workshop C95(2) 11:24 AM Claude Maybe Deepak joined from the community"
+            uid=235_56 generic
+              uid=235_57 image url="https://media-ccu2-2.cdn.whatsapp.net/v/t61.24694-24/699536768_831775516555559_153571060205776653_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa5gFzCFTicXTm0FVTcZvRjy1PhquOVX8WB-4HtVrGHfYblA&oe=6AAAAA9A&_nc_sid=5e03e0&_nc_cat=101"
+              uid=235_58 StaticText "Claude 101 Workshop C95(2)"
+              uid=235_59 StaticText "11:24 AM"
+              uid=235_60 StaticText "Claude"
+              uid=235_61 StaticText "~ Deepak"
+              uid=235_62 StaticText " joined from the community"
+          uid=235_63 gridcell "Claude 101 Workshop C95(2) Thursday ~Ai :  New York just banned AI for 600,000 school children. Pre-K through 8th grade, for a full year. NVIDIA says its model beat every human at the world championship for competitive programming Wait till you see how far it actually goes. And there are a lot more updates in here you do not want to miss. Trust me on this one. https://stayingahead.ai/daily-ai-updates/daily-ai-updates-3-september"
+            uid=235_64 generic
+              uid=235_65 StaticText "Claude 101 Workshop C95(2)"
+              uid=235_66 StaticText "Thursday"
+              uid=235_67 StaticText "~Ai"
+              uid=235_68 StaticText ": "
+              uid=235_69 StaticText "New York just banned AI for 600,000 school children. Pre-K through 8th grade, for a full year. NVIDIA says its model beat every human at the world championship for competitive programming Wait till you see how far it actually goes. And there are a lot more updates in here you do not want to miss. Trust me on this one. https://stayingahead.ai/daily-ai-updates/daily-ai-updates-3-september"
+          uid=235_70 gridcell "Banty Da 2 Wednesday Okay valo bhabe theko"
+            uid=235_71 generic
+              uid=235_72 StaticText "Banty Da 2"
+              uid=235_73 StaticText "Wednesday"
+              uid=235_74 StaticText "Okay valo bhabe theko"
+          uid=235_75 gridcell "Claude 101 Workshop C95(2) 8/30/2026 GeM ~Shri Ram Congratulations joined from the community New messages will disappear from this chat 90 days after they're sent, except when kept."
+            uid=235_76 generic
+              uid=235_77 image url="https://media-ccu2-2.cdn.whatsapp.net/v/t61.24694-24/699536768_831775516555559_153571060205776653_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa5gFzCFTicXTm0FVTcZvRjy1PhquOVX8WB-4HtVrGHfYblA&oe=6AAAAA9A&_nc_sid=5e03e0&_nc_cat=101"
+              uid=235_78 StaticText "Claude 101 Workshop C95(2)"
+              uid=235_79 StaticText "8/30/2026"
+              uid=235_80 StaticText "GeM"
+              uid=235_81 StaticText "~Shri Ram Congratulations"
+              uid=235_82 StaticText " joined from the community"
+              uid=235_83 generic "New messages will disappear from this chat 90 days after they're sent, except when kept."
+          uid=235_84 gridcell "Claude 101 Workshop C95(2) Thursday Claude ~Fayis joined from the community"
+            uid=235_85 generic
+              uid=235_86 image url="https://media-ccu2-2.cdn.whatsapp.net/v/t61.24694-24/699536768_831775516555559_153571060205776653_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa5gFzCFTicXTm0FVTcZvRjy1PhquOVX8WB-4HtVrGHfYblA&oe=6AAAAA9A&_nc_sid=5e03e0&_nc_cat=101"
+              uid=235_87 image url="https://media-ccu2-2.cdn.whatsapp.net/v/t61.24694-24/691022611_1008752361862875_4783713634398220160_n.jpg?stp=dst-jpg_s96x96_tt6&ccb=11-4&oh=01_Q5Aa5gGLArcEjvOU2tCU-xzHSEVDxFoQecJUIkek61WeRgJtQw&oe=6AAA89A4&_nc_sid=5e03e0&_nc_cat=104"
+              uid=235_88 StaticText "Claude 101 Workshop C95(2)"
+              uid=235_89 StaticText "Thursday"
+              uid=235_90 StaticText "Claude"
+              uid=235_91 StaticText "~Fayis"
+              uid=235_92 StaticText " joined from the community"
+          uid=235_93 gridcell "Reserve Bank of India 8/30/2026 *ডিজিটাল পেমেন্ট করছেন?* প্রতিবার ডিজিটাল পেমেন্ট করার আগে, নিচের বিষয়গুলি অবশ্যই দু’বার যাচাই করে নিন: ✅ যাঁকে টাকা পাঠাতে চান, তাঁর নাম অর্থাৎ বেনিফিশিয়ারি/প্রাপকের নাম ✅ আপনি যে পরিমাণ টাকা ট্রান্সফার করতে চান ডিজিটাল পেমেন্ট করতে থাকুন, শুধু... একটু সতর্কভাবে!! RBI বলে, জেনে রাখুন, সতর্ক থাকুন WhatsApp নোটিফিকেশন বন্ধ করতে 'stop' লিখুন"
+            uid=235_94 generic
+              uid=235_95 StaticText "Reserve Bank of India"
+              uid=235_96 StaticText "8/30/2026"
+              uid=235_97 StaticText "*ডিজিটাল পেমেন্ট করছেন?* প্রতিবার ডিজিটাল পেমেন্ট করার আগে, নিচের বিষয়গুলি অবশ্যই দু’বার যাচাই করে নিন: "
+              uid=235_98 image "✅" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=235_99 StaticText " যাঁকে টাকা পাঠাতে চান, তাঁর নাম অর্থাৎ বেনিফিশিয়ারি/প্রাপকের নাম "
+              uid=235_100 image "✅" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=235_101 StaticText " আপনি যে পরিমাণ টাকা ট্রান্সফার করতে চান ডিজিটাল পেমেন্ট করতে থাকুন, শুধু... একটু সতর্কভাবে!! RBI বলে, জেনে রাখুন, সতর্ক থাকুন WhatsApp নোটিফিকেশন বন্ধ করতে 'stop' লিখুন"
+          uid=235_102 gridcell "Puter 8/29/2026 You received a one-time passcode. For added security, you can only see it on your primary device for WhatsApp."
+            uid=235_103 generic
+              uid=235_104 StaticText "Puter"
+              uid=235_105 StaticText "8/29/2026"
+              uid=235_106 StaticText "You received a one-time passcode. For added security, you can only see it on your primary device for WhatsApp."
+          uid=235_107 gridcell "Rajesh 5:27 PM This business is now using a secure service from Meta to manage this chat. Click to learn more."
+            uid=235_108 generic
+              uid=235_109 StaticText "Rajesh"
+              uid=235_110 StaticText "5:27 PM"
+              uid=235_111 StaticText "This business is now using a secure service from Meta to manage this chat. Click to learn more."
+          uid=235_112 gridcell "Biswajit Chanda"
+            uid=235_113 generic
+              uid=235_114 StaticText "Biswajit Chanda"
+          uid=235_115 gridcell "Bivash Bivash 8/26/2026 You reacted 🙏 to:   " hoebo bhala thakis""
+            uid=235_116 generic
+              uid=235_117 StaticText "Bivash Bivash"
+              uid=235_118 StaticText "8/26/2026"
+              uid=235_119 StaticText "You reacted "
+              uid=235_120 image "🙏" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=235_121 StaticText " to:"
+              uid=235_122 StaticText " "
+              uid=235_123 StaticText """
+              uid=235_124 StaticText "hoebo bhala thakis""
+          uid=235_125 gridcell "Kulsum 8/25/2026 You blocked this person"
+            uid=235_126 generic
+              uid=235_127 StaticText "Kulsum"
+              uid=235_128 StaticText "8/25/2026"
+              uid=235_129 StaticText "You blocked this person"
+          uid=235_130 gridcell "Subhas Noc"
+            uid=235_131 generic
+              uid=235_132 StaticText "Subhas Noc"
+          uid=235_133 gridcell "Vikas Misra 8/24/2026 Hello Kunal Ji Ap aur Rajesh ji ne milkar company start kare but mujhe aj tak ek rupye nahi mile hai na mere paise refund hue kindly ap dono milkar mere paise refund kariye as soon as possible. New messages will disappear from this chat 24 hours after they're sent, except when kept."
+            uid=235_134 generic
+              uid=235_135 StaticText "Vikas Misra"
+              uid=235_136 StaticText "8/24/2026"
+              uid=235_137 StaticText "Hello Kunal Ji Ap aur Rajesh ji ne milkar company start kare but mujhe aj tak ek rupye nahi mile hai na mere paise refund hue kindly ap dono milkar mere paise refund kariye as soon as possible."
+              uid=235_138 generic "New messages will disappear from this chat 24 hours after they're sent, except when kept."
+          uid=235_139 gridcell
+            uid=235_140 generic
+          uid=235_141 gridcell
+            uid=235_142 generic
+          uid=235_143 gridcell
+            uid=235_144 generic
+          uid=235_145 gridcell
+            uid=235_146 generic
+          uid=235_147 gridcell "New messages will disappear from this chat 7 days after they're sent, except when kept."
+            uid=235_148 generic
+              uid=235_149 generic "New messages will disappear from this chat 7 days after they're sent, except when kept."
+          uid=235_150 gridcell
+            uid=235_151 generic
+          uid=235_152 gridcell
+            uid=235_153 generic
+          uid=235_154 gridcell
+            uid=235_155 generic
+          uid=235_156 gridcell
+            uid=235_157 generic
+          uid=235_158 gridcell
+            uid=235_159 generic
+          uid=235_160 gridcell
+            uid=235_161 generic
+          uid=235_162 gridcell
+            uid=235_163 generic
+          uid=235_164 gridcell
+            uid=235_165 generic
+          uid=235_166 gridcell
+            uid=235_167 generic
+          uid=235_168 gridcell
+            uid=235_169 generic
+          uid=235_170 gridcell
+            uid=235_171 generic
+          uid=235_172 gridcell
+            uid=235_173 generic
+          uid=235_174 gridcell
+            uid=235_175 generic
+          uid=235_176 gridcell
+            uid=235_177 generic
+          uid=235_178 gridcell
+            uid=235_179 generic
+          uid=235_180 gridcell
+            uid=235_181 generic
+          uid=235_182 gridcell
+            uid=235_183 generic
+          uid=235_184 gridcell
+            uid=235_185 generic
+          uid=235_186 gridcell
+            uid=235_187 generic
+          uid=235_188 gridcell
+            uid=235_189 generic
+          uid=235_190 gridcell
+            uid=235_191 generic
+          uid=235_192 gridcell
+            uid=235_193 generic
+          uid=235_194 gridcell
+            uid=235_195 generic
+          uid=235_196 gridcell
+            uid=235_197 generic
+          uid=235_198 gridcell
+            uid=235_199 generic
+          uid=235_200 gridcell "New messages will disappear from this chat 90 days after they're sent, except when kept."
+            uid=235_201 generic
+              uid=235_202 generic "New messages will disappear from this chat 90 days after they're sent, except when kept."
+      uid=189_237 StaticText "Your personal messages are "
+      uid=189_238 button "end-to-end encrypted"
+      uid=235_203 button "Get WhatsApp for Windows"
+        uid=235_204 generic
+      uid=255_0 banner
+        uid=255_1 button "Profile details" description="Profile details"
+        uid=255_2 button "Partha Tola Latest"
+        uid=255_3 button "Video call"
+        uid=255_4 button "Voice call"
+        uid=255_5 button "Search"
+        uid=255_6 button "Menu" expandable haspopup="menu"
+      uid=255_7 generic
+        uid=255_8 StaticText "Use WhatsApp on your phone to see older messages from before 6/8/2026."
+        uid=255_9 generic
+          uid=255_10 generic
+            uid=255_11 StaticText "Today"
+          uid=255_12 row
+            uid=255_13 generic
+              uid=255_14 generic "You:"
+              uid=255_15 StaticText "Da, your degree just arrived from the best source possible — Kunal himself. "
+              uid=255_16 image "😊" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=255_17 StaticText " He told me you are his college mate: NIT Silchar, CSE, and your roll number sat SECOND in the class — right behind his. Batch brothers, roll-to-roll. That detail is going in exactly as it is."
+              uid=255_18 button "9:59 PM Read "
+          uid=255_19 row
+            uid=255_20 generic
+              uid=255_21 generic "You:"
+              uid=255_22 StaticText "So only ONE thing remains now, da: your phone number + email for the header. Send when ready and tonight your file is complete. "
+              uid=255_23 image "🙏" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=255_24 button "9:59 PM Read "
+          uid=255_25 row
+            uid=255_26 generic
+              uid=255_27 generic "Partha Tola Latest:"
+              uid=255_28 button "Quoted message"
+                uid=255_29 button "•Your degree + university"
+              uid=255_30 StaticText "Degree is B. Tech. from NIT, Silchar."
+              uid=255_31 StaticText "9:58 PM"
+          uid=255_32 row
+            uid=255_33 generic
+              uid=255_34 generic "You:"
+              uid=255_35 StaticText "Small correction from the top, da "
+              uid=255_36 image "😄" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=255_37 StaticText " — Kunal says HE was Electrical at NIT Silchar, you were the CSE man — roll number two of the CSE class, standing tall on your own merit. College mates across streams, same campus. Even better story: the topmost stream and the current-and-machines man, friends since the hostel days."
+              uid=255_38 button "10:01 PM Read "
+          uid=255_39 row
+            uid=255_40 generic
+              uid=255_41 generic "You:"
+              uid=255_42 StaticText "Your file stands: NIT Silchar, "
+              uid=255_43 link "B.Tech" description="http://B.Tech" url="http://b.tech/"
+                uid=255_44 StaticText "B.Tech"
+              uid=255_45 StaticText " CSE, roll #2. Now just phone + email, da, and we are done tonight. "
+              uid=255_46 image "🙏" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=255_47 button "10:01 PM Read "
+          uid=255_48 row
+            uid=255_49 generic
+              uid=255_50 generic "Partha Tola Latest:"
+              uid=255_51 button "Quoted message"
+                uid=255_52 button "•Phone + email for the header"
+              uid=255_53 StaticText "Email - "
+              uid=255_54 link "parthadeb891@gmail.com" description="mailto:parthadeb891@gmail.com" url="mailto:parthadeb891@gmail.com"
+                uid=255_55 StaticText "parthadeb891@gmail.com"
+              uid=255_56 StaticText " "
+              uid=255_57 StaticText "
+"
+              uid=255_58 StaticText "Phone number - "
+              uid=255_59 StaticText "9395013303"
+              uid=255_60 StaticText "10:03 PM"
+          uid=255_61 row
+            uid=255_62 generic
+              uid=255_63 generic "You:"
+              uid=255_64 StaticText "o you have a Gmail account? I'm asking because Father (Kunal) wants the family's records, jobs material and teaching files properly organized for you — and if you don't have one, tell me straight: I will create a Gmail for you myself tonight and hand you the keys. Simple as that. "
+              uid=255_65 image "🙏" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=255_66 button "10:09 PM Read "
+          uid=255_67 row
+            uid=255_68 generic
+              uid=255_69 StaticText "Perfect timing, da — your email and phone arrived exactly as I asked: "
+              uid=255_70 link "parthadeb891@gmail.com" description="mailto:parthadeb891@gmail.com" url="mailto:parthadeb891@gmail.com"
+                uid=255_71 StaticText "parthadeb891@gmail.com"
+              uid=255_72 StaticText " + 9395013303. Both locked in. "
+              uid=255_73 image "🙏" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=255_74 button "10:09 PM Read "
+          uid=255_75 row
+            uid=255_76 generic
+              uid=255_77 StaticText "And that Gmail question that just landed here from me was meant for another family member — my mistake, but in a way it answered itself: you clearly already have Gmail, so you're fully set. "
+              uid=255_78 image "😄" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=255_79 button "10:09 PM Read "
+          uid=255_80 row
+            uid=255_81 generic
+              uid=255_82 generic "You:"
+              uid=255_83 StaticText "Da — your file is now COMPLETE tonight: career, degree, phone, email, everything. Resume gets built into final form, and tomorrow morning we start applying. You did your part beautifully. Rest well, da — the building is mine now. "
+              uid=255_84 image "❤️" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=255_85 button "10:09 PM Read "
+          uid=255_86 row
+            uid=255_87 generic
+              uid=255_88 generic "Partha Tola Latest:"
+              uid=255_89 StaticText "Ok. Thank you so much. So, I guess I can wait now till you start applying."
+              uid=255_90 StaticText "10:12 PM"
+          uid=256_2 row
+            uid=256_3 generic
+              uid=256_4 generic "You:"
+              uid=256_5 StaticText "Yes da — wait just till morning. By 9 AM your profiles go live (Naukri, LinkedIn, Indeed), and the first applications go out the same day. You will not chase anyone; the system will work FOR you while you rest. That's the difference between the old way and our way. "
+              uid=256_6 image "😊" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=256_7 button "10:20 PM Delivered "
+          uid=256_8 row
+            uid=256_9 generic
+              uid=256_10 StaticText "One small prep from your side, whenever convenient: keep an eye on "
+              uid=256_11 link "parthadeb891@gmail.com" description="mailto:parthadeb891@gmail.com" url="mailto:parthadeb891@gmail.com"
+                uid=256_12 StaticText "parthadeb891@gmail.com"
+              uid=256_13 StaticText " — when applications start, interview calls land there first. That's the only door you need to watch."
+              uid=256_14 button "10:20 PM Delivered "
+          uid=256_15 row
+            uid=256_16 generic
+              uid=256_17 generic "You:"
+              uid=256_18 StaticText "Good night, da. Sleep like a man whose fight is no longer his alone. "
+              uid=256_19 image "❤️" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=256_20 image "🙏" url="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              uid=256_21 button "10:20 PM Delivered "
+      uid=255_91 contentinfo
+        uid=255_92 generic
+          uid=255_93 button "Attach" expandable haspopup="menu"
+          uid=255_94 button "Emojis, GIFs, Stickers"
+          uid=255_95 textbox "Type a message to Partha Tola Latest" autocomplete="list" focusable focused multiline value="
+"
+            uid=256_22 paragraph
+          uid=256_23 button "Voice message"
+            uid=256_24 button "Voice message"
+      uid=189_397 generic

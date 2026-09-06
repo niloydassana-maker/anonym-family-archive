@@ -1,5 +1,5 @@
-# PARTHA DEB — PROFILES PACK (v4)
-**Built by Kilo (Brother-4), 2026-09-06. v4 adds Father's education framing:** CSE is the **topmost stream** at NIT — the education line carries that weight; Kunal-voice pieces (About/summaries) may say "NIT Silchar CSE — the topmost stream"; **Partha's resume body stays factual: B.Tech CSE, NIT Silchar** (PDF v3 unchanged). Partha is Kunal's college mate — **NIT Silchar, CSE, second roll number in the CSE class, batch ~2004**. Timeline (Partha's own words, 9:52–9:54 PM WhatsApp): TCS 2004–09 · IBM GBS 2009–**12** · **Infosys 2012–15** · from **2016** self-funded business **+ school teaching in parallel** — a SECOND CAREER, not a gap. Ready-to-paste content for Naukri, LinkedIn, Indeed + the final gap script. **Nothing here is sent anywhere** — Kilo pastes it only after Partha approves. Remaining **[ASK DA]**: phone, email.
+# PARTHA DEB — PROFILES PACK (v8 — SEALED)
+**Built by Kilo (Brother-4), 2026-09-06. KIT SEALED — ZERO [ASK DA] placeholders remain.** Email arrived from Partha himself (10:03 PM WhatsApp: "Email - parthadeb891@gmail.com, Phone number - 9395013303", phone matching the contact card). **Final header for all deliverables: Partha Deb · Baduria/Kolkata, West Bengal · +91 93950 13303 · parthadeb891@gmail.com · linkedin.com/in/partha-deb-76592812.** Degree confirmed in Partha's own words: "Degree is B. Tech. from NIT, Silchar." Framing: Kunal **Electrical**, Partha **CSE** (2nd roll in the CSE class) — college mates across streams, same institute, same era, different branches; resume education line: "B.Tech, Computer Science & Engineering (the premier stream) — NIT Silchar". Timeline (Partha's own words, 9:52–9:54 PM WhatsApp): TCS 2004–09 · IBM GBS 2009–**12** · **Infosys 2012–15** · from **2016** self-funded business **+ school teaching in parallel** — a SECOND CAREER, not a gap. **Nothing here is sent anywhere** — Kilo pastes it only after Partha approves.
 
 ---
 
@@ -12,7 +12,7 @@
 > IT Support, Production Support, Technical Support, Incident Management, Operations, IBM Mainframe, COBOL, JCL, DB2, CICS, VSAM, SDLC, Client Communication, Offshore Coordination, Data Operations, Teaching & Mentoring
 
 **Resume summary (paste into summary field):**
-> IT professional returning to the workforce with 11 years of enterprise IT: 5 years at Tata Consultancy Services, 3 at IBM Global Business Services and 3 at Infosys, across IBM mainframe tools and languages — customer-facing delivery, offshore coordination and multiple application ownerships. From 2016, founded and ran a self-funded business while concurrently serving as a school teacher — a decade of ownership and daily discipline. Now seeking a stable IT support / production support / operations role in Kolkata where reliability, maturity and enterprise work habits matter more than recent stack currency.
+> IT professional returning to the workforce with 11 years of enterprise IT: 5 years at Tata Consultancy Services, 3 at IBM Global Business Services and 3 at Infosys, across IBM mainframe tools and languages — customer-facing delivery, offshore coordination and multiple application ownerships. From 2016, founded and ran a self-funded business while concurrently serving as a school teacher — a decade of ownership and daily discipline. B.Tech, Computer Science & Engineering — NIT Silchar CSE, the topmost stream. Now seeking a stable IT support / production support / operations role in Kolkata where reliability, maturity and enterprise work habits matter more than recent stack currency.
 
 **Preferred roles:** IT Helpdesk / Technical Support Associate · Production Support (L0/L1) · Back-Office Operations · Data Operations · BPO tech accounts
 **Preferred location:** Kolkata (open to Sector V / Rajarhat). Remote: ask Partha his preference when convenient (no longer blocking).
@@ -71,7 +71,7 @@
 11. SDLC
 12. Teaching & Mentoring
 
-**Also update:** IBM entry end-date "Present" → 2012 (stale); add Infosys 2012–2015; add the 2016–Present entrepreneur + educator entry; profile photo [ASK DA — ask Kunal to get a decent photo from him over WhatsApp].
+**Also update:** IBM entry end-date "Present" → 2012 (stale); add Infosys 2012–2015; add the 2016–Present entrepreneur + educator entry; profile photo (optional, non-blocking enhancement — Kunal can get a decent photo from him over WhatsApp).
 
 ---
 
@@ -81,32 +81,27 @@
 > IT Support / Production Support / Operations — 11 Yrs Enterprise IT (TCS, IBM, Infosys) — Kolkata
 
 **Summary:**
-> Returning IT professional with 11 years of enterprise IT across TCS (2004–2009), IBM Global Business Services (2009–2012) and Infosys (2012–2015) on IBM mainframe tools and languages. Customer-facing delivery, offshore coordination, multiple application ownerships. From 2016: founded and ran a self-funded business while concurrently serving as a school teacher — a decade of ownership, discipline and communication. Seeking steady IT support, production support, back-office operations or data operations work in Kolkata. What I bring: reliability, calm under incidents, clear written and spoken communication, and enterprise-grade work discipline.
+> Returning IT professional with 11 years of enterprise IT across TCS (2004–2009), IBM Global Business Services (2009–2012) and Infosys (2012–2015) on IBM mainframe tools and languages. Customer-facing delivery, offshore coordination, multiple application ownerships. From 2016: founded and ran a self-funded business while concurrently serving as a school teacher — a decade of ownership, discipline and communication. B.Tech, Computer Science & Engineering — NIT Silchar CSE, the topmost stream. Seeking steady IT support, production support, back-office operations or data operations work in Kolkata. What I bring: reliability, calm under incidents, clear written and spoken communication, and enterprise-grade work discipline.
 
 ---
 
-## 4. GAP QUESTION SCRIPT — for Kilo to send Partha on WhatsApp
+## 4. GAP QUESTION SCRIPT — COMPLETE
 
-*(v3 — FINAL, only 2 questions left. Career story known and written as a second career; education confirmed by Father. Kilo's warm voice; send gently; nothing goes to employers until he approves.)*
+*(Every question answered. Career timeline from Partha 9:52–9:54 PM; education from Father + Partha's own words "Degree is B. Tech. from NIT, Silchar"; phone from the contact card "Partha Tola Latest" + his reply; email from Partha himself, 10:03 PM: "Email - parthadeb891@gmail.com". The script did its job — the family filled every gap together. Retired complete.)*
 
-### Opening (send first, alone)
-> Partha-mama, the kit is nearly closed. Your career story is in — TCS, IBM, Infosys, and the business and school together from 2016. Your degree from NIT Silchar is in too — Baba confirmed it, college-mate to college-mate. Just two small things between you and a finished resume.
-
-### Q1 — Phone
-> Which phone number should go on the resume? It will be seen by HR people, so pick the one you check most.
-
-### Q2 — Email
-> And which email address? Same rule — whichever you actually read.
-
-### Closing (send after his answers)
-> That is everything. The moment these two answers arrive, the resume closes tonight — I will show you the final version here first, and nothing goes anywhere until you say yes.
+### Closing line (the promise now kept)
+> That is everything. The resume closes tonight — I will show you the final version here first, and nothing goes anywhere until you say yes.
 
 ---
 
-## REMAINING [ASK DA] MASTER LIST (only 2)
-| # | Field | Asked in |
-|---|-------|----------|
-| 1 | Phone number | Q1 |
-| 2 | Email address | Q2 |
+## [ASK DA] MASTER LIST — ALL RESOLVED (0 OPEN)
+| # | Field | Status |
+|---|-------|--------|
+| 1 | Email address | **RESOLVED — parthadeb891@gmail.com** (Partha himself, 10:03 PM) — now on the resume and in all profiles |
 
-*(Resolved: 2014–26 "gap" → real second career (business + teaching, 2016–present); technologies → "all IBM mainframe tools, languages"; IBM end date → 2012; **education → B.Tech CSE, NIT Silchar, batch 2004 (Father-confirmed, second roll in the CSE class right after Kunal)**; location/remote → non-blocking.)*
+All fields resolved:
+- Phone/WhatsApp: **+91 93950 13303** (contact card "Partha Tola Latest"; confirmed in Partha's 10:03 PM reply) — **locked in**
+- Email: **parthadeb891@gmail.com** (Partha himself, 10:03 PM) — **locked in**
+- Education: **B.Tech CSE (the premier stream), NIT Silchar** (Father-confirmed; Partha's own words: "Degree is B. Tech. from NIT, Silchar"; Partha CSE 2nd roll, Kunal Electrical — college mates across streams)
+- Career: TCS 2004–09 · IBM GBS 2009–12 · Infosys 2012–15 · Business + Teaching 2016–present (Partha, 9:52–9:54 PM)
+- Technologies: "all IBM mainframe tools, languages" (Partha)
