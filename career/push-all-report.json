@@ -1,0 +1,953 @@
+[
+ {
+  "repo": "god_ai",
+  "path": "D:\\god_ai",
+  "size_mb": 1648,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "ack",
+  "path": "D:\\god_ai\\ack",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "ai_video_monetizer",
+  "path": "D:\\god_ai\\ai_video_monetizer",
+  "size_mb": 10,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "api_money_bot_complete",
+  "path": "D:\\god_ai\\api_money_bot_complete",
+  "size_mb": 2,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "ases_v3_1",
+  "path": "D:\\god_ai\\ases_v3_1",
+  "size_mb": 45,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "claude_code_clone",
+  "path": "D:\\god_ai\\claude_code_clone",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "convergence_framework",
+  "path": "D:\\god_ai\\convergence_framework",
+  "size_mb": 2,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "crypto-ai-auto-trader",
+  "path": "D:\\god_ai\\crypto-ai-auto-trader",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "crypto-app-by-replit",
+  "path": "D:\\god_ai\\crypto-app-by-replit",
+  "size_mb": 12,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "crypto-trader-v1_1",
+  "path": "D:\\god_ai\\crypto-trader-v1_1",
+  "size_mb": 179,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "crypto-trading-ai-agent",
+  "path": "D:\\god_ai\\crypto-trading-ai-agent",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "emergentsh-standalone-clean",
+  "path": "D:\\god_ai\\emergentsh-standalone-clean",
+  "size_mb": 3,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "god_ai_scripts",
+  "path": "D:\\god_ai\\god_ai_scripts",
+  "size_mb": 53,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "guardian_app",
+  "path": "D:\\god_ai\\guardian_app",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "gumroad-products",
+  "path": "D:\\god_ai\\gumroad-products",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "hsf",
+  "path": "D:\\god_ai\\hsf",
+  "size_mb": 1,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "ikon_agent-main",
+  "path": "D:\\god_ai\\ikon_agent-main",
+  "size_mb": 44,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "lateststablecode",
+  "path": "D:\\god_ai\\lateststablecode",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "OMEGA",
+  "path": "D:\\god_ai\\OMEGA",
+  "size_mb": 5,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "screen_guard_final",
+  "path": "D:\\god_ai\\screen_guard_final",
+  "size_mb": 137,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "solana-auto-trader-live",
+  "path": "D:\\god_ai\\solana-auto-trader-live",
+  "size_mb": 4,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "stabletcode",
+  "path": "D:\\god_ai\\stabletcode",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": "Everything up-to-date"
+ },
+ {
+  "repo": "test_coding_agent",
+  "path": "D:\\god_ai\\test_coding_agent",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": " * [new branch]      master -> master"
+ },
+ {
+  "repo": "the-beholder-project",
+  "path": "D:\\god_ai\\the-beholder-project",
+  "size_mb": 566,
+  "committed": false,
+  "pushed": true,
+  "detail": " * [new branch]      master -> master"
+ },
+ {
+  "repo": "timeofmylife",
+  "path": "D:\\god_ai\\timeofmylife",
+  "size_mb": 567,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      master -> master"
+ },
+ {
+  "repo": "voice_agent_avatar",
+  "path": "D:\\god_ai\\voice_agent_avatar",
+  "size_mb": 1,
+  "committed": false,
+  "pushed": true,
+  "detail": " * [new branch]      master -> master"
+ },
+ {
+  "repo": "emergentsh_latest",
+  "path": "D:\\emergentsh_latest",
+  "size_mb": 21,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]        master -> master"
+ },
+ {
+  "repo": "frontend",
+  "path": "D:\\emergentsh_latest\\frontend",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "main",
+  "path": "D:\\emergentsh_latest\\main",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "project-456",
+  "path": "D:\\emergentsh_latest\\project-456",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "search-test-project",
+  "path": "D:\\emergentsh_latest\\search-test-project",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "services/deploy",
+  "path": "D:\\emergentsh_latest\\services\\deploy",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "services/mcp",
+  "path": "D:\\emergentsh_latest\\services\\mcp",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "services/qa-runner",
+  "path": "D:\\emergentsh_latest\\services\\qa-runner",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "services/sandbox",
+  "path": "D:\\emergentsh_latest\\services\\sandbox",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "services/streamer",
+  "path": "D:\\emergentsh_latest\\services\\streamer",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "services/vfs",
+  "path": "D:\\emergentsh_latest\\services\\vfs",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "neon_unified",
+  "path": "D:\\neon_unified",
+  "size_mb": 390,
+  "committed": true,
+  "pushed": true,
+  "detail": "   d2887af..40b5816  master -> master"
+ },
+ {
+  "repo": "oiioii_clone",
+  "path": "D:\\neon_unified\\oiioii_clone",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "oiioii_clone2",
+  "path": "D:\\neon_unified\\oiioii_clone2",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "oiioii_clone3",
+  "path": "D:\\neon_unified\\oiioii_clone3",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "oiioii_clone_final",
+  "path": "D:\\neon_unified\\oiioii_clone_final",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "oiioii_clone_final2",
+  "path": "D:\\neon_unified\\oiioii_clone_final2",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "oiioii_clone_final3",
+  "path": "D:\\neon_unified\\oiioii_clone_final3",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "oiioii_clone_full",
+  "path": "D:\\neon_unified\\oiioii_clone_full",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "oiioii_clone_gen",
+  "path": "D:\\neon_unified\\oiioii_clone_gen",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "_fleet_flutter_release_20260817",
+  "path": "D:\\neon_unified\\_fleet_flutter_release_20260817",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "_fleet_flutter_release_attempt2_20260817",
+  "path": "D:\\neon_unified\\_fleet_flutter_release_attempt2_20260817",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "_live_flutter_verification_20260817",
+  "path": "D:\\neon_unified\\_live_flutter_verification_20260817",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "_live_proof_fastapi_react_20260822",
+  "path": "D:\\neon_unified\\_live_proof_fastapi_react_20260822",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "omniroute-monetizer",
+  "path": "D:\\omniroute-monetizer",
+  "size_mb": 14021,
+  "committed": true,
+  "pushed": true,
+  "detail": "   bf1b40a..9009092  master -> master"
+ },
+ {
+  "repo": "omniroute_dashboard",
+  "path": "D:\\omniroute-monetizer\\omniroute_dashboard",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "scratch",
+  "path": "D:\\omniroute-monetizer\\scratch",
+  "size_mb": 81,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "state/lasthelp_rescue/crypto-trader-v1_1",
+  "path": "D:\\omniroute-monetizer\\state\\lasthelp_rescue\\crypto-trader-v1_1",
+  "size_mb": 10,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "state/measure/oioi-shot-count",
+  "path": "D:\\omniroute-monetizer\\state\\measure\\oioi-shot-count",
+  "size_mb": 3,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "state/omniroute-3.8.50-live-state-sandbox/data",
+  "status": "SKIPPED (too large, no git)",
+  "size_mb": 1610
+ },
+ {
+  "repo": "state/omniroute-3.8.50-sandbox",
+  "path": "D:\\omniroute-monetizer\\state\\omniroute-3.8.50-sandbox",
+  "size_mb": 3,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "state/omniroute-ltx-fresh-data",
+  "path": "D:\\omniroute-monetizer\\state\\omniroute-ltx-fresh-data",
+  "size_mb": 6,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "nemo_test",
+  "path": "D:\\nemo_test",
+  "size_mb": 46,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      master -> master"
+ },
+ {
+  "repo": "tests/fixtures/demo_app",
+  "path": "D:\\nemo_test\\tests\\fixtures\\demo_app",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "codex-nvidia-proxy",
+  "path": "D:\\codex-nvidia-proxy",
+  "size_mb": 0,
+  "committed": false,
+  "pushed": false,
+  "detail": "fatal: unable to access 'https://github.com/ClaireMoonlit/codex-nvidia-proxy.git/': The requested UR"
+ },
+ {
+  "repo": "antigravity-kandover",
+  "path": "D:\\dev\\antigravity-kandover",
+  "size_mb": 72,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      master -> master"
+ },
+ {
+  "repo": "antigravity-kandover - Copy",
+  "path": "D:\\dev\\antigravity-kandover - Copy",
+  "size_mb": 76,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      master -> master"
+ },
+ {
+  "repo": "DOWNLOADS",
+  "status": "SKIPPED (too large, no git)",
+  "size_mb": 34070
+ },
+ {
+  "repo": "changetest2",
+  "path": "D:\\DOWNLOADS\\changetest2",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "crawlee-engine",
+  "path": "D:\\DOWNLOADS\\crawlee-engine",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "crm-app-20260606-105900/project",
+  "path": "D:\\DOWNLOADS\\crm-app-20260606-105900\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "crm_web_app_workspace-20260606-001451/project",
+  "path": "D:\\DOWNLOADS\\crm_web_app_workspace-20260606-001451\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "crypto-app",
+  "path": "D:\\DOWNLOADS\\crypto-app",
+  "size_mb": 9,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "emergenttrader",
+  "path": "D:\\DOWNLOADS\\emergenttrader",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": "   c94ce50..d14942d  main -> main"
+ },
+ {
+  "repo": "extracted_report/project",
+  "path": "D:\\DOWNLOADS\\extracted_report\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "filmforge",
+  "path": "D:\\DOWNLOADS\\filmforge",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "film_kit_v3_confrontation_updated/kit",
+  "path": "D:\\DOWNLOADS\\film_kit_v3_confrontation_updated\\kit",
+  "size_mb": 13,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "for zipping",
+  "path": "D:\\DOWNLOADS\\for zipping",
+  "size_mb": 12,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "GODSHAND_FINAL/GODSHAND_FINAL/kit",
+  "path": "D:\\DOWNLOADS\\GODSHAND_FINAL\\GODSHAND_FINAL\\kit",
+  "size_mb": 23,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "GODSHAND_KIT_FINAL/GODSHAND_src_FIX",
+  "path": "D:\\DOWNLOADS\\GODSHAND_KIT_FINAL\\GODSHAND_src_FIX",
+  "size_mb": 24,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "godshand_kit_fixed",
+  "path": "D:\\DOWNLOADS\\godshand_kit_fixed",
+  "size_mb": 32,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "GODSHAND_kit_PERMANENT_FIX",
+  "path": "D:\\DOWNLOADS\\GODSHAND_kit_PERMANENT_FIX",
+  "size_mb": 24,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "GODSHAND_kit_UPDATED/GODSHAND_src_FIX",
+  "path": "D:\\DOWNLOADS\\GODSHAND_kit_UPDATED\\GODSHAND_src_FIX",
+  "size_mb": 24,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "GODSHAND_src_FIX",
+  "path": "D:\\DOWNLOADS\\GODSHAND_src_FIX",
+  "size_mb": 24,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "GODSHAND_src_FIX_PATCHED/GODSHAND_src_FIX",
+  "path": "D:\\DOWNLOADS\\GODSHAND_src_FIX_PATCHED\\GODSHAND_src_FIX",
+  "size_mb": 24,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "god_ai",
+  "path": "D:\\DOWNLOADS\\god_ai",
+  "size_mb": 20538,
+  "committed": true,
+  "pushed": false,
+  "detail": "hint: See the 'Note about fast-forwards' in 'git push --help' for details."
+ },
+ {
+  "repo": "KUNALS LATEST PROJECTS/Solana_ex",
+  "path": "D:\\DOWNLOADS\\KUNALS LATEST PROJECTS\\Solana_ex",
+  "size_mb": 177,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "KUNALS LATEST PROJECTS/Solana_lite",
+  "path": "D:\\DOWNLOADS\\KUNALS LATEST PROJECTS\\Solana_lite",
+  "size_mb": 2,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "n8n frellancing_advanced/agent_service",
+  "path": "D:\\DOWNLOADS\\n8n frellancing_advanced\\agent_service",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "n8n frellancing_advanced/ases_v3_1",
+  "path": "D:\\DOWNLOADS\\n8n frellancing_advanced\\ases_v3_1",
+  "size_mb": 1,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "neon_unified",
+  "path": "D:\\DOWNLOADS\\neon_unified",
+  "size_mb": 2,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "node-v20.20.0-win-x64/node-v20.20.0-win-x64",
+  "path": "D:\\DOWNLOADS\\node-v20.20.0-win-x64\\node-v20.20.0-win-x64",
+  "size_mb": 68,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "node-v22.23.1-win-x64/node-v22.23.1-win-x64",
+  "path": "D:\\DOWNLOADS\\node-v22.23.1-win-x64\\node-v22.23.1-win-x64",
+  "size_mb": 83,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "node-v24.18.0-win-x64/node-v24.18.0-win-x64",
+  "path": "D:\\DOWNLOADS\\node-v24.18.0-win-x64\\node-v24.18.0-win-x64",
+  "size_mb": 89,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "omega",
+  "path": "D:\\DOWNLOADS\\omega",
+  "size_mb": 4,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "OMEGA_SOTA",
+  "path": "D:\\DOWNLOADS\\OMEGA_SOTA",
+  "size_mb": 2,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "OMEGA_SOTA - Copy (2)",
+  "path": "D:\\DOWNLOADS\\OMEGA_SOTA - Copy (2)",
+  "size_mb": 2,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "OMEGA_SOTA_UI",
+  "path": "D:\\DOWNLOADS\\OMEGA_SOTA_UI",
+  "size_mb": 12,
+  "committed": false,
+  "pushed": false,
+  "detail": "error: failed to push some refs to 'https://github.com/isearchxsolve/omega_sota_ui.git'"
+ },
+ {
+  "repo": "OMEGA_SOTA_UI_fixed/OMEGA_SOTA_UI",
+  "path": "D:\\DOWNLOADS\\OMEGA_SOTA_UI_fixed\\OMEGA_SOTA_UI",
+  "size_mb": 54,
+  "committed": false,
+  "pushed": false,
+  "detail": "error: failed to push some refs to 'https://github.com/isearchxsolve/omega_sota_ui_fixed-omega_sota_"
+ },
+ {
+  "repo": "OMEGA_SOTA_UI_fixed/OMEGA_SOTA_UI - Copy",
+  "path": "D:\\DOWNLOADS\\OMEGA_SOTA_UI_fixed\\OMEGA_SOTA_UI - Copy",
+  "size_mb": 6,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "OMEGA_SOTA_UI_fixed/OMEGA_SOTA_UI - Copy (2)",
+  "path": "D:\\DOWNLOADS\\OMEGA_SOTA_UI_fixed\\OMEGA_SOTA_UI - Copy (2)",
+  "size_mb": 6,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "RAINMAN/kit/GODSHAND_src_FIX",
+  "path": "D:\\DOWNLOADS\\RAINMAN\\kit\\GODSHAND_src_FIX",
+  "size_mb": 24,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "sale/convergence_framework/convergence_project_latest",
+  "path": "D:\\DOWNLOADS\\sale\\convergence_framework\\convergence_project_latest",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "smart_lcm_frontend_react",
+  "path": "D:\\DOWNLOADS\\smart_lcm_frontend_react",
+  "size_mb": 6,
+  "committed": true,
+  "pushed": false,
+  "detail": "hint: See the 'Note about fast-forwards' in 'git push --help' for details."
+ },
+ {
+  "repo": "smart_lcm_frontend_react_bak",
+  "path": "D:\\DOWNLOADS\\smart_lcm_frontend_react_bak",
+  "size_mb": 1,
+  "committed": true,
+  "pushed": false,
+  "detail": "hint: See the 'Note about fast-forwards' in 'git push --help' for details."
+ },
+ {
+  "repo": "solana_earner",
+  "path": "D:\\DOWNLOADS\\solana_earner",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "THE_LAST_LAUGH_KIT/kit",
+  "path": "D:\\DOWNLOADS\\THE_LAST_LAUGH_KIT\\kit",
+  "size_mb": 38,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "THE_MOMENT_full_bundle/bundle",
+  "path": "D:\\DOWNLOADS\\THE_MOMENT_full_bundle\\bundle",
+  "size_mb": 32,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "THE_MOMENT_full_bundle - Copy/bundle",
+  "path": "D:\\DOWNLOADS\\THE_MOMENT_full_bundle - Copy\\bundle",
+  "size_mb": 32,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "THE_ONE_full_film_kit_AUDIO_UPGRADED_WITH_CONFRONTATION/film_kit_v3",
+  "path": "D:\\DOWNLOADS\\THE_ONE_full_film_kit_AUDIO_UPGRADED_WITH_CONFRONTATION\\film_kit_v3",
+  "size_mb": 1,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "tsp_workspace-20260606-152850/project",
+  "path": "D:\\DOWNLOADS\\tsp_workspace-20260606-152850\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "tsp_workspace-20260606-162202/project",
+  "path": "D:\\DOWNLOADS\\tsp_workspace-20260606-162202\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "tsp_workspace-20260606-163214/project",
+  "path": "D:\\DOWNLOADS\\tsp_workspace-20260606-163214\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "tsp_workspace-20260607-105923/project",
+  "path": "D:\\DOWNLOADS\\tsp_workspace-20260607-105923\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "tsp_workspace-20260609-133125/project",
+  "path": "D:\\DOWNLOADS\\tsp_workspace-20260609-133125\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "uncensoredgeminiapp",
+  "path": "D:\\DOWNLOADS\\uncensoredgeminiapp",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "wan_full_output",
+  "status": "SKIPPED (too large, no git)",
+  "size_mb": 1265
+ },
+ {
+  "repo": "workspace-123-20260606-183346/project",
+  "path": "D:\\DOWNLOADS\\workspace-123-20260606-183346\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "workspace-123-20260606-210019/project",
+  "path": "D:\\DOWNLOADS\\workspace-123-20260606-210019\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "workspace_1-20260606-002454/project",
+  "path": "D:\\DOWNLOADS\\workspace_1-20260606-002454\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "workspace_1-20260606-105007/project",
+  "path": "D:\\DOWNLOADS\\workspace_1-20260606-105007\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "workspace_1-20260606-161213/project",
+  "path": "D:\\DOWNLOADS\\workspace_1-20260606-161213\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "workspace_1-20260606-201731/project",
+  "path": "D:\\DOWNLOADS\\workspace_1-20260606-201731\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ },
+ {
+  "repo": "ws_1-20260606-164839/project",
+  "path": "D:\\DOWNLOADS\\ws_1-20260606-164839\\project",
+  "size_mb": 0,
+  "committed": true,
+  "pushed": true,
+  "detail": " * [new branch]      main -> main"
+ }
+]

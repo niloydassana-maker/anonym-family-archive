@@ -1,0 +1,46 @@
+Challenge Date,IP Address,User Agent,Country,Challenge Type
+Tue Feb 17 09:43:54 UTC 2026,2409:40e0:46:8e8d:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Tue Feb 17 09:44:09 UTC 2026,2409:40e0:46:8e8d:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Tue Feb 17 09:44:10 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Tue Feb 17 09:44:10 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Tue Feb 17 09:44:41 UTC 2026,2409:40e0:46:8e8d:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Tue Feb 17 09:45:05 UTC 2026,2409:40e0:46:8e8d:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Tue Feb 17 09:45:06 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Tue Feb 17 09:45:06 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Thu Feb 19 19:25:51 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Thu Feb 19 19:25:58 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Thu Feb 19 19:26:00 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,EMAIL_PIN_CHALLENGE
+Thu Feb 19 19:26:00 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,EMAIL_PIN_CHALLENGE
+Thu Feb 19 19:26:16 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Thu Feb 19 19:26:52 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Thu Feb 19 19:26:53 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Thu Feb 19 19:26:53 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Thu Feb 19 19:27:11 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Thu Feb 19 19:27:15 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Thu Feb 19 19:27:16 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Thu Feb 19 19:27:16 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Thu Feb 19 19:27:45 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Thu Feb 19 19:28:11 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Thu Feb 19 19:28:26 UTC 2026,2409:40e0:19:e475:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1169 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Fri Feb 20 09:51:08 UTC 2026,2409:40e0:1034:36d6:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1171 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Fri Feb 20 09:51:16 UTC 2026,2409:40e0:1034:36d6:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1171 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Fri Feb 20 09:51:17 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1171 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Fri Feb 20 09:51:17 UTC 2026,,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1171 vivo_I2301:android_15,Unknown,ID_VERIFICATION_CHALLENGE
+Fri Feb 20 09:51:46 UTC 2026,2409:40e0:1034:36d6:8000:0:0:0,LIAuthLibrary:0.0.3 com.linkedin.android:4.1.1171 vivo_I2301:android_15,India,SSP_BLOCKING_CHALLENGE
+Mon Feb 23 15:18:53 UTC 2026,202.142.113.134,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/144.0.7559.132 Mobile Safari/537.36 com.linkedin.android/207900 [LinkedInApp]/2.248.64",India,CAPTCHA_CHALLENGE
+Mon Feb 23 15:18:53 UTC 2026,202.142.113.134,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/144.0.7559.132 Mobile Safari/537.36 com.linkedin.android/207900 [LinkedInApp]/2.248.64",India,CAPTCHA_CHALLENGE
+Mon Feb 23 15:19:34 UTC 2026,202.142.113.134,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/144.0.7559.132 Mobile Safari/537.36 com.linkedin.android/207900 [LinkedInApp]/2.248.64",India,CAPTCHA_CHALLENGE
+Mon Feb 23 15:19:36 UTC 2026,202.142.113.134,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/144.0.7559.132 Mobile Safari/537.36 com.linkedin.android/207900 [LinkedInApp]/2.248.64",India,EMAIL_PIN_CHALLENGE
+Mon Feb 23 15:19:36 UTC 2026,202.142.113.134,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/144.0.7559.132 Mobile Safari/537.36 com.linkedin.android/207900 [LinkedInApp]/2.248.64",India,EMAIL_PIN_CHALLENGE
+Mon Feb 23 15:20:02 UTC 2026,202.142.113.134,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/144.0.7559.132 Mobile Safari/537.36 com.linkedin.android/207900 [LinkedInApp]/2.248.64",India,EMAIL_PIN_CHALLENGE
+Tue Mar 03 12:45:00 UTC 2026,2409:40e0:21:a1be:50e:39e6:21b9:db14,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",India,SECONDARY_HANDLE_CHALLENGE
+Tue Mar 03 12:45:00 UTC 2026,2409:40e0:21:a1be:50e:39e6:21b9:db14,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",India,SECONDARY_HANDLE_CHALLENGE
+Tue Mar 03 12:46:09 UTC 2026,2409:40e0:21:a1be:50e:39e6:21b9:db14,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",India,SECONDARY_HANDLE_CHALLENGE
+Mon May 04 12:09:53 UTC 2026,2409:40e0:39:f03d:8000:0:0:0,"Mozilla/5.0 (Linux; Android 15; I2301) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/131.0.6778.200 Mobile Safari/537.36 VivoBrowser/15.7.2.0",India,SSP_BLOCKING_CHALLENGE
+Mon May 04 12:09:58 UTC 2026,2409:40e0:39:f03d:8000:0:0:0,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/147.0.7727.111 Mobile Safari/537.36 com.linkedin.android/210700 [LinkedInApp]/2.276.56",India,SSP_BLOCKING_CHALLENGE
+Mon May 04 12:10:02 UTC 2026,2409:40e0:39:f03d:8000:0:0:0,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/147.0.7727.111 Mobile Safari/537.36 com.linkedin.android/210700 [LinkedInApp]/2.276.56",India,LINKEDIN_APP_CHALLENGE
+Mon May 04 12:10:30 UTC 2026,2409:40e0:39:f03d:8000:0:0:0,"Mozilla/5.0 (Linux; Android 15; I2301) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/131.0.6778.200 Mobile Safari/537.36 VivoBrowser/15.7.2.0",India,SSP_BLOCKING_CHALLENGE
+Tue Jun 16 17:17:48 UTC 2026,2409:40e6:1d:5093:915c:874d:93a9:6f8c,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",India,SSP_BLOCKING_CHALLENGE
+Tue Jun 16 17:18:03 UTC 2026,2409:40e6:1d:5093:8000:0:0:0,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/148.0.7778.217 Mobile Safari/537.36 com.linkedin.android/212000 [LinkedInApp]/2.289.51",India,SSP_BLOCKING_CHALLENGE
+Tue Jun 16 17:18:05 UTC 2026,2409:40e6:1d:5093:8000:0:0:0,"Mozilla/5.0 (Linux; Android 15; I2301 Build/AP3A.240905.015.A2; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/148.0.7778.217 Mobile Safari/537.36 com.linkedin.android/212000 [LinkedInApp]/2.289.51",India,LINKEDIN_APP_CHALLENGE
+Tue Jun 16 17:18:07 UTC 2026,2409:40e6:1d:5093:915c:874d:93a9:6f8c,"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",India,SSP_BLOCKING_CHALLENGE

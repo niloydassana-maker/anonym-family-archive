@@ -1,0 +1,961 @@
+uid=245_0 RootWebArea "Partha Deb | LinkedIn" busy url="https://www.linkedin.com/in/partha-deb-76592812/"
+  uid=245_1 ignored
+    uid=245_2 ignored
+      uid=245_3 generic
+        uid=245_4 generic
+          uid=245_5 heading "0 notifications" level="2"
+            uid=245_6 StaticText "0 notifications"
+        uid=245_7 ignored
+          uid=245_8 ignored
+            uid=245_9 generic "Skip navigation menu"
+              uid=245_10 generic
+                uid=245_11 button "Skip to search"
+                  uid=245_12 ignored
+                    uid=245_13 ignored
+                      uid=245_14 StaticText "Skip to search"
+                uid=245_15 button "Skip to main content"
+                  uid=245_16 ignored
+                    uid=245_17 ignored
+                      uid=245_18 StaticText "Skip to main content"
+                uid=245_19 button "Skip to primary content"
+                  uid=245_20 ignored
+                    uid=245_21 ignored
+                      uid=245_22 StaticText "Skip to primary content"
+                uid=245_23 button "Skip to aside"
+                  uid=245_24 ignored
+                    uid=245_25 ignored
+                      uid=245_26 StaticText "Skip to aside"
+                uid=245_27 button "Skip to footer"
+                  uid=245_28 ignored
+                    uid=245_29 ignored
+                      uid=245_30 StaticText "Skip to footer"
+                uid=245_31 generic
+                  uid=245_32 button "Close jump menu"
+                    uid=245_33 ignored
+            uid=245_34 ignored
+          uid=245_35 ignored
+            uid=245_36 ignored
+              uid=245_37 banner
+                uid=245_38 ignored
+                  uid=245_39 ignored
+                    uid=245_40 button "LinkedIn"
+                      uid=245_41 image "LinkedIn"
+                    uid=245_42 generic
+                      uid=245_43 status atomic live="polite" relevant="additions text"
+                      uid=245_44 search
+                        uid=245_45 generic
+                          uid=245_46 generic
+                          uid=245_47 textbox "Search" autocomplete="list"
+                            uid=245_48 ignored
+                            uid=245_49 generic
+                    uid=245_50 ignored
+                      uid=245_51 ignored
+                        uid=245_52 ignored
+                          uid=245_53 generic
+                            uid=245_54 generic
+                              uid=245_55 ignored
+                        uid=245_56 ignored
+                          uid=245_57 generic
+                            uid=245_58 ignored
+                              uid=245_59 navigation
+                                uid=245_60 list
+                                  uid=245_61 listitem level="1"
+                                    uid=245_62 button "Home, 1 new notification"
+                                      uid=245_63 ignored
+                                        uid=245_64 image
+                                        uid=245_65 ignored
+                                      uid=245_66 ignored
+                                        uid=245_67 ignored
+                                          uid=245_68 StaticText "Home"
+                                  uid=245_69 listitem level="1"
+                                    uid=245_70 link "My Network, 0 new notifications" url="https://www.linkedin.com/mynetwork"
+                                      uid=245_71 ignored
+                                        uid=245_72 image
+                                      uid=245_73 ignored
+                                        uid=245_74 ignored
+                                          uid=245_75 StaticText "My Network"
+                                  uid=245_76 listitem level="1"
+                                    uid=245_77 link "Jobs, 0 new notifications" url="https://www.linkedin.com/jobs/"
+                                      uid=245_78 ignored
+                                        uid=245_79 image
+                                      uid=245_80 ignored
+                                        uid=245_81 ignored
+                                          uid=245_82 StaticText "Jobs"
+                                  uid=245_83 listitem level="1"
+                                    uid=245_84 link "Messaging, 0 new notifications" url="https://www.linkedin.com/messaging/"
+                                      uid=245_85 ignored
+                                        uid=245_86 image
+                                      uid=245_87 ignored
+                                        uid=245_88 ignored
+                                          uid=245_89 StaticText "Messaging"
+                                  uid=245_90 listitem level="1"
+                                    uid=245_91 link "Notifications, 1 new notification" url="https://www.linkedin.com/notifications/"
+                                      uid=245_92 ignored
+                                        uid=245_93 image
+                                        uid=245_94 ignored
+                                          uid=245_95 StaticText "1"
+                                      uid=245_96 ignored
+                                        uid=245_97 ignored
+                                          uid=245_98 StaticText "Notifications"
+                                  uid=245_99 listitem level="1"
+                                    uid=245_100 button "Me" expandable
+                                      uid=245_101 ignored
+                                      uid=245_102 ignored
+                                        uid=245_103 ignored
+                                          uid=245_104 StaticText "Me"
+                        uid=245_105 ignored
+                          uid=245_106 ignored
+                            uid=245_107 navigation
+                              uid=245_108 list
+                                uid=245_109 listitem level="1"
+                                  uid=245_110 button "For Business" expandable
+                                    uid=245_111 ignored
+                                    uid=245_112 ignored
+                                      uid=245_113 ignored
+                                        uid=245_114 StaticText "For Business"
+                                uid=245_115 listitem level="1"
+                                  uid=245_116 link "Advertise, 0 new notifications" url="https://www.linkedin.com/campaignmanager/accounts/"
+                                    uid=245_117 ignored
+                                    uid=245_118 ignored
+                                      uid=245_119 ignored
+                                        uid=245_120 StaticText "Advertise"
+            uid=245_121 generic
+              uid=245_122 ignored
+              uid=245_123 ignored
+              uid=245_124 ignored
+              uid=245_125 main
+                uid=245_126 ignored
+                  uid=245_127 ignored
+                    uid=245_128 region "Primary content"
+                      uid=245_129 generic
+                        uid=245_130 generic
+                          uid=245_131 generic
+                            uid=245_132 ignored
+                              uid=245_133 ignored
+                                uid=245_134 ignored
+                                  uid=245_135 ignored
+                                    uid=245_136 ignored
+                                      uid=245_137 button
+                                        uid=245_138 figure
+                                          uid=245_139 image "Cover photo"
+                                  uid=245_140 link "Profile photo" url="https://www.linkedin.com/in/partha-deb-76592812/"
+                                    uid=245_141 generic "Profile photo"
+                                      uid=245_142 ignored
+                                  uid=245_143 ignored
+                                    uid=245_144 link "Manage notifications about Partha Deb" url="https://www.linkedin.com/in/partha-deb-76592812/"
+                                      uid=245_145 ignored
+                                uid=245_146 ignored
+                                  uid=245_147 ignored
+                                    uid=245_148 ignored
+                                      uid=245_149 ignored
+                                        uid=245_150 ignored
+                                          uid=245_151 ignored
+                                            uid=245_152 heading "Partha Deb" level="2"
+                                              uid=245_153 StaticText "Partha Deb"
+                                          uid=245_154 paragraph
+                                            uid=245_155 StaticText "· 2nd"
+                                        uid=245_156 paragraph
+                                          uid=245_157 StaticText "Senior Software Engineer at IBM Global Business Services"
+                                        uid=245_158 ignored
+                                          uid=245_159 paragraph
+                                            uid=245_160 StaticText "Baduria, West Bengal, India"
+                                          uid=245_161 paragraph
+                                            uid=245_162 StaticText "·"
+                                          uid=245_163 paragraph
+                                            uid=245_164 link "Contact info" url="https://www.linkedin.com/in/partha-deb-76592812/overlay/contact-info/"
+                                              uid=245_165 StaticText "Contact info"
+                                    uid=245_166 ignored
+                                      uid=245_167 ignored
+                                        uid=245_168 button "IBM Global Business Services"
+                                          uid=245_169 ignored
+                                            uid=245_170 ignored
+                                              uid=245_171 ignored
+                                                uid=245_172 ignored
+                                                  uid=245_173 paragraph
+                                                    uid=245_174 StaticText "IBM Global Business Services"
+                                  uid=245_175 ignored
+                                    uid=245_176 paragraph
+                                      uid=245_177 StaticText "15"
+                                    uid=245_178 paragraph
+                                      uid=245_179 StaticText "connections"
+                                  uid=245_180 link "Partha is a mutual connection" url="https://www.linkedin.com/search/results/people/?origin=MEMBER_PROFILE_CANNED_SEARCH&network=%5B%22F%22%5D&connectionOf=%5B%22ACoAAAKg6D0BbW4cyJhm-zfQdBlj0saUL2dvJlo%22%5D"
+                                    uid=245_181 ignored
+                                      uid=245_182 ignored
+                                        uid=245_183 paragraph
+                                          uid=245_184 link "Partha is a mutual connection" url="https://www.linkedin.com/search/results/people/?origin=MEMBER_PROFILE_CANNED_SEARCH&network=%5B%22F%22%5D&connectionOf=%5B%22ACoAAAKg6D0BbW4cyJhm-zfQdBlj0saUL2dvJlo%22%5D"
+                                            uid=245_185 strong
+                                              uid=245_186 StaticText "Partha"
+                                            uid=245_187 StaticText " "
+                                            uid=245_188 StaticText "is a mutual connection"
+                                  uid=245_189 ignored
+                                    uid=245_190 ignored
+                                      uid=245_191 ignored
+                                        uid=245_192 ignored
+                                          uid=245_193 link "Invite Partha Deb to connect" url="https://www.linkedin.com/preload/custom-invite/?vanityName=partha-deb-76592812"
+                                            uid=245_194 ignored
+                                              uid=245_195 ignored
+                                                uid=245_196 ignored
+                                                  uid=245_197 StaticText "Connect"
+                                        uid=245_198 link "Message" url="https://www.linkedin.com/messaging/compose/?profileUrn=urn%3Ali%3Afsd_profile%3AACoAAAKg6D0BbW4cyJhm-zfQdBlj0saUL2dvJlo&recipient=ACoAAAKg6D0BbW4cyJhm-zfQdBlj0saUL2dvJlo&screenContext=NON_SELF_PROFILE_VIEW&interop=msgOverlay"
+                                          uid=245_199 ignored
+                                            uid=245_200 ignored
+                                              uid=245_201 StaticText "Message"
+                                        uid=245_202 button "More" expandable
+                                          uid=245_203 ignored
+                                            uid=245_204 ignored
+                                              uid=245_205 StaticText "More"
+                        uid=245_206 generic
+                          uid=245_207 ignored
+                            uid=245_208 ignored
+                        uid=245_209 ignored
+                        uid=245_210 generic
+                          uid=245_211 ignored
+                            uid=245_212 ignored
+                              uid=245_213 generic
+                                uid=245_214 ignored
+                                  uid=245_215 ignored
+                                    uid=245_216 ignored
+                                      uid=245_217 ignored
+                                        uid=245_218 heading "Activity" level="2"
+                                          uid=245_219 StaticText "Activity"
+                                        uid=245_220 ignored
+                                          uid=245_221 paragraph
+                                            uid=245_222 StaticText "16 followers"
+                                      uid=245_223 ignored
+                                        uid=245_224 button "Follow Partha Deb"
+                                          uid=245_225 ignored
+                                            uid=245_226 ignored
+                                              uid=245_227 ignored
+                                                uid=245_228 StaticText "Follow"
+                                    uid=245_229 ignored
+                                      uid=245_230 paragraph
+                                        uid=245_231 StaticText "Partha has no recent posts"
+                                      uid=245_232 paragraph
+                                        uid=245_233 StaticText "Recent posts Partha shares will be displayed here."
+                                    uid=245_234 ignored
+                                      uid=245_235 link "Show all posts" url="https://www.linkedin.com/in/partha-deb-76592812/recent-activity/all/"
+                                        uid=245_236 ignored
+                                          uid=245_237 ignored
+                                            uid=245_238 StaticText "Show all"
+                        uid=245_239 ignored
+                        uid=245_240 generic
+                          uid=245_241 ignored
+                            uid=245_242 generic
+                              uid=245_243 ignored
+                                uid=245_244 ignored
+                                  uid=245_245 ignored
+                                  uid=245_246 ignored
+                                uid=245_247 ignored
+                                  uid=245_248 ignored
+                                  uid=245_249 ignored
+                                    uid=245_250 ignored
+                                    uid=245_251 ignored
+                                    uid=245_252 ignored
+                                    uid=245_253 ignored
+                                uid=245_254 ignored
+                                uid=245_255 ignored
+                                  uid=245_256 ignored
+                                  uid=245_257 ignored
+                                    uid=245_258 ignored
+                                    uid=245_259 ignored
+                                    uid=245_260 ignored
+                                    uid=245_261 ignored
+                                uid=245_262 ignored
+                                uid=245_263 ignored
+                                  uid=245_264 ignored
+                                  uid=245_265 ignored
+                                    uid=245_266 ignored
+                                    uid=245_267 ignored
+                                    uid=245_268 ignored
+                                    uid=245_269 ignored
+                        uid=245_270 ignored
+                        uid=245_271 generic
+                          uid=245_272 ignored
+                            uid=245_273 generic
+                              uid=245_274 ignored
+                                uid=245_275 ignored
+                                  uid=245_276 ignored
+                                  uid=245_277 ignored
+                                uid=245_278 ignored
+                                  uid=245_279 ignored
+                                  uid=245_280 ignored
+                                    uid=245_281 ignored
+                                    uid=245_282 ignored
+                                    uid=245_283 ignored
+                                    uid=245_284 ignored
+                                uid=245_285 ignored
+                                uid=245_286 ignored
+                                  uid=245_287 ignored
+                                  uid=245_288 ignored
+                                    uid=245_289 ignored
+                                    uid=245_290 ignored
+                                    uid=245_291 ignored
+                                    uid=245_292 ignored
+                                uid=245_293 ignored
+                                uid=245_294 ignored
+                                  uid=245_295 ignored
+                                  uid=245_296 ignored
+                                    uid=245_297 ignored
+                                    uid=245_298 ignored
+                                    uid=245_299 ignored
+                                    uid=245_300 ignored
+                        uid=245_301 generic
+                          uid=245_302 ignored
+                        uid=245_303 generic
+                          uid=245_304 ignored
+                        uid=245_305 generic
+                          uid=245_306 ignored
+                        uid=245_307 generic
+                          uid=245_308 ignored
+                        uid=245_309 generic
+                          uid=245_310 ignored
+                        uid=245_311 generic
+                          uid=245_312 ignored
+                    uid=245_313 complementary "Aside"
+                      uid=245_314 ignored
+                        uid=245_315 ignored
+                          uid=245_316 ignored
+                            uid=245_317 ignored
+                              uid=245_318 Iframe "advertisement"
+                                uid=245_319 RootWebArea "LinkedIn Follow Company" url="https://www.linkedin.com/tscp-serving/dtag?z=profile&c=1&li_theme=light&pk=d_flagship3_profile_view_base&pz=BR&p=1&sz=300x250&ti=1&_x=company%3D1009&vmid=ACoAAAKg6D0BbW4cyJhm-zfQdBlj0saUL2dvJlo"
+                                  uid=245_320 ignored
+                                    uid=245_321 ignored
+                                      uid=245_322 generic
+                                        uid=245_323 generic
+                                          uid=245_324 banner
+                                            uid=245_325 generic
+                                            uid=245_326 link "Gates Foundation India" description="Gates Foundation India" url="https://www.linkedin.com/li/tscp/sct?destinationUrl=http%3A%2F%2Fwww.linkedin.com%2Fcompany%2F95708417&trackingEvent=%5B%7B%22eventInfo%22%3A%7B%22appId%22%3A%22com.linkedin.ads.rendering.d_web%22%2C%22eventName%22%3A%22SponsoredRightRailContentActionEvent%22%2C%22topicName%22%3A%22SponsoredRightRailContentActionEvent%22%7D%2C%22eventBody%22%3A%7B%22sponsoredEventHeader%22%3A%7B%22encryptedTrackingData%22%3A%22CwEAAAGgd4ihgfkGmmsg6wh6YWn1P37EHInh8Q0p3Dxqd-7huSz6gc16S-5xieAat1qh_GtCyMx_2JFgZYX32-Sr6b1-CU9ThCndK_Iu0E2ReZMCGnVljIn7PT9AmpsQPz7KULGBKYbIVoqyD3kXA6CTZ0fQhm9b_LRXUJWUJAyNqOyObrFV0U8_JIffUlkL3TppDteKfV_zqI4ilgCbrnS_h_GTTOfrqE5BS7-waNpvYHcMWPObiWS_Q5V_uhlk2NC8P6t01ufpf34FWwQ_OQAHePHZ5Icz55Qg7TyvCqkTJdwPmJnMMrc1jowasWAD9lT9CyKRiRQFH1R3whdBi6gOMXCkgjuyI3dxnKoSH6wllcx3fjTsW1P9DBrwf9jQtYDwnG5WjqFFttA50JoNx0_gBsKmFzaVtfZOTi0ljMYzDeYtylYSXFnlV0RAtJp1dNt_1rZzzqC_LXkjfbAgUQWRisKqx9l2skyCxSZZ6cCaVGfH4EfvaL1rPN_NwsxginjyqRtH-Tw3qMGkkDfes6yUO2pizoAgN4R51_75I1w5LHyJp__utohXc4NDAMES8rHzs-6Eg3FVzJ6-vbscNAgnL1yZmQXWqJDF8tHECxUDvKdymGIJt56-AQcCN1zco02nrDYzRdG3wYcu3MPSr7BAsxAJJ3-v9y1huaNr1SKdDemBKVNP47WUf9kgNPotwbTunW8LBpx2AB9GamiQqz0Ioa2qsaAuU7_Iq_-oOF6D6q71vscwu5uC4uEgIXLpKys12dS7V9GvJb-Ss6uQWlBs-2fTuDtFm6YhKpkCsAh0HzN_wQXrDiU6i9En9j41ZQuwrgEqOD_8vECti0jP2UmsRoDapdbToBRb8BpPAjjPYXCA0B-6PNbBe0rHXxPZZPojcR4j5kWD5BBdQfZnV_y7lv1ZETQBzZp9Pd1wlJAWsohqQp9uDNilsvkXTTGMKZgYykunDOul0Jhqzt82WLRTBhrk677224syAFjVxRCVLLcxSSjGkyBgM7P1KkHZ-FdsDP3KsGAj8iKNbd_D_zUfCFqpCA6tI6Gj005mY6f7p9eK4fqTNr93b0mkHU1MRMVvCMpScUfIwRFKjCM7CILhfI2KYU-DC7BQ7SSuQkGHc08hVZcFRPyflnufdQRiRV21fy6j3jNFO6LAoCAsMgf81DAvACCIR421AsrYomrsTFubuDyWlr4Rp2vt_hCm3sHOUGY%22%7D%2C%22header%22%3A%7B%22pageInstance%22%3A%7B%22pageUrn%22%3A%22urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%22%2C%22trackingId%22%3A%22c0799a8b-a853-48c8-a70a-417d2b5c2b0e%22%7D%2C%22time%22%3A1788711838029%2C%22version%22%3A%220.0.0%22%7D%2C%22requestHeader%22%3A%7B%22pageKey%22%3A%22d_flagship3_profile_view_base%22%2C%22interfaceLocale%22%3A%22en-US%22%7D%7D%7D%5D&csrfToken=ajax%3A9009514627030724644"
+                                              uid=245_327 image "Gates Foundation India" url="https://media.licdn.com/dms/image/v2/D560BAQFUi58vEmnJWQ/company-logo_100_100/B56ZnfkWw6JoAQ-/0/1760392474125/gates_foundation_india_logo?e=1790208000&v=beta&t=oDg6jDhJJ2sJB1LQhM7WDSUBR1NO35EoP_P3axTffps"
+                                            uid=245_328 generic
+                                              uid=245_329 paragraph
+                                                uid=245_330 StaticText "Promoted"
+                                              uid=245_331 button "Ad Options"
+                                                uid=245_332 ignored
+                                                  uid=245_333 StaticText "Ad Options"
+                                          uid=245_334 ignored
+                                            uid=245_335 link "Gates Foundation India" url="https://www.linkedin.com/li/tscp/sct?destinationUrl=http%3A%2F%2Fwww.linkedin.com%2Fcompany%2F95708417&trackingEvent=%5B%7B%22eventInfo%22%3A%7B%22appId%22%3A%22com.linkedin.ads.rendering.d_web%22%2C%22eventName%22%3A%22SponsoredRightRailContentActionEvent%22%2C%22topicName%22%3A%22SponsoredRightRailContentActionEvent%22%7D%2C%22eventBody%22%3A%7B%22sponsoredEventHeader%22%3A%7B%22encryptedTrackingData%22%3A%22CwEAAAGgd4ihgfkGmmsg6wh6YWn1P37EHInh8Q0p3Dxqd-7huSz6gc16S-5xieAat1qh_GtCyMx_2JFgZYX32-Sr6b1-CU9ThCndK_Iu0E2ReZMCGnVljIn7PT9AmpsQPz7KULGBKYbIVoqyD3kXA6CTZ0fQhm9b_LRXUJWUJAyNqOyObrFV0U8_JIffUlkL3TppDteKfV_zqI4ilgCbrnS_h_GTTOfrqE5BS7-waNpvYHcMWPObiWS_Q5V_uhlk2NC8P6t01ufpf34FWwQ_OQAHePHZ5Icz55Qg7TyvCqkTJdwPmJnMMrc1jowasWAD9lT9CyKRiRQFH1R3whdBi6gOMXCkgjuyI3dxnKoSH6wllcx3fjTsW1P9DBrwf9jQtYDwnG5WjqFFttA50JoNx0_gBsKmFzaVtfZOTi0ljMYzDeYtylYSXFnlV0RAtJp1dNt_1rZzzqC_LXkjfbAgUQWRisKqx9l2skyCxSZZ6cCaVGfH4EfvaL1rPN_NwsxginjyqRtH-Tw3qMGkkDfes6yUO2pizoAgN4R51_75I1w5LHyJp__utohXc4NDAMES8rHzs-6Eg3FVzJ6-vbscNAgnL1yZmQXWqJDF8tHECxUDvKdymGIJt56-AQcCN1zco02nrDYzRdG3wYcu3MPSr7BAsxAJJ3-v9y1huaNr1SKdDemBKVNP47WUf9kgNPotwbTunW8LBpx2AB9GamiQqz0Ioa2qsaAuU7_Iq_-oOF6D6q71vscwu5uC4uEgIXLpKys12dS7V9GvJb-Ss6uQWlBs-2fTuDtFm6YhKpkCsAh0HzN_wQXrDiU6i9En9j41ZQuwrgEqOD_8vECti0jP2UmsRoDapdbToBRb8BpPAjjPYXCA0B-6PNbBe0rHXxPZZPojcR4j5kWD5BBdQfZnV_y7lv1ZETQBzZp9Pd1wlJAWsohqQp9uDNilsvkXTTGMKZgYykunDOul0Jhqzt82WLRTBhrk677224syAFjVxRCVLLcxSSjGkyBgM7P1KkHZ-FdsDP3KsGAj8iKNbd_D_zUfCFqpCA6tI6Gj005mY6f7p9eK4fqTNr93b0mkHU1MRMVvCMpScUfIwRFKjCM7CILhfI2KYU-DC7BQ7SSuQkGHc08hVZcFRPyflnufdQRiRV21fy6j3jNFO6LAoCAsMgf81DAvACCIR421AsrYomrsTFubuDyWlr4Rp2vt_hCm3sHOUGY%22%7D%2C%22header%22%3A%7B%22pageInstance%22%3A%7B%22pageUrn%22%3A%22urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%22%2C%22trackingId%22%3A%22c0799a8b-a853-48c8-a70a-417d2b5c2b0e%22%7D%2C%22time%22%3A1788711838029%2C%22version%22%3A%220.0.0%22%7D%2C%22requestHeader%22%3A%7B%22pageKey%22%3A%22d_flagship3_profile_view_base%22%2C%22interfaceLocale%22%3A%22en-US%22%7D%7D%7D%5D&csrfToken=ajax%3A9009514627030724644"
+                                              uid=245_336 heading "Gates Foundation India" level="2"
+                                                uid=245_337 StaticText "Gates Foundation India"
+                                            uid=245_338 ignored
+                                              uid=245_339 paragraph
+                                                uid=245_340 StaticText "Equality unlocks community progress."
+                                            uid=245_341 ignored
+                                              uid=245_342 paragraph
+                                                uid=245_343 StaticText "Discover how gender inclusion creates change. Follow us to know more."
+                                            uid=245_344 ignored
+                                              uid=245_345 ignored
+                                                uid=245_346 image "Anuj" url="https://media.licdn.com/dms/image/v2/D5603AQH_QIh-94-rDw/profile-displayphoto-scale_100_100/B56Z1cgFVQK0Ac-/0/1775373411390?e=1790208000&v=beta&t=KQC0sYh9fK4CeV0kdDLlfy5OL5JK46Wru7bogHwCH0I"
+                                                uid=245_347 image "Hitesh" url="https://media.licdn.com/dms/image/v2/D5603AQFvBqVMpogsXA/profile-displayphoto-shrink_100_100/profile-displayphoto-shrink_100_100/0/1709201932976?e=1790208000&v=beta&t=Z6l9AtgS0BSWK_b7b82bAvXlgaaHGAzxDS407s6rJ6A"
+                                                uid=245_348 image "Manoj" url="https://media.licdn.com/dms/image/v2/D4D03AQExZZNXQLfY3g/profile-displayphoto-shrink_100_100/B4DZgslha1HYAU-/0/1753094692229?e=1790208000&v=beta&t=qYaRGEzXLkLGXUQzNA498fDD71h0sWDi4IaAXQxRc1c"
+                                              uid=245_349 paragraph
+                                                uid=245_350 StaticText "Anuj"
+                                                uid=245_351 StaticText " & 25 other connections also follow"
+                                            uid=245_352 link "Follow" url="https://www.linkedin.com/li/tscp/sct?destinationUrl=http%3A%2F%2Fwww.linkedin.com%2Fcompany%2F95708417%3FisFollowingPage%3Dtrue&trackingEvent=%5B%7B%22eventInfo%22%3A%7B%22appId%22%3A%22com.linkedin.ads.rendering.d_web%22%2C%22eventName%22%3A%22SponsoredRightRailContentActionEvent%22%2C%22topicName%22%3A%22SponsoredRightRailContentActionEvent%22%7D%2C%22eventBody%22%3A%7B%22sponsoredEventHeader%22%3A%7B%22encryptedTrackingData%22%3A%22CwEAAAGgd4ihgpZJJ_h8ZUmM5JE38ss-hU-SWK2h4mTDO-ot-eSlw2IoSZ80WHDXGan7O7NlToOAz-7mtU3Mi9XahwAt_jTu7c04J9e-dPRvl7NfTfFY6IRo0P11ebDN0h1pKM86NbpbCJuGOtCqYW4WQzdDCQIVLbqFBJaknRE6AkRajU7Q8MzOeC-svKykvXYioGSCB57pmdWNTZXSJC-Cgyl0XDTMMNpoCSfGHItyzFh0uJaAw4n_3xfErd5moCC3i4CAwR8eMlbs1dDRnkKA_aBDMwjW3FO-8EZcnnaqyAh0N_xyx1imsZ6O4lZZ484EcJuPss-mSV6wUDOgBdlj-6fLYpZZxTzFkgxTR_L_BFYqew2_pzgLdai__hFnvm2O63lri6fSAmhwv3dHOyve0LdLIhgJhKPu_6JYtVOnteCm6uSF0kWV7JAXKsBub7us-wUtTmAlQUW4WdaNe5ac7t9NOy0PV1HicShRw4ZETdVzZMxtxS_YlXBkJeD1v3pdnyxyguXrr1xuH1GS62PzOO8l4XxbgzndUusq2GMHEauy5Bz2OGkG5JA4X7CDs0FcVTUwOYgNfz0VdTKIpVTsbqKK3camzHK9vD4JfFJYf_RC2_ytS4Lucj5sjwbtk-qkuuDZXFCFLKYp93VSMdaA_xyYne-qQcgJQvCY3XX0aqrThL7QHNyyrgK0G8YI2JlKSO92yxdHpgefKWcl2rx1jRFz5f0EKH_CLEvVtq3yWyYT-BwPLrnlEnK_L42Phd9VBZQhCQEKRqClIr95vF2JNA6zLJwRcdxvQPt0vofmrvrAZVIt88MUcySY0Hf0E9L6pidllRCTwOiiAqqEtkECUxxDuXyRxaJ7R3U6njjD28lR3kd56hiIiS_8c3kB8x1C5RgfAhAF2mhfX1WmPvAMs8qOI07SN5VOFzj2bYN2-rdg7hbtFmaRvvfWb0Qx1CMfe5GQKZ-JBGVg4QjX1-afdktoFi9A0DTgWhXvH_HH4rLKwrvMZTnCsf4ksk9kB2DqJSIA5WxF-honPZWmJKGJqakCQACCOF0rrVbuisRRrQwz9fYc7uBleud0mpRg_lIpZ3OYEKMHmxZTtVEsyBQN21BVxxFjH0Vr0dmj_DtpFZxbOGks5Zm9eWVB6p8RF-kOB_w6ixaWyGcMhPSlgHj52yfuYUGarFPxK8jAGD8LCVH8dV0mQ0rklwcHyi7YGr_ls3OmriOMJ0IzuG_iIo39OpJ2Xvm_q8SiSlmRoUm1GuB5agc%22%7D%2C%22header%22%3A%7B%22pageInstance%22%3A%7B%22pageUrn%22%3A%22urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%22%2C%22trackingId%22%3A%22d03895f8-56e5-4518-9bbe-8c334278d201%22%7D%2C%22time%22%3A1788711838029%2C%22version%22%3A%220.0.0%22%7D%2C%22requestHeader%22%3A%7B%22pageKey%22%3A%22d_flagship3_profile_view_base%22%2C%22interfaceLocale%22%3A%22en-US%22%7D%7D%7D%5D&csrfToken=ajax%3A9009514627030724644"
+                                              uid=245_353 StaticText "Follow"
+                              uid=245_354 ignored
+                                uid=245_355 ignored
+                                  uid=245_356 ignored
+                              uid=245_357 ignored
+                                uid=245_358 ignored
+                                  uid=245_359 ignored
+                          uid=245_360 generic
+                            uid=245_361 ignored
+                              uid=245_362 ignored
+                                uid=245_363 generic
+                                  uid=245_364 ignored
+                                    uid=245_365 ignored
+                                      uid=245_366 ignored
+                                        uid=245_367 ignored
+                                          uid=245_368 heading "More profiles for you" level="3"
+                                            uid=245_369 StaticText "More profiles for you"
+                                    uid=245_370 ignored
+                                      uid=245_371 ignored
+                                        uid=245_372 ignored
+                                          uid=245_373 ignored
+                                            uid=245_374 ignored
+                                              uid=245_375 link "Akash Gupta Verified · 2nd Manager at Accenture | SAP Cutover & Data Migration | Integration & Quality Management | FI Functional" url="https://www.linkedin.com/in/akash-gupta-1564a849/"
+                                                uid=245_376 ignored
+                                                  uid=245_377 ignored
+                                                    uid=245_378 ignored
+                                                      uid=245_379 ignored
+                                                        uid=245_380 paragraph
+                                                          uid=245_381 StaticText "Akash Gupta"
+                                                          uid=245_382 StaticText " "
+                                                          uid=245_383 image "Verified"
+                                                            uid=245_384 generic
+                                                              uid=245_385 StaticText "  "
+                                                      uid=245_386 paragraph
+                                                        uid=245_387 StaticText "· 2nd"
+                                                    uid=245_388 ignored
+                                                      uid=245_389 paragraph
+                                                        uid=245_390 StaticText "Manager at Accenture | SAP Cutover & Data Migration | Integration & Quality Management | FI Functional"
+                                            uid=245_391 ignored
+                                              uid=245_392 ignored
+                                                uid=245_393 ignored
+                                                  uid=245_394 button "Invite Akash Gupta to connect"
+                                                    uid=245_395 ignored
+                                                      uid=245_396 ignored
+                                                        uid=245_397 ignored
+                                                          uid=245_398 StaticText "Connect"
+                                    uid=245_399 ignored
+                                      uid=245_400 link "Show all more profiles for you" url="https://www.linkedin.com/in/partha-deb-76592812/overlay/browsemap-recommendations/"
+                                        uid=245_401 ignored
+                                          uid=245_402 ignored
+                                            uid=245_403 StaticText "Show all"
+                          uid=245_404 generic
+                            uid=245_405 ignored
+                              uid=245_406 ignored
+                                uid=245_407 generic
+                                  uid=245_408 ignored
+                                    uid=245_409 ignored
+                                      uid=245_410 ignored
+                                        uid=245_411 heading "People you may know" level="2"
+                                          uid=245_412 StaticText "People you may know"
+                                        uid=245_413 paragraph
+                                          uid=245_414 StaticText "From Partha's job title"
+                                    uid=245_415 ignored
+                                      uid=245_416 ignored
+                                        uid=245_417 ignored
+                                          uid=245_418 ignored
+                                            uid=245_419 ignored
+                                              uid=245_420 link "BAISHALI ROY CHOWDHURY Premium · 2nd Senior Full Stack Lead (7+ Yrs) at Keross R&D | React.js | TypeScript | Node.js | AI-Driven Dev (Gemini/Claude) I Immediate Joiner" url="https://www.linkedin.com/in/baishali-roy-chowdhury-69064a158/"
+                                                uid=245_421 ignored
+                                                  uid=245_422 figure
+                                                    uid=245_423 image "BAISHALI ROY CHOWDHURY is open to work" url="https://media.licdn.com/dms/image/v2/D4D35AQHh9W9Xi141mg/profile-framedphoto-shrink_100_100/B4DZ_rej9GGkAg-/0/1786362085583?e=1789318800&v=beta&t=3gl5vH0Fyo78U-GsrrrRwOrntsz5HA3INpdJ12wwgq4"
+                                                  uid=245_424 ignored
+                                                    uid=245_425 ignored
+                                                      uid=245_426 ignored
+                                                        uid=245_427 paragraph
+                                                          uid=245_428 StaticText "BAISHALI ROY CHOWDHURY"
+                                                          uid=245_429 StaticText " "
+                                                          uid=245_430 image "Premium"
+                                                            uid=245_431 generic
+                                                              uid=245_385 StaticText "  "
+                                                      uid=245_432 paragraph
+                                                        uid=245_433 StaticText "· 2nd"
+                                                    uid=245_434 ignored
+                                                      uid=245_435 paragraph
+                                                        uid=245_436 StaticText "Senior Full Stack Lead (7+ Yrs) at Keross R&D | React.js | TypeScript | Node.js | AI-Driven Dev (Gemini/Claude) I Immediate Joiner"
+                                            uid=245_437 ignored
+                                              uid=245_438 ignored
+                                                uid=245_439 button "Invite BAISHALI ROY CHOWDHURY to connect"
+                                                  uid=245_440 ignored
+                                                    uid=245_441 ignored
+                                                      uid=245_442 ignored
+                                                        uid=245_443 StaticText "Connect"
+                                        uid=245_444 ignored
+                                          uid=245_445 ignored
+                                            uid=245_446 ignored
+                                              uid=245_447 link "Sushmita Chakraborty · 2nd Team Lead at Keross R&D" url="https://www.linkedin.com/in/sushmita-chakraborty-b5a75422a/"
+                                                uid=245_448 ignored
+                                                  uid=245_449 ignored
+                                                    uid=245_450 ignored
+                                                      uid=245_451 ignored
+                                                        uid=245_452 paragraph
+                                                          uid=245_453 StaticText "Sushmita Chakraborty"
+                                                      uid=245_454 paragraph
+                                                        uid=245_455 StaticText "· 2nd"
+                                                    uid=245_456 ignored
+                                                      uid=245_457 paragraph
+                                                        uid=245_458 StaticText "Team Lead at Keross R&D"
+                                            uid=245_459 ignored
+                                              uid=245_460 ignored
+                                                uid=245_461 button "Invite Sushmita Chakraborty to connect"
+                                                  uid=245_462 ignored
+                                                    uid=245_463 ignored
+                                                      uid=245_464 ignored
+                                                        uid=245_465 StaticText "Connect"
+                                        uid=245_466 ignored
+                                          uid=245_467 ignored
+                                            uid=245_468 ignored
+                                              uid=245_469 link "Aritri Mukherjee Verified · 2nd Software Engineer Level 1 at Keross R&D" url="https://www.linkedin.com/in/aritri-mukherjee-400a881bb/"
+                                                uid=245_470 ignored
+                                                  uid=245_471 figure
+                                                    uid=245_472 image "Aritri Mukherjee is open to work" url="https://media.licdn.com/dms/image/v2/D4E35AQHWju5p45qZeQ/profile-framedphoto-shrink_100_100/B4EZ.pQYSqKUAc-/0/1785251071666?e=1789318800&v=beta&t=m3rz99Dipkm3h_wNWLQNTfI5f8M_hYd7oQaC2ASdpEU"
+                                                  uid=245_473 ignored
+                                                    uid=245_474 ignored
+                                                      uid=245_475 ignored
+                                                        uid=245_476 paragraph
+                                                          uid=245_477 StaticText "Aritri Mukherjee"
+                                                          uid=245_478 StaticText " "
+                                                          uid=245_479 image "Verified"
+                                                            uid=245_480 generic
+                                                              uid=245_385 StaticText "  "
+                                                      uid=245_481 paragraph
+                                                        uid=245_482 StaticText "· 2nd"
+                                                    uid=245_483 ignored
+                                                      uid=245_484 paragraph
+                                                        uid=245_485 StaticText "Software Engineer Level 1 at Keross R&D"
+                                            uid=245_486 ignored
+                                              uid=245_487 ignored
+                                                uid=245_488 button "Invite Aritri Mukherjee to connect"
+                                                  uid=245_489 ignored
+                                                    uid=245_490 ignored
+                                                      uid=245_491 ignored
+                                                        uid=245_492 StaticText "Connect"
+                                        uid=245_493 ignored
+                                          uid=245_494 ignored
+                                            uid=245_495 ignored
+                                              uid=245_496 link "Ayan Bera · 2nd SDE-2 @Keross R&D || Microservices || Event-driven Architecture || Kafka" url="https://www.linkedin.com/in/ayanbera25/"
+                                                uid=245_497 ignored
+                                                  uid=245_498 figure
+                                                    uid=245_499 image "Ayan Bera is open to work" url="https://media.licdn.com/dms/image/v2/D4D35AQEHx4iwWDumNg/profile-framedphoto-shrink_100_100/B4DaAL0xVYHQAc-/0/1786904778455?e=1789318800&v=beta&t=FDuLCMBk5xm9EFtVsXv3ZCdKoByHxQko5hjktJmCHa0"
+                                                  uid=245_500 ignored
+                                                    uid=245_501 ignored
+                                                      uid=245_502 ignored
+                                                        uid=245_503 paragraph
+                                                          uid=245_504 StaticText "Ayan Bera"
+                                                      uid=245_505 paragraph
+                                                        uid=245_506 StaticText "· 2nd"
+                                                    uid=245_507 ignored
+                                                      uid=245_508 paragraph
+                                                        uid=245_509 StaticText "SDE-2 @Keross R&D || Microservices || Event-driven Architecture || Kafka"
+                                            uid=245_510 ignored
+                                              uid=245_511 ignored
+                                                uid=245_512 button "Invite Ayan Bera to connect"
+                                                  uid=245_513 ignored
+                                                    uid=245_514 ignored
+                                                      uid=245_515 ignored
+                                                        uid=245_516 StaticText "Connect"
+                                        uid=245_517 ignored
+                                          uid=245_518 ignored
+                                            uid=245_519 ignored
+                                              uid=245_520 link "Suvajit Purkayastha Verified · 2nd Engineering leadership @ Dealertrack F&I | Powering automotive finance through scalable contracting & document workflows" url="https://www.linkedin.com/in/suvajit-purkayastha/"
+                                                uid=245_521 ignored
+                                                  uid=245_522 ignored
+                                                    uid=245_523 ignored
+                                                      uid=245_524 ignored
+                                                        uid=245_525 paragraph
+                                                          uid=245_526 StaticText "Suvajit Purkayastha"
+                                                          uid=245_527 StaticText " "
+                                                          uid=245_528 image "Verified"
+                                                            uid=245_529 generic
+                                                              uid=245_385 StaticText "  "
+                                                      uid=245_530 paragraph
+                                                        uid=245_531 StaticText "· 2nd"
+                                                    uid=245_532 ignored
+                                                      uid=245_533 paragraph
+                                                        uid=245_534 StaticText "Engineering leadership @ Dealertrack F&I | Powering automotive finance through scalable contracting & document workflows"
+                                            uid=245_535 ignored
+                                              uid=245_536 ignored
+                                                uid=245_537 button "Invite Suvajit Purkayastha to connect"
+                                                  uid=245_538 ignored
+                                                    uid=245_539 ignored
+                                                      uid=245_540 ignored
+                                                        uid=245_541 StaticText "Connect"
+                                    uid=245_542 ignored
+                                      uid=245_543 link "Show all people you may know" url="https://www.linkedin.com/in/partha-deb-76592812/"
+                                        uid=245_544 ignored
+                                          uid=245_545 ignored
+                                            uid=245_546 StaticText "Show all"
+                          uid=245_547 generic
+                            uid=245_548 ignored
+                              uid=245_549 ignored
+                                uid=245_550 generic
+                                  uid=245_551 ignored
+                                    uid=245_552 ignored
+                                      uid=245_553 ignored
+                                        uid=245_554 heading "You might like" level="2"
+                                          uid=245_555 StaticText "You might like"
+                                            uid=245_385 InlineTextBox "You might like"
+                                        uid=245_556 paragraph
+                                          uid=245_557 StaticText "Pages for you"
+                                            uid=245_385 InlineTextBox "Pages for you"
+                                    uid=245_558 ignored
+                                      uid=245_559 ignored
+                                        uid=245_560 ignored
+                                          uid=245_561 ignored
+                                            uid=245_562 ignored
+                                              uid=245_563 link "American Airlines Airlines and Aviation 1,319,014 followers" url="https://www.linkedin.com/company/american-airlines/"
+                                                uid=245_564 ignored
+                                                  uid=245_565 ignored
+                                                    uid=245_566 ignored
+                                                      uid=245_567 ignored
+                                                        uid=245_568 paragraph
+                                                          uid=245_569 link "American Airlines" url="https://www.linkedin.com/company/american-airlines/"
+                                                            uid=245_570 StaticText "American Airlines"
+                                                              uid=245_385 InlineTextBox "American Airlines"
+                                                    uid=245_571 ignored
+                                                      uid=245_572 paragraph
+                                                        uid=245_573 StaticText "Airlines and Aviation"
+                                                          uid=245_385 InlineTextBox "Airlines and Aviation"
+                                                    uid=245_574 paragraph
+                                                      uid=245_575 StaticText "1,319,014 followers"
+                                                        uid=245_385 InlineTextBox "1,319,014 followers"
+                                              uid=245_576 ignored
+                                                uid=245_577 link "Saikat & 10 other connections follow this page" url="https://www.linkedin.com/in/partha-deb-76592812/"
+                                                  uid=245_578 ignored
+                                                    uid=245_579 ignored
+                                                      uid=245_580 paragraph
+                                                        uid=245_581 link "Saikat & 10 other connections follow this page" url="https://www.linkedin.com/in/partha-deb-76592812/"
+                                                          uid=245_582 StaticText "Saikat & 10 other connections follow this page"
+                                                            uid=245_385 InlineTextBox "Saikat & 10 other connections"
+                                                            uid=245_385 InlineTextBox " "
+                                                            uid=245_385 InlineTextBox "follow this page"
+                                                uid=245_583 ignored
+                                                  uid=245_584 button "Follow American Airlines"
+                                                    uid=245_585 ignored
+                                                      uid=245_586 ignored
+                                                        uid=245_587 ignored
+                                                          uid=245_588 StaticText "Follow"
+                                                            uid=245_385 InlineTextBox "Follow"
+                                        uid=245_589 ignored
+                                          uid=245_590 ignored
+                                            uid=245_591 ignored
+                                              uid=245_592 link "Axis Bank Banking 3,112,385 followers" url="https://www.linkedin.com/company/axis-bank/"
+                                                uid=245_593 ignored
+                                                  uid=245_594 ignored
+                                                    uid=245_595 ignored
+                                                      uid=245_596 ignored
+                                                        uid=245_597 paragraph
+                                                          uid=245_598 link "Axis Bank" url="https://www.linkedin.com/company/axis-bank/"
+                                                            uid=245_599 StaticText "Axis Bank"
+                                                              uid=245_385 InlineTextBox "Axis Bank"
+                                                    uid=245_600 ignored
+                                                      uid=245_601 paragraph
+                                                        uid=245_602 StaticText "Banking"
+                                                          uid=245_385 InlineTextBox "Banking"
+                                                    uid=245_603 paragraph
+                                                      uid=245_604 StaticText "3,112,385 followers"
+                                                        uid=245_385 InlineTextBox "3,112,385 followers"
+                                              uid=245_605 ignored
+                                                uid=245_606 link "Sekaran & 59 other connections follow this page" url="https://www.linkedin.com/in/partha-deb-76592812/"
+                                                  uid=245_607 ignored
+                                                    uid=245_608 ignored
+                                                      uid=245_609 paragraph
+                                                        uid=245_610 link "Sekaran & 59 other connections follow this page" url="https://www.linkedin.com/in/partha-deb-76592812/"
+                                                          uid=245_611 StaticText "Sekaran & 59 other connections follow this page"
+                                                            uid=245_385 InlineTextBox "Sekaran & 59 other connections"
+                                                            uid=245_385 InlineTextBox " "
+                                                            uid=245_385 InlineTextBox "follow this page"
+                                                uid=245_612 ignored
+                                                  uid=245_613 button "Follow Axis Bank"
+                                                    uid=245_614 ignored
+                                                      uid=245_615 ignored
+                                                        uid=245_616 ignored
+                                                          uid=245_617 StaticText "Follow"
+                                                            uid=245_385 InlineTextBox "Follow"
+                                    uid=245_618 ignored
+                                      uid=245_619 link "Show all pages you might like" url="https://www.linkedin.com/in/partha-deb-76592812/"
+                                        uid=245_620 ignored
+                                          uid=245_621 ignored
+                                            uid=245_622 StaticText "Show all"
+                                              uid=245_385 InlineTextBox "Show all"
+                        uid=245_623 generic
+                          uid=245_624 generic
+                            uid=245_625 ignored
+                              uid=245_626 ignored
+                                uid=245_627 Iframe "advertisement"
+                                  uid=245_628 RootWebArea "Image By Linkedin" url="https://www.linkedin.com/tscp-serving/dtag?z=profile&c=1&li_theme=light&pk=d_flagship3_profile_view_base&pz=BR&p=1&sz=300x250&ti=2&vmid=ACoAAAKg6D0BbW4cyJhm-zfQdBlj0saUL2dvJlo"
+                                    uid=245_629 ignored
+                                      uid=245_630 ignored
+                                        uid=245_631 ignored
+                                          uid=245_632 generic
+                                            uid=245_633 link "Advertise on LinkedIn" url="https://www.linkedin.com/jobs/?trk=li_FA_global_careers_jobsgtm_jsFA_v1&mcid=6899045044465016833"
+                                              uid=245_634 image "Advertise on LinkedIn" url="https://media.licdn.com/media/AAYABASuAAgAAQAAAAAAAYBjlq2Py1g-Spi6BsFT0YKz4w.png"
+                                uid=245_635 ignored
+                                  uid=245_636 ignored
+                                    uid=245_637 ignored
+                                uid=245_638 ignored
+                                  uid=245_639 ignored
+                                    uid=245_640 ignored
+                    uid=245_641 sectionfooter "Footer"
+                      uid=245_642 ignored
+                        uid=245_643 ignored
+                          uid=245_644 sectionfooter
+                            uid=245_645 ignored
+                              uid=245_646 navigation
+                                uid=245_647 link "About" url="https://about.linkedin.com/"
+                                  uid=245_648 paragraph
+                                    uid=245_649 StaticText "About"
+                                uid=245_650 link "Accessibility" url="https://www.linkedin.com/accessibility/"
+                                  uid=245_651 paragraph
+                                    uid=245_652 StaticText "Accessibility"
+                                uid=245_653 link "Talent Solutions" url="https://business.linkedin.com/talent-solutions?trk=flagship_nav&veh=li-footer-lts-control&src=li-footer"
+                                  uid=245_654 paragraph
+                                    uid=245_655 StaticText "Talent Solutions"
+                                uid=245_656 link "Community Guidelines" url="https://www.linkedin.com/legal/professional-community-policies/"
+                                  uid=245_657 paragraph
+                                    uid=245_658 StaticText "Community Guidelines"
+                                uid=245_659 link "Careers" url="https://careers.linkedin.com/"
+                                  uid=245_660 paragraph
+                                    uid=245_661 StaticText "Careers"
+                                uid=245_662 link "Marketing Solutions " url="https://business.linkedin.com/advertise?trk=n_nav_lms_f&src=li-footer"
+                                  uid=245_663 paragraph
+                                    uid=245_664 StaticText "Marketing Solutions "
+                                uid=245_665 button "Privacy & Terms" expandable
+                                  uid=245_666 ignored
+                                    uid=245_667 paragraph
+                                      uid=245_668 StaticText "Privacy & Terms"
+                                uid=245_669 link "Ad Choices" url="https://www.linkedin.com/help/linkedin/answer/62931/"
+                                  uid=245_670 paragraph
+                                    uid=245_671 StaticText "Ad Choices"
+                                uid=245_672 link "Advertising" url="https://www.linkedin.com/ad/start/?trk=n_nav_ads_rr"
+                                  uid=245_673 paragraph
+                                    uid=245_674 StaticText "Advertising"
+                                uid=245_675 link "Sales Solutions" url="https://business.linkedin.com/sales-solutions?trk=flagship_nav&veh=li-footer-lss-control&src=li-footer"
+                                  uid=245_676 paragraph
+                                    uid=245_677 StaticText "Sales Solutions"
+                                uid=245_678 link "Mobile" url="https://mobile.linkedin.com/"
+                                  uid=245_679 paragraph
+                                    uid=245_680 StaticText "Mobile"
+                                uid=245_681 link "Small Business" url="https://business.linkedin.com/grow?src=li-footer"
+                                  uid=245_682 paragraph
+                                    uid=245_683 StaticText "Small Business"
+                                uid=245_684 link "Safety Center" url="https://safety.linkedin.com/"
+                                  uid=245_685 paragraph
+                                    uid=245_686 StaticText "Safety Center"
+                              uid=245_687 ignored
+                                uid=245_688 paragraph
+                                  uid=245_689 StaticText "LinkedIn Corporation © 2026"
+                            uid=245_690 ignored
+                              uid=245_691 list
+                                uid=245_692 listitem level="1"
+                                  uid=245_693 ignored
+                                    uid=245_694 ignored
+                                      uid=245_695 link "Questions?" url="https://www.linkedin.com/help/linkedin/"
+                                        uid=245_696 paragraph
+                                          uid=245_697 StaticText "Questions?"
+                                      uid=245_698 paragraph
+                                        uid=245_699 StaticText "Visit our Help Center."
+                                uid=245_700 listitem level="1"
+                                  uid=245_701 ignored
+                                    uid=245_702 ignored
+                                      uid=245_703 link "Manage your account and privacy" url="https://www.linkedin.com/mypreferences/d/"
+                                        uid=245_704 paragraph
+                                          uid=245_705 StaticText "Manage your account and privacy"
+                                      uid=245_706 paragraph
+                                        uid=245_707 StaticText "Go to your Settings."
+                                uid=245_708 listitem level="1"
+                                  uid=245_709 ignored
+                                    uid=245_710 ignored
+                                      uid=245_711 link "Recommendation transparency" url="https://www.linkedin.com/help/linkedin/answer/a1339724/"
+                                        uid=245_712 paragraph
+                                          uid=245_713 StaticText "Recommendation transparency"
+                                      uid=245_714 paragraph
+                                        uid=245_715 StaticText "Learn more about Recommended Content."
+                              uid=245_716 ignored
+                                uid=245_717 ignored
+                                  uid=245_718 LabelText
+                                    uid=245_719 paragraph
+                                      uid=245_720 StaticText "Select language"
+                                  uid=245_721 generic
+                                    uid=245_722 combobox "Select language" expandable haspopup="menu" value="English (English)"
+                                      uid=245_723 MenuListPopup
+                                        uid=245_724 option "العربية (Arabic)" selectable value="العربية (Arabic)"
+                                        uid=245_725 option "বাংলা (Bangla)" selectable value="বাংলা (Bangla)"
+                                        uid=245_726 option "Čeština (Czech)" selectable value="Čeština (Czech)"
+                                        uid=245_727 option "Dansk (Danish)" selectable value="Dansk (Danish)"
+                                        uid=245_728 option "Deutsch (German)" selectable value="Deutsch (German)"
+                                        uid=245_729 option "Ελληνικά (Greek)" selectable value="Ελληνικά (Greek)"
+                                        uid=245_730 option "English (English)" selectable selected value="English (English)"
+                                        uid=245_731 option "Español (Spanish)" selectable value="Español (Spanish)"
+                                        uid=245_732 option "فارسی (Persian)" selectable value="فارسی (Persian)"
+                                        uid=245_733 option "Suomi (Finnish)" selectable value="Suomi (Finnish)"
+                                        uid=245_734 option "Français (French)" selectable value="Français (French)"
+                                        uid=245_735 option "हिंदी (Hindi)" selectable value="हिंदी (Hindi)"
+                                        uid=245_736 option "Magyar (Hungarian)" selectable value="Magyar (Hungarian)"
+                                        uid=245_737 option "Bahasa Indonesia (Indonesian)" selectable value="Bahasa Indonesia (Indonesian)"
+                                        uid=245_738 option "Italiano (Italian)" selectable value="Italiano (Italian)"
+                                        uid=245_739 option "עברית (Hebrew)" selectable value="עברית (Hebrew)"
+                                        uid=245_740 option "日本語 (Japanese)" selectable value="日本語 (Japanese)"
+                                        uid=245_741 option "한국어 (Korean)" selectable value="한국어 (Korean)"
+                                        uid=245_742 option "मराठी (Marathi)" selectable value="मराठी (Marathi)"
+                                        uid=245_743 option "Bahasa Malaysia (Malay)" selectable value="Bahasa Malaysia (Malay)"
+                                        uid=245_744 option "Nederlands (Dutch)" selectable value="Nederlands (Dutch)"
+                                        uid=245_745 option "Norsk (Norwegian)" selectable value="Norsk (Norwegian)"
+                                        uid=245_746 option "ਪੰਜਾਬੀ (Punjabi)" selectable value="ਪੰਜਾਬੀ (Punjabi)"
+                                        uid=245_747 option "Polski (Polish)" selectable value="Polski (Polish)"
+                                        uid=245_748 option "Português (Portuguese)" selectable value="Português (Portuguese)"
+                                        uid=245_749 option "Română (Romanian)" selectable value="Română (Romanian)"
+                                        uid=245_750 option "Русский (Russian)" selectable value="Русский (Russian)"
+                                        uid=245_751 option "Svenska (Swedish)" selectable value="Svenska (Swedish)"
+                                        uid=245_752 option "తెలుగు (Telugu)" selectable value="తెలుగు (Telugu)"
+                                        uid=245_753 option "ภาษาไทย (Thai)" selectable value="ภาษาไทย (Thai)"
+                                        uid=245_754 option "Tagalog (Tagalog)" selectable value="Tagalog (Tagalog)"
+                                        uid=245_755 option "Türkçe (Turkish)" selectable value="Türkçe (Turkish)"
+                                        uid=245_756 option "Українська (Ukrainian)" selectable value="Українська (Ukrainian)"
+                                        uid=245_757 option "Tiếng Việt (Vietnamese)" selectable value="Tiếng Việt (Vietnamese)"
+                                        uid=245_758 option "简体中文 (Chinese (Simplified))" selectable value="简体中文 (Chinese (Simplified))"
+                                        uid=245_759 option "正體中文 (Chinese (Traditional))" selectable value="正體中文 (Chinese (Traditional))"
+        uid=245_760 generic
+        uid=245_761 generic
+          uid=245_762 ignored
+            uid=245_763 generic
+            uid=245_764 ignored
+            uid=245_765 ignored
+            uid=245_766 ignored
+            uid=245_767 ignored
+              uid=245_768 generic
+                uid=245_769 complementary
+                  uid=245_770 generic
+                    uid=245_771 sectionheader
+                      uid=245_772 generic
+                      uid=245_773 generic
+                        uid=245_774 generic
+                          uid=245_775 image "Kunal Das" description="Status is offline" url="https://media.licdn.com/dms/image/v2/D5635AQGQjsEfurU0KQ/profile-framedphoto-shrink_100_100/B56Zx6VD3bHYAk-/0/1771578867525?e=1789318800&v=beta&t=G45Ldv18XtZy0F1kJF2BdZMcfI_UEo23uVgEWXG1xz0"
+                          uid=245_776 ignored
+                            uid=245_777 ignored
+                              uid=245_778 ignored
+                        uid=245_779 button "You are on the messaging overlay. Press enter to open the list of conversations."
+                          uid=245_780 ignored
+                            uid=245_781 StaticText "You are on the messaging overlay. Press enter to open the list of conversations."
+                              uid=245_385 InlineTextBox "You are on the messaging overlay. Press enter to open the list of conversations."
+                      uid=245_782 generic
+                        uid=245_783 generic
+                          uid=245_784 button "Open messenger dropdown menu" expandable
+                            uid=245_785 image "Open messenger dropdown menu"
+                          uid=245_786 generic
+                        uid=245_787 generic
+                          uid=245_788 ignored
+                          uid=245_789 button "Compose message"
+                            uid=245_790 ignored
+                              uid=245_791 StaticText "Compose message"
+                                uid=245_385 InlineTextBox "Compose "
+                                uid=245_385 InlineTextBox "message"
+                        uid=245_792 button "You are on the messaging overlay. Press enter to open the list of conversations."
+                          uid=245_793 ignored
+                            uid=245_794 StaticText "You are on the messaging overlay. Press enter to open the list of conversations."
+                              uid=245_385 InlineTextBox "You "
+                              uid=245_385 InlineTextBox "are "
+                              uid=245_385 InlineTextBox "on "
+                              uid=245_385 InlineTextBox "the "
+                              uid=245_385 InlineTextBox "messaging "
+                              uid=245_385 InlineTextBox "overlay. "
+                              uid=245_385 InlineTextBox "Press "
+                              uid=245_385 InlineTextBox "enter "
+                              uid=245_385 InlineTextBox "to "
+                              uid=245_385 InlineTextBox "open "
+                              uid=245_385 InlineTextBox "the "
+                              uid=245_385 InlineTextBox "list "
+                              uid=245_385 InlineTextBox "of "
+                              uid=245_385 InlineTextBox "conversations."
+                  uid=245_795 ignored
+                  uid=245_796 ignored
+                uid=245_797 complementary "AI-powered assistant to get help with your career, jobs etc"
+          uid=245_798 ignored
+        uid=245_799 Iframe
+          uid=245_800 RootWebArea "(1) LinkedIn" url="https://www.linkedin.com/preload/?_bprMode=vanilla"
+            uid=245_801 ignored
+              uid=245_802 generic
+                uid=245_803 generic
+                  uid=245_804 region "Toast message"
+                    uid=245_805 sectionheader
+                      uid=245_806 heading "0 notifications total" level="2"
+                        uid=245_807 StaticText "0 notifications total"
+                    uid=245_808 alert atomic live="assertive" relevant="additions text"
+                uid=245_809 generic
+                uid=245_810 generic
+                uid=245_811 generic live="polite" relevant="additions text"
+                uid=245_812 generic
+                  uid=245_813 generic
+                    uid=245_814 ignored
+                      uid=245_815 button "Skip to search"
+                        uid=245_816 ignored
+                          uid=245_817 StaticText "Skip to search"
+                      uid=245_818 button "Skip to main content"
+                        uid=245_819 ignored
+                          uid=245_820 StaticText "Skip to main content"
+                      uid=245_821 generic
+                      uid=245_822 button "Keyboard shortcuts"
+                        uid=245_823 ignored
+                          uid=245_824 StaticText "Keyboard shortcuts"
+                      uid=245_825 button "Close jump menu"
+                        uid=245_826 ignored
+                          uid=245_827 StaticText "Close jump menu"
+                  uid=245_828 banner "Global Navigation"
+                    uid=245_829 ignored
+                      uid=245_830 link "LinkedIn" url="https://www.linkedin.com/feed/"
+                        uid=245_831 ignored
+                          uid=245_832 ignored
+                            uid=245_833 image "LinkedIn"
+                              uid=245_834 image
+                      uid=245_835 generic
+                        uid=245_836 generic
+                          uid=245_837 generic
+                            uid=245_838 combobox "Search" autocomplete="list" expandable haspopup="listbox"
+                              uid=245_839 ignored
+                              uid=245_840 generic
+                          uid=245_841 generic
+                      uid=245_842 navigation "Primary Navigation"
+                        uid=245_843 list
+                          uid=245_844 listitem level="1"
+                            uid=245_845 link "new feed updates notifications Home" url="https://www.linkedin.com/feed/"
+                              uid=245_846 generic
+                                uid=245_847 ignored
+                                  uid=245_848 ignored
+                                    uid=245_849 StaticText "new feed updates notifications"
+                                uid=245_850 ignored
+                                  uid=245_851 ignored
+                              uid=245_852 generic
+                                uid=245_853 StaticText "Home"
+                          uid=245_854 listitem level="1"
+                            uid=245_855 link "My Network" url="https://www.linkedin.com/mynetwork/?"
+                              uid=245_856 ignored
+                                uid=245_857 ignored
+                              uid=245_858 generic
+                                uid=245_859 StaticText "My Network"
+                          uid=245_860 listitem level="1"
+                            uid=245_861 link "Jobs" url="https://www.linkedin.com/jobs/?"
+                              uid=245_862 ignored
+                                uid=245_863 ignored
+                              uid=245_864 generic
+                                uid=245_865 StaticText "Jobs"
+                          uid=245_866 listitem level="1"
+                            uid=245_867 link "Messaging" url="https://www.linkedin.com/messaging/?"
+                              uid=245_868 ignored
+                                uid=245_869 ignored
+                              uid=245_870 generic
+                                uid=245_871 StaticText "Messaging"
+                          uid=245_872 listitem level="1"
+                            uid=245_873 link "1 new notification Notifications" url="https://www.linkedin.com/notifications/?"
+                              uid=245_874 generic
+                                uid=245_875 ignored
+                                  uid=245_876 ignored
+                                    uid=245_877 StaticText "1 new notification"
+                                uid=245_878 ignored
+                                  uid=245_879 ignored
+                              uid=245_880 generic
+                                uid=245_881 StaticText "Notifications"
+                          uid=245_882 listitem level="1"
+                            uid=245_883 generic
+                              uid=245_884 button "Kunal Das Me" expandable
+                                uid=245_885 image "Kunal Das" url="https://media.licdn.com/dms/image/v2/D5635AQGQjsEfurU0KQ/profile-framedphoto-shrink_100_100/B56Zx6VD3bHYAk-/0/1771578867525?e=1789318800&v=beta&t=G45Ldv18XtZy0F1kJF2BdZMcfI_UEo23uVgEWXG1xz0"
+                                uid=245_886 ignored
+                                  uid=245_887 StaticText "Me"
+                          uid=245_888 listitem level="1"
+                            uid=245_889 generic
+                              uid=245_890 button "For Business" expandable
+                                uid=245_891 ignored
+                                  uid=245_892 ignored
+                                uid=245_893 generic
+                                  uid=245_894 StaticText "For Business"
+                          uid=245_895 listitem level="1"
+                            uid=245_896 link "Advertise" url="https://www.linkedin.com/campaignmanager/accounts?"
+                              uid=245_897 ignored
+                                uid=245_898 ignored
+                              uid=245_899 generic
+                                uid=245_900 StaticText "Advertise"
+                  uid=245_901 ignored
+                    uid=245_902 ignored
+                    uid=245_903 generic
+                      uid=245_904 ignored
+                      uid=245_905 ignored
+                      uid=245_906 ignored
+                      uid=245_907 ignored
+                      uid=245_908 ignored
+                      uid=245_909 ignored
+                      uid=245_910 ignored
+                      uid=245_911 ignored
+                      uid=245_912 ignored
+                      uid=245_913 ignored
+                      uid=245_914 ignored
+                      uid=245_915 ignored
+                  uid=245_916 generic
+                  uid=245_917 generic
+                uid=245_918 generic
+                uid=245_919 generic
+                uid=245_920 generic
+                uid=245_921 ignored
+                uid=245_922 ignored
+                  uid=245_923 ignored

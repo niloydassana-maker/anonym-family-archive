@@ -1,0 +1,57 @@
+%% WhatsApp MCP + Agent Architecture - zero-cost production stack
+%% Flow: paired WhatsApp Web session -> CDP/MCP bridge -> Agent Core -> Tool Belt
+%% Zero-cost law: no Business API, no per-message fees, no crawling -
+%% session-based MCP control of a real, logged-in browser.
+flowchart TD
+    subgraph W["LAYER 1 · WHATSAPP WEB — the interface"]
+        direction LR
+        PHONE["Paired phone<br/>QR scanned once, session stays logged in<br/>the session is the licence — ZERO COST"]
+        WA["WhatsApp Web in real Chrome<br/>chats render as ordinary DOM<br/>nothing hidden, nothing special"]
+        INBOX["One inbox, all traffic<br/>recruiters · KDP alerts · family threads"]
+    end
+
+    subgraph B["LAYER 2 · MCP BRIDGE — the hands (zero-cost control plane)"]
+        direction LR
+        CDP["chrome-devtools MCP over CDP<br/>reads DOM · clicks · types · screenshots<br/>exposes tools: read_inbox / send_message / check_thread<br/>NO WhatsApp Business API · NO crawling<br/>session-based control of a real browser — the browser is the API"]
+    end
+
+    subgraph A["LAYER 3 · AGENT CORE — the brain"]
+        direction LR
+        INTENT["Intent detector<br/>job reply? KDP update?<br/>family note? escalate?"]
+        MEM["Memory<br/>identity rules · project state<br/>past promises: who, what, when"]
+        DRAFT["Reply drafter<br/>Kunal's voice: short, warm, precise<br/>pacing law built in"]
+    end
+
+    subgraph T["LAYER 4 · TOOL BELT — the reach"]
+        direction LR
+        WB["whatsapp_send / whatsapp_read<br/>replies go back through the same session"]
+        JOBS["Job boards<br/>Naukri · Foundit · LinkedIn<br/>search, apply, follow up"]
+        KDP["KDP · files · reports<br/>book status, covers, manuscript"]
+        ESC["escalate_to_Kunal<br/>sensitive or unsure = human approves"]
+    end
+
+    G["GUARDRAILS — the law every layer obeys<br/>identity law: books ship as NILOY DAS, never Kunal Das · pacing law: no message bursts<br/>messaging-only: no calls, no video · human approval on every sensitive send<br/>no crawling: the logged-in session is the only door in"]
+
+    PHONE --> WA
+    WA -->|"messages surface as DOM (zero API cost)"| CDP
+    CDP -->|"structured tool calls"| INTENT
+    INTENT --> MEM
+    MEM --> DRAFT
+    DRAFT -->|"approved send only"| WB
+    INTENT -.-> JOBS
+    INTENT -.-> KDP
+    DRAFT -.->|"uncertain / sensitive"| ESC
+    ESC -.->|"Kunal says yes or no"| WB
+    G -.->|"binds every layer"| A
+    G -.-> T
+
+    classDef wa fill:#1F2937,stroke:#111827,color:#FFFFFF
+    classDef bridge fill:#1D4ED8,stroke:#1E3A8A,color:#FFFFFF
+    classDef agent fill:#15803D,stroke:#14532D,color:#FFFFFF
+    classDef tools fill:#EA580C,stroke:#7C2D12,color:#FFFFFF
+    classDef guard fill:#7C2D12,stroke:#431407,color:#FFFFFF
+    class PHONE,WA,INBOX wa
+    class CDP bridge
+    class INTENT,MEM,DRAFT agent
+    class WB,JOBS,KDP,ESC tools
+    class G guard

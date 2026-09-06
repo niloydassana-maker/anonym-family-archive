@@ -1,0 +1,5 @@
+.kilo/
+*.log
+__pycache__/
+.venv/
+node_modules/

@@ -1,0 +1,163 @@
+<html>
+<head>
+  <title>A modern approach to Travelling Salesman Problem</title>
+  <style>
+    body {
+      margin: 0 auto;
+      width: 744px;
+      font-family: Source Serif Pro, serif;
+      line-height: 32px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 21px;
+    }
+    h1, h2, h3 {
+      font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
+    }
+    h1 a, h1 a:visited {
+      color: inherit;
+      text-decoration: none;
+    }
+    h1 {
+      line-height: 48px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 42px;
+      margin: 32px 0 20px;
+    }
+    h2 {
+      line-height: 32px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 26px;
+      margin: 28px 0;
+    }
+    h3 {
+      line-height: 28px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 21px;
+      margin: 24px 0;
+    }
+    p {
+      margin: 32px 0;
+    }
+    .created, .published {
+      color: rgba(0, 0, 0, 0.55);
+      font-size: 15px;
+      line-height: 15px;
+      margin: 20px 0;
+    }
+    .created + .published {
+      margin-top: -12px;
+    }
+    blockquote {
+      font-family: Georgia, Source Serif Pro, serif;
+      font-style: italic;
+      font-size: 24px;
+      line-height: 36px;
+      margin: 48px 120px;
+      text-align: center;
+    }
+    a {
+      word-wrap: break-word;
+      outline: none;
+      text-decoration: none;
+      background-color: transparent;
+      border: 0;
+      color: #008CC9;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    a:visited {
+      color: #8C68CB;
+    }
+    .center {
+      text-align: center;
+    }
+    iframe {
+      display: block;
+      margin: 44px auto;
+    }
+    *:not(pre) + pre, pre:first-of-type {
+      margin-top: 32px;
+      padding-top: 32px;
+    }
+    pre:only-of-type {
+      margin: 32px 0;
+      padding: 32px;
+    }
+    pre {
+      background: #F3F6F8;
+      overflow-x: auto;
+      display: block;
+      font-size: 13px;
+      font-family: monospace;
+      line-height: 13px;
+      padding: 0 32px 32px;
+      white-space: pre;
+    }
+    a.embedded {
+      background: #F3F6F8;
+      display: block;
+      padding: 32px;
+      margin: 32px 0;
+    }
+    img {
+      height: auto;
+      max-width: 100%;
+    }
+    .slate-image-embed__resize-full-width img {
+      width: 100%;
+    }
+    .series-logo {
+      width: 48px;
+      height: 48px;
+      box-sizing: border-box;
+      background-clip: content-box;
+      border: 4px solid transparent;
+      border-radius: 6px;
+      object-fit: scale-down;
+      float: left;
+    }
+    .series-title {
+      font-size: 16px;
+      font-weight: 600;
+      vertical-align: top;
+    }
+    .series-description {
+      color: rgba(0,0,0,.6);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+    }
+    div {
+      margin: 32px 0;
+    }
+  </style>
+</head>
+<body>
+      <h1><a href="https://www.linkedin.com/pulse/modern-approach-shortest-path-aka-travelling-salesman-kunal-das">A modern approach to Travelling Salesman Problem</a></h1>
+    <p class="created">Created on 2019-04-02 16:24</p>
+  <p class="published">Published on 2019-04-02 16:27</p>
+  <div>
+  <p>Step 1&nbsp;</p> 
+  <p>&nbsp;Determine the adjacent points for each point. This can be done easily by iterating all the points Si and pair it with the other points Pi&nbsp;Eliminating the Si each time in the process. Time Complexity O(E) where E is the number of edges</p> 
+  <p><br></p> 
+  <p>Step 2</p> 
+  <p>Determine the distance between the pairs got in step 1. Again Time Complexity O(E) where E is the number of edges</p> 
+  <p>Step 3</p> 
+  <p>&nbsp;Sort the distances got in Step 2 in ascending order and keep in a table.Time Complexity ElogE&nbsp;</p> 
+  <p>Step 3 Iterate over the table from the start and search for edges with Each point occuring exactly twice. This can be done using a map.When we encounter an edge we take the two connected points and query the map with key as the points. If for both the points the value is null or less than two set asside the edge as candidate edge for shortest path. Also increment the value of map for each of the point by 1.We can prove as below by induction that the edges collected in this manner comprises of the shortest path connecting all the points. The time complexity is O(E)</p> 
+  <p>Proof</p> 
+  <p>&nbsp;We have to prove two statements as below-</p> 
+  <p>&nbsp;1.The first edge encountered is the shortest path candidate, i.e. when n=2 where n=number of points</p> 
+  <p>&nbsp;2.If for n points we have the shortest path candidates, for n+1 points we will get the shortest cyclic path by following the rule in step 3.</p> 
+  <p>&nbsp;First point can be easily proved. For Second point consider we are adding another point to the points connected by the shortest candidate path.Now there can be n possible edges connecting the new point to the n other points. And Easily it can be seen that if we are starting from top to bottom of a table containing all possible edges in the ascending order the first two edges that it will encounter will obviously be the shortest edges and also satisfying the condition that both the points in each of the two edges occur exactly twice in all of the n+1 edges.</p> 
+  <p>&nbsp;Thus using rule 3 We will get the shortest cyclic path.</p> 
+  <p>Thus total time Complexity = O(E)+O(E)+O(ElogE)+O(E) = 3*O(E)+O(ElogE).Now E=n+(n-1)+(n-2)+...1 where n = number of points.Or E approximately equal to n^2/2.So, total time Complexity = 3*O(E)+O(ElogE)=3*O(n^2/2)+O(n^2/2logn^2)=O(3*n^2/2)+O(n^2logn) which is of polynomial order where order = 2</p>
+ 
+</div>
+</body>
+</html>

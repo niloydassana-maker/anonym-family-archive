@@ -1,0 +1,154 @@
+<html>
+<head>
+  <title>Deep learning and neural nets demystified-FAQs</title>
+  <style>
+    body {
+      margin: 0 auto;
+      width: 744px;
+      font-family: Source Serif Pro, serif;
+      line-height: 32px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.7);
+      font-size: 21px;
+    }
+    h1, h2, h3 {
+      font-family: Source Sans Pro, Helvetica, Arial, sans-serif;
+    }
+    h1 a, h1 a:visited {
+      color: inherit;
+      text-decoration: none;
+    }
+    h1 {
+      line-height: 48px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 42px;
+      margin: 32px 0 20px;
+    }
+    h2 {
+      line-height: 32px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 26px;
+      margin: 28px 0;
+    }
+    h3 {
+      line-height: 28px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 21px;
+      margin: 24px 0;
+    }
+    p {
+      margin: 32px 0;
+    }
+    .created, .published {
+      color: rgba(0, 0, 0, 0.55);
+      font-size: 15px;
+      line-height: 15px;
+      margin: 20px 0;
+    }
+    .created + .published {
+      margin-top: -12px;
+    }
+    blockquote {
+      font-family: Georgia, Source Serif Pro, serif;
+      font-style: italic;
+      font-size: 24px;
+      line-height: 36px;
+      margin: 48px 120px;
+      text-align: center;
+    }
+    a {
+      word-wrap: break-word;
+      outline: none;
+      text-decoration: none;
+      background-color: transparent;
+      border: 0;
+      color: #008CC9;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    a:visited {
+      color: #8C68CB;
+    }
+    .center {
+      text-align: center;
+    }
+    iframe {
+      display: block;
+      margin: 44px auto;
+    }
+    *:not(pre) + pre, pre:first-of-type {
+      margin-top: 32px;
+      padding-top: 32px;
+    }
+    pre:only-of-type {
+      margin: 32px 0;
+      padding: 32px;
+    }
+    pre {
+      background: #F3F6F8;
+      overflow-x: auto;
+      display: block;
+      font-size: 13px;
+      font-family: monospace;
+      line-height: 13px;
+      padding: 0 32px 32px;
+      white-space: pre;
+    }
+    a.embedded {
+      background: #F3F6F8;
+      display: block;
+      padding: 32px;
+      margin: 32px 0;
+    }
+    img {
+      height: auto;
+      max-width: 100%;
+    }
+    .slate-image-embed__resize-full-width img {
+      width: 100%;
+    }
+    .series-logo {
+      width: 48px;
+      height: 48px;
+      box-sizing: border-box;
+      background-clip: content-box;
+      border: 4px solid transparent;
+      border-radius: 6px;
+      object-fit: scale-down;
+      float: left;
+    }
+    .series-title {
+      font-size: 16px;
+      font-weight: 600;
+      vertical-align: top;
+    }
+    .series-description {
+      color: rgba(0,0,0,.6);
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+    }
+    div {
+      margin: 32px 0;
+    }
+  </style>
+</head>
+<body>
+      <h1><a href="https://www.linkedin.com/pulse/deep-learning-neural-nets-demystified-faqs-kunal-das">Deep learning and neural nets demystified-FAQs</a></h1>
+    <p class="created">Created on 2018-11-01 15:36</p>
+  <p class="published">Published on 2018-11-01 15:41</p>
+  <div>
+  <p>1.What does multiple Layers does</p> 
+  <p>&nbsp;Each neuron in a layer is connected to each neuron in the next layer.The output of one layer can be expressed as a summation formula along with parameters of all signals coming from other neurons in the previous layer. Thus each layer provides an abstraction of the input features in the first layer. In the first layer we sum the input signals along with parameters. This represent the most minute distinct features. Next layer sums up each distinct feature to come up more readable feature. As we go along we get features which are more specific to our requirements and finally at the output layer we can control them to get our top level output.</p> 
+  <p>2.What is back propagation and forward pass</p> 
+  <p>First the input is propagated through all the layers to determine the output at each layer. Then in the back propagation or backward pass the delta for different parameters is&nbsp;determined starting from the output layer back to the input layer. This delta is subtracted from parameters in each layer. In this way the weights and other parameters are updated&nbsp;at each layer and the network learns from the training. Now the question is how we calculate the delta. The delta is calculated using derivative of the Cost function or error&nbsp;function multiplied with the learning rate. The delta is calculated first at the output layer using the partial derivative of Cost function w.r.t parameters of that layer. Next we go to the previous layer. Now in order to find the delta here we need take help of the relation of the output of this layer to the output of output layer using the summation&nbsp;formula described above. So the delta would be a partial derivative using the differentiation formula of inserting a new differentiation variable which in this case is the&nbsp;parameter of the layer concerned in the numerator and the denominator and splitting the previous derivative of cost function of the preceding layer into a multiplication of&nbsp;2 derivatives. In this way we calculate the delta of this layer also and update its parameters. This goes on as we move backwards through layers until we calculate the new parameters of all the layers and update the layers with them. Hence the name Back Pass or backward propagation. In this way the learns from the training data in a single&nbsp;iteration. We continue this for multiple iterations each time with new parameters until we reach a global minima.</p> 
+  <p>3.How do we debug if something is wrong in the output and not according to expectations</p> 
+  <p>&nbsp;There are a number of problems that may occur like overfitting, underfitting etc. The best way is to use a visualization software which will indicate graphically what is going on inside by showing the error graph in terms of iteration point. Overfitting may occur when we use a large layer or large number of layers such that it tries to learn the noise present in the data. As such training will yield highly accurate results however when tested with different data it will fail. Similarly if there is more noise in the data, or network is too small compared to the size of the data, or the learning rate is to small we may experience underfitting or very slow training and the network may never reach the global minima as expected. The more noise a data has the more amount of data is required for training. Also data should have more divergence or variety by collecting from different sources. If we want to use less data we must remove noise from it by pre-processing the data. Once we have identified the problem and we also know which parameters are&nbsp;responsible for it the next question is how we go about changing them and to what extent. Although this completely a matter of trial and error runs and also experience we can start with standard thumb rule solutions provided for each cause of problem. It might include choice of the cost function, or gradient descent algorithm, or even the number of layers as well as the size of each layer.</p>
+ 
+</div>
+</body>
+</html>

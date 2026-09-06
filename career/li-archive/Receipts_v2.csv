@@ -1,0 +1,8 @@
+First Name,Last Name,Billing Country,Postal Code,Transaction Made At,Payment Method Type,Invoice Number,Description,Tax Amount,Sub Total,Total Amount,Currency Code
+Kunal,Das,in,700075,09/14/22 12:00 AM UTC,CREDIT_CARD,7923263173,Essentials subscription plan,289.83,1900.0,1900.0,INR
+Kunal,Das,in,700075,08/14/22 12:00 AM UTC,CREDIT_CARD,7848436513,Essentials subscription plan,289.83,1900.0,1900.0,INR
+Kunal,Das,in,700075,07/20/22 12:00 AM UTC,CREDIT_CARD,7785408303,Essentials subscription plan,289.83,1900.0,1900.0,INR
+Kunal,Das,in,700075,06/14/22 12:00 AM UTC,CREDIT_CARD,7694978883,Essentials subscription plan,289.83,1900.0,1900.0,INR
+Kunal,Das,in,700075,05/26/22 12:00 AM UTC,CREDIT_CARD,7645130393,Essentials subscription plan,289.83,1900.0,1900.0,INR
+Kunal,Das,in,700075,04/14/22 12:00 AM UTC,CREDIT_CARD,7523874873,Essentials subscription plan,289.83,1900.0,1900.0,INR
+Kunal,Das,in,700075,03/14/22 12:00 AM UTC,CREDIT_CARD,7421368273,Essentials subscription plan,289.83,1900.0,1900.0,INR
