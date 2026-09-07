@@ -40,4 +40,5 @@
 
 ## LOG
 - 2026-09-06 9:39 PM — FIRST GOOD-NIGHT SENT (Delivered): intro + "aj theke ami roz greetings pathabo" + "Kunal bhalo ache" + good-night. Setup message establishing the routine.
-- PENDING: morning ~9 AM, evening ~7 PM, night ~9:30 PM daily. Check log before sending — never repeat same message consecutively.
+- 2026-09-07 8:23 AM — FIRST MORNING GREETING (Delivered): bank #1 "Shubho shokal Ma 🌞 Kunal bhalo ache, kaj korchhe. Aaj r din bhalo kate. ❤️" — next: use bank #2 (Shuprabhat Ma 🌸).
+- PENDING: evening ~7 PM, night ~9:30 PM daily. Check log before sending — never repeat same message consecutively.
