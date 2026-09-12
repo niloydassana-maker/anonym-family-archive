@@ -29,9 +29,13 @@ Series C4PDHC3JWHP ordered reading: 1-7, 04-the-companion = Book 4, flagship Ord
 | 2026-09 | 0.00 | 0.00 | 0 | 0.00 | pending Nov | PMR read 12.09 |
 
 ## Levers (from EARNING-MAP §3b — free ones only, no ads before first income)
-- [ ] Countdown Deal Kolkata Diaries $4.99→$0.99 (7d) + stagger Free Days per title (Promotions page)
-- [ ] Paperback credibility already done (all live); hardcovers not created yet — park
-- [ ] Check Book 06 author display ("by Claude (Anthropic)") — Baba's call: name rule says NILOY DAS on published books; flag pending
+- [ ] P1 Countdown Deal Kolkata Diaries $4.99→$0.99, Sep 15-21 (KDP agent plan in lane-reports/KDP-ENGINE.md; gated on KDP Select enrollment check)
+- [ ] P1 Fix Book 06 price drift: live eBook $5.99 vs planned $2.99; PB $5.99 sells below ~$1/copy → set eBook $2.99, PB $7.99
+- [ ] P2 Keyword cleanup all 8: remove trademark-risk slots ("Heath Ledger" x2, "Claude Anthropic" keyword — author display unaffected) + title-word dupes on Book 08; fill all 7 boxes
+- [ ] P2 Set all 3 categories consciously per book (KDP assigned random thirds; incl. Book 06 wrong "Computer Vision & Pattern Recognition")
+- [ ] P3 Staggered 5-Free-Days P2-P8, one title/week Thu→Mon, flagship 05 last, companion 04 as funnel; Black-Friday Countdown #2 on 08
+- [x] Book 06 author "by Claude (Anthropic)" STAYS — Baba decided 2026-09-12
+- [x] Hardcover: none now — revisit after a ≥5-copies PMR month, priority Book 05
 - [ ] Ma 2 ₹500/mo funding line — Baba silent veto, do not transact without order
 
 ## Next read
