@@ -91,8 +91,9 @@ Other standing laws for the plan: KDP AI-disclosure answered per book; no ads sp
 ---
 
 ## 5. COST STRUCTURE
-- Kaggle: 30 GPU-h/week (28.3 left this week), free. Colab: fallback. Laptop+phone: owned.
+- Kaggle: 30 GPU-h/week (28.3h left this week), free. Colab: fallback. Laptop+phone: owned.
 - ngrok free tier (5-min poll discipline), cloudflared/localtunnel fallbacks: ₹0.
+- **Home line is the bottleneck: upload measured 0.19 MB/s** (download 3.7 MB/s). Live-voice turns fit it; bulk transfers (models, client reels) do not. Upgrade option under consult (Didi, 2026-09-13): **JioFiber in Silchar — plan ₹1000-1500/mo PLUS modem/ONT + router + installation = real cost >₹1500/mo-equivalent** (Baba's correction); awaiting availability + local pricing reply.
 - Paid APIs (DeepInfra ₹500 strategy etc.): **only after first income** — harness bridge is break-even, not a spend lane.
 - Real cost = Baba's attention. The army's job is to minimize it.
 
