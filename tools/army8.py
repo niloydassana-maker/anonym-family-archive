@@ -89,6 +89,11 @@ def mission_board():
             "must_prove": "applied-success|Successfully applied|Applied", "max_steps": 14,
         })
     ms.append({
+        "id": "L1-service-market", "seat": "SEAT-A",
+        "goal": "open https://www.linkedin.com/services/requests - read each open service request (title, client, budget hints, posted time). For ANY request newer than the last report: mail KILO with 'SERVICE-REQ: <title> | <client> | <age>' via the mail action. Do NOT submit or decline proposals - proposals are Baba-approved only. If page shows zero requests, report_done note 'premium-lane empty'.",
+        "must_prove": "MAIL-SENT|premium-lane empty", "max_steps": 8, "cadence_hours": 8,
+    })
+    ms.append({
         "id": "L4-naukri-queue", "seat": "SEAT-C",
         "goal": "open https://www.naukri.com/jobs?searchText=llm%20engineer - list 5 newest job id+title+company to KILO via mail action for Baba's morning brief. NO apply (that's L1 lane's decision).",
         "must_prove": "MAIL-SENT", "max_steps": 8,
@@ -299,6 +304,8 @@ def seat_loop(seat):
                 if m["seat"] != seat:
                     continue
                 key = m["id"] + "|" + datetime.now(timezone.utc).strftime("%m%d")
+                if m.get("cadence_hours"):
+                    key = m["id"] + "|" + str(datetime.now(timezone.utc).hour // m["cadence_hours"]) + datetime.now(timezone.utc).strftime("%m%d")
                 if key in done_ids:
                     continue
                 say("KILO", seat + " MISSION-START " + m["id"])
