@@ -146,8 +146,11 @@ async function runWindow(reason, forceKey) {
 // stuck-radio watchdog: if POWER_OFF was never verified, hammer it every 10s.
 // REBOOT-PROOF LAW: runs first check immediately at daemon birth and every 10s after -
 // a phone that restarts with radio ON meets silence within seconds, not minutes.
+// CALL-WINDOW EXCEPTION (Baba meeting law): while Baba opens a call window, the
+// enforcer stands down completely - his voice calls need the modem alive.
 async function enforceSilence() {
   if (busy) return;
+  if (Date.now() < (state.callWindowUntil || 0)) return;
   if (state.stuck || !(await radioOff().catch(() => true))) {
     logLine({ ev: 'RADIO-REKILL' });
     const ok = await forceRadioOff(3);
@@ -204,6 +207,24 @@ const server = http.createServer(async (req, res) => {
     if (p.force !== MASTER_BLINK) return reply(res, 403, { error: 'need force=' + MASTER_BLINK });
     const r = await runWindow('forced-master', MASTER_BLINK);
     return reply(res, 200, r);
+  }
+  if (u.pathname === '/callwindow' && req.method === 'POST') {
+    let p; try { p = JSON.parse(await readBody(req)); } catch (e) { return reply(res, 400, { error: 'bad json' }); }
+    if (p.force !== MASTER_BLINK) return reply(res, 403, { error: 'need force key' });
+    const mins = Math.min(90, Math.max(1, Number(p.minutes) || 30));
+    state.callWindowUntil = Date.now() + mins * 60000; persist();
+    logLine({ ev: 'CALL-WINDOW-ON', minutes: mins, radio: p.radio || 'manual' });
+    wire('CALL-WINDOW ON for ' + mins + ' min - silence law suspended, will auto-restore POWER_OFF at end. Baba: make/receive your calls now.');
+    if (p.radio === 'on') {
+      await adbShell("cmd connectivity airplane-mode disable");
+      for (let t = 0; t < 25; t++) { await new Promise(r => setTimeout(r, 800)); if (await radioReady()) break; }
+      const o = await adbShell("dumpsys telephony.registry | grep -m2 -oE 'mVoiceRegState=[0-9]+\\([A-Z_]+\\)'");
+      wire('CALL-WINDOW radio: IN_SERVICE=' + /IN_SERVICE/.test(o));
+    }
+    return reply(res, 200, { ok: true, windowMinutes: mins, resumes: new Date(state.callWindowUntil).toISOString() });
+  }
+  if (u.pathname === '/callwindow') {
+    return reply(res, 200, { windowUntil: state.callWindowUntil || 0, active: Date.now() < (state.callWindowUntil || 0) });
   }
   reply(res, 404, { error: 'no route' });
 });

@@ -158,6 +158,14 @@ while ($true) {
         $ng = Get-Process -Name ngrok -ErrorAction SilentlyContinue
         if (-not $ng) { Start-Ngrok }
 
+        # 2d. SUDO-HANDS (elevated executor - died 3x silently 2026-09-13; never again)
+        $sudoOk = $true
+        try { Invoke-RestMethod 'http://127.0.0.1:8769/health' -TimeoutSec 6 | Out-Null } catch { $sudoOk = $false }
+        if (-not $sudoOk) {
+            Log "SUDO-HANDS down - task resurrect"
+            schtasks /run /tn KILO-SUDO-HANDS 2>&1 | Out-Null
+        }
+
         # 2b. BLINK-GUARDIAN (ghost protocol must never sleep while law is on)
         if (Test-Guardian) { $guardFail = 0 } else {
             $guardFail++
