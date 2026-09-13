@@ -15,3 +15,6 @@
 | 09-13 | L4 | Foundit search = Akamai Access Denied; Indeed public search = Cloudflare block; army v8 SEAT-C L4-naukri-queue PENDING-BABA (no page) | wire; war-log/evidence/L4/naukri-applies-61-dashboard.png | 0 (blocked) |
 | 09-13 | L3 | KDP countdown arm BLOCKED: kdp.amazon.com = Sign-in gate (login/OTP required, no session in army browser) | war-log/evidence/L3/kdp-login-gate-blocked.png | royalty (blocked) |
 | 09-13 | L2 | Godshand v16 smoke NOT RUN: e2_smoke.py/godshand-ck-matrix.py/render_stills.py absent from repo; newest artifacts Jul 17 | MASTER-ROADMAP.md L2 audit note | pending |
+| 09-13 | L4 | APPLIED NVite 120926816411 ML Engineer (Foreign MNC/Flairdeck, remote $100-150/hr) — one-click saveApply, no new data | war-log/evidence/L4/nvites-inbox-applied-state.png | interview call |
+| 09-13 | L4 | APPLIED NVite 100926825246 HCL Sr AI/ML GEN AI Architect (17-25y, 37.5-60 LPA) — Applied badge verified | war-log/evidence/L4/nvites-inbox-applied-state.png | interview call |
+| 09-13 | L4 | APPLIED NVite 070926832756 Virtusa AWS DevSecOps Architect (15-24y) — Applied badge verified | war-log/evidence/L4/nvite-virtusa-applied.png | interview call |
