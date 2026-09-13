@@ -48,6 +48,16 @@ Machine-wide, locked: `DisableLocation=1`, `DisableSensors=1`, `lfsvc=Disabled`,
 
 ## REBOOT PROOF — full chain
 PC restart → SYSTEM tasks: relay-watchdog v4 (respawns relay, ngrok, army-chrome :9224, guardian) + KILO-LAPTOP-GHOST (registry law) + KILO-SUDO-HANDS (elevated executor). Phone restart → airplane setting persists (Android stores it); guardian enforces silence every 10s + immediately at daemon birth — a radio that wakes with boot is killed within ~3s. First enforcement loop seen: `RADIO-REKILL` events during dev = the system catching its own gauge-lying (instrument bugs caught at 12:17 UTC, fixed, re-verified).
+## GOOGLE BURN LEDGER — 2026-09-13 (verified via aria labels + deletion toasts)
+| Account | Toggles off | Archive |
+|---|---|---|
+| isearch.xsolve (army) | WAA, Play, YT, search-recs | all-time delete ✓ |
+| kd31041999 (k das) | WAA, Play, search-recs, YT paused→off | all-time delete — "no activity" ✓ |
+| niloydassana (PEN NAME) | WAA, Play, search-recs, YT | 4 products delete ✓ |
+| xxpertcomments (Kunal Das) | WAA, YT, search-recs | wizard delete ✓ |
+| kunal.colab (KDP/KOTAK lane) | WAA, Play | deletion done; **residue: search-recs + YT — session expired, finish at next login** |
+Truth-notes: profile Preferences emails = sign-in history lists, only the in-page `Google Account:` chip proves current session; search-recs location inference now permanently reads Mumbai VPN exit; phone Maps Timeline = Off + 3-month auto-delete fuse; Chrome geolocation machine-wide BLOCK (HKLM policy) applies to every profile from next launch.
+
 ## ONE-LINERS
 - Restore tower mode (Baba-only): `adb shell cmd connectivity airplane-mode disable` (remember to re-enable after!)
 - Status: `GET 127.0.0.1:8768/status?token=GOLD24` → radioOff / waiting / blinkCount / stuck
