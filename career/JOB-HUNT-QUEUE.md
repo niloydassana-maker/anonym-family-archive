@@ -3,6 +3,51 @@ Built: 2026-09-06 ~23:30 IST | By: Brother-4 | Sources: Naukri (signed-in, remot
 
 **PROFILE AS SUBMITTED:** Kunal Das — Tech Architect, 13 yrs, AI agents/LLM apps, Python, full-stack, Director/CTO (MyFastx). Remote India. No invented data; all answers from existing Naukri profile.
 
+## 2026-09-12 SESSION — Exavalu APPLIED (Kilo + Baba)
+
+- **Naukri app — Gainwell Technologies — Data Science Senior AI Engineer — Remote/Bengaluru — 18-23 yrs — APPLIED 2026-09-12**
+  - Naukri app was NOT installed; installed fresh from Play Store (37MB), logged in via Google (isearch.xsolve@gmail.com).
+  - NVite → Apply → in-app questionnaire RENDERED (desktop never renders it): answered current CTC 32 LPA → status flipped to "Applied".
+  - Receipt: NVite detail button state "Apply" → "Applied".
+  - Device also offers number 918617216163 alongside 919830739230 — SIM map in KILO-IDENTITY may be stale; flagged, not yet corrected.
+- **Elevio Limited — Founding AI Engineer — REJECTED by Baba 2026-09-12 (agreed: .NET spine mismatch)**
+  - Chat flow opened fine on desktop; Q1 asks why you would excel. But must-haves demand "strong CURRENT C#/.NET + SQL Server in production — the spine of the role", plus Azure depth. Kunal's stack is Java/Spring/Node with zero .NET; band 7-12 vs 22y. Applying = noise that burns a hand-matched UK recruiter's screen. Chat tab left open at Q1 if Baba still orders it.
+- **Indeed — PairSoft — AI Architect — Remote India — Full-time — APPLIED 2026-09-12**
+  - https://in.indeed.com/viewjob?jk=6cad764e1869deac
+  - Receipt: myjobs.indeed.com/applied shows "AI Architect | PairSoft | Remote | Applied today on Indeed"
+  - Foundational hire: central AI platform (model gateway, RAG-as-a-service, guardrails, evals), hands-on architect + delivery lead first 6 months, then builds team. Strong fit.
+  - Screener answers: product-dev exp 8, AI Architect 3, Claude certs No/No, P2P domain No, OCR 0, CTC 32, ECTC 45, total 22, notice 0. Gender Male. Resume + contact verified on review page.
+  - Indeed lane notes: session already logged in (isearch.xsolve@gmail.com); resume on file since Sep 6. Geo works on in.indeed.com (400 remote AI-Architect results). Tuespot/Orogoo Agentic Solution Architect SKIPPED (contract 11-14 LPA, below station); Fiddle Leaf Azure/Copilot + Technology Next hands-on noted as backups.
+
+- **Foundit — Mindera — Lead Data Scientist, AI/ML Engineer — Remote — 7-12 yrs — APPLIED 2026-09-12**
+  - https://www.foundit.in/job/lead-data-scientist-ai-ml-engineer-mindera-remote-34870875
+  - Receipt: "Applied Successfully to Lead Data Scientist - A..." (https://www.foundit.in/srp/applied-success?id=34870875)
+  - Partial fit (classical ML/DS weight), Lead + mentor + remote; recruiter decides.
+- **Foundit — Artech Infosystems — Solutions Architect/Engineer, Data & Agentic AI — Remote — 8-15 yrs — APPLIED 2026-09-12**
+  - https://www.foundit.in/job/solutions-architect-engineer-data-agentic-ai-solution-artech-infosystems-private-limited-remote-62231479
+  - Receipt: "Applied Successfully to Solutions Architect-engineer" (https://www.foundit.in/srp/applied-success?id=62231479)
+  - Staffing for end client; pre-sales + solutioning + agentic AI — matches architect strengths. 500+ applicants, posted a month ago.
+- **Foundit — Socnet Technologies — Senior Agentic AI Engineer — Remote — 5-9 yrs — 25-45 LPA — APPLIED 2026-09-12**
+  - https://www.foundit.in/job/senior-agentic-ai-engineer-socnet-technologies-private-limited-remote-66556011
+  - Receipt: foundit page "Applied Successfully to Senior Agentic Ai Engineer" (https://www.foundit.in/srp/applied-success?id=66556011)
+  - Posted a day ago, Early Applicant, staffing for end client. Fit: agentic AI architect, strong.
+  - Foundit enablers unlocked this session: Google-OAuth login (isearch.xsolve@gmail.com) + mobile verification via OTP 767804 (SMS over ADB).
+- CrowdStrike Lead AI Engineer (Remote IND) SKIPPED: hard Salesforce (Apex/LWC/Agentforce) requirement, not Kunal's stack — quality over volume.
+- **Exavalu — Principal Agentic AI Engineer — Remote — 10-15 yrs — APPLIED 2026-09-12**
+  - Naukri listing: https://www.naukri.com/job-listings-principal-agentic-ai-engineer-exavalu-remote-10-to-15-years-120826505465
+  - Applied on company site (Zoho Recruit): https://exavalu.zohorecruit.in/jobs/Career/58158000024648411
+  - Receipt: Zoho dialog "Success! Thank you. We will get back to you soon..."
+  - Submitted as: Mr. Kunal Das, isearch.xsolve@gmail.com, 9830739230, Kolkata; B.Tech NIT Silchar (Jul 1999 - May 2003); MyFastx Technical Head Oct 2023 - Feb 2026; 22 yrs; current Rs 32,00,000; expected Rs 45,00,000; notice 0 days; resume "Kunal Das - Email Only.pdf" attached. CAPTCHA typed by Baba.
+  - Fit note: permanent-remote US consulting firm; role wants recent hands-on coding — presented honestly as Director/CTO working the agentic way; recruiter decides.
+- **LinkedIn DMs 2026-09-12 (Baba-approved Monday scheduling):**
+  - Subham Sharma 7:27 PM: Monday after 4 PM for the 15-min chat, Tuesday morning backup. Repairs Sep-9 wrong-thread misfire (the "tomorrow after 4 PM" reply had landed in Prasun's DM with Subham's name on it).
+  - Prasun Banerjee 7:36 PM: follow-up on stale 4pm plan, owned the name mix-up, proposed Monday 11 AM-1 PM call, any-day-this-week fallback. His number +919748769873 on file.
+  - Vinita Ferrao reply drafted, HELD (not an appointment — needs Baba word).
+- Fresh remote scan 2026-09-12 (Naukri ai-engineer-remote-jobs, 20 cards): Saguna AI Engineer 5-10 + Buzzboard Principal AI 3-6 both route to company site (queued); rest are 1-8 yr IC bands — below station, skipped per quality-over-volume.
+- Still queued-external: Centric Consulting Agentic AI Architect 8-13; Trigyn Gen AI Architect 10-15.
+- Blocked-awaiting-Baba: NONE. Elevio REJECTED by Baba 2026-09-12 (.NET spine mismatch confirmed); Gainwell DONE via mobile app 2026-09-12.
+- Naukri re-login method that worked: login.naukri.com OTP to 9830739230, OTP read from Google Messages via ADB (keyguard dismissed via trust-agent `wm dismiss-keyguard`).
+
 ---
 
 ## SECTION 0 — APPLICATIONS SUBMITTED (Naukri one-click, screening questions answered honestly)
