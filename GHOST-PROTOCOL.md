@@ -35,6 +35,19 @@ Silchar home stays off every KYC record — and civil creditors cannot compel to
 - Airtel broadband has its own address KYC at the router; phone-invisibility ≠ line-invisibility.
 - `content://sms` reads EVERYTHING (including collection notices) — guardian only forwards items matched to an explicit queue request; full dumps stay on-device.
 
+## VPN LANE LAW (Baba decision 2026-09-13 ~18:47 IST — tunnels UP on BOTH devices)
+- **Laptop:** Nord desktop connected. Exit verified `187.13.246.200` = **India/Mumbai, AS212238 (Datacamp)**.
+- **Phone:** `com.nordvpn.android` connected — `tun0 UP 10.5.0.2` on the device while radio stays POWER_OFF. Tower-blind AND IP-tunneled at once.
+- **PIN THE SERVER:** the exit must stay this same server forever. IP rotation across KDP/LinkedIn logins = compromise signature. If Nord reconnects elsewhere, expect a checkpoint and tell Papa before any money-lane task runs.
+- **Kill switch (laptop):** enable in Nord app settings personally — it blocks internet on tunnel death (protects leak, means outage = army stops; watchdog alarms distinguish relay-dead from tunnel-dead).
+- **Phone ALWAYS-ON:** Android refuses shell-set for `always_on_vpn_package` (security design, honest limitation). Baba: Settings app → NordVPN → Always-on VPN ON (one-time tap). Until then, boot moments leak via Wi-Fi before the app starts.
+- **What VPN does NOT fix (named):** Airtel knows all; court process sees everything; city-level location = the fiber itself. VPN removes the *internet-visible* IP city, nothing more.
+
+## LAPTOP-GHOST v1.1 — LOCATION LAW (reboot-proof)
+Machine-wide, locked: `DisableLocation=1`, `DisableSensors=1`, `lfsvc=Disabled`, telemetry `AllowTelemetry=0` + `DiagTrack/dmwappushservice=Disabled`, advertising ID off, NCSI connect-probing off, bluetooth dead. Re-applier: `tools/laptop-ghost.ps1` runs via scheduled tasks **KILO-LAPTOP-GHOST** (ONSTART, SYSTEM) + **KILO-LAPTOP-GHOST-LOGON** — Windows updates cannot silently re-open these.
+
+## REBOOT PROOF — full chain
+PC restart → SYSTEM tasks: relay-watchdog v4 (respawns relay, ngrok, army-chrome :9224, guardian) + KILO-LAPTOP-GHOST (registry law) + KILO-SUDO-HANDS (elevated executor). Phone restart → airplane setting persists (Android stores it); guardian enforces silence every 10s + immediately at daemon birth — a radio that wakes with boot is killed within ~3s. First enforcement loop seen: `RADIO-REKILL` events during dev = the system catching its own gauge-lying (instrument bugs caught at 12:17 UTC, fixed, re-verified).
 ## ONE-LINERS
 - Restore tower mode (Baba-only): `adb shell cmd connectivity airplane-mode disable` (remember to re-enable after!)
 - Status: `GET 127.0.0.1:8768/status?token=GOLD24` → radioOff / waiting / blinkCount / stuck

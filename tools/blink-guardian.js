@@ -143,7 +143,10 @@ async function runWindow(reason, forceKey) {
     persist();
   }
 }
-setInterval(async () => {
+// stuck-radio watchdog: if POWER_OFF was never verified, hammer it every 10s.
+// REBOOT-PROOF LAW: runs first check immediately at daemon birth and every 10s after -
+// a phone that restarts with radio ON meets silence within seconds, not minutes.
+async function enforceSilence() {
   if (busy) return;
   if (state.stuck || !(await radioOff().catch(() => true))) {
     logLine({ ev: 'RADIO-REKILL' });
@@ -151,7 +154,9 @@ setInterval(async () => {
     if (ok) { state.stuck = false; persist(); wire('RADIO-REKILL SUCCESS - POWER_OFF verified'); }
     else wire('RADIO-REKILL FAILED - airplane mode re-forced, still not POWER_OFF. PHONE MAY BE RADIO-EXPOSED. Baba: check device.');
   }
-}, 60000);
+}
+setInterval(enforceSilence, 10000);
+setTimeout(enforceSilence, 3000);
 
 // scheduler: weekly Sunday ~12:00; urgent within 30s; boot catch-up if queue waiting and never/long-run
 setInterval(() => {
