@@ -25,6 +25,7 @@ Three pillars:
 | Clean corpus | 294 windows, ~49 min, f0-gated (80–175 Hz, cent ±60%, mfcc 6σ), dataset `kkk3213/father-corpus` | Baba's — sellable |
 | Transcripts | 204 deva rows (Bengali→Devanagari) + 75 en rows, Whisper large-v3 | Derived from Baba's recordings |
 | XTTS fine-tune | v14 running now: 40 epochs, T4, loss 5.05→0.49 in epoch 1 | **Model+outputs = CPML non-commercial (see §3)** |
+| Live interaction engine | session-per-call Kaggle fleet + relay switchboard — full design in **career/LIVE-VOICE-ARCHITECTURE.md** | Our architecture; backbone licensing per §3 |
 | KiloBridge v7 | Android APK, phone speaker playback, polls every 1.5s | Our code |
 
 ### 2.2 Infrastructure (all our own code)
