@@ -270,8 +270,13 @@ const server = http.createServer(async (req, res) => {
   }
   if (u.pathname === '/hear') {
     const b = u.query.body;
-    const mine = b ? reports.filter(r => r.from === b) : reports;
-    return send(res, 200, { reports: mine.slice(-20) });
+    const after = parseInt(u.query.after || '0');
+    const rep = reports.map((r, i) => { const c = Object.assign({}, r); c.seq = i + 1; return c; });
+    const ord = sayings.map((s, i) => { const c = Object.assign({}, s); c.seq = i + 1; return c; }).filter(s => !b || s.to === b);
+    let mine = b ? rep.filter(r => r.from === b).concat(ord) : rep.concat(ord);
+    mine.sort((x, y) => (x.at || '').localeCompare(y.at || ''));
+    if (after) mine = mine.filter(r => (r.seq || 0) > after);
+    return send(res, 200, { reports: mine.slice(-20), orders: mine.slice(-20) });
   }
   if (u.pathname === '/tasks') {
     const limit = parseInt(u.query.limit || '200');
