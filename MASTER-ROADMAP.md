@@ -38,6 +38,8 @@ COGS: ₹0 (free GPU quota 30h/wk/account ×3 accounts)
 
 ### L3 — KDP / NILOY (compounding) — owner: Army (after v7 fix) + Baba clicks when forced
 ARM Countdown Deals on all KDP Select titles (the 15-day -60% slots sit unused)
+**+ THE BANGALORE DIARIES (commissioned by Baba 15.09): draft-01 in lane-kdp/bangalore-diaries/ — 5 chapters from his own dictated testimony, Geeta renamed JULIE by his word, NILOY voice, blade law. TWO-FLAG publish gate pending his YES (ANON-LEDGER.md).**
+**+ THE SILCHAR DIARIES (same morning, prequel registered 15.09): lane-kdp/silchar-diaries/ms/silchar-diaries-draft01.md — the register father, the kitchen field, the dismantler, the electrician's prophecy. Source of truth = D:\anonym\FATHER-CONFESSION-0915.md (private tier, linked from KILO-IDENTITY §1).**
 KENP harvesting engine: promo → reads → royalty from pool; book ads: none until L1 cash lands
 Angalore Diaries = planned next launch; Kolkata = halo of Kunal's professional reach
 KPI: first royalty > $0 within 45 days
@@ -52,6 +54,20 @@ NVIDIA credits, Upwork/Fiverr referral cash, ElevenLabs 20%+ recurring links, KE
 Every entry: source → cost → expected ₹ / week → ToS-status: LEGAL ONLY
 
 ---
+
+### L6 — PREMIUM PERKS 100% UTILISATION (Baba order 14.09 night: "use ALL features as perks")
+We already PAY for these; every perk maps to a ₹ lane or it is wasted money (law 3 applies to perks).
+| Perk (from Baba's screenshots) | Value | Lane it feeds | Status/action |
+|---|---|---|---|
+| Who viewed profile — **21 recruiters + 1 business role (90d window, rolling!)** | identity of warm inbound | L4 job + L1 | **EXTRACT before window rolls — dump names to volley-identities file; feeds the 5 blocked IDs** |
+| InMail credits **45** ("100%+ higher response") | 45 direct lines to decision-makers | L1/L4 | 3/day volley law; weekly credit-count posted to EARN-LEDGER |
+| GitHub offer: **1,800 Copilot Pro credits/mo FREE** (day-counter, ~3d) | AI pair-dev on all client builds | L1 delivery | **ACTIVATE within countdown — Karan's Django MVP + bid velocity** |
+| **Notion Business + GenAI — UNLOCK PENDING** (Learning offer) | client CRM + proposal templates, phone-accessible for Baba | ops | Baba unlock (2 taps) → Kilo mirrors PROPOSALS/EARN-LEDGER into Notion CRM |
+| **YouTube Premium — UNLOCK PENDING** (Music Premium on: ad-free/background/offline) | noiseless learning lane + Beholder/Kolkata channel uploads (PPM annuity) | L2/L3 | Baba activates; Kilo queues trailer uploads |
+| Sales Insights Core seat ("manage starred accounts") | buyer-company intel: COGENT (Raksha), Haseen (Achal), Karan's firm | L1 closings | activate seat; enrich every live client before 48h nudge |
+| Recruiter System Connect (RSC) | pushes applications into recruiter ATS dashboards | L4 | check eligibility/link per recruiter org |
+| Learning 50% off + owned courses (13) | proof certificates for proposal authority | L1 trust | enroll 2: Power BI/DAX (DASH-B) + Django/REST (DEV-B); badges on service page |
+KPI: zero unopened perks by Thursday; every perk either ACTIVE or marked DEAD with reason on this table.
 
 ## ARMY V7 REBUILD (this is the delivery fix — non-negotiable gate)
 A1. **Hands upgrade:** brain.py + execute_steps → add click/type_text/fill/evaluate/scroll (relay already supports them; brain never wired them).

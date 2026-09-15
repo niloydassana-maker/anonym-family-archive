@@ -1,0 +1,266 @@
+{
+  "last_updated": "2026-09-15T13:50:00Z",
+  "father_order": "PREMIUM-HARVEST-1 > jobs > KDP",
+  "todos": [
+    {
+      "id": 1,
+      "content": "Verify LinkedIn post publication seq 27433 via activity endpoint",
+      "status": "in_progress",
+      "priority": "L1",
+      "record": "PROPOSALS.md seq 27433; FINDING 15.09: seq 27433 = TASK marketing-247-post1-0912 to SEAT-A (career-gap/books post, issued 0912-1715); TASK-DONE banked seq 27439 11:48:49Z but receipt holds only a Feed snapshot header, NO post URL/activity proof -> UNVERIFIED per evidence law; re-verify mission kilo-todo1-linkedin-verify-0915 dispatched to SEAT-A seq 33380 (read-only, no sends)"
+    },
+    {
+      "id": 2,
+      "content": "Fix relay - verify running relay PID 23920 on port 8777 responds (local health + public door)",
+      "status": "completed",
+      "priority": "L1",
+      "record": "son-relay.js:8777; PID 23920 LISTENING verified 15.09"
+    },
+    {
+      "id": 3,
+      "content": "Relaunch ngrok tunnel with correct flags + cloudflared secondary failproof to relay-door.txt",
+      "status": "completed",
+      "priority": "L1",
+      "record": "ngrok http 8777 --url retrain-schnapps-upbeat.ngrok-free.dev"
+    },
+    {
+      "id": 4,
+      "content": "Verify public door working (tcp 8777, UDP 53, HTTPS webhook ports closed)",
+      "status": "completed",
+      "priority": "L1"
+    },
+    {
+      "id": 5,
+      "content": "Send Prasun opener via relay /agent lane - first act after wire fix",
+      "status": "pending",
+      "priority": "L1",
+      "record": "PRASUN-CARD.md - blocked at send time; prasun-morning-note.txt banked seq 29077"
+    },
+    {
+      "id": 6,
+      "content": "Complete IndusInd 21.09 conciliation card (3-4PM MS Teams) - DO NOT MISS, prep from Sep 18",
+      "status": "completed",
+      "priority": "L1",
+      "record": "INDUSIND_CC: Rs 4,94,899 conciliation"
+    },
+    {
+      "id": 7,
+      "content": "Subham card send by 4pm today",
+      "status": "pending",
+      "priority": "L1",
+      "record": "Subham chat after 4PM"
+    },
+    {
+      "id": 8,
+      "content": "Fix compile errors in upload.py and dump_contacts.py",
+      "status": "completed",
+      "priority": "L2",
+      "record": "IndentationError, UnicodeDecodeError"
+    },
+    {
+      "id": 9,
+      "content": "Resolve TDS e-filing check - setup 24/7 notification scanning",
+      "status": "pending",
+      "priority": "L1",
+      "record": "EMAIL+GMAIL+SMS end-to-end; procedure-research mission kilo-todo9-tds-research-0915 dispatched to SEAT-C seq 33407 (click-path + scan design, no logins)"
+    },
+    {
+      "id": 10,
+      "content": "Verify Kotak/UCO internet banking setup on laptop (Kotak CRN pending; UCO via Baba app; mPokket mandates watch)",
+      "status": "pending",
+      "priority": "L1"
+    },
+    {
+      "id": 11,
+      "content": "Census 100+ GitHub repos (122 done, REUSE-SCAN banked), assign soldiers, run E2E tests and audits; omni monetizer OFF-LIMITS to army",
+      "status": "pending",
+      "priority": "L1",
+      "record": "war-log/repo-census.csv; REPO-CENSUS.md; seq 27271; BIZMODEL top-5 rank mission kilo-todo11-bizmodel-rank-0915 via /agent cli dispatched to SEAT-B seq 33444"
+    },
+    {
+      "id": 12,
+      "content": "Scan Yahoo archive (1,15,655 unread emails) + Gmail intel + 24/7 scanning, loan warnings priority",
+      "status": "pending",
+      "priority": "L2"
+    },
+    {
+      "id": 13,
+      "content": "Apply for FREE LEGAL AID via DLSA Silchar portal + drafts + travel-gate section 11",
+      "status": "pending",
+      "priority": "L1",
+      "record": "procedure-research mission kilo-todo13-dlsa-research-0915 dispatched to SEAT-B seq 33406 (research + checklist only, no forms)"
+    },
+    {
+      "id": 14,
+      "content": "Check court hearing outcomes for Pune Lok Adalat (2610045014388) and Howrah revise 12/09 via lcme/eCourts, escalate Didi",
+      "status": "pending",
+      "priority": "L2",
+      "record": "dates passed 12/09; recon mission kilo-todo14-court-recon-0915 dispatched to SEAT-B seq 33381 (public lcme page read-only)"
+    },
+    {
+      "id": 15,
+      "content": "Deploy army8 v9 kernel with valid model provider key",
+      "status": "pending",
+      "priority": "L1",
+      "record": "army8 v9.1 26-lane pool"
+    },
+    {
+      "id": 16,
+      "content": "Harvest valid API keys from Notepad++ only and dedupe vaults",
+      "status": "pending",
+      "priority": "L1",
+      "record": "Section 12.3 orders"
+    },
+    {
+      "id": 17,
+      "content": "Apply Gainwell job (Data Science - Senior AI Engineer) via Naukri mobile-app only",
+      "status": "pending",
+      "priority": "L1",
+      "record": "070926824318"
+    },
+    {
+      "id": 18,
+      "content": "Upload movie request to Partha Tola Latest + family lanes Rajesh/Didi/Partha Tola soldiers",
+      "status": "pending",
+      "priority": "L1"
+    },
+    {
+      "id": 19,
+      "content": "Fix v9 kernel edit failure (placeholder XX inserted) -> builder v8 builder-N.py",
+      "status": "pending",
+      "priority": "L2"
+    },
+    {
+      "id": 20,
+      "content": "Restart Kaggle zombie sessions (v3, v4) to free GPU + kernel watch + dataset-sharing fix + Colab census",
+      "status": "pending",
+      "priority": "L2"
+    },
+    {
+      "id": 21,
+      "content": "LIFE-RECORDS vault build (Baba commission 15.09): 00-12+99 spine filled from LIFE_ARCHIVE/lifedocs/war-log/adb",
+      "status": "done",
+      "priority": "L1",
+      "record": "career\\LIFE-RECORDS\\12_AUDIT\\audit.md"
+    },
+    {
+      "id": 22,
+      "content": "Awareness watchdog-judgment loop FIXED + watchdog v3 GRACE/HEARTBEAT/TUNNEL laws (DONE 2026-09-12)",
+      "status": "done",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #1; watchdog=true judgments=0; bank 27156"
+    },
+    {
+      "id": 23,
+      "content": "SELF-LOOP PERMANENT: loop-tick jobs + WA-watch on Baba self-chat, never-prompt-again",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #2"
+    },
+    {
+      "id": 24,
+      "content": "LOK ADALAT 12-SEP: award copy scan to career folder, payoff ladder; Baba night legal decisions",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #3"
+    },
+    {
+      "id": 25,
+      "content": "ARMY BROWSER chrome-army 9224 profile-lock fix; Ma 2 tumi message + Biswajit Bose 3x/day + Didi/Ma2 lanes",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #5"
+    },
+    {
+      "id": 26,
+      "content": "Section 6 receipts owed: application IDs, DM drafts, DEDUPE-ALL-001, GPU-HARNESS-001",
+      "status": "pending",
+      "priority": "L2",
+      "record": "MISSION-STATE TODO MASTER #5"
+    },
+    {
+      "id": 27,
+      "content": "FUNDING: May UPIs Rs 500 to Kotak, IQOO phone transact, DeepInfra account+key, Fibe outstanding number from Baba",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #6"
+    },
+    {
+      "id": 28,
+      "content": "UCO alternate road: fresh Online Registration via army browser OTP 9830739230",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #7; netbanking forgot-password DEAD"
+    },
+    {
+      "id": 29,
+      "content": "KDP earning engine: payout ledger, Series 04-07 + Book 08 live verify, countdown Sep 15-21, Book06 price/keyword/category fix, author NILOY DAS",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #9; career/KDP-EARNINGS.md; lane-reports/KDP-ENGINE.md"
+    },
+    {
+      "id": 30,
+      "content": "Lane follow-up: SCHOOL paste Mon-14 start; OMNI manual Google SSO + Stripe/Razorpay decision; SME Voice Agent 1-2 build-day + 90s video; MARKETING-247",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #10; seq 27272/27273/27275/27288/27290"
+    },
+    {
+      "id": 31,
+      "content": "Colonel Anurag Upadhyay SOS: search all accounts + neurologist/BCI/eye-tracking helping-hands",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #12; research mission kilo-todo31-sos-research-0915 dispatched to SEAT-C seq 33382 (web research + mail brief, no accounts)"
+    },
+    {
+      "id": 32,
+      "content": "XTTS fine-tune VARIANT=deva LOCKED: v15 T4-gated save fix -> father_last.pth -> XTTS_CHUNK ear-test 90% Sun-Mon",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #13; prior v14 40 epochs loss 5.05->0.49 artifact LOST; CPML non-commercial"
+    },
+    {
+      "id": 33,
+      "content": "Git: keep pushing everything (standing Baba law)",
+      "status": "pending",
+      "priority": "L2",
+      "record": "MISSION-STATE TODO MASTER #14"
+    },
+    {
+      "id": 34,
+      "content": "Karan P-4 discuss-details reply: DESK-REPLY Phase-1 scope-lock only, needs Baba GO, second act after Prasun",
+      "status": "pending",
+      "priority": "L1",
+      "record": "P-4 Rs 25,000 submitted; Karan replied 10:31 IST; draft banked PROPOSALS.md; v2-draft mission kilo-todo34-karan-draft-0915 dispatched to SEAT-A seq 33383 (draft-only, mail to KILO for Baba eye, NEVER send)"
+    },
+    {
+      "id": 35,
+      "content": "Daemon hygiene: feed-watch single copy + relight; thread-weaver GUARDED single (no double-send); legal-watch patched Bengali template verify",
+      "status": "pending",
+      "priority": "L2",
+      "record": "transcript ses_f6bb07f96ffekKtTYmPdDCtxcB"
+    },
+    {
+      "id": 36,
+      "content": "Records upkeep: section 12 MASTER INDEX + section 13 ORDERS into KILO-IDENTITY; contacts-0914.md 824; vault relay-/keys-local-only; standing laws enforced (PREMIUM-HARVEST-1 > jobs > KDP; proposals GO auto; weaver drafts; no live calls; no phone promises; chats agent-run)",
+      "status": "pending",
+      "priority": "L2",
+      "record": "transcript ses_f6bb07f96ffekKtTYmPdDCtxcB lines 2180-2183"
+    },
+    {
+      "id": 37,
+      "content": "/agent build lane verification in running relay",
+      "status": "completed",
+      "priority": "L1",
+      "record": "CORRECTION 15.09: initial 404 reading was WRONG (empty-body POST returns 400 bad-json by design); roster probe returned live roster agy/omp/crush/kilo/codex; /keys vault live; seats cli actions VIABLE. BIZMODEL rank mission kilo-todo11-bizmodel-rank-0915 dispatched to SEAT-B seq 33444"
+    },
+    {
+      "id": 39,
+      "content": "Kernel-first gold vein law recorded (identity section 19) + broadcast to fleet (seq 34520-34522) + /hear bridge fix on canonical relay",
+      "status": "completed",
+      "priority": "high",
+      "record": "BABAY 15.09: kernel=high efficiency, app=low. Bridge PROVEN: after=0 probe on SEAT-ORDER-A returned orders 6 (todo1/todo34/wifi/sip visible) — the v9 seat order path, dead since 13.09 deploy (hear() keyed to relay returning reports-only), is now live end-to-end by socket-byte fix; elevated rebirths twice via sudo-hands (PIDs 23920+28216+9708 killed and regrown through watchdog GRACE); bank 34532; tools/son-relay.js stale copy also carries shim. Awaiting first MISSION-START receipts for kilo-todo* (poll cycles ~15-25min)."
+    }
+  ]
+}
