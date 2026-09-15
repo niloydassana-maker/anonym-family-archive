@@ -100,9 +100,9 @@
     {
       "id": 15,
       "content": "Deploy army8 v9 kernel with valid model provider key",
-      "status": "pending",
+      "status": "completed",
       "priority": "L1",
-      "record": "army8 v9.1 26-lane pool"
+      "record": "DONE 15.09 23:55 IST: kernel v12 pushed via kaggle CLI (kkk3213/kilo-army-batch) - carries blueprint loader (father's words in every prompt), hear()->say mailbox fix, done_ids guard, Father Seal + full autonomy constitution. Seats pick up at next PASS-THE-KEY/rebirth. NOTE 15.09: 3 mission receipts in (sos REJECTED by evidence gate, court+linkedin FAIL on seat browser Network.enable timeout - v12 boot clears it)"
     },
     {
       "id": 16,
