@@ -1,0 +1,76 @@
+{
+ "checked_at": "2026-09-16T18:06:36Z",
+ "law": "free-only. re-probe weekly or on 2 consecutive lane failures.",
+ "lanes": [
+  {
+   "lane": "kilo-cli",
+   "via": "relay /agent kilo -m kilo/kilo-auto/free",
+   "model": "kilo/kilo-auto/free",
+   "alive": true,
+   "note": "E2E RC=0 16.09, keyless auto-routing free"
+  },
+  {
+   "lane": "agy-cli",
+   "via": "local agy -p --model gemini-3.8-flash-low",
+   "model": "gemini-3.8-flash-low",
+   "alive": "UNVERIFIED-:FRESH-ID",
+   "note": "roster id google/gemini-3.6-flash-low died 16.09; bare 3.8 id listed, probe before use"
+  },
+  {
+   "lane": "nvidia",
+   "base": "https://integrate.api.nvidia.com/v1/chat/completions",
+   "model": "nvidia/nemotron-3-ultra-550b-a55b",
+   "alive": false,
+   "latency_s": 0.0,
+   "note": "The read operation timed out"
+  },
+  {
+   "lane": "nvidia",
+   "base": "https://integrate.api.nvidia.com/v1/chat/completions",
+   "model": "nvidia/nemotron-3-super-120b-a12b",
+   "alive": true,
+   "latency_s": 3.2,
+   "note": "{\"id\": \"chatcmpl-0d5af40a-3e43-4c93-b1b7-dcab247d5504\", \"choices\": [{\"index\": 0, \"message\": {\"conten"
+  },
+  {
+   "lane": "tokenrouter",
+   "base": "https://api.tokenrouter.com/v1/chat/completions",
+   "model": "z-ai/glm-5.3-free",
+   "alive": false,
+   "latency_s": 0.0,
+   "note": "HTTP Error 503: Service Unavailable"
+  },
+  {
+   "lane": "b_ai",
+   "base": "https://api.b.ai/v1/chat/completions",
+   "model": "qwen3.8-flash",
+   "alive": false,
+   "latency_s": 0.0,
+   "note": "HTTP Error 400: Bad Request"
+  },
+  {
+   "lane": "b_ai",
+   "base": "https://api.b.ai/v1/chat/completions",
+   "model": "hy3",
+   "alive": false,
+   "latency_s": 0.0,
+   "note": "HTTP Error 400: Bad Request"
+  },
+  {
+   "lane": "openrouter",
+   "base": "https://openrouter.ai/api/v1/chat/completions",
+   "model": "nvidia/nemotron-3.5-lightning:free",
+   "alive": false,
+   "latency_s": 0.0,
+   "note": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "lane": "openrouter",
+   "base": "https://openrouter.ai/api/v1/chat/completions",
+   "model": "liquid/lfm-2.5-2.6b:free",
+   "alive": false,
+   "latency_s": 0.0,
+   "note": "HTTP Error 429: Too Many Requests"
+  }
+ ]
+}
