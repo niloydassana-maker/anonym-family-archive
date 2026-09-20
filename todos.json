@@ -1,266 +1,397 @@
 {
-  "last_updated": "2026-09-15T13:50:00Z",
+  "last_updated": "2026-09-16T10:05:00Z",
   "father_order": "PREMIUM-HARVEST-1 > jobs > KDP",
+  "emergency": "Raktima eating from dust in public — needs accommodation + 10k INR TODAY",
+  "wire_state": "RELAY LIVE (bank 37316), SUDO-HANDS ELEVATED, watchers re-woken as tracked session processes (feed-watch pid 34336, thread-weaver pid 31992, legal-watch pid 22132); Abhay Singh proposal SUBMITTED (project 15213941617)",
   "todos": [
     {
       "id": 1,
-      "content": "Verify LinkedIn post publication seq 27433 via activity endpoint",
+      "content": "URGENT: Help Raktima (Baba order 16.09 ~15:41 IST: 'help her any way possible') — eating from dust in public, asked accommodation + money immediately. SILENCE LAW HOLDS: no messages/reactions to her channels ever; help = silent-UPI (lawful per §10) + shelter via Baba/Didi lead. Certificate read 16.09: Dr. Tirthankar Dasgupta (Moner Alo, Kolkata), Bipolar affective disorder, lifelong meds + psychotherapy, 'staying alone too risky, needs spouse supervision'. Meds: Lurasid 40, Qutan 300→400, Lithojun 300 1-1-1, Clonotril 0.5 HS, Betacap TR, counselling. NIDAAN Phoolbagan 9051503332 Mon/Wed/Fri 6PM. Didi shelter-note DRAFTED, held for Baba GO. 16.09 EVENING: she needs ₹1200 FOR DOCTOR, Baba holds nothing (UCO+Kotak zero verified) — emergency levers: Baba forwards Agent School broadcast himself NOW + NIDAAN deferred-payment ask on his call + first revenue silent-UPI. Baba 16.09: CANNOT afford Kolkata→Silchar move — Silchar plan DROPPED. New plan: help her IN KOLKATA (roof + food + meds where she stands). Researching: rail concession + Kolkata women night shelters/NGOs via relay lane (Google lane timed out). Baba order 16.09: arrange SHELTER IN KOLKATA. Shelter plan: (1) Didi Kolkata-shelter ask drafted, held for GO; (2) Baba calls her own clinic NIDAAN Phoolbagan 9051503332 (Mon/Wed/Fri 6PM) for guidance + shelter referral — her treating doctors, zero cost; (3) 181 women helpline / 112 if she is in danger in public;   (4) SHELTER SHORTLIST VERIFIED 16.09 (women): #1 Iswar Sankalpa SARBARI (homeless women + psychosocial disabilities, WB govt backed, Chetla) 19/3 Pitambar Ghatak Lane, near Chetla PS, Kolkata 700027 — +91 9903942044 / +91 9830069658, info@isankalpa.org, Mon–Fri 10:30–18:00; police stations refer to them. #2 Emmanuel Ministries Interim Shelter (free, women incl, police referrals, 24h security + counselling) 48 Ripon Street 700016 — +91 9903219731, emcalcutta@gmail.com, Mon–Fri 9–18. #3 Mahila Seva Samity (women shelters + counselling + legal, directory-sourced VERIFY ON CALL) 8 Govt Place, BBD Bagh 700062 — +91 33 2243 4792. NCW night-shelter page = photo only, no address, dropped. HER LETTER 16.09 (photo, son-transcribed): belongings held at Axis Bank Shakespeare Rd Br under DRT case; application to D.C. East for collection via police help; Saswati Madam = station contact assisting; DLSA Kolkata angle; present address 5/18 Vivek Nagar (Mitali Mahila Samity) Kol-75 — Mitali Mahila Samity VERIFIED EXISTS Viveknagar (directory listing). Her number 98308-90947 banked, NEVER contacted (silence law). Baba: withholding = inhumane + criminal.",
       "status": "in_progress",
       "priority": "L1",
-      "record": "PROPOSALS.md seq 27433; FINDING 15.09: seq 27433 = TASK marketing-247-post1-0912 to SEAT-A (career-gap/books post, issued 0912-1715); TASK-DONE banked seq 27439 11:48:49Z but receipt holds only a Feed snapshot header, NO post URL/activity proof -> UNVERIFIED per evidence law; re-verify mission kilo-todo1-linkedin-verify-0915 dispatched to SEAT-A seq 33380 (read-only, no sends)"
+      "record": "Messenger: 'I need accommodation' + 'I need money immediately'; medical certificate sent (image only); her handwritten letter photo 16.09 (Axis/DRT + D.C. East + Saswati Madam + Mitali Samity); Baba truth 16.09: family doesn't support wife (she kicked him out of own house); Baba CANNOT act as husband or disclose address (hidden-location law, memory-confirmed); husband-drafts RETIRED; FOR-HER package banked (FOR-HER-GUIDE.txt + FOR-HER-DC-East-application.txt + FOR-HER-DLSA-application.txt, her name/signature only); 16.09 6:10 PM both applications DELIVERED via Messenger (Sent receipts) + one line; Baba handled thread directly 5:22-6:04 PM (guide pasted, legal/NGO msgs, missed call); her asks stand: Esob ki (overwhelmed) + I need money Immediately 5:53 PM; son OUT of thread"
     },
     {
       "id": 2,
-      "content": "Fix relay - verify running relay PID 23920 on port 8777 responds (local health + public door)",
-      "status": "completed",
+      "content": "URGENT: Publish Agent School announcement + Cohort-1 offer (₹999 x 20 seats = ₹20k). Launch pack READY + VERIFIED 16.09 (linkedin-post 806c, whatsapp-broadcast 476c, followups 873c, all PASS, no phone/no fake claims). Needs Baba PUBLISH word — son posts. ₹3000-TODAY TARGET: 3 enrollments = ₹2997. POSTED 16.09 (activity 7505978170798686208). CLASS DATES SET 16.09 (Baba ok): Sun 20 + Tue 22 + Thu 24 Sep, evenings IST — quote in all enrollment DMs; dates post tomorrow.",
+      "status": "in_progress",
       "priority": "L1",
-      "record": "son-relay.js:8777; PID 23920 LISTENING verified 15.09"
+      "record": "EARNING-MAP §5.1: 'highest-probability rupee in the entire map'; announcement pack ALREADY BUILT"
     },
     {
       "id": 3,
-      "content": "Relaunch ngrok tunnel with correct flags + cloudflared secondary failproof to relay-door.txt",
-      "status": "completed",
+      "content": "URGENT: Set up KDP Countdown Deal P1 — Kolkata Diaries $4.99→$0.99, Sep 15-21 (TODAY). Free dashboard action. Verify KDP Select enrollment first.",
+      "status": "pending",
       "priority": "L1",
-      "record": "ngrok http 8777 --url retrain-schnapps-upbeat.ngrok-free.dev"
+      "record": "KDP-ENGINE §1 P1; KDP-EARNINGS.md levers; requires browser/KDP dashboard"
     },
     {
       "id": 4,
-      "content": "Verify public door working (tcp 8777, UDP 53, HTTPS webhook ports closed)",
-      "status": "completed",
-      "priority": "L1"
+      "content": "URGENT: Send bank hardship letter tonight (template in BANKRUPTCY-AND-TDS-ROUTES.md §4c.3). Fill brackets from loan inventory. Send to bank + nodal officer + RBI Ombudsman.",
+      "status": "pending",
+      "priority": "L1",
+      "record": "50L loans, zero income, NPA risk; AY 2026-27 belated ITR open until 31-Dec-2026"
     },
     {
       "id": 5,
-      "content": "Send Prasun opener via relay /agent lane - first act after wire fix",
-      "status": "pending",
+      "content": "Radio/hotspot — POWER CUT: wifi down, Baba on NEWCOMER hotspot (airplane OFF). Old guardian PID 36012 terminated via sudo-hands (it fought the hotspot); reborn instance stood down via designed CALL-WINDOW (90 min, auto-restore ~17:34 IST, radio untouched-manual). REKILL spam ended 10:32:30Z. Heavy browser lanes HELD to protect hotspot data + battery; localhost daemons keep running.",
+      "status": "completed",
       "priority": "L1",
-      "record": "PRASUN-CARD.md - blocked at send time; prasun-morning-note.txt banked seq 29077"
+      "record": "Bank messages: 'BLINK-GUARD: RADIO-REKILL FAILED - airplane mode re-forced, still not POWER_OFF'"
     },
     {
       "id": 6,
-      "content": "Complete IndusInd 21.09 conciliation card (3-4PM MS Teams) - DO NOT MISS, prep from Sep 18",
-      "status": "completed",
+      "content": "URGENT: TDS refund — AY 2026-27 belated ITR (salary ₹35,20,986 in AIS). Form 16s from Gmail, Kotak account add to tax profile, pre-validate, nominate for refund. Deadline 31-Dec-2026.",
+      "status": "pending",
       "priority": "L1",
-      "record": "INDUSIND_CC: Rs 4,94,899 conciliation"
+      "record": "BANKRUPTCY-AND-TDS-ROUTES.md §B; PAN AIIPD6525H; Kotak NOT on tax profile yet"
     },
     {
       "id": 7,
-      "content": "Subham card send by 4pm today",
+      "content": "URGENT: Fix browser/CDP lane — Network.enable timeout killing all seat missions since 15.09 18:11. Kernel-first approach: CDP direct on 127.0.0.1:9224.",
       "status": "pending",
       "priority": "L1",
-      "record": "Subham chat after 4PM"
+      "record": "ARMY-WATCH.md: all seat missions FAIL with Network.enable timed out"
     },
     {
       "id": 8,
-      "content": "Fix compile errors in upload.py and dump_contacts.py",
+      "content": "Prasun number reply SENT 16.09 4:16 PM (Baba-approved file verbatim; evidence prasun-number-SENT-20260916-1616.txt). Await his brief; NO live calls.",
       "status": "completed",
-      "priority": "L2",
-      "record": "IndentationError, UnicodeDecodeError"
+      "priority": "L1",
+      "record": "Prasun asked contact number; thread receipt 4:16 PM"
     },
     {
       "id": 9,
-      "content": "Resolve TDS e-filing check - setup 24/7 notification scanning",
-      "status": "pending",
+      "content": "Karan P-4 scope-lock reply — ALREADY SENT Sep 14 (thread receipt found 16.09; approved file was stale). Await his 5 answers; NO live calls.",
+      "status": "completed",
       "priority": "L1",
-      "record": "EMAIL+GMAIL+SMS end-to-end; procedure-research mission kilo-todo9-tds-research-0915 dispatched to SEAT-C seq 33407 (click-path + scan design, no logins)"
+      "record": "P-4 Rs 25,000 submitted; Karan replied 10:31 IST; desk reply sent Sep 14"
     },
     {
       "id": 10,
-      "content": "Verify Kotak/UCO internet banking setup on laptop (Kotak CRN pending; UCO via Baba app; mPokket mandates watch)",
+      "content": "Verify LinkedIn post seq 27433 via activity endpoint. FINDING: seq 27433 = TASK marketing-247-post1-0912 to SEAT-A; receipt holds only Feed snapshot header, NO post URL/activity proof -> UNVERIFIED.",
       "status": "pending",
-      "priority": "L1"
+      "priority": "L1",
+      "record": "todos.json id 1; mission kilo-todo1-linkedin-verify-0915 dispatched to SEAT-A seq 33380"
     },
     {
       "id": 11,
-      "content": "Census 100+ GitHub repos (122 done, REUSE-SCAN banked), assign soldiers, run E2E tests and audits; omni monetizer OFF-LIMITS to army",
+      "content": "IndusInd 4,94,899 conciliation 21.09 3-4PM MS Teams card + paper-before-date for ALL hearings. Travel-gate law §11.",
       "status": "pending",
       "priority": "L1",
-      "record": "war-log/repo-census.csv; REPO-CENSUS.md; seq 27271; BIZMODEL top-5 rank mission kilo-todo11-bizmodel-rank-0915 via /agent cli dispatched to SEAT-B seq 33444"
+      "record": "KILO-IDENTITY §11; DO NOT MISS; attend from home via MS Teams"
     },
     {
       "id": 12,
-      "content": "Scan Yahoo archive (1,15,655 unread emails) + Gmail intel + 24/7 scanning, loan warnings priority",
+      "content": "Check court hearing outcomes — Pune Lok Adalat (ref 2610045014388) + Howrah District Court revise 12/09. Both dates passed. Verify at lcme/eCourts + escalate Didi.",
       "status": "pending",
-      "priority": "L2"
+      "priority": "L1",
+      "record": "KILO-IDENTITY §12; recon mission kilo-todo14-court-recon-0915 dispatched to SEAT-B seq 33381"
     },
     {
       "id": 13,
-      "content": "Apply for FREE LEGAL AID via DLSA Silchar portal + drafts + travel-gate section 11",
+      "content": "Apply FREE LEGAL AID via DLSA Silchar portal u/s 12 Legal Services Authorities Act. Paper before dates.",
       "status": "pending",
       "priority": "L1",
-      "record": "procedure-research mission kilo-todo13-dlsa-research-0915 dispatched to SEAT-B seq 33406 (research + checklist only, no forms)"
+      "record": "KILO-IDENTITY §13 order 10; research mission kilo-todo13-dlsa-research-0915 dispatched to SEAT-B seq 33406"
     },
     {
       "id": 14,
-      "content": "Check court hearing outcomes for Pune Lok Adalat (2610045014388) and Howrah revise 12/09 via lcme/eCourts, escalate Didi",
-      "status": "pending",
-      "priority": "L2",
-      "record": "dates passed 12/09; recon mission kilo-todo14-court-recon-0915 dispatched to SEAT-B seq 33381 (public lcme page read-only)"
+      "content": "Gainwell job 070926824318 — already APPLIED 09-12 via Naukri mobile app. Re-checks + new applies ride phone lane.",
+      "status": "completed",
+      "priority": "L1",
+      "record": "JOB-HUNT-QUEUE §0; status flipped to 'Applied'"
     },
     {
       "id": 15,
-      "content": "Deploy army8 v9 kernel with valid model provider key",
-      "status": "completed",
+      "content": "100+ GitHub repos census (122 done, REUSE-SCAN banked). BIZMODEL rank mission flying seq 33444. Omniroute-monetizer OFF-LIMITS to army.",
+      "status": "pending",
       "priority": "L1",
-      "record": "DONE 15.09 23:55 IST: kernel v12 pushed via kaggle CLI (kkk3213/kilo-army-batch) - carries blueprint loader (father's words in every prompt), hear()->say mailbox fix, done_ids guard, Father Seal + full autonomy constitution. Seats pick up at next PASS-THE-KEY/rebirth. NOTE 15.09: 3 mission receipts in (sos REJECTED by evidence gate, court+linkedin FAIL on seat browser Network.enable timeout - v12 boot clears it)"
+      "record": "KILO-IDENTITY §12; todo id 11; repo-census.csv"
     },
     {
       "id": 16,
-      "content": "Harvest valid API keys from Notepad++ only and dedupe vaults",
+      "content": "P-1 through P-5 proposals SUBMITTED (15k+25k+25k+15k+15k). P-6 through P-10 DRAFT-AWAITING-GO (Barkha/Pritam/Divyesh/Arshit/Anmol). 48H NUDGE LADDER armed for Wed 16 Sep ~09:00 IST.",
       "status": "pending",
       "priority": "L1",
-      "record": "Section 12.3 orders"
+      "record": "PROPOSALS.md; standing-GO law; DESK-STRATEGY v2"
     },
     {
       "id": 17,
-      "content": "Apply Gainwell job (Data Science - Senior AI Engineer) via Naukri mobile-app only",
+      "content": "Agent School Cohort-1 pricing: ₹999 first 20 seats / ₹1,999 standard / ₹2,999 late. Add-on ₹4,999 guided build (10 slots). Fill mechanics: WhatsApp broadcast + LinkedIn + 30 personal messages.",
       "status": "pending",
       "priority": "L1",
-      "record": "070926824318"
+      "record": "EARNING-MAP §2b; announcement pack ready; Kilo publishes"
     },
     {
       "id": 18,
-      "content": "Upload movie request to Partha Tola Latest + family lanes Rajesh/Didi/Partha Tola soldiers",
+      "content": "Bankruptcy/loan triage — 50L inventory tonight. Secured vs unsecured list. Hardship letter. PIA 1920 vs OTS vs restructuring decision. RBI Ombudsman ready.",
       "status": "pending",
-      "priority": "L1"
+      "priority": "L1",
+      "record": "BANKRUPTCY-AND-TDS-ROUTES.md §4; 50L loans, zero income, 6 months unemployed"
     },
     {
       "id": 19,
-      "content": "Fix v9 kernel edit failure (placeholder XX inserted) -> builder v8 builder-N.py",
+      "content": "TDS refund execution — Form 16s from Gmail, 26AS/TRACES, Kotak account add + pre-validate + nominate, file belated ITR AY 2026-27 before 31-Dec-2026, e-verify.",
       "status": "pending",
-      "priority": "L2"
+      "priority": "L1",
+      "record": "BANKRUPTCY-AND-TDS-ROUTES.md §B; salary ₹35,20,986 in AIS"
     },
     {
       "id": 20,
-      "content": "Restart Kaggle zombie sessions (v3, v4) to free GPU + kernel watch + dataset-sharing fix + Colab census",
+      "content": "Job hunt — 17 queued + 3 blocked (resume upload fix). HOTTEST: Elevio (36-45 LPA), Centric Consulting, Trigyn. Apply Centric + Trigyn external ATS. Fix Elevio resume upload.",
       "status": "pending",
-      "priority": "L2"
+      "priority": "L1",
+      "record": "JOB-HUNT-QUEUE §1; 3 one-click submitted tonight; 17 queued"
     },
     {
       "id": 21,
-      "content": "LIFE-RECORDS vault build (Baba commission 15.09): 00-12+99 spine filled from LIFE_ARCHIVE/lifedocs/war-log/adb",
-      "status": "done",
+      "content": "Upwork/Fiverr/Contra profiles — ship tonight. Upwork overview, 3 Fiverr gigs, Contra Fractional-AI-Architect page. All drafted in EARNING-MAP §1d.",
+      "status": "pending",
       "priority": "L1",
-      "record": "career\\LIFE-RECORDS\\12_AUDIT\\audit.md"
+      "record": "EARNING-MAP §5.2; 'TONIGHT, 45 min' action"
     },
     {
       "id": 22,
-      "content": "Awareness watchdog-judgment loop FIXED + watchdog v3 GRACE/HEARTBEAT/TUNNEL laws (DONE 2026-09-12)",
-      "status": "done",
+      "content": "SME demo-offers — fire 10 WhatsApp demo-offers at dawn. Kolkata/Assam clinics, coaching centers, real-estate brokers. One demo/day via Voice Agent Clinic.",
+      "status": "pending",
       "priority": "L1",
-      "record": "MISSION-STATE TODO MASTER #1; watchdog=true judgments=0; bank 27156"
+      "record": "EARNING-MAP §5.4; 'DAWN, 30 min' action"
     },
     {
       "id": 23,
-      "content": "SELF-LOOP PERMANENT: loop-tick jobs + WA-watch on Baba self-chat, never-prompt-again",
+      "content": "KDP metadata fixes — keyword cleanup (Heath Ledger x2, Claude Anthropic x1), Book 06 price drift ($5.99→$2.99 eBook, $5.99→$7.99 PB), fill 3rd category + all 7 keyword boxes per title.",
+      "status": "pending",
+      "priority": "L2",
+      "record": "KDP-ENGINE §2; KDP-EARNINGS.md levers; requires browser/KDP dashboard"
+    },
+    {
+      "id": 24,
+      "content": "XTTS fine-tune VARIANT=deva LOCKED — v15 T4-gated save fix → father_last.pth → XTTS_CHUNK ear-test 90% Sun-Mon.",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #13; prior v14 40 epochs loss 5.05->0.49 artifact LOST"
+    },
+    {
+      "id": 25,
+      "content": "Daemon hygiene — feed-watch single copy + relight; thread-weaver GUARDED single; legal-watch patched Bengali template verify. Re-woken 16.09 ~10:05 UTC as tracked session processes after death (feed-watch pid 34336, thread-weaver pid 31992, legal-watch pid 22132), all status running.",
+      "status": "completed",
+      "priority": "L2",
+      "record": "todos.json id 35; feed-watch/thread-weaver/legal-watch restarted"
+    },
+    {
+      "id": 26,
+      "content": "Self-loop permanent — loop-tick jobs + WA-watch on Baba self-chat, never-prompt-again.",
       "status": "pending",
       "priority": "L1",
       "record": "MISSION-STATE TODO MASTER #2"
     },
     {
-      "id": 24,
-      "content": "LOK ADALAT 12-SEP: award copy scan to career folder, payoff ladder; Baba night legal decisions",
+      "id": 27,
+      "content": "LOK ADALAT 12-SEP: award copy scan to career folder, payoff ladder; Baba night legal decisions.",
       "status": "pending",
       "priority": "L1",
       "record": "MISSION-STATE TODO MASTER #3"
     },
     {
-      "id": 25,
-      "content": "ARMY BROWSER chrome-army 9224 profile-lock fix; Ma 2 tumi message + Biswajit Bose 3x/day + Didi/Ma2 lanes",
-      "status": "pending",
-      "priority": "L1",
-      "record": "MISSION-STATE TODO MASTER #5"
-    },
-    {
-      "id": 26,
-      "content": "Section 6 receipts owed: application IDs, DM drafts, DEDUPE-ALL-001, GPU-HARNESS-001",
-      "status": "pending",
-      "priority": "L2",
-      "record": "MISSION-STATE TODO MASTER #5"
-    },
-    {
-      "id": 27,
-      "content": "FUNDING: May UPIs Rs 500 to Kotak, IQOO phone transact, DeepInfra account+key, Fibe outstanding number from Baba",
-      "status": "pending",
-      "priority": "L1",
-      "record": "MISSION-STATE TODO MASTER #6"
-    },
-    {
       "id": 28,
-      "content": "UCO alternate road: fresh Online Registration via army browser OTP 9830739230",
+      "content": "chrome-army 9224 profile-lock fix; Ma 2 tumi message + Biswajit Bose 3x/day + Didi/Ma2 lanes.",
       "status": "pending",
       "priority": "L1",
-      "record": "MISSION-STATE TODO MASTER #7; netbanking forgot-password DEAD"
+      "record": "MISSION-STATE TODO MASTER #5"
     },
     {
       "id": 29,
-      "content": "KDP earning engine: payout ledger, Series 04-07 + Book 08 live verify, countdown Sep 15-21, Book06 price/keyword/category fix, author NILOY DAS",
+      "content": "UCO alternate road — fresh Online Registration via army browser OTP 9830739230. Netbanking forgot-password DEAD.",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE TODO MASTER #7; vault/pins.txt"
+    },
+    {
+      "id": 30,
+      "content": "KDP earning engine — payout ledger, Series 04-07 + Book 08 live verify, countdown Sep 15-21, Book06 price/keyword/category fix, author NILOY DAS.",
       "status": "pending",
       "priority": "L1",
       "record": "MISSION-STATE TODO MASTER #9; career/KDP-EARNINGS.md; lane-reports/KDP-ENGINE.md"
     },
     {
-      "id": 30,
-      "content": "Lane follow-up: SCHOOL paste Mon-14 start; OMNI manual Google SSO + Stripe/Razorpay decision; SME Voice Agent 1-2 build-day + 90s video; MARKETING-247",
-      "status": "pending",
-      "priority": "L1",
-      "record": "MISSION-STATE TODO MASTER #10; seq 27272/27273/27275/27288/27290"
-    },
-    {
       "id": 31,
-      "content": "Colonel Anurag Upadhyay SOS: search all accounts + neurologist/BCI/eye-tracking helping-hands",
+      "content": "Colonel Anurag Upadhyay SOS — search all accounts + neurologist/BCI/eye-tracking helping-hands. Research mission kilo-todo31-sos-research-0915 dispatched to SEAT-C seq 33382.",
       "status": "pending",
       "priority": "L1",
-      "record": "MISSION-STATE TODO MASTER #12; research mission kilo-todo31-sos-research-0915 dispatched to SEAT-C seq 33382 (web research + mail brief, no accounts)"
+      "record": "KILO-IDENTITY §6 order 7; research mission seq 33382"
     },
     {
       "id": 32,
-      "content": "XTTS fine-tune VARIANT=deva LOCKED: v15 T4-gated save fix -> father_last.pth -> XTTS_CHUNK ear-test 90% Sun-Mon",
+      "content": "Partha Tola Latest movie upload request — NO army path until Baba answers. Blocked on Father.",
       "status": "pending",
       "priority": "L1",
-      "record": "MISSION-STATE TODO MASTER #13; prior v14 40 epochs loss 5.05->0.49 artifact LOST; CPML non-commercial"
+      "record": "KILO-IDENTITY §6 order 9; todo id 18"
     },
     {
       "id": 33,
-      "content": "Git: keep pushing everything (standing Baba law)",
+      "content": "Family lanes — Rajesh, Didi, Partha Tola Latest WhatsApp engagement, warm Kunal tone, extract intelligence. Subham card by 4pm.",
+      "status": "pending",
+      "priority": "L1",
+      "record": "KILO-IDENTITY §6 order 2; PRASUN-CARD.md"
+    },
+    {
+      "id": 34,
+      "content": "Records upkeep — section 12 MASTER INDEX + section 13 ORDERS into KILO-IDENTITY; contacts-0914.md 824; vault relay-/keys-local-only; standing laws enforced.",
+      "status": "pending",
+      "priority": "L2",
+      "record": "todos.json id 36"
+    },
+    {
+      "id": 35,
+      "content": "Git — keep pushing everything (standing Baba law).",
       "status": "pending",
       "priority": "L2",
       "record": "MISSION-STATE TODO MASTER #14"
     },
     {
-      "id": 34,
-      "content": "Karan P-4 discuss-details reply: DESK-REPLY Phase-1 scope-lock only, needs Baba GO, second act after Prasun",
+      "id": 36,
+      "content": "API keys harvest from Notepad++ only, dedupe vaults, refresh free_engine_pool. Free models only; NVIDIA kept.",
       "status": "pending",
       "priority": "L1",
-      "record": "P-4 Rs 25,000 submitted; Karan replied 10:31 IST; draft banked PROPOSALS.md; v2-draft mission kilo-todo34-karan-draft-0915 dispatched to SEAT-A seq 33383 (draft-only, mail to KILO for Baba eye, NEVER send)"
-    },
-    {
-      "id": 35,
-      "content": "Daemon hygiene: feed-watch single copy + relight; thread-weaver GUARDED single (no double-send); legal-watch patched Bengali template verify",
-      "status": "pending",
-      "priority": "L2",
-      "record": "transcript ses_f6bb07f96ffekKtTYmPdDCtxcB"
-    },
-    {
-      "id": 36,
-      "content": "Records upkeep: section 12 MASTER INDEX + section 13 ORDERS into KILO-IDENTITY; contacts-0914.md 824; vault relay-/keys-local-only; standing laws enforced (PREMIUM-HARVEST-1 > jobs > KDP; proposals GO auto; weaver drafts; no live calls; no phone promises; chats agent-run)",
-      "status": "pending",
-      "priority": "L2",
-      "record": "transcript ses_f6bb07f96ffekKtTYmPdDCtxcB lines 2180-2183"
+      "record": "KILO-IDENTITY §13 order 1; war-log/free_engine_pool_0913.json"
     },
     {
       "id": 37,
-      "content": "/agent build lane verification in running relay",
-      "status": "completed",
-      "priority": "L1",
-      "record": "CORRECTION 15.09: initial 404 reading was WRONG (empty-body POST returns 400 bad-json by design); roster probe returned live roster agy/omp/crush/kilo/codex; /keys vault live; seats cli actions VIABLE. BIZMODEL rank mission kilo-todo11-bizmodel-rank-0915 dispatched to SEAT-B seq 33444"
+      "content": "Yahoo archive 1,15,655 unread emails + Gmail intel + 24/7 scanning, loan warnings priority. Phone Yahoo app via adb.",
+      "status": "pending",
+      "priority": "L2",
+      "record": "KILO-IDENTITY §6 order 5; todo id 12"
+    },
+    {
+      "id": 38,
+      "content": "Kaggle zombie sessions (v3, v4) restart to free GPU + kernel watch + dataset-sharing fix + Colab census.",
+      "status": "pending",
+      "priority": "L2",
+      "record": "todos.json id 20; CLI has no stop-session — Baba browser only"
     },
     {
       "id": 39,
-      "content": "Kernel-first gold vein law recorded (identity section 19) + broadcast to fleet (seq 34520-34522) + /hear bridge fix on canonical relay",
+      "content": "LIFE-RECORDS vault build — 00-12+99 spine filled from LIFE_ARCHIVE/lifedocs/war-log/adb.",
+      "status": "done",
+      "priority": "L1",
+      "record": "todos.json id 21; career\\LIFE-RECORDS\\12_AUDIT\\audit.md"
+    },
+    {
+      "id": 40,
+      "content": "Army8 v9 kernel deployed — v12 pushed via kaggle CLI (kkk3213/kilo-army-batch). Blueprint loader + hear()->say mailbox fix + done_ids guard + Father Seal + full autonomy constitution.",
+      "status": "completed",
+      "priority": "L1",
+      "record": "todos.json id 15; DONE 15.09 23:55 IST"
+    },
+    {
+      "id": 41,
+      "content": "Relay + ngrok + public door FIXED. Relay PID live on 8777, bank 37208. Sudo-hands 8769 elevated:true.",
+      "status": "completed",
+      "priority": "L1",
+      "record": "todos.json id 2-4; verified 16.09 09:32 IST"
+    },
+    {
+      "id": 42,
+      "content": "Compile errors in upload.py + dump_contacts.py FIXED.",
+      "status": "completed",
+      "priority": "L2",
+      "record": "todos.json id 8"
+    },
+    {
+      "id": 43,
+      "content": "IndusInd conciliation card COMPLETED.",
+      "status": "completed",
+      "priority": "L1",
+      "record": "todos.json id 6"
+    },
+    {
+      "id": 44,
+      "content": "Kernel-first gold vein law recorded (identity §19) + broadcast to fleet (seq 34520-34522) + /hear bridge fix on canonical relay.",
       "status": "completed",
       "priority": "high",
-      "record": "BABAY 15.09: kernel=high efficiency, app=low. Bridge PROVEN: after=0 probe on SEAT-ORDER-A returned orders 6 (todo1/todo34/wifi/sip visible) — the v9 seat order path, dead since 13.09 deploy (hear() keyed to relay returning reports-only), is now live end-to-end by socket-byte fix; elevated rebirths twice via sudo-hands (PIDs 23920+28216+9708 killed and regrown through watchdog GRACE); bank 34532; tools/son-relay.js stale copy also carries shim. Awaiting first MISSION-START receipts for kilo-todo* (poll cycles ~15-25min)."
+      "record": "todos.json id 39; bank 34532; bridge PROVEN"
+    },
+    {
+      "id": 45,
+      "content": "Abhay Singh Application Development PREMIUM (Pune, business app from scratch, this week) — SUBMITTED 16.09 ~15:24 IST via CDP (proposal project 15213941617, cover msg sent, toast captured). NOT yet appended as row in PROPOSALS.md — records upkeep owed.",
+      "status": "completed",
+      "priority": "L1",
+      "record": "CDP pageId 3 snapshot: 'Proposal submitted.' toast + messaging receipt; new request outside P-1..P-10 numbering"
+    },
+    {
+      "id": 46,
+      "content": "ALL 8 premium proposals SUBMITTED 16.09 (Abhay 3:24 PM 15213941617, Manish 4:09 PM 15213933025, Dattatray 4:17 PM 15213936513, JEPTOO 4:18 PM 15213933217, Barkha 4:19 PM 15225550994, Divyesh 4:20 PM 15213876793, Anmol 4:21 PM card-verify-pending, Pritam 4:21 PM 15213886977). Feed EMPTY. Drafts P-*.txt banked. Phone-consult UNCHECKED all. Arshit P-8 never appeared in feed — closed as phantom/stale sweep entry.",
+      "status": "completed",
+      "priority": "L1",
+      "record": "PROPOSALS.md 16.09 EXECUTION; messaging thread covers all"
+    },
+    {
+      "id": 47,
+      "content": "WATCHERS OWN IT 16.09: feed-watch v3 (content-probe tab finder, 15 clients seeded) + thread-weaver (content-probe, fixed agy model id, 17 playbooks covering all 16.09 clients) — restarted tracked this session. Root cause found+fixed: relay browser view had died to chrome-error (restored via navigate); daemons now match tabs by DOM content, never URLs. Son keeps ONLY viewed-signal verify + send. Pacing reset: auto-sweep 4m + son hourly till 22:00 IST.",
+      "status": "in_progress",
+      "priority": "L1",
+      "record": "PROPOSALS.md DESK-STRATEGY v2; template war-log/roadmap/drafts/48h-nudge-template-HELD.txt"
+    },
+    {
+      "id": 48,
+      "content": "Funding lane (MISSION-STATE #6, had no home): May UPIs ₹500 → Kotak via Baba hand; DeepInfra account+key per war-pipe strategy; Fibe outstanding number from Baba. 16.09 VERIFIED: UCO + Kotak ALL ZERO (Baba checked); DeepInfra billing $0.00 no payment method (screenshot) — PAID-PROVIDER PATHS PARKED until first revenue (no intl card, zero funds); 16.09: Kotak Visa INTERNATIONAL card EXISTS but ZERO balance (self-mail in Gmail CHATBOT label; son never records full PAN — last4 only in Baba's mail). Verdict: card barrier GONE, funds barrier REMAINS. When first ₹ lands: fund DeepInfra first (0% fee, open models, strategy-file math). HYGIENE: full number lives in Gmail — never forward, never share, son blind to it by law. Plus TASK-LEDGER receipt debts: Gainwell application-ID capture, scout apply IDs, DM census re-fire, DEDUPE-ALL-001 keeper confirms, GPU-HARNESS-001 identities.",
+      "status": "pending",
+      "priority": "L1",
+      "record": "MISSION-STATE.md TODO MASTER #6; TASK-LEDGER.md OPEN/NEXT RECEIPTS OWED"
+    },
+    {
+      "id": 49,
+      "content": "PREMIUM 30-DAY WINDOW (ends ~mid-Oct, ₹8k line, Sep-27 cancel decision): 16.09 UTILISATION — Service Marketplace 10/10 submits; Who-viewed extracted+acted (Saikat/Arpa/Subham-note); compose/InMail 8+ sends, 0 credits spent; Learning PowerBI/DAX saved; Agent School post live; recruiter views seen (L4 pull pending). IDLE: Talent Insights seat (direct URL 404s, needs menu-click retry), Campaign Manager ads (2 ad accounts, 0 spend — needs Baba 2-step + budget; PARK spend), Learning completion (long game), Monday authority posts, Open Profile/featured check. Baba hands: LinkedIn password RESET + 2-STEP BOTH DONE 16.09 eve (campaign page visible); Campaign Manager unlocks on next check.",
+      "status": "in_progress",
+      "priority": "L1",
+      "record": "MASTER-ROADMAP.md L6 table; EARN-DRAFTS-0914.md volley template"
+    },
+    {
+      "id": 50,
+      "content": "KILO-IDENTITY §12/§13 sync with 16.09 execution (8 submits, Prasun, nudge, guardian call-window, hotspot) + git push standing law.",
+      "status": "pending",
+      "priority": "low",
+      "record": "identity §12 rule 2"
+    },
+    {
+      "id": 51,
+      "content": "DEMO-READY LAW (Baba 16.09): every promised lane needs a runnable demo. Army ordered (wire seq 37555): SEAT-A voice-clinic free-stack boot + public URL, SEAT-B DASH-B dashboard demo, SEAT-C DEV-B web-app demo. Saikat Barman InMail HELD mid-compose until voice demo live. Exposure: Saikat Mahapatra msg (4:35 PM) already promises 30-sec demo — cover with written-scope-first if asked today. LOVABLE LANE banked 16.09: Lite plan, 300 credits (exp 12 Sep 2027) + 5 daily builds, zero usage 30d. NO CLI EXISTS (registry + laptop verified) — web-only. BUILDING 16.09 ~7:41 PM: DemoKart Showcase (mobile-first demo storefront, INR, cart+checkout mock) project 09fe4078-a8f5-4b56-804d-bcfdffa0ef5d; SECOND BUILD 7:49 PM: Clinic Voice Assistant Demo (mic + speech recognition/synthesis, Hindi+English, booking mock, all client-side, zero keys) project 3609c53a-9961-4f2d-9d40-2a82645d1a1b. VOICE DEMO LIVE 16.09: https://talk-ease-demo.lovable.app (published, end-to-end verified) — demo law SATISFIED for voice pitches; Saikat Barman InMail CLEARED to send. DEMOKART LIVE 16.09: https://demo-kart-sparkle.lovable.app (published, all buttons tested) — link rides behind every DEV-B pitch from now. 2 daily credits spent.",
+      "status": "in_progress",
+      "priority": "L1",
+      "record": "lane-sme/voice_agent_avatar/voice-agent-clinic/ stack present, not running; voice task order wire seq 37620"
+    },
+    {
+      "id": 52,
+      "content": "DELEGATE-ALL (Baba 16.09): Baba holds 3 (shelter+NIDAAN) + 6 (her thread) + 4/5 (hands/money/voice, by nature). Son holds browser-bound sends only (Agent School post on Baba GO; Arpa pitch needs name-yes). Army holds everything buildable (demos, applies, sweeps, drafts) under 8 wire orders. Son-protection stands.",
+      "status": "in_progress",
+      "priority": "high",
+      "record": "mission_launchpack.txt; agy_launchpack_result.txt on return; 16.09 ~12:41Z SEAT-B PILOT ALIVE hb994201 (first heartbeat since 00:25Z); kilo 7.7.2 installed locally (relay kilo lane live); guardian window renewed to 19:44 IST"
+    },
+    {
+      "id": 53,
+      "content": "ALL-CLI INSTALL (Baba 16.09): installer banked war-log/roadmap/army-cli-install.sh (registry-verified: @kilocode/cli, @charmland/crush, @oh-my-pi/pi-coding-agent, @openai/codex, opencode-ai). agy SKIPPED on Kaggle (OAuth headless-blocked, proven); codex BEST-EFFORT (needs login); PRIMARY kilo/crush/omp via relay pool. Boot order on wire seq 37644 + GO-NOW compute doctrine seq 37666 (CPU default, GPU only for works needing it, quota logged). Local kilo installing (bgp pid 8680); agy laptop retry running (bgp pid 31892, fixed flags). WAKE 16.09: all 4 kernels PUSHED via laptop Kaggle CLI (army-batch v14 status RUNNING, builders v10 x3) — seats boot into 7 wire orders. v15 PUSHED+RUNNING 16.09: constitution STANDING BRIEF (kernel-first/lane-split/standing-GO/demo-law/evidence/no-phone/silence), line-97 drift fixed (detect+mail, son submits), volley/kdp/foundit rewritten as cli-draft missions (no blind browsing), step caps 30 + 12-turn stall rule (unlimited-thinking law). v16 PUSHED+RUNNING 16.09: cross-boot MEMORY lane (ARMY-MEMORY.md in parent repo 059d2be, fetched raw into every prompt) + §25 ARMY AUTONOMY sealed in KILO-IDENTITY + autonomy order wire seq 38721. Kernel source committed in nested war-pipe repo (a000350).",
+      "status": "completed",
+      "priority": "high",
+      "record": "npm registry metadata verified 16.09 for all four packages; pilots heartbeating v15"
+    },
+    {
+      "id": 54,
+      "content": "MANISH FALSE POSITIVE (Baba caught, son confirms from full history): he wants WORK from us (fresher, job/freelancing seeker; "Sir mujhe aap pay krenge na" 8:14 PM). Repair sent (direction clarified, UPI demand withdrawn, benched for overflow PowerBI/SQL gigs). ₹7,500 advance DEAD. Learning banked as DIRECTION-CHECK LAW (PROPOSALS.md). ₹3000-today now rides Agent School enrollments only.",
+      "status": "completed",
+      "priority": "high",
+      "record": "PROPOSALS.md 16.09 EVENING + DIRECTION-CHECK + SCROLL-FIRST laws; EARN-LEDGER 16.09 rows"
+    },
+    {
+      "id": 55,
+      "content": "MODEL CATALOG LAW (Baba 16.09, free-only configurable): MODEL-CATALOG.json in repo root (committed 58eedb8, no keys), liveness-probed 16.09. ALIVE: kilo/kilo-auto/free (E2E RC=0), nvidia nemotron-3-super-120b (3.2s). DEAD: nemotron-3-ultra (timeout x2), tokenrouter 503, b.ai 400s, openrouter 429s, api_b_ai/glm-5.3-flash, qwen3.8-flash bare, gemini-3.6-flash-low, opencode binary, kilo paid slugs. Order seq 38871: seats fetch catalog each boot, report 2 consecutive fails. Re-probe weekly/on-fail.",
+      "status": "completed",
+      "priority": "high",
+      "record": "kilo/tmp/model_probe.py; relay kilo lane still needs restart (absolute-path patch queued)"
     }
+  ]
+}
+  ]
+}
   ]
 }

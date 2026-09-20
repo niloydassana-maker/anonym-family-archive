@@ -1,0 +1,11 @@
+﻿ROOM1-PASS2 RUN 2026-09-03T00:08:19
+SmartScreen: policy ON, level=Warn
+AutoRun: OFF for all drive types
+Defender: RealTime=True Tamper=True SigAgeDays=1
+WindowsUpdate: service Stopped / Manual (ok)
+BitLocker C:     Conversion Status:    Used Space Only Encrypted
+BitLocker C:     Percentage Encrypted: 100.0%
+BitLocker C:     Protection Status:    Protection On
+BitLocker D:     Conversion Status:    Used Space Only Encrypted
+BitLocker D:     Percentage Encrypted: 100.0%
+BitLocker D:     Protection Status:    Protection On

@@ -1,0 +1,12 @@
+Some doors you knock on. Some you build.
+
+After years of building and mentoring, I am opening Agent School — Cohort 1: Build Your First AI Agent in 3 Evenings.
+
+No fluff, no theoretical lectures. 3 sessions (2 hours each), practical screen-share builds, workable templates, and full recordings. From real agent architecture to practical deployment — IVR answering, appointment booking, reminder agents, and call handling loops that actually work.
+
+Bengali, English, broken English — shob cholbe. What matters is building hands-on.
+
+First 20 seats: ₹999 (standard ₹1,999, late ₹2,999).
+Optional add-on: ₹4,999 guided build with a 1:1 review of your agent (strictly capped at 10 slots).
+
+Drop me a DM to enroll and grab one of the first 20 seats. Stay hungry, stay foolish — and let's build.

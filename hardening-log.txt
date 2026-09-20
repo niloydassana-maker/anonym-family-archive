@@ -1,0 +1,31 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260902141930
+Username: DESKTOP-2I9OUGA\Admin
+RunAs User: DESKTOP-2I9OUGA\Admin
+Configuration Name: 
+Machine: DESKTOP-2I9OUGA (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\anonym\harden-host.ps1
+Process ID: 8024
+PSVersion: 5.1.19041.7663
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.7663
+BuildVersion: 10.0.19041.7663
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is D:\anonym\hardening-log.txt
+Telemetry level set to 0 (Security)
+DiagTrack + dmwappush disabled
+Advertising ID blocked
+Activity history off
+Telemetry scheduled tasks disabled
+WiFi Sense off
+Old telemetry logs cleared
+ALL_HARDENING_DONE
+**********************
+Windows PowerShell transcript end
+End time: 20260902141935
+**********************

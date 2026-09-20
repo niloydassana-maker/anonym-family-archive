@@ -103,8 +103,19 @@ One text away. Open to WhatsApp messaging (text) — +91 86172 16163 · email: i
 
 ---
 
+## 7. AGENT SCHOOL COHORT-1 OFFER (NEW — publish with announcement)
+
+```
+AGENT SCHOOL — Cohort 1: Build Your First AI Agent in 3 Evenings
+3 × 2-hr live WhatsApp-video-free sessions (messaging/screen-share rules respected) + templates + recordings.
+First 20 seats: ₹999. Standard: ₹1,999. Late: ₹2,999.
+Add-on: ₹4,999 "guided build" — 1:1 review of their agent (10 slots max).
+Text +91 86172 16163 to enroll. No calls. No video calls.
+```
+
 ## PUBLISH RULES
 
 - Kilo publishes; no agent posts, messages, or logs in anywhere.
 - WhatsApp policy: messaging only — no voice calls, no video calls, on any channel.
 - If the number status changes again, update the standard line first, then re-derive all variants from it.
+- AGENT SCHOOL offer is the #1 money channel — publish FIRST, everything else second.

@@ -1,0 +1,4 @@
+﻿FIX-GAPS RUN 2026-09-03T00:02:15
+LLMNR EnableMulticast = 0 (expect 0)
+AdvertisingID DisabledByGroupPolicy = 1 (expect 1)
+NetBIOS NetbiosOptions = 2,2,2,2,2,2,2,2,2,2 (expect all 2)

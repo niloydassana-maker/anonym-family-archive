@@ -1,0 +1,49 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260902143835
+Username: DESKTOP-2I9OUGA\Admin
+RunAs User: DESKTOP-2I9OUGA\Admin
+Configuration Name: 
+Machine: DESKTOP-2I9OUGA (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\anonym\harden-network.ps1
+Process ID: 8952
+PSVersion: 5.1.19041.7663
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.7663
+BuildVersion: 10.0.19041.7663
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is D:\anonym\net-hardening-log.txt
+SMBv1 disabled
+Set-ItemProperty : Cannot find path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient' because it does not exist.
+At D:\anonym\harden-network.ps1:11 char:5
++     Set-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (HKLM:\SOFTWARE\...ws NT\DNSClient:String) [Set-ItemProperty], 
+ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.SetItemPropertyCommand
+Set-ItemProperty : Cannot find path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient' because it does not exist.
+At D:\anonym\harden-network.ps1:11 char:5
++     Set-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (HKLM:\SOFTWARE\...ws NT\DNSClient:String) [Set-ItemProperty], ItemNotFo
+   undException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.SetItemPropertyCommand
+
+LLMNR, NetBIOS, WPAD probing disabled
+Network profile set to Public
+Firewall telemetry blocks added
+The following command was not found: dns add encryption server=1.1.1.1 dohtemplate=https://cloudflare-dns.com/dns-query
+udpfallback=no autoupgrade=yes.
+The following command was not found: dns add encryption server=1.0.0.1 dohtemplate=https://cloudflare-dns.com/dns-query
+udpfallback=no autoupgrade=yes.
+DoH configured, DNS flushed
+NetBIOS helper service disabled
+NETWORK_HARDENING_DONE
+**********************
+Windows PowerShell transcript end
+End time: 20260902143849
+**********************

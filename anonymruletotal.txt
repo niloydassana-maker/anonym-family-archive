@@ -1,0 +1,138 @@
+**FINAL MASTER BLUEPRINT**  
+**iQOO Z7 Pro (Funtouch OS) + Jio 5G – Silchar**  
+Zero-money software core + two operational versions  
+Locked 6 September 2026
+
+---
+
+### 1. Common Setup (do once for both versions)
+
+**Enable ADB**  
+Settings → About phone → Software information → tap Build number 7 times → System management → Developer options → USB debugging.
+
+**ADB Commands** (run in PowerShell):
+
+```powershell
+adb shell settings put secure location_mode 0
+adb shell settings put secure location_providers_allowed ""
+adb shell settings put global wifi_scan_always_enabled 0
+adb shell settings put global ble_scan_always_enabled 0
+adb shell settings put global wifi_on 0
+adb shell settings put global bluetooth_on 0
+adb shell settings put global nfc_on 0
+
+adb shell pm list packages -3 | ForEach-Object {
+    $pkg = $_.Replace("package:", "").Trim()
+    adb shell pm revoke $pkg android.permission.ACCESS_FINE_LOCATION 2>$null
+    adb shell pm revoke $pkg android.permission.ACCESS_COARSE_LOCATION 2>$null
+    adb shell pm revoke $pkg android.permission.ACCESS_BACKGROUND_LOCATION 2>$null
+}
+
+adb shell appops set com.google.android.gms android:fine_location ignore
+adb shell appops set com.google.android.gms android:coarse_location ignore
+adb shell appops set com.google.android.gms android:monitor_location ignore
+adb shell appops set com.google.android.gms android:monitor_high_power_location ignore
+```
+
+Optional stronger (can break some Google features):
+```powershell
+adb shell pm disable-user --user 0 com.google.android.gms.location
+```
+
+Reboot after running.
+
+**Funtouch Manual Settings**
+- Location → completely OFF (also disable Wi-Fi scanning, Bluetooth scanning, Google Location Accuracy)
+- Google → Find My Device → OFF
+- Permission manager → Location → Don’t allow for all non-essential apps
+- iManager / Security → Auto-start → disable unnecessary apps
+- Battery → restrict background activity for non-essential apps
+- Network → Private DNS → hostname `dns.quad9.net`
+- Install free Orbot → enable VPN mode → select only the apps you will use in bursts
+
+Keep Location, Wi-Fi, Bluetooth and NFC off in the quick-settings panel by default.
+
+**Weekly Audit**
+```powershell
+adb shell settings get secure location_mode
+adb shell settings get secure location_providers_allowed
+adb shell settings get global wifi_scan_always_enabled
+adb shell settings get global ble_scan_always_enabled
+```
+
+---
+
+### 2. Version A – With Faraday Bag (Strongest)
+
+**Default Ghost State**  
+Phone powered **ON** + Airplane Mode **ON** + sealed inside Faraday bag.
+
+**Burst Sequence** (target ≤10–15 seconds total radio-on time)
+1. Remove from bag
+2. Airplane Mode OFF
+3. Start Orbot if needed
+4. Do the single task as fast as possible
+5. Airplane Mode ON
+6. Immediately reseal in bag
+
+Optional: Remove Jio SIM for pure Wi-Fi + Orbot only.
+
+**Effectiveness**
+
+| Threat | Score |
+|--------|-------|
+| App / Google location tracking | 85–95% |
+| Continuous Jio network tracking | 75–90% reduction |
+| Everyday practical privacy | **80–90%** |
+| Determined authorised request during burst | 40–60% |
+| **Overall practical** | **80–90%** |
+
+---
+
+### 3. Version B – No Faraday Bag (Preferred Powered-On Method)
+
+**Default Ghost State**  
+Phone powered **ON** + Airplane Mode **ON** at all times.
+
+**Burst Sequence**
+1. Airplane Mode OFF
+2. Start Orbot if needed
+3. Do the single task as fast as possible (aim ≤10–15 seconds)
+4. Airplane Mode ON immediately
+
+Optional: Remove Jio SIM to eliminate cellular registration.
+
+**Do not use full power-off/power-on cycles as the primary method** — boot registration creates longer, more visible network events.
+
+**Effectiveness**
+
+| Threat | Score |
+|--------|-------|
+| App / Google location tracking | 80–90% |
+| Continuous Jio network tracking | 60–75% reduction |
+| Everyday practical privacy | **65–75%** |
+| Determined authorised request during burst | 30–50% |
+| **Overall practical** | **65–75%** |
+
+---
+
+### 4. Critical Local Notes (Silchar / Jio 5G)
+
+- GPS/GNSS off does **not** stop Jio from generating network-side location (cell/sector, LBS, ELS) while the modem is attached.
+- Airplane Mode or power-off = no new live radio measurements.
+- Urban Silchar has dense Jio 5G coverage → connected phone produces usable network location data.
+- Location handover is on authorised request (2026 DoT rules), not continuous public tracking.
+- Short, rare, unpredictable bursts are the only practical way to keep exposure low.
+- Historical last-known cell remains after shutdown.
+
+---
+
+### 5. Ranking
+
+1. **Version A** (Faraday + powered ON + Airplane) → best result  
+2. **Version B** (powered ON + Airplane only) → best no-hardware option  
+3. Full power-off cycles → secondary / long-idle use only
+
+Keep the ADB + Funtouch lockdown applied and re-verify after every system update.
+
+**Status: Locked.**
