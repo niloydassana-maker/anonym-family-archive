@@ -1,14 +1,75 @@
 {
   "manifest_version": 3,
   "name": "Kilo Bridge (local only)",
-  "version": "1.0",
-  "description": "Reads LinkedIn DOM into local relay. No remote servers. Acts only on local directives.",
-  "permissions": ["storage"],
-  "host_permissions": ["https://www.linkedin.com/*", "http://127.0.0.1:8778/*", "https://mail.google.com/*", "https://mail.yahoo.com/*", "https://www.foundit.in/*", "https://www.naukri.com/*", "https://*.indeed.com/*", "https://kdp.amazon.com/*", "https://web.whatsapp.com/*", "https://www.instagram.com/*", "https://www.facebook.com/*", "https://*.incometax.gov.in/*", "https://drive.google.com/*"],
-  "background": { "service_worker": "background.js" },
-  "content_scripts": [{
-    "matches": ["https://www.linkedin.com/*", "https://mail.google.com/*", "https://mail.yahoo.com/*", "https://www.foundit.in/*", "https://www.naukri.com/*", "https://*.indeed.com/*", "https://kdp.amazon.com/*", "https://web.whatsapp.com/*", "https://www.instagram.com/*", "https://www.facebook.com/*", "https://*.incometax.gov.in/*", "https://drive.google.com/*"],
-    "js": ["content.js"],
-    "run_at": "document_idle"
-  }]
+  "version": "2.18",
+  "description": "Reads supported-site pages and acts on gated instructions from a local relay in one selected tab.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "alarms",
+    "activeTab"
+  ],
+  "action": {
+    "default_title": "Kilo Bridge"
+  },
+  "host_permissions": [
+    "<all_urls>",
+    "https://www.linkedin.com/*",
+    "http://127.0.0.1:8778/*",
+    "https://mail.google.com/*",
+    "https://mail.yahoo.com/*",
+    "https://www.foundit.in/*",
+    "https://www.naukri.com/*",
+    "https://*.indeed.com/*",
+    "https://kdp.amazon.com/*",
+    "https://web.whatsapp.com/*",
+    "https://www.instagram.com/*",
+    "https://www.facebook.com/*",
+    "https://*.incometax.gov.in/*",
+    "https://drive.google.com/*",
+    "https://www.notion.so/*",
+    "https://www.notion.com/*",
+    "https://notion.so/*",
+    "https://*.notion.so/*",
+    "https://tasklet.ai/*",
+    "https://*.tasklet.ai/*",
+    "https://www.youtube.com/*",
+    "https://discord.com/*",
+    "https://*.discord.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.linkedin.com/*",
+        "https://mail.google.com/*",
+        "https://mail.yahoo.com/*",
+        "https://www.foundit.in/*",
+        "https://www.naukri.com/*",
+        "https://*.indeed.com/*",
+        "https://kdp.amazon.com/*",
+        "https://web.whatsapp.com/*",
+        "https://www.instagram.com/*",
+        "https://www.facebook.com/*",
+        "https://*.incometax.gov.in/*",
+        "https://drive.google.com/*",
+        "https://www.notion.so/*",
+        "https://www.notion.com/*",
+        "https://notion.so/*",
+        "https://*.notion.so/*",
+        "https://tasklet.ai/*",
+        "https://*.tasklet.ai/*",
+        "https://www.youtube.com/*",
+        "https://discord.com/*",
+        "https://*.discord.com/*"
+      ],
+      "js": [
+        "gmail-editor.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
 }
