@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Kilo Bridge (local only)",
-  "version": "2.18",
+  "version": "2.32",
   "description": "Reads supported-site pages and acts on gated instructions from a local relay in one selected tab.",
   "permissions": [
     "storage",
@@ -35,7 +35,13 @@
     "https://*.tasklet.ai/*",
     "https://www.youtube.com/*",
     "https://discord.com/*",
-    "https://*.discord.com/*"
+    "https://*.discord.com/*",
+    "https://accounts.google.com/*",
+    "https://login.yahoo.com/*",
+    "https://*.yahoo.com/*",
+    "https://*.amazon.com/*",
+    "https://*.foundit.in/*",
+    "https://*.naukri.com/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -63,7 +69,13 @@
         "https://*.tasklet.ai/*",
         "https://www.youtube.com/*",
         "https://discord.com/*",
-        "https://*.discord.com/*"
+        "https://*.discord.com/*",
+        "https://accounts.google.com/*",
+        "https://login.yahoo.com/*",
+        "https://*.yahoo.com/*",
+        "https://*.amazon.com/*",
+        "https://*.foundit.in/*",
+        "https://*.naukri.com/*"
       ],
       "js": [
         "gmail-editor.js",
@@ -72,4 +84,4 @@
       "run_at": "document_idle"
     }
   ]
-}
+}

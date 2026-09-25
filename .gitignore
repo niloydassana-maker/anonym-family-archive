@@ -60,3 +60,6 @@ save-session.py
 
 # LIFE-RECORDS vault: local-only per PUBLICATION LAW (Baba 15.09)
 career/LIFE-RECORDS/
+*.mp4
+*.mkv
+*.pth

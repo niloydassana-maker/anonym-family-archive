@@ -278,3 +278,237 @@
 | 09-20 | INDUSIND | Conciliation reminder | paper ready | 494899 |
 | 09-20 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
 | 09-20 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-20 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-20 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-20 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-20 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-20 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-20 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-20 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-20 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-20 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-20 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-20 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-20 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-20 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | L3 | NVite NV-0921001406 applied | war-log/evidence/L4/NV-0921001406-applied.png | interview call |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | L3 | NVite NV-0921011407 applied | war-log/evidence/L4/NV-0921011407-applied.png | interview call |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | L3 | NVite NV-0921021411 applied | war-log/evidence/L4/NV-0921021411-applied.png | interview call |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | L3 | NVite NV-0921031410 applied | war-log/evidence/L4/NV-0921031410-applied.png | interview call |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | L3 | NVite NV-0921041410 applied | war-log/evidence/L4/NV-0921041410-applied.png | interview call |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | L4 | Weekly premium perk audit | EARN-LEDGER.md | audit |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-21 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-21 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | L3 | NVite NV-0922001407 applied | war-log/evidence/L4/NV-0922001407-applied.png | interview call |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | L3 | NVite NV-0922011404 applied | war-log/evidence/L4/NV-0922011404-applied.png | interview call |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | L3 | NVite NV-0922021410 applied | war-log/evidence/L4/NV-0922021410-applied.png | interview call |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | L3 | NVite NV-0922031633 applied | war-log/evidence/L4/NV-0922031633-applied.png | interview call |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | L3 | NVite NV-0922041605 applied | war-log/evidence/L4/NV-0922041605-applied.png | interview call |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-22 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-22 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | L3 | NVite NV-0923001643 applied | war-log/evidence/L4/NV-0923001643-applied.png | interview call |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | L3 | NVite NV-0923012140 applied | war-log/evidence/L4/NV-0923012140-applied.png | interview call |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | L3 | NVite NV-0923021454 applied | war-log/evidence/L4/NV-0923021454-applied.png | interview call |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | L3 | NVite NV-0923031510 applied | war-log/evidence/L4/NV-0923031510-applied.png | interview call |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | L3 | NVite NV-0923041526 applied | war-log/evidence/L4/NV-0923041526-applied.png | interview call |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-23 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-23 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-24 | L3 | NVite NV-0924012145 applied | war-log/evidence/L4/NV-0924012145-applied.png | interview call |
+| 09-24 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-24 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | L3 | NVite NV-0924021402 applied | war-log/evidence/L4/NV-0924021402-applied.png | interview call |
+| 09-24 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-24 | L3 | NVite NV-0924031402 applied | war-log/evidence/L4/NV-0924031402-applied.png | interview call |
+| 09-24 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-24 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | L3 | NVite NV-0924041402 applied | war-log/evidence/L4/NV-0924041402-applied.png | interview call |
+| 09-24 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-24 | L3 | NVite NV-0924051402 applied | war-log/evidence/L4/NV-0924051402-applied.png | interview call |
+| 09-24 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-24 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-24 | INDUSIND | Conciliation reminder | paper ready | 494899 |
+| 09-24 | STALE | feed_watch DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | STALE | weaver DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | STALE | awareness DEAD - relight needed | war-log/earn-lanes.json | 0 |
+| 09-24 | INDUSIND | Conciliation reminder | paper ready | 494899 |

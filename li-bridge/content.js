@@ -1,27 +1,39 @@
-// Kilo Bridge content script: observe the page without scrolling or focusing it.
-// Explicit, gated directives may act in the one relay-selected work tab.
+// Kilo Bridge content script: lightweight, unified observation & action pipeline.
+// Observes page state and executes gated directives in the relay-selected tab.
 const RELAY = "http://127.0.0.1:8778";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const isYouTube = location.hostname.includes("youtube.com");
-const isGmail = location.hostname.includes("mail.google.com");
-const isNaukri = location.hostname.includes("naukri.com");
-const isFoundit = location.hostname.includes("foundit.in");
-const isLinkedIn = location.hostname.includes("linkedin.com");
-const isLinkedInMessaging = isLinkedIn && location.pathname.includes("/messaging/");
-const isLinkedInServiceMarketplace = isLinkedIn && location.pathname.includes("/service-marketplace/");
-const isYouTubeFeed = isYouTube && (location.pathname.startsWith("/feed") || location.pathname.startsWith("/channels"));
-// Passive polling never scrolls, focuses, or activates a tab. Site actions
-// may scroll only after a scoped directive reaches the pinned work tab.
-const isColdScope = isYouTube || location.hostname.includes("instagram.com") || location.hostname.includes("facebook.com");
+
+const host = location.hostname;
+const path = location.pathname;
+const isYouTube = host.includes("youtube.com");
+const isGmail = host.includes("mail.google.com");
+const isNaukri = host.includes("naukri.com");
+const isFoundit = host.includes("foundit.in");
+const isLinkedIn = host.includes("linkedin.com");
+const isLinkedInMessaging = isLinkedIn && path.includes("/messaging/");
+const isLinkedInServiceMarketplace = isLinkedIn && path.includes("/service-marketplace/");
+const isYouTubeFeed = isYouTube && (path.startsWith("/feed") || path.startsWith("/channels"));
+const isColdScope = isYouTube || host.includes("instagram.com") || host.includes("facebook.com");
+
+// Fast, non-thrashing element visibility check
 function kiloVisible(el) {
+  if (!el) return false;
   try {
+    if (el.hidden || el.getAttribute("aria-hidden") === "true") return false;
     const r = el.getBoundingClientRect();
     if (!r || r.width < 2 || r.height < 2) return false;
-    const s = getComputedStyle(el);
-    if (s.visibility === "hidden" || s.display === "none") return false;
-    return true;
-  } catch (e) { return false; }
+    const s = window.getComputedStyle(el);
+    return s.display !== "none" && s.visibility !== "hidden" && s.visibility !== "collapse";
+  } catch (e) {
+    return false;
+  }
 }
+
+function isVisibleEnabled(el) {
+  if (!el || el.disabled || el.getAttribute("aria-disabled") === "true" || el.hidden) return false;
+  return kiloVisible(el);
+}
+
 function isWalledPage(body) {
   const title = String(document.title || "").toLowerCase();
   const lead = String(body || "").slice(0, 1200).toLowerCase();
@@ -29,30 +41,23 @@ function isWalledPage(body) {
     /additional verification required|verify (that )?you are human|checking your browser before accessing/.test(lead) ||
     (lead.includes("captcha") && /complete|solve|verify/.test(lead));
 }
-// Normal fill refuses meaningful existing text. Explicit fillforce/fillfast
-// directives can replace it, but the relay must scope a repair to known text.
-// One-shot insertion preserves spaces in Gmail and avoids background-tab timer
-// throttling that made per-character insertion take minutes.
-let FILL_FORCE = false;
-// v2.2 serve-receipt (J3-lite, Pramit E2E): hands testify. LAST_ACT carries the
-// previous poll's action outcome into the next snapshot so misses are visible
-// instead of silent. No extra POSTs: reported stale-by-one-cycle, fine for forensics.
-// v2.3 composer reach (Baba order 2026-09-22): Farjana modal textarea
-// (placeholder "Let the client know why you are a good fit...") + LinkedIn
-// thread/new composer variants. Plus testimony on the silent early-return.
-let LAST_ACT = null;
 
-// Generate stable tab ID for this session (persists across refreshes via sessionStorage)
+let FILL_FORCE = false;
+let LAST_ACT = null;
+let PENDING_NAV_RECEIPT = null;
+let NAV_LOOKUP_DONE = false;
+let PENDING_GMAIL_RECEIPT = null;
+let PENDING_GMAIL_COMPOSE = null;
+const GMAIL_COMPOSE_RECEIPT_KEY = "kilo-pending-gmail-compose";
+const GMAIL_COMPOSE_WAIT_MS = 75000;
+
+// Stable session tab ID
 let TAB_ID = sessionStorage.getItem("kilo-tab-id");
 if (!TAB_ID) {
   TAB_ID = "tab-" + Math.random().toString(36).slice(2, 10) + "-" + Date.now().toString(36);
   sessionStorage.setItem("kilo-tab-id", TAB_ID);
 }
 
-// Versioned localStorage key to ignore stale entries from previous runs.
-// Scoped by hostname + first path segment so same-host pages (LinkedIn
-// feed/messaging/notifications, YouTube feed/watch) elect SEPARATE primaries
-// instead of flapping one shared key every 45s.
 const LS_VERSION = "v4";
 const PRIMARY_LEASE_MS = 3 * 60 * 1000;
 const PRIMARY_SCOPE = () => {
@@ -61,8 +66,6 @@ const PRIMARY_SCOPE = () => {
 };
 const PRIMARY_KEY = (hostname) => "kilo-tab-primary-" + LS_VERSION + "-" + PRIMARY_SCOPE();
 
-// One primary per scope. A live owner renews its lease on each poll; a stalled
-// owner can be replaced after three minutes.
 function claimPrimary(hostname) {
   const key = PRIMARY_KEY(hostname);
   const now = Date.now();
@@ -74,143 +77,336 @@ function claimPrimary(hostname) {
   catch (e) { return false; }
 }
 
-function isVisibleEnabled(el) {
-  if (!el || el.disabled || el.getAttribute("aria-disabled") === "true" || el.hidden) return false;
+const KNOWN_PATH_ALIASES = {
+  "/me/profile-views": "/analytics/profile-views",
+  "/analytics/profile-views": "/me/profile-views",
+  "/feed": "/feed/foryou",
+  "/feed/foryou": "/feed",
+};
+
+function urlsMatch(expected, current) {
+  if (!expected || !current) return false;
+  if (expected === current) return true;
   try {
-    const style = window.getComputedStyle(el);
-    const rect = el.getBoundingClientRect();
-    return style.display !== "none" && style.visibility !== "hidden" &&
-      el.getClientRects().length > 0 && rect.width >= 2 && rect.height >= 2;
+    const u1 = new URL(expected);
+    const u2 = new URL(current);
+    const h1 = u1.hostname.replace(/^www\./, "");
+    const h2 = u2.hostname.replace(/^www\./, "");
+    if (u1.protocol !== u2.protocol || h1 !== h2 || u1.port !== u2.port) return false;
+    const p1 = u1.pathname.replace(/\/+$/, "");
+    const p2 = u2.pathname.replace(/\/+$/, "");
+    if (p1 !== p2) {
+      if (h1 !== "linkedin.com" || KNOWN_PATH_ALIASES[p1] !== p2) return false;
+    }
+    if (u1.search !== u2.search) return false;
+    return true;
   } catch (e) {
     return false;
   }
 }
 
+function findNavAnchor(el) {
+  if (!el) return null;
+  const a = el.tagName === "A" && el.href ? el : (el.closest ? el.closest("a[href]") : null);
+  if (!a || !a.href) return null;
+  const href = a.href;
+  if (!href.startsWith("http://") && !href.startsWith("https://")) return null;
+  if (a.target === "_blank") return null;
+  if (a.hasAttribute("download")) return null;
+  if (href.startsWith("javascript:") || href === location.href + "#" || href === "#") return null;
+  try {
+    const u = new URL(href, location.href);
+    if (u.origin !== location.origin) return null;
+    return u.href;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function hydratePendingNavigation(currentUrl) {
+  if (NAV_LOOKUP_DONE || PENDING_NAV_RECEIPT) return;
+  NAV_LOOKUP_DONE = true;
+  // 1. Same-origin instantaneous handoff via sessionStorage
+  try {
+    const raw = sessionStorage.getItem("kilo-pending-nav");
+    if (raw) {
+      sessionStorage.removeItem("kilo-pending-nav");
+      const pending = JSON.parse(raw);
+      if (pending && urlsMatch(pending.expected_url, currentUrl)) {
+        PENDING_NAV_RECEIPT = pending;
+        LAST_ACT = {
+          action: pending.action || "open",
+          result: "navigated",
+          directive_id: pending.directive_id,
+          source_url: pending.source_url,
+          expected_url: pending.expected_url,
+          text: pending.text,
+          candidate: pending.candidate,
+          click_started_at: pending.click_started_at,
+          elapsed_ms: pending.click_started_ms ? (Date.now() - pending.click_started_ms) : undefined,
+        };
+        return;
+      }
+    }
+  } catch (e) {}
+  // 2. Cross-origin / service worker fallback
+  try {
+    const response = await callWorker({ type: "GET_PENDING_NAV", url: currentUrl }, 3000);
+    const pending = response && response.pending;
+    if (pending && urlsMatch(pending.expected_url, currentUrl)) {
+      PENDING_NAV_RECEIPT = pending;
+      LAST_ACT = {
+        action: pending.action || "open",
+        result: "navigated",
+        directive_id: pending.directive_id,
+        source_url: pending.source_url,
+        expected_url: pending.expected_url,
+        text: pending.text,
+        candidate: pending.candidate,
+        click_started_at: pending.click_started_at,
+        elapsed_ms: pending.click_started_ms ? (Date.now() - pending.click_started_ms) : undefined,
+      };
+    }
+  } catch (e) {}
+}
+
+function hydratePendingGmailSend(currentUrl, body, composeOpen) {
+  if (PENDING_GMAIL_RECEIPT) return;
+  if (!isGmail || composeOpen || !/\bmessage sent\b/i.test(String(body || ""))) return;
+  let pending = null;
+  try { pending = JSON.parse(sessionStorage.getItem("kilo-pending-gmail-send") || "null"); } catch (e) {}
+  if (!pending || pending.source_url !== currentUrl || !pending.directive_id) return;
+  const age = Date.now() - Number(pending.started_ms || 0);
+  if (!Number.isFinite(age) || age < 0 || age > 5 * 60 * 1000) {
+    sessionStorage.removeItem("kilo-pending-gmail-send");
+    return;
+  }
+  PENDING_GMAIL_RECEIPT = pending;
+  LAST_ACT = {
+    action: "click",
+    text: "Send",
+    result: "accepted-by-gmail",
+    directive_id: pending.directive_id,
+    source_url: pending.source_url,
+  };
+}
+
+function composeReceiptAction(pending, result, nowMs) {
+  const act = {
+    action: "click", text: pending.text, result,
+    directive_id: pending.directive_id,
+    click_started_at: pending.click_started_at,
+    elapsed_ms: Math.max(0, nowMs - Number(pending.click_started_ms || nowMs)),
+    candidate: pending.candidate,
+  };
+  if (pending.editor_ready_at) act.editor_ready_at = pending.editor_ready_at;
+  return act;
+}
+
+function savePendingGmailCompose(pending) {
+  PENDING_GMAIL_COMPOSE = pending;
+  try { sessionStorage.setItem(GMAIL_COMPOSE_RECEIPT_KEY, JSON.stringify(pending)); } catch (e) {}
+}
+
+function hydratePendingGmailCompose(composeOpen) {
+  if (!PENDING_GMAIL_COMPOSE) {
+    try { PENDING_GMAIL_COMPOSE = JSON.parse(sessionStorage.getItem(GMAIL_COMPOSE_RECEIPT_KEY) || "null"); } catch (e) {}
+  }
+  const pending = PENDING_GMAIL_COMPOSE;
+  if (!isGmail || !pending || !pending.directive_id) return;
+  const now = Date.now();
+  if (composeOpen && !pending.compose_open_before) {
+    if (!pending.editor_ready_at) {
+      pending.editor_ready_at = new Date(now).toISOString();
+      savePendingGmailCompose(pending);
+    }
+    LAST_ACT = composeReceiptAction(pending, "composer-open", now);
+  } else if (now >= Number(pending.deadline_ms || 0)) {
+    LAST_ACT = composeReceiptAction(pending, "composer-open-timeout", now);
+  } else if (!pending.pending_reported) {
+    LAST_ACT = composeReceiptAction(pending, "composer-opening", now);
+  } else if (LAST_ACT && LAST_ACT.directive_id === pending.directive_id) {
+    LAST_ACT = null;
+  }
+}
+
 function gmailVisibleEditor() {
-  if (!isGmail) return false;
+  if (!isGmail || typeof KiloGmailEditor === "undefined") return false;
   return KiloGmailEditor.findVisible(document, isVisibleEnabled);
 }
 function gmailComposeOpen() {
   return Boolean(gmailVisibleEditor());
 }
 
-async function snapshot() {
-  const url = location.href;
-  const title = document.title;
-  let body = "";
-  try { body = document.body.innerText.slice(0, 6000); } catch (e) { body = "READ-ERR " + e; }
-  // Primary election via localStorage (shared across tabs)
-  const hostname = location.hostname;
-  const isPrimary = claimPrimary(hostname);
-  const walled = isWalledPage(body);
-  const buttons = [];
-  const relevantActionPattern = /\b(reply(?: all)?|forward|send|compose|apply(?: now)?|submit(?: proposal)?|save|continue|next|respond)\b/i;
+// Bounded text reader: fast and non-blocking
+function readBodyTextBounded(maxChars = 6000) {
+  const root = document.body;
+  if (!root) return "";
   try {
-    document.querySelectorAll("button, a, input[type=submit], [role=button], [role=link]").forEach((b) => {
-      if (!isVisibleEnabled(b)) return;
-      const t = ((b.innerText || b.value || b.getAttribute("aria-label") || "") + "").trim().slice(0, 60);
-      if (t) buttons.push(t);
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent || /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/.test(parent.tagName || "")) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return String(node.nodeValue || "").trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
     });
+    const parts = [];
+    let length = 0;
+    let node;
+    while (length < maxChars && (node = walker.nextNode())) {
+      const text = String(node.nodeValue || "").replace(/\s+/g, " ").trim();
+      if (!text) continue;
+      const remaining = maxChars - length;
+      const part = text.slice(0, remaining);
+      parts.push(part);
+      length += part.length;
+    }
+    return parts.join("\n");
+  } catch (e) {
+    try { return String(root.textContent || "").slice(0, maxChars); } catch (_) { return ""; }
+  }
+}
+
+function controlLabel(element) {
+  if (!element) return "";
+  try {
+    return String(element.getAttribute("aria-label") || element.getAttribute("data-tooltip") ||
+      element.getAttribute("title") || element.value || element.placeholder || element.textContent || "")
+      .replace(/\s+/g, " ").trim().slice(0, 100);
+  } catch (_) { return ""; }
+}
+
+// Unified, lightweight pipeline for extracting controls from DOM
+function scanControlsBounded() {
+  const buttons = [];
+  const siteButtons = [];
+  const controls = [];
+  const videoLinks = [];
+  const seenLabels = new Set();
+  const relevantActionPattern = /\b(reply(?: all)?|forward|send|compose|apply(?: now)?|submit(?: proposal)?|save|continue|next|respond|connect|follow|message)\b/i;
+
+  try {
+    const selector = "button, a, input[type=submit], input[type=button], input[type=checkbox], input[type=radio], select, textarea, [role=button], [role=link], [role=tab], [role=menuitem], [role=checkbox], [role=option], [role=textbox], [contenteditable=true]" + (isGmail ? ", [data-tooltip], [gh='cm']" : "");
+    const elements = document.querySelectorAll(selector);
+    let inspected = 0;
+
+    for (const el of elements) {
+      if (inspected++ >= 200 || controls.length >= 100) break;
+      if (!isVisibleEnabled(el)) continue;
+
+      const label = controlLabel(el);
+      if (!label && !el.getAttribute("role") && !el.tagName.includes("INPUT")) continue;
+
+      const tag = el.tagName ? el.tagName.toUpperCase() : "";
+      const role = el.getAttribute("role") || "";
+      const type = el.getAttribute("type") || "";
+      let kind = role || (tag === "INPUT" ? `input-${type || "text"}` : tag.toLowerCase());
+
+      const item = {
+        label: label || `[${kind}]`,
+        tag,
+        kind,
+        role: role || undefined,
+        type: type || undefined,
+        selector: el.id ? `#${el.id}` : (el.className && typeof el.className === "string" ? `.${el.className.trim().split(/\s+/)[0]}` : undefined),
+      };
+
+      controls.push(item);
+
+      if (label && !seenLabels.has(label.toLowerCase())) {
+        seenLabels.add(label.toLowerCase());
+        if (buttons.length < 80) buttons.push(label);
+      }
+
+      // Categorize site-specific actions
+      const lower = label.toLowerCase();
+      let siteActionType = null;
+      if (isNaukri && ["recruiter", "view all", "load more", "apply", "save", "edit profile"].some(w => lower.includes(w))) {
+        siteActionType = "naukri-action";
+      } else if (isFoundit && ["quick apply", "apply", "save", "view detail", "complete"].some(w => lower.includes(w))) {
+        siteActionType = "foundit-action";
+      } else if (isLinkedInServiceMarketplace && ["view request", "submit proposal", "no thanks", "message"].some(w => lower.includes(w))) {
+        siteActionType = "sm-action";
+      } else if (isLinkedInMessaging && /compose|send|reply|write a message/i.test(lower)) {
+        siteActionType = "msg-action";
+      } else if (isLinkedIn && ["connect", "follow", "message", "apply", "save", "more"].some(w => lower.includes(w))) {
+        siteActionType = "li-action";
+      } else if (isGmail && relevantActionPattern.test(label)) {
+        siteActionType = "gmail-action";
+      }
+
+      if (siteActionType && siteButtons.length < 40 && !siteButtons.some(b => b.text === label && b.type === siteActionType)) {
+        siteButtons.push({ text: label, type: siteActionType, role: role || undefined, selector: item.selector });
+      }
+    }
   } catch (e) {}
-  // Site-specific button extraction for better triage
-  let siteButtons = [];
-  if (isNaukri) {
-    try {
-      document.querySelectorAll('a[href*="recruiter-action"], a[href*="RecruiterAction"], button, a').forEach((b) => {
-        const t = ((b.innerText || b.getAttribute("aria-label") || b.getAttribute("title") || "") + "").trim().slice(0, 60);
-        if (t && (t.toLowerCase().includes("recruiter") || t.toLowerCase().includes("view all") || t.toLowerCase().includes("load more") || t.toLowerCase().includes("apply") || t.toLowerCase().includes("save") || t.toLowerCase().includes("edit profile"))) {
-          siteButtons.push({ text: t, type: "naukri-action" });
-        }
-      });
-    } catch (e) {}
-  }
-  if (isFoundit) {
-    try {
-      document.querySelectorAll('button, a').forEach((b) => {
-        const t = ((b.innerText || b.getAttribute("aria-label") || b.getAttribute("title") || "") + "").trim().slice(0, 60);
-        if (t && (t.toLowerCase().includes("quick apply") || t.toLowerCase().includes("apply") || t.toLowerCase().includes("save") || t.toLowerCase().includes("view detail") || t.toLowerCase().includes("complete"))) {
-          siteButtons.push({ text: t, type: "foundit-action" });
-        }
-      });
-    } catch (e) {}
-  }
-  if (isLinkedInServiceMarketplace) {
-    try {
-      document.querySelectorAll('button, a').forEach((b) => {
-        const t = ((b.innerText || b.getAttribute("aria-label") || b.getAttribute("title") || "") + "").trim().slice(0, 60);
-        if (t && (t.toLowerCase().includes("view request") || t.toLowerCase().includes("submit proposal") || t.toLowerCase().includes("no thanks") || t.toLowerCase().includes("message"))) {
-          siteButtons.push({ text: t, type: "sm-action" });
-        }
-      });
-    } catch (e) {}
-  }
-  if (isLinkedInMessaging) {
-    try {
-      document.querySelectorAll('button[aria-label*="Compose" i], button[aria-label*="Send" i], div[role="textbox"][contenteditable="true"]').forEach((b) => {
-        const t = ((b.innerText || b.getAttribute("aria-label") || b.getAttribute("title") || "") + "").trim().slice(0, 60);
-        if (t) siteButtons.push({ text: t, type: "msg-action" });
-      });
-    } catch (e) {}
-  }
-  if (isLinkedIn && !isLinkedInMessaging && !isLinkedInServiceMarketplace) {
-    try {
-      document.querySelectorAll('button, a').forEach((b) => {
-        const t = ((b.innerText || b.getAttribute("aria-label") || b.getAttribute("title") || "") + "").trim().slice(0, 60);
-        if (t && (t.toLowerCase().includes("connect") || t.toLowerCase().includes("follow") || t.toLowerCase().includes("message") || t.toLowerCase().includes("apply") || t.toLowerCase().includes("save"))) {
-          siteButtons.push({ text: t, type: "li-action" });
-        }
-      });
-    } catch (e) {}
-  }
-  if (isGmail) {
-    try {
-      document.querySelectorAll("button, [role=button], [role=link], [data-tooltip]").forEach((b) => {
-        if (!isVisibleEnabled(b)) return;
-        const t = ((b.innerText || b.getAttribute("aria-label") || b.getAttribute("data-tooltip") || b.getAttribute("title") || "") + "").trim().slice(0, 60);
-        if (t && relevantActionPattern.test(t) && !siteButtons.some((item) => item && item.text === t)) {
-          siteButtons.push({ text: t, type: "gmail-action" });
-        }
-      });
-    } catch (e) {}
-  }
-  // YouTube feed: include video titles/links for hunt targeting
-  let videoLinks = [];
+
+  // YouTube feed video links
   if (isYouTubeFeed) {
     try {
-      document.querySelectorAll("ytd-rich-grid-media #video-title, ytd-video-renderer #video-title, a#video-title").forEach((v) => {
+      const vEls = document.querySelectorAll("ytd-rich-grid-media #video-title, ytd-video-renderer #video-title, a#video-title");
+      let count = 0;
+      for (const v of vEls) {
+        if (count++ >= 30 || videoLinks.length >= 20) break;
         const href = v.href || v.getAttribute("href");
         const title = (v.innerText || v.getAttribute("aria-label") || "").trim();
         if (href && title) videoLinks.push({ title: title.slice(0, 120), url: href });
-      });
+      }
     } catch (e) {}
   }
-  const priorityButtonTexts = [];
-  for (const item of [...buttons, ...siteButtons]) {
-    const t = typeof item === "string" ? item : String((item && (item.text || item.label)) || "");
-    if (t && relevantActionPattern.test(t) && !priorityButtonTexts.includes(t)) priorityButtonTexts.push(t);
-  }
-  const snapshotButtons = [...new Set([...priorityButtonTexts, ...buttons])].slice(0, 80);
-  // v2.2 composer flag (MProg E2E): Gmail compose box lives past the 6000-char
-  // snapshot cut, so no text gate can ever verify it. Report openness directly.
+
+  return { buttons: buttons.slice(0, 80), siteButtons: siteButtons.slice(0, 40), controls: controls.slice(0, 100), videoLinks: videoLinks.slice(0, 20) };
+}
+
+async function snapshot() {
+  const url = location.href;
+  const title = document.title;
+  const body = readBodyTextBounded(6000);
+  const hostname = location.hostname;
+  const isPrimary = claimPrimary(hostname);
+  const walled = isWalledPage(body);
+  const scanned = scanControlsBounded();
+
   let composeOpen = false;
   try { composeOpen = gmailComposeOpen(); } catch (e) {}
   let composerText = "";
   try {
     const editor = gmailVisibleEditor();
-    if (editor) composerText = KiloGmailEditor.meaningfulText(editor).slice(0, 1200);
+    if (editor && typeof KiloGmailEditor !== "undefined") {
+      composerText = KiloGmailEditor.meaningfulText(editor).slice(0, 1200);
+    }
   } catch (e) {}
-  let bridgeVer = "2.11";
-  try { bridgeVer = (chrome && chrome.runtime && chrome.runtime.getManifest && chrome.runtime.getManifest().version) || "2.11"; } catch (e) {}
-  return { url, title, body, buttons: snapshotButtons, siteButtons: siteButtons.slice(0,
-30), videoLinks: videoLinks.slice(0, 20), tabId: TAB_ID, isPrimary, walled, composeOpen, composerText, lastAct: LAST_ACT, bridge: bridgeVer, ts: new
-Date().toISOString() };
+
+  await hydratePendingNavigation(url);
+  hydratePendingGmailSend(url, body, composeOpen);
+  hydratePendingGmailCompose(composeOpen);
+
+  let bridgeVer = "2.28";
+  try { bridgeVer = (chrome && chrome.runtime && chrome.runtime.getManifest && chrome.runtime.getManifest().version) || "2.28"; } catch (e) {}
+
+  return {
+    url, title, body,
+    buttons: scanned.buttons,
+    siteButtons: scanned.siteButtons,
+    controls: scanned.controls,
+    videoLinks: scanned.videoLinks,
+    tabId: TAB_ID,
+    isPrimary,
+    walled,
+    composeOpen,
+    composerText,
+    lastAct: LAST_ACT,
+    bridge: bridgeVer,
+    ts: new Date().toISOString()
+  };
 }
+
 async function badge(text) {
   try { await chrome.runtime.sendMessage({ badge: text }); } catch (e) {}
 }
-// v2.5b hang guard (Baba order 2026-09-22): a worker call that never answers
-// must NEVER freeze the poll loop (shot serve hung the Gmail tab). Every
-// worker call races a timeout and resolves empty on silence.
+
 function callWorker(msg, ms) {
   return new Promise((resolve) => {
     let done = false;
@@ -224,16 +420,27 @@ function callWorker(msg, ms) {
     setTimeout(() => finish({ timeout: true }), ms || 25000);
   });
 }
+
 function directiveGateFailure(directive, snap) {
   if (!directive || !snap) return "missing-snapshot";
-
-  // Single-tab doctrine: a scoped directive must name the exact observed URL.
-  // This is a client-side safety check in addition to relay-side matching.
+  if (directive.action === "timing_probe" &&
+      (!directive.match_url_substring || String(directive.match_url_substring) !== snap.url)) {
+    return "timing-probe-exact-url-required";
+  }
+  if (directive.action === "click" &&
+      (typeof directive.text !== "string" || !directive.text.trim())) {
+    return "invalid-command:click-text-required";
+  }
+  if (directive.action === "discard_test_draft" &&
+      (directive.require_compose !== true ||
+       !Object.prototype.hasOwnProperty.call(directive, "require_composer_text_equals") ||
+       !String(directive.require_composer_text_equals || ""))) {
+    return "discard-guard-missing";
+  }
   if (directive.match_url_substring) {
     const expectedUrl = String(directive.match_url_substring).trim();
     if (expectedUrl && snap.url !== expectedUrl) return "url-mismatch";
   }
-
   const markers = (value) => (Array.isArray(value) ? value : [value])
     .filter((item) => item !== undefined && item !== null)
     .map((item) => String(item).trim().toLowerCase())
@@ -246,7 +453,8 @@ function directiveGateFailure(directive, snap) {
   const buttonMarkers = markers(directive.require_buttons_contains);
   const buttonText = [
     ...(Array.isArray(snap.buttons) ? snap.buttons : []),
-    ...(Array.isArray(snap.siteButtons) ? snap.siteButtons : [])
+    ...(Array.isArray(snap.siteButtons) ? snap.siteButtons : []),
+    ...(Array.isArray(snap.controls) ? snap.controls : [])
   ].map((item) => {
     if (typeof item === "string") return item.toLowerCase();
     return String((item && (item.text || item.label)) || "").toLowerCase();
@@ -254,31 +462,62 @@ function directiveGateFailure(directive, snap) {
   if (buttonMarkers.some((marker) => !buttonText.some((button) => button.includes(marker)))) {
     return "button-marker-missing";
   }
-
   if (Object.prototype.hasOwnProperty.call(directive, "require_compose") &&
       Boolean(snap.composeOpen) !== Boolean(directive.require_compose)) {
     return "compose-state-mismatch";
   }
-
   if (directive.require_empty_composer && String(snap.composerText || "").trim()) {
     return "composer-not-empty";
   }
-
+  if (Object.prototype.hasOwnProperty.call(directive, "require_composer_text_equals") &&
+      String(snap.composerText || "") !== String(directive.require_composer_text_equals || "")) {
+    return "composer-text-mismatch";
+  }
   return "";
 }
+
 let POLL_IN_FLIGHT = false;
 async function poll() {
   if (POLL_IN_FLIGHT) return;
   POLL_IN_FLIGHT = true;
+  const pollStartedMono = performance.now();
+  const timingTrace = { content_poll_started_at: new Date().toISOString() };
   try {
     const snap = await snapshot();
+    timingTrace.content_snapshot_ready_at = new Date().toISOString();
+    timingTrace.content_snapshot_elapsed_ms = Math.round((performance.now() - pollStartedMono) * 100) / 100;
+    timingTrace.content_worker_message_sent_at = new Date().toISOString();
     const res = await callWorker(
-      { type: "RELAY_EVENT", payload: { page: snap, tabId: TAB_ID } }, 30000);
+      { type: "RELAY_EVENT", payload: { page: snap, tabId: TAB_ID }, timing_trace: timingTrace }, 30000);
+    timingTrace.content_worker_response_received_at = new Date().toISOString();
+    timingTrace.content_poll_roundtrip_ms = Math.round((performance.now() - pollStartedMono) * 100) / 100;
+
     if (!res || res.timeout || res.error || res.status !== "success") {
       const detail = (res && (res.error || (res.timeout && "worker-timeout"))) || "relay-no-response";
       LAST_ACT = { action: "relay", result: String(detail).slice(0, 120) };
       await badge("ERR");
       return;
+    }
+    const receiptState = res && res.data && res.data.receipt_state;
+    if (snap.lastAct && snap.lastAct.result === "navigated" && PENDING_NAV_RECEIPT &&
+        receiptState && receiptState.status === "verified") {
+      const cleared = await callWorker({ type: "CLEAR_PENDING_NAV", directive_id: snap.lastAct.directive_id }, 5000);
+      if (cleared && cleared.success) PENDING_NAV_RECEIPT = null;
+    }
+    if (snap.lastAct && snap.lastAct.result === "accepted-by-gmail" && PENDING_GMAIL_RECEIPT &&
+        receiptState && receiptState.status === "verified") {
+      sessionStorage.removeItem("kilo-pending-gmail-send");
+      PENDING_GMAIL_RECEIPT = null;
+    }
+    if (snap.lastAct && PENDING_GMAIL_COMPOSE &&
+        snap.lastAct.directive_id === PENDING_GMAIL_COMPOSE.directive_id && receiptState) {
+      if (snap.lastAct.result === "composer-opening" && receiptState.status === "pending") {
+        PENDING_GMAIL_COMPOSE.pending_reported = true;
+        savePendingGmailCompose(PENDING_GMAIL_COMPOSE);
+      } else if (["verified", "failed", "unverified"].includes(receiptState.status)) {
+        sessionStorage.removeItem(GMAIL_COMPOSE_RECEIPT_KEY);
+        PENDING_GMAIL_COMPOSE = null;
+      }
     }
     if (snap.lastAct) LAST_ACT = null;
     await badge("OK");
@@ -292,48 +531,59 @@ async function poll() {
       return;
     }
     try {
-    if (directive && directive.action === "click" && directive.text) {
-      await humanClick(directive.text);
-    } else if (directive && directive.action === "fill" && directive.text) {
-      await humanFill(directive.match || "", directive.text);
-    } else if (directive && directive.action === "fillforce" && directive.text) {
-      FILL_FORCE = true;
-      try { await humanFill(directive.match || "", directive.text); }
-      finally { FILL_FORCE = false; }
-    } else if (directive && directive.action === "fillfast" && directive.text) {
-      FILL_FORCE = true;
-      try { await humanFill(directive.match || "", directive.text); }
-      finally { FILL_FORCE = false; }
-    } else if (directive && directive.action === "uncheck" && directive.match) {
-      await humanUncheck(directive.match);
-    } else if (directive && directive.action === "open" && directive.url) {
-      await humanOpen(directive.url);
-    } else if (directive && directive.action === "discard" && directive.match) {
-      // v2.4 spare-tab discard: worker discards background tabs whose URL
-      // contains match. This tab is untouched. Testimony carries the count.
-      try {
-        const r = await callWorker({ type: "DISCARD_SPARE", victim: directive.match }, 25000);
-        LAST_ACT = { action: "discard", match: directive.match, result: "discarded:" + (r && r.discarded !== undefined ? r.discarded : "?") };
-      } catch (e) { LAST_ACT = { action: "discard", match: directive.match || "", result: "error" }; }
-    } else if (directive && directive.action === "shot") {
-      // v2.5 eyes: worker captures the visible tab, files it at relay /shot.
-      try {
-        const r = await callWorker({ type: "CAPTURE" }, 25000);
-        LAST_ACT = { action: "shot", result: (r && r.saved) ? ("saved:" + r.saved) : ("error:" + ((r && r.error) || (r && r.timeout ? "timeout" : "?"))) };
-      } catch (e) { LAST_ACT = { action: "shot", result: "error" }; }
-    } else if (directive && directive.action === "huntvideo" && isYouTube) {
-      // v1.4: click a video card by index on ANY YouTube listing (feed, channel /videos, search).
-      await humanHuntVideo(directive.index || 0);
-    } else if (directive && directive.action === "transcript" && isYouTube) {
-      // v1.4: on a /watch page, expand description + open transcript so the next
-      // poll snapshot carries transcript text in body for claim extraction.
-      await humanTranscript();
-    } else if (directive && directive.action === "hunt" && isYouTubeFeed) {
-      // YouTube hunt: click video by index from videoLinks array
-      await humanHunt(directive.index || 0);
+      if (directive && directive.action === "click" && directive.text) {
+        await humanClick(directive.text, directive);
+      } else if (directive && directive.action === "timing_probe" && directive.directive_id) {
+        const probeStartedMono = performance.now();
+        const probeTrace = {
+          ...(directive.timing_trace || {}),
+          ...(res.timing_trace || {}),
+          ...timingTrace,
+          content_probe_started_at: new Date().toISOString(),
+        };
+        LAST_ACT = {
+          action: "timing_probe", result: "probe-completed",
+          directive_id: directive.directive_id, timing_trace: probeTrace,
+        };
+        probeTrace.content_probe_finished_at = new Date().toISOString();
+        probeTrace.content_probe_elapsed_ms = Math.round((performance.now() - probeStartedMono) * 100) / 100;
+      } else if (directive && directive.action === "discard_test_draft" && directive.text) {
+        await humanDiscardTestDraft(directive.require_composer_text_equals, directive);
+      } else if (directive && directive.action === "fill" && directive.text) {
+        await humanFill(directive.match || "", directive.text);
+      } else if (directive && directive.action === "fillforce" && directive.text) {
+        FILL_FORCE = true;
+        try { await humanFill(directive.match || "", directive.text); }
+        finally { FILL_FORCE = false; }
+      } else if (directive && directive.action === "fillfast" && directive.text) {
+        FILL_FORCE = true;
+        try { await humanFill(directive.match || "", directive.text); }
+        finally { FILL_FORCE = false; }
+      } else if (directive && directive.action === "uncheck" && directive.match) {
+        await humanUncheck(directive.match);
+      } else if (directive && directive.action === "open" && directive.url) {
+        await humanOpen(directive.url, directive);
+      } else if (directive && directive.action === "discard" && directive.match) {
+        try {
+          const r = await callWorker({ type: "DISCARD_SPARE", victim: directive.match }, 25000);
+          LAST_ACT = { action: "discard", match: directive.match, result: "discarded:" + (r && r.discarded !== undefined ? r.discarded : "?") };
+        } catch (e) { LAST_ACT = { action: "discard", match: directive.match || "", result: "error" }; }
+      } else if (directive && directive.action === "shot") {
+        try {
+          const r = await callWorker({ type: "CAPTURE" }, 25000);
+          LAST_ACT = { action: "shot", result: (r && r.saved) ? ("saved:" + r.saved) : ("error:" + ((r && r.error) || (r && r.timeout ? "timeout" : "?"))) };
+        } catch (e) { LAST_ACT = { action: "shot", result: "error" }; }
+      } else if (directive && directive.action === "huntvideo" && isYouTube) {
+        await humanHuntVideo(directive.index || 0);
+      } else if (directive && directive.action === "transcript" && isYouTube) {
+        await humanTranscript();
+      } else if (directive && directive.action === "hunt" && isYouTubeFeed) {
+        await humanHunt(directive.index || 0);
+      }
+    } catch (e) {
+      LAST_ACT = { action: (directive && directive.action) || "?", result: "error:" + (e && e.message || e) };
     }
-    } catch (e) { LAST_ACT = { action: (directive && directive.action) || "?", result: "error:" + (e && e.message || e) }; }
-    if (directive && directive.directive_id) {
+    if (directive && directive.directive_id && directive.action !== "open") {
       LAST_ACT = { ...(LAST_ACT || { action: directive.action || "?", result: "unverified" }),
         directive_id: directive.directive_id };
     }
@@ -344,415 +594,288 @@ async function poll() {
     POLL_IN_FLIGHT = false;
   }
 }
-async function humanClick(text) {
-  const want = text.toLowerCase();
-  // YouTube feed: direct video link click by title match
-  if (isYouTubeFeed && want.includes("http")) {
+
+// Lightweight, declarative Click Finder & Dispatcher
+async function humanClick(text, directive) {
+  const want = String(text || "").trim().toLowerCase();
+  const clickStart = Date.now();
+
+  // Specialized YouTube video link match
+  if (isYouTubeFeed && (want.includes("http") || want.includes("watch"))) {
     try {
       const links = [...document.querySelectorAll("ytd-rich-grid-media #video-title, ytd-video-renderer #video-title, a#video-title")];
-      const match = links.find(l => (l.href || "").includes(want) || (l.innerText || "").toLowerCase().includes(want));
-      if (match) {
-        await sleep(1500 + Math.random() * 2000);
+      const match = links.find(l => (l.href || "").toLowerCase().includes(want) || (l.innerText || "").toLowerCase().includes(want));
+      if (match && isVisibleEnabled(match)) {
         match.scrollIntoView({ block: "center" });
-        await sleep(800);
         match.click();
-        LAST_ACT = { action: "click", text, result: "clicked", tag: (match.tagName || "?") + ".branch" };
+        LAST_ACT = {
+          action: "click", text, result: "clicked", tag: String(match.tagName || "?") + ".branch",
+          click_started_at: new Date(clickStart).toISOString(), elapsed_ms: Date.now() - clickStart,
+          candidate: { tag: String(match.tagName || "?"), label: (match.innerText || "").trim().slice(0, 80) }
+        };
         return;
       }
     } catch (e) {}
   }
-  // Gmail: robust compose/send button selectors
+
+  // Specialized Gmail selectors
   if (isGmail) {
     const gmailSelectors = [
-      // Compose button
       '[gh="cm"]', '[role="button"][aria-label*="Compose" i]', '[data-tooltip*="Compose" i]',
-      // Send button
       '[role="button"][aria-label*="Send" i]', '[data-tooltip*="Send" i]', 'div[role="button"][aria-label="Send"]',
-      '[data-tooltip]',
-      // Generic buttons
-      'button', '[role="button"]'
+      'button', '[role="button"]', '[data-tooltip]'
     ];
     for (const sel of gmailSelectors) {
       try {
         const els = [...document.querySelectorAll(sel)];
         const match = els.find(el => {
           if (!isVisibleEnabled(el)) return false;
-          const t = ((el.innerText || el.getAttribute("aria-label") || el.getAttribute("data-tooltip") || el.getAttribute("title") || "") + "").replace(/\s+/g, " ").trim().toLowerCase();
-          return t === want;
+          const t = controlLabel(el).toLowerCase();
+          return t === want || (want.length > 3 && t.includes(want));
         });
         if (match) {
-          if (!isGmail) await sleep(1500 + Math.random() * 2000);
           match.scrollIntoView({ block: "center" });
-          if (!isGmail) await sleep(800);
           if (!isVisibleEnabled(match)) {
             LAST_ACT = { action: "click", text, result: "target-lost-before-click", tag: (match.tagName || "?") + ".branch" };
             return;
           }
-          match.click();
           const opensComposer = want === "reply" || want === "reply all" || want === "compose";
-          if (opensComposer) await sleep(600);
+          const composeOpenBefore = opensComposer && gmailComposeOpen();
+          match.click();
+          if (want === "send" && directive && directive.directive_id) {
+            try {
+              sessionStorage.setItem("kilo-pending-gmail-send", JSON.stringify({
+                directive_id: directive.directive_id,
+                source_url: location.href,
+                started_ms: clickStart,
+              }));
+            } catch (e) {}
+          }
+          if (opensComposer && directive && directive.directive_id) {
+            const pending = {
+              directive_id: directive.directive_id,
+              text,
+              source_url: location.href,
+              click_started_ms: clickStart,
+              click_started_at: new Date(clickStart).toISOString(),
+              deadline_ms: clickStart + GMAIL_COMPOSE_WAIT_MS,
+              pending_reported: false,
+              compose_open_before: composeOpenBefore,
+              candidate: {
+                tag: String(match.tagName || "?"),
+                id: String(match.id || "").slice(0, 80),
+                label: controlLabel(match).slice(0, 100),
+              },
+            };
+            if (gmailComposeOpen() && !composeOpenBefore) pending.editor_ready_at = new Date().toISOString();
+            savePendingGmailCompose(pending);
+            LAST_ACT = composeReceiptAction(pending,
+              pending.editor_ready_at ? "composer-open" : "composer-opening", Date.now());
+            return;
+          }
           LAST_ACT = {
             action: "click", text,
             result: opensComposer ? (gmailComposeOpen() ? "composer-open" : "unverified") : "dispatched",
-            tag: (match.tagName || "?") + ".branch", trusted: false
+            tag: (match.tagName || "?") + ".branch", trusted: false,
+            click_started_at: new Date(clickStart).toISOString(), elapsed_ms: Date.now() - clickStart,
+            candidate: { tag: String(match.tagName || "?"), id: String(match.id || "").slice(0, 80), label: controlLabel(match).slice(0, 100) }
           };
           return;
         }
       } catch (e) {}
     }
-    LAST_ACT = { action: "click", text, result: "target-not-found-or-not-visible" };
+  }
+
+  // Unified interactive element search for all platforms
+  const candidateSelectors = "button, a, input[type=submit], input[type=button], input[type=checkbox], input[type=radio], [role=button], [role=link], [role=tab], [role=menuitem], [role=option], [role=checkbox], [data-test-action], li, span, div";
+  try {
+    const elements = [...document.querySelectorAll(candidateSelectors)];
+    const matches = [];
+
+    for (const el of elements) {
+      if (!isVisibleEnabled(el)) continue;
+      const label = controlLabel(el).toLowerCase();
+      if (!label) continue;
+      if (label === want) {
+        matches.push({ el, score: 0, label });
+      } else if (label.includes(want) && label.length <= want.length + 80) {
+        matches.push({ el, score: label.length - want.length, label });
+      } else if (want.includes(label) && label.length >= 3) {
+        matches.push({ el, score: 100 + (want.length - label.length), label });
+      }
+    }
+
+    if (!matches.length) {
+      LAST_ACT = { action: "click", text, result: "nomatch", directive_id: directive && directive.directive_id };
+      return;
+    }
+
+    matches.sort((a, b) => a.score - b.score);
+    const best = matches[0].el;
+
+    best.scrollIntoView({ block: "center" });
+    if (!isVisibleEnabled(best)) {
+      LAST_ACT = { action: "click", text, result: "target-lost-before-click", directive_id: directive && directive.directive_id };
+      return;
+    }
+
+    const navAnchor = findNavAnchor(best);
+    if (navAnchor && directive && directive.directive_id) {
+      const pending = {
+        directive_id: directive.directive_id,
+        action: "click",
+        text,
+        source_url: location.href,
+        expected_url: navAnchor,
+        click_started_ms: clickStart,
+        click_started_at: new Date(clickStart).toISOString(),
+        candidate: {
+          tag: String(best.tagName || "?"),
+          id: String(best.id || "").slice(0, 80),
+          label: controlLabel(best).slice(0, 100),
+        }
+      };
+      try { sessionStorage.setItem("kilo-pending-nav", JSON.stringify(pending)); } catch (e) {}
+      try {
+        await callWorker({
+          type: "SET_PENDING_NAV",
+          pending: { ...pending, tab_id: TAB_ID }
+        }, 2500);
+      } catch (e) {}
+      best.click();
+      LAST_ACT = {
+        action: "click",
+        text,
+        result: "navigating",
+        directive_id: directive.directive_id,
+        source_url: location.href,
+        expected_url: navAnchor,
+        tag: (best.tagName || "?") + "." + (String(best.className || "").slice(0, 40)),
+        click_started_at: new Date(clickStart).toISOString(),
+        elapsed_ms: Date.now() - clickStart,
+        candidate: pending.candidate
+      };
+      return;
+    }
+
+    best.click();
+    LAST_ACT = {
+      action: "click",
+      text,
+      result: "clicked",
+      directive_id: directive && directive.directive_id,
+      tag: (best.tagName || "?") + "." + (String(best.className || "").slice(0, 40)),
+      click_started_at: new Date(clickStart).toISOString(),
+      elapsed_ms: Date.now() - clickStart,
+      candidate: {
+        tag: String(best.tagName || "?"),
+        id: String(best.id || "").slice(0, 80),
+        label: controlLabel(best).slice(0, 100),
+      }
+    };
+  } catch (e) {
+    LAST_ACT = { action: "click", text, result: "error:" + String(e && e.message || e).slice(0, 100), directive_id: directive && directive.directive_id };
+  }
+}
+
+async function humanDiscardTestDraft(expectedText, directive) {
+  if (!isGmail || !gmailComposeOpen()) {
+    LAST_ACT = { action: "discard_test_draft", result: "composer-not-open" };
     return;
   }
-  // Naukri: recruiter actions, profile actions, apply buttons
-  if (isNaukri) {
-    const naukriSelectors = {
-      // Recruiter actions link (shows "25" or similar number)
-      recruiterActions: ['a[href*="recruiter-actions"]', 'a[href*="RecruiterAction"]', 'a'],
-      // View all / Load more
-      viewAll: ['button', 'a', 'button', 'a'],
-      // Apply / Quick Apply buttons on job cards
-      apply: ['button', 'a', 'button', '.apply-button', '[data-ga-track*="apply"]'],
-      // Save job
-      save: ['button', 'button[aria-label*="Save"]', '.save-job'],
-      // Profile edit / update
-      editProfile: ['a[href*="edit-profile"]', 'button', 'a'],
-      // Profile views / Recruiter actions count links
-      profileStats: ['a[href*="profile-view"]', 'a[href*="recruiter-action"]']
-    };
-    for (const [category, selectors] of Object.entries(naukriSelectors)) {
-      for (const sel of selectors) {
-        try {
-          const els = [...document.querySelectorAll(sel)];
-          const match = els.find(el => {
-            if (!isVisibleEnabled(el)) return false;
-            const t = ((el.innerText || el.getAttribute("aria-label") || el.getAttribute("title") || "") + "").trim().toLowerCase();
-            return t && (t.includes(want) || want.includes(t));
-          });
-          if (match) {
-            await sleep(1500 + Math.random() * 2000);
-            match.scrollIntoView({ block: "center" });
-            await sleep(800);
-            if (!isVisibleEnabled(match)) { LAST_ACT = { action: "click", text, result: "target-lost-before-click" }; return; }
-            match.click();
-            LAST_ACT = { action: "click", text, result: "clicked", tag: (match.tagName || "?") + ".branch" };
-            return;
-          }
-        } catch (e) {}
+  const discardLabelPattern = /\b(?:discard(?: draft)?|delete(?: draft)?|trash(?: draft)?)\b/;
+  const editor = gmailVisibleEditor();
+  const observed = editor && typeof KiloGmailEditor !== "undefined" ? KiloGmailEditor.meaningfulText(editor) : "";
+  const comparable = value => String(value || "").replace(/[\u200B-\u200D\uFEFF]/g, "");
+  if (!editor || comparable(observed) !== comparable(expectedText)) {
+    LAST_ACT = { action: "discard_test_draft", result: "composer-text-mismatch", chars: observed.length };
+    return;
+  }
+
+  let root = editor;
+  let searchDepth = 0;
+  let trash = null;
+  let trashLabel = "";
+  const collectedCandidates = [];
+
+  for (; searchDepth < 32 && root && root.parentElement; searchDepth++) {
+    root = root.parentElement;
+    const controls = [...root.querySelectorAll("button, [role='button'], [aria-label], [data-tooltip], [title]")]
+      .filter(el => el !== editor && !editor.contains(el));
+    for (const el of controls) {
+      const label = [el.getAttribute("aria-label"), el.getAttribute("data-tooltip"), el.getAttribute("title"), el.innerText]
+        .filter(Boolean).join(" ").toLowerCase();
+      if (discardLabelPattern.test(label)) {
+        const visible = isVisibleEnabled(el);
+        collectedCandidates.push({ element: el, label, visible });
+        if (visible) {
+          trash = el;
+          trashLabel = label;
+          break;
+        }
       }
     }
+    if (trash) break;
   }
-  // Foundit: Quick Apply, Save, profile actions
-  if (isFoundit) {
-    const founditSelectors = {
-      quickApply: ['button', 'a', 'button.apply-btn', '.quick-apply-btn'],
-      save: ['button', 'button[aria-label*="Save"]', '.save-job-btn'],
-      apply: ['button', 'a', '.apply-button'],
-      profileComplete: ['button', 'a', 'button'],
-      viewDetails: ['a', 'button', 'a[href*="job-detail"]']
+
+  if (!trash) {
+    LAST_ACT = {
+      action: "discard_test_draft", result: "target-not-found-or-not-visible",
+      chars: observed.length, search_depth: searchDepth,
+      discard_candidates: collectedCandidates.map(item => ({
+        label: item.label.slice(0, 80), visible: item.visible,
+      })),
     };
-    for (const [category, selectors] of Object.entries(founditSelectors)) {
-      for (const sel of selectors) {
-        try {
-          const els = [...document.querySelectorAll(sel)];
-          const match = els.find(el => {
-            if (!isVisibleEnabled(el)) return false;
-            const t = ((el.innerText || el.getAttribute("aria-label") || el.getAttribute("title") || "") + "").trim().toLowerCase();
-            return t && (t.includes(want) || want.includes(t));
-          });
-          if (match) {
-            await sleep(1500 + Math.random() * 2000);
-            match.scrollIntoView({ block: "center" });
-            await sleep(800);
-            if (!isVisibleEnabled(match)) { LAST_ACT = { action: "click", text, result: "target-lost-before-click" }; return; }
-            match.click();
-            LAST_ACT = { action: "click", text, result: "clicked", tag: (match.tagName || "?") + ".branch" };
-            return;
-          }
-        } catch (e) {}
-      }
-    }
+    return;
   }
-  // LinkedIn Service Marketplace: View request, Submit proposal
-  if (isLinkedInServiceMarketplace) {
-    const smSelectors = {
-      viewRequest: ['button', 'a', '[data-test-view-request]', 'button'],
-      submitProposal: ['button', 'a', 'button', '[data-test-submit-proposal]'],
-      noThanks: ['button', 'a', '[data-test-decline]'],
-      messageClient: ['button', 'a', '[data-test-message]']
-    };
-    for (const [category, selectors] of Object.entries(smSelectors)) {
-      for (const sel of selectors) {
-        try {
-          const els = [...document.querySelectorAll(sel)];
-          const match = els.find(el => {
-            if (!isVisibleEnabled(el)) return false;
-            const t = ((el.innerText || el.getAttribute("aria-label") || el.getAttribute("title") || "") + "").trim().toLowerCase();
-            return t && (t.includes(want) || want.includes(t));
-          });
-          if (match) {
-            await sleep(1500 + Math.random() * 2000);
-            match.scrollIntoView({ block: "center" });
-            await sleep(800);
-            if (!isVisibleEnabled(match)) { LAST_ACT = { action: "click", text, result: "target-lost-before-click" }; return; }
-            match.click();
-            LAST_ACT = { action: "click", text, result: "clicked", tag: (match.tagName || "?") + ".branch" };
-            return;
-          }
-        } catch (e) {}
-      }
-    }
+  try { trash.click(); } catch (e) {
+    LAST_ACT = { action: "discard_test_draft", result: "error:" + String(e && e.message || e).slice(0, 100) };
+    return;
   }
-  // LinkedIn Messaging: Compose, Send, Reply
-  if (isLinkedInMessaging) {
-    const msgSelectors = {
-      compose: ['button[aria-label*="Compose" i]', 'a[aria-label*="Compose" i]', '[data-test-compose]', 'button'],
-      send: ['button[aria-label*="Send" i]', 'button[type="submit"]', '[data-test-send]', 'button'],
-      replyBox: ['div[role="textbox"][contenteditable="true"]', 'div[aria-label*="Write a message" i]', '.msg-form__contenteditable'],
-      attachment: ['button[aria-label*="Attach" i]', '[data-test-attachment]'],
-      closeThread: ['button[aria-label*="Close" i]', '[data-test-close-thread]']
-    };
-    for (const [category, selectors] of Object.entries(msgSelectors)) {
-      for (const sel of selectors) {
-        try {
-          const els = [...document.querySelectorAll(sel)];
-          const match = els.find(el => {
-            if (!isVisibleEnabled(el)) return false;
-            const t = ((el.innerText || el.getAttribute("aria-label") || el.getAttribute("title") || "") + "").trim().toLowerCase();
-            return t && (t.includes(want) || want.includes(t));
-          });
-          if (match) {
-            await sleep(1500 + Math.random() * 2000);
-            match.scrollIntoView({ block: "center" });
-            await sleep(800);
-            if (!isVisibleEnabled(match)) { LAST_ACT = { action: "click", text, result: "target-lost-before-click" }; return; }
-            match.click();
-            LAST_ACT = { action: "click", text, result: "clicked", tag: (match.tagName || "?") + ".branch" };
-            return;
-          }
-        } catch (e) {}
-      }
-    }
-  }
-  // LinkedIn Feed/General: Connect, Follow, Message, Apply
-  if (isLinkedIn && !isLinkedInMessaging && !isLinkedInServiceMarketplace) {
-    const liSelectors = {
-      connect: ['button', 'button[aria-label*="Connect" i]', '.artdeco-button--primary'],
-      follow: ['button', 'button[aria-label*="Follow" i]'],
-      message: ['button', 'a[aria-label*="Message" i]', 'button'],
-      apply: ['button', 'a[aria-label*="Apply" i]', '[data-test-apply-button]'],
-      save: ['button[aria-label*="Save" i]', 'button'],
-      more: ['button[aria-label*="More" i]', 'button', '[data-test-more-actions]']
-    };
-    for (const [category, selectors] of Object.entries(liSelectors)) {
-      for (const sel of selectors) {
-        try {
-          const els = [...document.querySelectorAll(sel)];
-          const match = els.find(el => {
-            if (!isVisibleEnabled(el)) return false;
-            const t = ((el.innerText || el.getAttribute("aria-label") || el.getAttribute("title") || "") + "").trim().toLowerCase();
-            return t && (t.includes(want) || want.includes(t));
-          });
-          if (match) {
-            await sleep(1500 + Math.random() * 2000);
-            match.scrollIntoView({ block: "center" });
-            await sleep(800);
-            if (!isVisibleEnabled(match)) { LAST_ACT = { action: "click", text, result: "target-lost-before-click" }; return; }
-            match.click();
-            LAST_ACT = { action: "click", text, result: "clicked", tag: (match.tagName || "?") + ".branch" };
-            return;
-          }
-        } catch (e) {}
-      }
-    }
-  }
-  // Widest net: thread rows are often plain divs. Take the deepest (most specific) match.
-  // v2.1 forensic fix (MProg E2E): hidden menu items with matching text used to
-  // win over the visible pill. Only VISIBLE elements may be clicked.
-  const els = [...document.querySelectorAll("button, a, [role=button], [role=link], [role=option], li, h1, h2, h3, span, div, input[type=radio], input[type=checkbox], select, option")];
-  const matches = els.filter((b) => {
-    const t = ((b.innerText || b.getAttribute("aria-label") || "") + "").trim().toLowerCase();
-    return t && t.includes(want) && t.length < want.length + 120 && isVisibleEnabled(b);
-  });
-  if (!matches.length) { LAST_ACT = { action: "click", text, result: "nomatch" }; return; }
-  matches.sort((a, b) => ((a.innerText || "").length) - ((b.innerText || "").length));
-  const el = matches[0];
-  if (!isGmail) await sleep(1500 + Math.random() * 2000);
-  try { el.scrollIntoView({ block: "center" }); } catch (e) {}
-  if (!isGmail) await sleep(800);
-  try {
-    if (!isVisibleEnabled(el)) { LAST_ACT = { action: "click", text, result: "target-lost-before-click" }; return; }
-    el.click();
-    LAST_ACT = { action: "click", text, result: "clicked", tag: (el.tagName || "?") + "." + ((el.className || "") + "").toString().slice(0, 40) };
-  } catch (e) { LAST_ACT = { action: "click", text, result: "error:" + (e && e.message || e) }; }
+  for (let i = 0; i < 20 && gmailComposeOpen(); i++) await sleep(250);
+  LAST_ACT = {
+    action: "discard_test_draft",
+    result: !gmailComposeOpen() ? "discarded" : "unverified",
+    chars: observed.length, search_depth: searchDepth,
+    trash_control: {
+      tag: String(trash.tagName || "?"),
+      label: trashLabel.slice(0, 80),
+    },
+  };
 }
+
 async function humanFill(match, text) {
-  // Gmail: robust compose area targeting (to, subject, body)
-  if (isGmail) {
-    const gmailComposeSelectors = {
-      to: ['[name="to"]', 'input[aria-label*="To" i]', 'textarea[aria-label*="To" i]', '[role="combobox"][aria-label*="To" i]'],
-      subject: ['[name="subjectbox"]', 'input[aria-label*="Subject" i]', 'input[name="subject"]'],
-      body: []
-    };
+  const w = String(match || "").toLowerCase();
+
+  // Direct editor targeting for Gmail body
+  if (isGmail && (!match || w.includes("body") || w === "message")) {
+    const editor = gmailVisibleEditor();
+    if (editor) return fillElement(editor, text);
+  }
+
+  // Unified input field scan
+  const inputSelectors = "textarea, input[type=text], input[type=email], input[type=number], input[name], [contenteditable=true]";
+  try {
+    const areas = [...document.querySelectorAll(inputSelectors)].filter(isVisibleEnabled);
+    let el = null;
     if (match) {
-      const w = match.toLowerCase();
-      for (const [field, selectors] of Object.entries(gmailComposeSelectors)) {
-        if (field === w || w.includes(field)) {
-          if (field === "body") {
-            const editor = gmailVisibleEditor();
-            if (editor) return fillElement(editor, text);
-            LAST_ACT = { action: "fill", result: "gmail-editor-not-found" };
-            return;
-          }
-          for (const sel of selectors) {
-            try {
-              const el = [...document.querySelectorAll(sel)].find(isVisibleEnabled);
-              if (el) return fillElement(el, text);
-            } catch (e) {}
-          }
-        }
-      }
+      el = areas.find(a => {
+        const label = (a.placeholder || a.getAttribute("aria-label") || a.name || a.id || "").toLowerCase();
+        return label.includes(w) || w.includes(label);
+      });
     }
-  }
-  // Naukri: application forms, profile fields, search
-  if (isNaukri) {
-    const naukriFillSelectors = {
-      // Job search
-      search: ['input[placeholder*="job title" i]', 'input[placeholder*="skill" i]', 'input[name="keyword"]', '#keywordSugg', 'input[aria-label*="Search" i]'],
-      location: ['input[placeholder*="location" i]', 'input[name="location"]', '#locationSugg'],
-      experience: ['input[placeholder*="experience" i]', 'select[name="experience"]', 'input[aria-label*="Experience" i]'],
-      salary: ['input[placeholder*="salary" i]', 'input[name="salary"]'],
-      // Application form fields
-      name: ['input[name*="name" i]', 'input[placeholder*="Name" i]', 'input[aria-label*="Name" i]'],
-      email: ['input[name*="email" i]', 'input[type="email"]', 'input[placeholder*="Email" i]'],
-      phone: ['input[name*="phone" i]', 'input[name*="mobile" i]', 'input[placeholder*="Phone" i]', 'input[placeholder*="Mobile" i]'],
-      coverLetter: ['textarea[name*="cover" i]', 'textarea[placeholder*="Cover" i]', 'textarea[aria-label*="Cover" i]', 'div[contenteditable="true"][aria-label*="Cover" i]'],
-      resume: ['input[type="file"][accept*="pdf"]', 'input[type="file"][name*="resume" i]', 'input[aria-label*="Resume" i]'],
-      // Profile edit
-      headline: ['input[name*="headline" i]', 'textarea[name*="headline" i]', 'input[placeholder*="Headline" i]'],
-      summary: ['textarea[name*="summary" i]', 'div[contenteditable="true"][aria-label*="Summary" i]'],
-      skills: ['input[placeholder*="Skill" i]', 'input[aria-label*="Skill" i]', 'input[name*="skill" i]']
-    };
-    if (match) {
-      const w = match.toLowerCase();
-      for (const [field, selectors] of Object.entries(naukriFillSelectors)) {
-        if (field === w || w.includes(field)) {
-          for (const sel of selectors) {
-            try {
-              const el = [...document.querySelectorAll(sel)].find(isVisibleEnabled);
-              if (el) return fillElement(el, text);
-            } catch (e) {}
-          }
-        }
-      }
+    if (!el) {
+      const editables = areas.filter(a => a.isContentEditable);
+      el = (editables.length ? editables[editables.length - 1] : areas[0]) || null;
     }
-  }
-  // Foundit: search, application, profile
-  if (isFoundit) {
-    const founditFillSelectors = {
-      search: ['input[placeholder*="job title" i]', 'input[placeholder*="role" i]', 'input[placeholder*="skill" i]', 'input[name="keyword"]', '#searchKeyword'],
-      location: ['input[placeholder*="location" i]', 'input[name="location"]', '#searchLocation'],
-      experience: ['input[placeholder*="experience" i]', 'select[name="experience"]', 'input[aria-label*="Experience" i]'],
-      name: ['input[name*="name" i]', 'input[placeholder*="Name" i]'],
-      email: ['input[type="email"]', 'input[name*="email" i]', 'input[placeholder*="Email" i]'],
-      phone: ['input[name*="phone" i]', 'input[name*="mobile" i]', 'input[placeholder*="Phone" i]'],
-      coverLetter: ['textarea[name*="cover" i]', 'textarea[placeholder*="Cover" i]', 'div[contenteditable="true"][aria-label*="Cover" i]'],
-      resume: ['input[type="file"][accept*="pdf"]', 'input[type="file"][name*="resume" i]']
-    };
-    if (match) {
-      const w = match.toLowerCase();
-      for (const [field, selectors] of Object.entries(founditFillSelectors)) {
-        if (field === w || w.includes(field)) {
-          for (const sel of selectors) {
-            try {
-              const el = [...document.querySelectorAll(sel)].find(isVisibleEnabled);
-              if (el) return fillElement(el, text);
-            } catch (e) {}
-          }
-        }
-      }
+    if (!el) {
+      LAST_ACT = { action: "fill", match: match || "", result: "nomatch" };
+      return;
     }
+    return fillElement(el, text);
+  } catch (e) {
+    LAST_ACT = { action: "fill", match: match || "", result: "error:" + String(e && e.message || e) };
   }
-  // LinkedIn Service Marketplace: proposal fields
-  if (isLinkedInServiceMarketplace) {
-    const smFillSelectors = {
-      proposal: ['textarea[placeholder*="proposal" i]', 'textarea[name*="proposal" i]', 'div[contenteditable="true"][aria-label*="Proposal" i]', 'textarea[aria-label*="Proposal" i]', 'textarea[placeholder*="good fit" i]', 'textarea[aria-label*="Your proposal" i]', 'div[role="dialog"] textarea', 'div[contenteditable="true"][aria-label*="Your proposal" i]'],
-      price: ['input[placeholder*="price" i]', 'input[name*="price" i]', 'input[aria-label*="Price" i]', 'input[type="number"][name*="budget" i]'],
-      timeline: ['input[placeholder*="timeline" i]', 'input[name*="timeline" i]', 'select[name*="timeline" i]', 'input[aria-label*="Timeline" i]'],
-      coverLetter: ['textarea[placeholder*="cover" i]', 'textarea[name*="cover" i]', 'div[contenteditable="true"][aria-label*="Cover" i]']
-    };
-    if (match) {
-      const w = match.toLowerCase();
-      for (const [field, selectors] of Object.entries(smFillSelectors)) {
-        if (field === w || w.includes(field)) {
-          for (const sel of selectors) {
-            try {
-              const el = [...document.querySelectorAll(sel)].find(isVisibleEnabled);
-              if (el) return fillElement(el, text);
-            } catch (e) {}
-          }
-        }
-      }
-    }
-  }
-  // LinkedIn Messaging: message compose
-  if (isLinkedInMessaging) {
-    const msgFillSelectors = {
-      message: ['div[role="textbox"][contenteditable="true"]', 'div[aria-label*="Write a message" i]', '.msg-form__contenteditable', 'div[contenteditable="true"][data-placeholder*="message" i]', 'div[contenteditable="true"][aria-label*="Message" i]', 'form div[contenteditable="true"]'],
-      subject: ['input[placeholder*="Subject" i]', 'input[name*="subject" i]', 'input[aria-label*="Subject" i]']
-    };
-    if (match) {
-      const w = match.toLowerCase();
-      for (const [field, selectors] of Object.entries(msgFillSelectors)) {
-        if (field === w || w.includes(field)) {
-          for (const sel of selectors) {
-            try {
-              const el = [...document.querySelectorAll(sel)].find(isVisibleEnabled);
-              if (el) return fillElement(el, text);
-            } catch (e) {}
-          }
-        }
-      }
-    }
-  }
-  // LinkedIn General: connection note, search
-  if (isLinkedIn && !isLinkedInMessaging && !isLinkedInServiceMarketplace) {
-    const liFillSelectors = {
-      connectNote: ['textarea[placeholder*="note" i]', 'textarea[name*="note" i]', 'textarea[aria-label*="Note" i]', 'div[contenteditable="true"][aria-label*="Note" i]'],
-      search: ['input[placeholder*="Search" i]', 'input[aria-label*="Search" i]', 'input[name="search"]', '.search-global-typeahead__input'],
-      message: ['div[role="textbox"][contenteditable="true"]', 'div[aria-label*="Message" i]', '.msg-form__contenteditable']
-    };
-    if (match) {
-      const w = match.toLowerCase();
-      for (const [field, selectors] of Object.entries(liFillSelectors)) {
-        if (field === w || w.includes(field)) {
-          for (const sel of selectors) {
-            try {
-              const el = [...document.querySelectorAll(sel)].find(isVisibleEnabled);
-              if (el) return fillElement(el, text);
-            } catch (e) {}
-          }
-        }
-      }
-    }
-  }
-  // Generic fallback (v2.5: visible-first. Hidden background
-  // contenteditables - chat widgets, drafts - must never win over the
-  // box Baba watches. Baba screenshot 1904 proved a hidden DIV blocked
-  // an empty Gmail composer.)
-  const areas = [...document.querySelectorAll("textarea, input[type=text], input[type=email], input:not([type]), [contenteditable=true]")];
-  const visAreas = areas.filter((a) => kiloVisible(a));
-  const pool = visAreas;
-  let el = null;
-  if (match) {
-    const w = match.toLowerCase();
-    el = pool.find((a) => ((a.placeholder || a.getAttribute("aria-label") || a.name || "") + "").toLowerCase().includes(w)) || null;
-  }
-  if (!el) {
-    const editables = pool.filter((a) => a.isContentEditable);
-    el = (editables.length ? editables[editables.length - 1] : pool[0]) || null;
-  }
-  if (!el) { LAST_ACT = { action: "fill", match: match || "", result: "nomatch" }; return; }
-  return fillElement(el, text);
 }
 
 async function fillElement(el, text) {
@@ -761,13 +884,11 @@ async function fillElement(el, text) {
   const cur = el.value !== undefined ? el.value : el.innerText;
   const gmailBodyEditor = isGmail && (el.isContentEditable ||
     (el.getAttribute && el.getAttribute("g_editable") === "true"));
-  // Gmail's one-shot path must not depend on background-tab timers. The old
-  // pacing sleeps could stall the poll loop while Gmail was being refreshed.
   if (!gmailBodyEditor) await sleep(600);
-  const meaningfulCur = gmailBodyEditor
+  const meaningfulCur = gmailBodyEditor && typeof KiloGmailEditor !== "undefined"
     ? KiloGmailEditor.meaningfulText(el)
     : String(cur || "").replace(/[\u200B-\u200D\uFEFF]/g, "").trim();
-  if (!FILL_FORCE && meaningfulCur.length > 0) { LAST_ACT = { action: "fill", result: "skipped-nonempty", tag: el.tagName || "?", chars: meaningfulCur.length }; return; } // never overwrite human text (default)
+  if (!FILL_FORCE && meaningfulCur.length > 0) { LAST_ACT = { action: "fill", result: "skipped-nonempty", tag: el.tagName || "?", chars: meaningfulCur.length }; return; }
   if (!FILL_FORCE && cur && !meaningfulCur) {
     if (el.value !== undefined) el.value = "";
     else el.innerText = "";
@@ -779,8 +900,6 @@ async function fillElement(el, text) {
       el.dispatchEvent(new Event("input", { bubbles: true }));
     } catch (e) {}
   }
-  // One-shot set is the normal path. The old per-character innerText rewrite
-  // discarded trailing spaces on every assignment and stalled in hidden tabs.
   if (!gmailBodyEditor) await sleep(900 + Math.random() * 900);
   try {
     if (el.value !== undefined) el.value = text;
@@ -792,7 +911,9 @@ async function fillElement(el, text) {
     return;
   }
   if (!gmailBodyEditor) await sleep(900);
-  const observed = gmailBodyEditor ? KiloGmailEditor.meaningfulText(el) : String(el.value !== undefined ? el.value : el.innerText || "");
+  const observed = gmailBodyEditor && typeof KiloGmailEditor !== "undefined"
+    ? KiloGmailEditor.meaningfulText(el)
+    : String(el.value !== undefined ? el.value : el.innerText || "");
   const comparable = (value) => String(value).replace(/\s+/g, " ").trim();
   LAST_ACT = { action: "fill", result: comparable(observed).includes(comparable(text)) ? "filled" : "unverified", tag: el.tagName || "?", chars: observed.length };
 }
@@ -802,14 +923,12 @@ async function humanUncheck(match) {
   for (const b of boxes) {
     const label = ((b.getAttribute("aria-label") || "") + " " + (b.parentElement ? b.parentElement.innerText : "") + "").toLowerCase();
     if (!w || label.includes(w)) {
-      if (b.checked) { b.click(); await sleep(600); }
+      if (b.checked) { b.click(); await sleep(300); }
     }
   }
 }
-async function humanOpen(url) {
-  // v1.1: the hand can WALK. https-only + bridge-territory allowlist (same
-  // strictness as manifest host_permissions). match_url_substring still scopes
-  // which page may launch the walk. Human-paced like every other action.
+
+async function humanOpen(url, directive) {
   const u = (url + "").trim();
   if (!/^https:\/\//i.test(u)) return;
   const exactHosts = new Set([
@@ -818,19 +937,41 @@ async function humanOpen(url) {
     "www.instagram.com", "www.facebook.com", "www.notion.so", "www.notion.com", "notion.so",
     "tasklet.ai", "www.youtube.com", "discord.com"
   ]);
-  const wildcardHosts = ["indeed.com", "incometax.gov.in", "notion.so", "tasklet.ai", "discord.com"];
+  const wildcardHosts = ["indeed.com", "incometax.gov.in", "notion.so", "tasklet.ai", "discord.com", "yahoo.com", "google.com", "amazon.com", "foundit.in", "naukri.com"];
   const okHost = (h) => exactHosts.has(h) || wildcardHosts.some((suffix) => h.endsWith("." + suffix));
   let dst = null;
   try { dst = new URL(u); } catch (e) { return; }
   if (!okHost(dst.hostname)) return;
-  // v2.17: navigation itself is the scoped human-approved action. A timer
-  // here can be suspended when Chrome backgrounds the pinned tab, leaving a
-  // directive marked served with no navigation receipt.
+  if (!directive || !directive.directive_id) return;
+
+  const pending = {
+    directive_id: directive.directive_id,
+    action: "open",
+    source_url: location.href,
+    expected_url: u,
+    click_started_ms: Date.now(),
+    click_started_at: new Date().toISOString(),
+  };
+  try { sessionStorage.setItem("kilo-pending-nav", JSON.stringify(pending)); } catch (e) {}
+  try {
+    await callWorker({
+      type: "SET_PENDING_NAV",
+      pending: { ...pending, tab_id: TAB_ID }
+    }, 2500);
+  } catch (e) {}
+  try {
+    const navResp = await callWorker({
+      type: "NAVIGATE_TAB",
+      url: u
+    }, 3000);
+    if (navResp && navResp.success) {
+      return;
+    }
+  } catch (e) {}
   location.href = u;
 }
+
 async function humanHuntVideo(index) {
-  // v1.4: click the index-th video card on any listing page. Selector covers
-  // feed grids, channel /videos tabs, and search results. Navigates to /watch.
   try {
     const links = [...document.querySelectorAll(
       "ytd-rich-grid-media #video-title, ytd-video-renderer #video-title, " +
@@ -838,75 +979,44 @@ async function humanHuntVideo(index) {
       a => a && a.href && a.href.includes("/watch"));
     if (!links.length || index >= links.length) return;
     const target = links[index];
-    await sleep(1200 + Math.random() * 1500);
-    try { target.scrollIntoView({ block: "center" }); } catch (e) {}
-    await sleep(700);
+    target.scrollIntoView({ block: "center" });
     target.click();
   } catch (e) {}
 }
+
 async function humanTranscript() {
-  // v1.4: expand description, open transcript panel, scroll it into view so the
-  // snapshot body includes transcript lines for the claim pipeline.
   try {
-    await sleep(2500);
-    try {
-      const expandBtn = document.querySelector(
-        "#expand, ytd-video-secondary-info-renderer #expand, tp-yt-paper-button#expand, " +
-        "ytd-text-inline-expander #expand");
-      if (expandBtn) { expandBtn.click(); await sleep(1000); }
-    } catch (e) {}
-    try {
-      const desc = document.querySelector("ytd-video-secondary-info-renderer, ytd-watch-metadata");
-      if (desc) { desc.scrollIntoView({ block: "center" }); await sleep(600); }
-    } catch (e) {}
-    try {
-      const moreBtn = document.querySelector(
-        "#button-shape [aria-label*='More' i], ytd-menu-renderer #button, button[aria-label*='More actions' i]");
-      if (moreBtn) { moreBtn.click(); await sleep(900); }
-      const items = [...document.querySelectorAll(
-        "tp-yt-paper-item, ytd-menu-service-item-renderer, yt-list-item-view-model")];
-      const t = items.find(el => (el.innerText || "").toLowerCase().includes("transcript") ||
-                                 (el.innerText || "").toLowerCase().includes("show transcript"));
-      if (t) { t.click(); await sleep(2200); }
-    } catch (e) {}
-    try {
-      const panel = document.querySelector(
-        "ytd-transcript-renderer, ytd-engagement-panel-section-list-renderer[target-id='engagement-panel-searchable-transcript']");
-      if (panel) { panel.scrollIntoView({ block: "center" }); await sleep(1200); }
-    } catch (e) {}
+    const expandBtn = document.querySelector(
+      "#expand, ytd-video-secondary-info-renderer #expand, tp-yt-paper-button#expand, " +
+      "ytd-text-inline-expander #expand");
+    if (expandBtn) expandBtn.click();
+    const moreBtn = document.querySelector(
+      "#button-shape [aria-label*='More' i], ytd-menu-renderer #button, button[aria-label*='More actions' i]");
+    if (moreBtn) moreBtn.click();
+    const items = [...document.querySelectorAll(
+      "tp-yt-paper-item, ytd-menu-service-item-renderer, yt-list-item-view-model")];
+    const t = items.find(el => (el.innerText || "").toLowerCase().includes("transcript") ||
+                               (el.innerText || "").toLowerCase().includes("show transcript"));
+    if (t) t.click();
+    const panel = document.querySelector(
+      "ytd-transcript-renderer, ytd-engagement-panel-section-list-renderer[target-id='engagement-panel-searchable-transcript']");
+    if (panel) panel.scrollIntoView({ block: "center" });
   } catch (e) {}
 }
+
 async function humanHunt(index) {
-  // YouTube hunt: click video at index, wait for page load, extract transcript/claims
   try {
     const links = [...document.querySelectorAll("ytd-rich-grid-media #video-title, ytd-video-renderer #video-title, a#video-title")];
     if (!links.length || index >= links.length) return;
     const target = links[index];
-    await sleep(1500 + Math.random() * 2000);
     target.scrollIntoView({ block: "center" });
-    await sleep(800);
     target.click();
-    // Wait for video page to load
-    await sleep(3000 + Math.random() * 2000);
-    // Try to expand description and find transcript
-    try {
-      const expandBtn = document.querySelector('#expand, ytd-video-secondary-info-renderer #expand, tp-yt-paper-button#expand');
-      if (expandBtn) { expandBtn.click(); await sleep(1000); }
-    } catch (e) {}
-    // Try to open transcript
-    try {
-      const moreBtn = document.querySelector('[aria-label*="More" i], ytd-menu-renderer');
-      if (moreBtn) { moreBtn.click(); await sleep(800); }
-      const transcriptBtn = [...document.querySelectorAll('tp-yt-paper-item, ytd-menu-service-item-renderer')].find(el => (el.innerText || "").toLowerCase().includes("transcript"));
-      if (transcriptBtn) { transcriptBtn.click(); await sleep(2000); }
-    } catch (e) {}
-    // Report back with video page snapshot (next poll cycle will capture it)
   } catch (e) {}
 }
-// v2.0: cold scopes (YouTube/Instagram/Facebook) report ~every 10min.
-// Hot lanes keep 45s. RAM discipline: fewer wakes, fewer discards.
+
 let pollCount = 0;
-setInterval(() => { pollCount++; if (!isColdScope || pollCount % 13 === 1) poll(); }, 45000);
+const POLL_INTERVAL_MS = isColdScope ? 30000 : 10000;
+setInterval(() => { pollCount++; if (!isColdScope || pollCount % 3 === 1) poll(); }, POLL_INTERVAL_MS);
 poll();
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg && msg.type === "POLL_NOW") poll();

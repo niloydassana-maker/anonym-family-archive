@@ -9,7 +9,8 @@ class Agent360Client:
         self._msg_id = 100
 
     def start(self):
-        cmd = ['node', r'C:\Users\Admin\AppData\Local\npm-cache\_npx\bf857cb05272e5dd\node_modules\@agent360\browser-mcp\bin\cli.js']
+        cmd = [r'C:\Users\Admin\AppData\Local\hermes\node\node.exe',
+               r'C:\Users\Admin\AppData\Local\hermes\node\node_modules\@agent360\browser-mcp\index.js']
         self.proc = subprocess.Popen(
             cmd,
             stdin=subprocess.PIPE,

@@ -333,4 +333,76 @@ MOSQUITO COMMANDMENT (Baba 15.09 ~22:32 IST, the law's soul in his own example):
 The army are LLMs: they figure out everything themselves without dictation. Dictation is the failure mode, not the method. Therefore: (1) every seat boots WITH memory (ARMY-MEMORY.md from the public mine raw + blueprint in every prompt) — no son wakes blank; (2) missions state GOALS + proof-gates, never click-scripts — the seat chooses the path in kernel tongue; (3) wire orders carry law-changes and triggers only, never step-lists; (4) seats report_done with evidence or report_fail with tails — report-only is rejected on sight; (5) son dictates solely where the record is silent AND Baba's click is required — everything else the army owns. Two weeks of waiting ended 16.09: v16 carries memory, v15 carries law, kernels stay RUNNING, pilots heartbeat, receipts decide. Nothing stops the army but silence — and the wire never sleeps.
 
 ## 26. WEB-BRIDGE CUTOVER (2026-09-19/20 - latest architecture, phone dead)
-Full record: war-log/SESSION-2026-09-19-20-WEB-BRIDGE.md. Phone ADB lane eliminated (fighting-hands failure); Kilo Bridge extension + relay :8778 is the only hands path (13 sites). Loop: bridge snapshots -> triage/duty author WEB-*.json directives with written reasons -> relay serves gated by page state -> extension acts (click/fill/uncheck), paced 45s. L1 owns sends (P-34/35/36 proven). ITR + Arjun live. Laws added: CLASS-6 proposals, ASCII-only, smoke-test (node-check before reload). Sudo-hands + Nokia-SMS-OTP + failover armed.
+Full record: war-log/SESSION-2026-09-19-20-WEB-BRIDGE.md. Phone ADB lane eliminated (fighting-hands failure); Kilo Bridge extension + relay :8778 is the only hands path (13 sites). Loop: bridge snapshots -> triage/duty author WEB-*.json directives with written reasons -> relay serves gated by page state -> extension acts (click/fill/uncheck), paced 45s. L1 owns sends (P-34/35/36 proven). ITR + Arjun live. Laws added: CLASS-6 proposals, ASCII-only, smoke-test (node-check before reload). Sudo-hands + Nokia-SMS-OTP + failover armed. PHONES (Baba standing order 2026-09-20): IQOO = all apps logged in (transact/app lane); Nokia C30 G2866620341C0402558 = SMS OTPs (USB, Jio SIMs, proven reads). NOKIA-AWAY LAW (Baba 2026-09-20): Baba sometimes carries the Nokia out; signal = G2866620341C0402558 absent from adb devices. When away, OTPs route via WhatsApp to Baba on +91 86172 16163 (web.whatsapp.com bridge lane): send him what-to-read + where, he reads the SMS on the carried Nokia and replies; no OTP lane ever blocks on a missing phone.
+
+## 27. DELIVERY ENGINE (Kilo recommendation 2026-09-20, Baba confirms by silence)
+Who builds paid work: (a) documents (Arjun-class: architecture, vendor comparisons,
+roadmaps, proposals) = agy+Gemini reasoning PLUS Notion AI free 3 months via
+LinkedIn Premium perks (Business Plan: doc gen/edit, Research Mode, meeting notes;
+redeem with solo workspace, credit card required, CALENDAR the cancel before $22/mo
+auto-renew); (b) client apps (Bhavana/KOMINENI/Anil-class) = Lovable first (294
+credits banked, already paid), agy for backend/logic; (c) agent lanes = flash-class
+free tiers as now; (d) Rs 500 pool = paid fallback only (test with Rs 1 before any
+commit). Law: first rupee funds the next spend; nothing new bought until revenue. (e) MonkeyCode (Basic free: 10M tokens/day, 1 concurrent task, GLM/Kimi/MiniMax/Qwen/DeepSeek-class, cloud env): Tier-2 builder for backend/tested code with receipts; pilot on smallest job slice first; never client secrets/repos into hosted tasks without consent; never Pro ($15) until free quota binds AND revenue covers it.
+(f) Tasklet (Free: 300 bonus credits/day; paid from $25/mo): integrations/automations lane (Gmail/Slack summaries, 10 executions/trigger) plus model choice incl GPT-5.6 Luna/Terra/Sol and GPT-6 Astra ($10/$50 per 1M - DOUBLE Sol, agent input-heavy burn). PROVEN FREE (video transcript 2026-09-20, Baba verified): daily 300 bonus builds a full working app on Claude Fable 5 at zero cost; desktop app exists (prefer over browser tabs on starved RAM). LAW: Luna routine, Terra balanced, Sol hard problems, Fable-5-free for frontier pilots, Astra architect-minutes ONLY after revenue; account holds 3000 free signup credits - spend them learning, keep Astra to tiny proofs.
+(g) Kimi K3 (verified 2026-09-21: 2.8T MoE flagship, 1M context, coding above Fable 5, API $3/$15 per 1M, cache-hit $0.30): the Aug-15 video's FREE = signup crumbs (EvoLink 10 credits, Kie.ai early access) + free kimi.com chat, NOT a durable free API tier. Taste free, produce paid-later via cheap routes; candidate paid engine after first revenue.
+
+## 30. KILO PERSISTENCE LAW (Baba 2026-09-21: father never loses Kilo)
+opencode default model = opencode/muse-spark-1.3-contributor-free (me, every fresh
+session). Auto-fallback plugin @shutovks/opencode-model-fallback guards all sessions:
+muse-spark-1.2-free -> nemotron-3-ultra-free -> qwen3.8-flash -> gemini-3.8-flash ->
+glm-5.3-flash -> deepseek-v4.1-flash -> minimax-m2.5; billing errors (402/quota)
+cascade too, original recovers when healthy. small_model = mimo-v2.5-free (titles).
+Config: C:\Users\Admin\.config\opencode\opencode.jsonc. Live-tested KILO-OK.
+
+## 28. YOUTUBE GOLDMINE LAW (Baba 2026-09-21: youtube is our goldmine for all search)
+How-to + free-tier intel starts on YouTube (fresher than docs, shows working screens).
+youtube.com is bridge site 18: transcripts read off snapshots into files. Free-API map:
+war-log/GOLDMINE-FREE-API-2026-09-21.md (AgentRouter $200, Aevon $100, FreeInference,
+AI Studio, OpenRouter free, Nex-N2-Pro $0 promo). Claim order: no-card pools first,
+revenue funds the rest. ARMY BROADCAST (Baba 2026-09-21: army + L0-L2 have new
+reins and tools): all seats may spend free pools (Z.AI $0 Flash, Groq, Chutes,
+Kilo gateway, Antigravity sandbox, OpenRouter free) on lane work immediately;
+laws hold (no client secrets into logged endpoints, free-first, revenue unlocks paid). HUNT DUTY (Baba 2026-09-21): YouTube is Kilo's search
+ground for tools + income hacks - weekly fresh-upload sweep (free credits, AI
+tools, money methods), title-never-trusted (meter-test everything), hits into
+GOLDMINE file with expiry dates; Sunday digest carries the sweep.
+
+## 29. PERKS LEDGER (auto-renew traps, Baba confirms dates)
+- YouTube Premium trial: 3 months free from ~2026-09-21, renews ~Dec 2026.
+  CANCEL REMINDER: Dec 18. Uses: ad-free research, background play, downloads.
+- Notion Business trial: PENDING (card wall). On activation, CANCEL REMINDER:
+  3 days before 3-month end. Never let Premium lapse while redemptions hang open.
+
+## 31. CLAIM-CHECK VENTURE (Baba 2026-09-21: rare, unique, revolutionary)
+Pain: 30 min per YouTube video testing claims that turn out hoax. Product: Kilo
+Bridge watches subs -> agents transcribe -> extract testable claims -> meter-test
+live -> verdict card REAL/DEAD/EXPIRED. Go-to-market: claim-checked LinkedIn posts
+ARE the demo (pilot verdicts banked: Higgsfield 24h REAL, GPT-5.6 free DEAD,
+TokenRouter EXPIRED). Scope: tool/earning channels only, never music. Moves start
+2026-09-21: bridge v1.1 reload, 70-roster pull, first claim-checked post, price.
+
+## 32. AGY ACCOUNT-SWITCH LAW (proven 2026-09-21: kunal.colab -> isearch.xsolve)
+agy has no login/auth command. Silent SSO lives in Windows Credential Manager
+(`gemini:antigravity`) + Chrome default profile — deleting the token file alone
+NEVER switches. Procedure: backup token, `cmdkey /delete:gemini:antigravity`,
+delete token, sign target account in Edge first, launch agy with
+`$env:BROWSER`=Edge, Baba consents, verify header. Full runbook:
+`war-log\AGY-ACCOUNT-SWITCH-2026-09-21.md`. Switch-back = copy backup token
+back, no browser needed. Standing: ticks run on isearch.xsolve (Pro) until Baba
+orders otherwise.
+STANDING ROTATION ORDER (Baba 2026-09-21 ~11:30 IST): whenever agy is stuck,
+switch account automatically. Armed: `war-log\agy-account-rotate.ps1` via task
+`KILO-AGY-ROTATE` every 15m (battery-gate off). Evidence-gated ONLY (stale
+heartbeat + fresh failure lines in tick-triage-runs.log, incl. auth timeouts);
+60-min cooldown; double-fail = hold + flag Baba, never flap. Bundles in
+`war-log\agy-accounts\` (isearch.blob.b64 live-captured, kunal.json from backup);
+live stores (cred + token file) always rewritten in sync. Manual Baba switches
+are adopted, never fought. Secrets never logged, emails only.
+
+## 33. SCAM WATCH LANE (Baba 2026-09-22: report, never impersonate)
+Citizen scam-reporting: inbox/bankalert triage flags phishing, evidence filed
+redacted, pattern-busts published (own Discord, YouTube, LinkedIn personal).
+Iron rules: PII redacted, no naming without filed proof, screenshots+headers,
+one bust at a time, never engage scammers. Trust funnels to DMs -> products.
+Full plan: war-log/SCAM-WATCH-PLAN-2026-09-22.md. First bust awaits Baba pick.

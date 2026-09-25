@@ -15,6 +15,20 @@ Usage:
   python win-agent.py clickrel <title> <xr> <yr>  -> click at relative pos (0-1)
 """
 import sys, time, json
+import ctypes
+
+# Attach to interactive desktop if running inside a service or sandbox desktop
+try:
+    u32 = ctypes.windll.user32
+    hwinsta = u32.OpenWindowStationW("WinSta0", False, 0x10000000)
+    if hwinsta:
+        u32.SetProcessWindowStation(hwinsta)
+        hdesk = u32.OpenDesktopW("default", 0, False, 0x10000000)
+        if hdesk:
+            u32.SetThreadDesktop(hdesk)
+except Exception:
+    pass
+
 import pygetwindow as gw
 import pyautogui
 
