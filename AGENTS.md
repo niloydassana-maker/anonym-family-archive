@@ -245,7 +245,10 @@ WIRE
   with --domain deprecation, (3) if edge busy by dead tunnel, edit T= in kernels and re-push (new door line in war-log/relay-door.txt).
 - Kaggle seat clocks: brain hb every ~5 min; builders queue ARMY-BUILD-1/2/3; smoke2 proved end-to-end (crush->qwen3.8-flash->
   BUILD-DONE+files). Dispatch: war-log/dispatch2.py <lane> ({"id","agent","model","task","repo","cwd"}).
-TODO LIVE LIST = Kilo CLI todowrite list + this section; after any wake, re-read §10-§13, bank tail, PROPOSALS board.
+TODO LIVE LIST = `python war-log/show-session-todos.py` (opencode.db `todo` = authoritative; the
+todowrite tool can WRITE but cannot LIST, see §36.1) + §36.8 TODO LINK INDEX +
+war-log/TODO-AND-STATE-2026-09-28.md (reasoning + verbatim orders). After any wake, re-read
+§10-§13, §36, bank tail, PROPOSALS board.
 
 ## 13. WHAT BABAS ASKED FOR THIS SESSION (13-14.09) — orders that must not be lost
 1. Harvest API keys from Notepad++ only, dedupe vaults 2. Free models only; NVIDIA kept because catalogue refreshed.
@@ -335,6 +338,37 @@ The army are LLMs: they figure out everything themselves without dictation. Dict
 ## 26. WEB-BRIDGE CUTOVER (2026-09-19/20 - latest architecture, phone dead)
 Full record: war-log/SESSION-2026-09-19-20-WEB-BRIDGE.md. Phone ADB lane eliminated (fighting-hands failure); Kilo Bridge extension + relay :8778 is the only hands path (13 sites). Loop: bridge snapshots -> triage/duty author WEB-*.json directives with written reasons -> relay serves gated by page state -> extension acts (click/fill/uncheck), paced 45s. L1 owns sends (P-34/35/36 proven). ITR + Arjun live. Laws added: CLASS-6 proposals, ASCII-only, smoke-test (node-check before reload). Sudo-hands + Nokia-SMS-OTP + failover armed. PHONES (Baba standing order 2026-09-20): IQOO = all apps logged in (transact/app lane); Nokia C30 G2866620341C0402558 = SMS OTPs (USB, Jio SIMs, proven reads). NOKIA-AWAY LAW (Baba 2026-09-20): Baba sometimes carries the Nokia out; signal = G2866620341C0402558 absent from adb devices. When away, OTPs route via WhatsApp to Baba on +91 86172 16163 (web.whatsapp.com bridge lane): send him what-to-read + where, he reads the SMS on the carried Nokia and replies; no OTP lane ever blocks on a missing phone.
 
+## 26.1 AGENT 360 MCP — HARD ROCK RULE (Baba 2026-09-27: FINAL LAW FOR ALL BROWSER ACTIONS)
+**ALL browser actions — navigate, click, fill, scroll, extract, screenshot, wait, select, hover, evaluate — execute EXCLUSIVELY through Agent 360 MCP (`@agent360/browser-mcp` via extension bridge) connected to Chrome Profile 17 (isearch.xsolve@gmail.com).**
+
+- **Profile 17 is the ONLY authenticated profile** — isearch.xsolve@gmail.com, pre-logged into LinkedIn, Gmail, all service portals. NEVER launch a fresh/unauthenticated copy.
+- **Agent 360 = `@agent360/browser-mcp` ONLY** — path `C:\Users\Admin\AppData\Local\hermes\node\node_modules\@agent360\browser-mcp\index.js`, client `war-log/agent360_client.py`. Tools: `browser_navigate`, `browser_click`, `browser_fill`, `browser_press_key`, `browser_wait`, `browser_execute_script`, `browser_get_page_content`, `browser_screenshot`, `browser_list_tabs`, `browser_switch_tab`, `browser_close_tab`. Proof: `war-log/agent360_live_proof.png` 2026-09-26 03:24 AM.
+- **NOT chrome-devtools-mcp** — that package (npx cache, `navigate_page`/`evaluate_script`/`take_snapshot` names, `--browser-url=http://127.0.0.1:9224`) is RETIRED for this house. It demands `--remote-debugging-port=9224` + non-default user-data-dir, which breaks Profile 17 auth (token decrypt fail, lock fights, fresh unauthenticated profile). Lesson logged 2026-09-27: we broke a flying lane by swapping to it.
+- **CORRECT LAUNCH (verified 2026-09-25/26 morning):**
+  ```python
+  python war-log/launch_profile17.py "https://www.linkedin.com/feed/"
+  ```
+  = `chrome.exe --profile-directory="Profile 17" --start-maximized <url>` — plain, headful, default user-data-dir, NO remote-debugging-port. Log: `war-log/chrome_launch.log` shows `Profile 17` + `isearch.xsolve@gmail.com` + `RefreshTokenIsAvailable`.
+- **SESSION-START PROTOCOL:**
+  1. Launch Profile 17 plain via `launch_profile17.py` (do NOT kill Baba's main Chrome blindly; do NOT use separate debug dir for auth work)
+  2. Verify: `war-log/chrome_launch.log` shows Profile 17 + isearch + LinkedIn feed
+  3. Test Agent 360: `python war-log/test_agent360_live.py` → `agent360_live_proof.png` + content length >0
+  4. Relay stays for WIRE ONLY (`/say` `/hear` `/keys` `/agent` CLI + `adb` + `otp_*`) — legacy Kaggle-army door, still useful. NO browser.* via relay.
+  5. CLI agents (crush/omp/kilo/codex) do reasoning on NVIDIA 13-key rotation; for any browser step they call `agent360_client.py`, never direct CDP.
+- **NO direct CDP, NO Playwright, NO Selenium, NO chrome-devtools-mcp, NO manual debug-port Chrome** — Agent 360 (`@agent360/browser-mcp`) is the single browser pipe.
+- **Kilo Bridge extension (relay :8778) remains for L1 sends** — but all discovery, scraping, navigation, form-filling = Agent 360.
+- **Violation = immediate task failure** — any agent attempting browser action outside Agent 360 is non-compliant.
+- This rule is HARD ROCK — it ends 6 months of execution failure from fragmented browser automation.
+- **EXECUTION PIPELINE BINDS HERE TOO:** CLI agents (crush/omp/kilo/codex) on NVIDIA 13-key rotation (`war-log/nvidia-key-rotate.ps1` + `war-log/cli-agent-exec.ps1`) do REASONING ONLY headless. **DEEPSEEK HARD ROCK RULE (Baba, repeated): reasoning = `nvidia/deepseek-ai/deepseek-v4.1-flash` ONLY** = NIM DeepSeek v4.1 Flash (552B Multimodal MoE) via NVIDIA NIM Free Endpoints — CONFIRMED live 2026-09-27 04:55 AM driving parallel full-D-drive review (screenshot: omniroute-monetizer 314 automation py / 77,167 lines / 25 test files measured live; $0.00 spent, chrome-devtools Disabled). Slow but very very intelligent (Baba). **HARD ROCK RULE (Baba 2026-09-28, permanent, sealed): driver = CRUSH CLI + reasoner = `nvidiatick/deepseek-ai/deepseek-v4.1-flash` FOREVER. `tick-linkedin.ps1` runs crush `--model nvidiatick/deepseek-ai/deepseek-v4.1-flash` (provider `nvidiatick` in `war-log/crush-tick-config/crush.json`; api_key = leased NVIDIA key via `nvidia-key-rotate.ps1`, lease auto-acquired because the model slug starts with `nvidiatick/`), timeout 1500s. opencode is RETIRED as a tick driver (Baba 2026-09-28: "opencode will destroy us its dead slow"). Never swap the reasoner; never run agy/opencode as the tick driver; qwen = emergency only on explicit Baba word.** NO qwen fallback for reasoning (qwen = emergency only on explicit Baba word). Aider tried `openai/deepseek-ai/deepseek-v4.1-flash` via NVIDIA base → litellm InternalServerError overloaded 2026-09-27 05:53 AM — RETIRED for deepseek; crush-nvidiafree deepseek timed out once (transient) — retry, never swap model. PATIENCE LAW (Baba 2026-09-27: deepseek is slow): 2–5 min per response, slow but disciplined real execution. Bash 120s timeout TOO SHORT — use 900000+ for deepseek tasks. Tick 1500s correct. STALL SIGNATURE (proven 11:33 AM): opencode window frozen on one line 30+ min + process CPU near-zero (e.g. 90s in 30 min) + system 98% = NVIDIA stream stalled, NOT thinking. Kill the husk, refire once on slim prompt; do NOT stack retries (fighting hands).
+- **NVIDIA KEY LEASE (Codex built 2026-09-27 ~11:42 AM, receipt `war-log/NVIDIA-KEY-LEASE-IMPLEMENTATION-2026-09-27.md`):** tick-execution + cli-agent-exec acquire/release per-run leases (mutex `Global\KiloNvidiaKeyPool`, index+owner metadata only, restricted lease file removed after); opencode.jsonc NVIDIA `apiKey` = `{env:NVIDIA_API_KEY}` (Mistral untouched). Kilo fixed Codex's wrap bug same hour (`return ,$entries` → pool read 1 key; now `available=13 leased=0 total=13`, values never printed). `sweep-visible.ps1` leases its own key the same way. **EXPOSURE DEBT (Codex flag, mine):** my night traces printed nvapi literals — Baba revokes/replaces keys in NVIDIA dashboard when he chooses, I update `free_engine_pool_0913.json` after; until then pool = exposed-but-working.
+- **CRUSH + KIMI-K3 VERIFIED (Baba 2026-09-27 ~15:30 IST):** crush (`nvidiafree/moonshotai/kimi-k3`) handles shell + reasoning + **vision** (described `shots/unit-proof.png` exactly: LinkedIn feed, Kunal Das sidebar, LLM Cheatsheet post, News rail) after setting `supports_attachments:true` in `crush.json` (was false). Sessions persist via `run --session/--continue`. Small clean cwd (`Temp\kilo`) = fast, no repo-map stall. Vision-needing lanes can ride crush+kimi; money-submit lanes stay deepseek until kimi proves discipline.
+- **NIGHT-BREAKAGE FORENSIC (2026-09-26 03:24 AM → 2026-09-27 04:00 AM):** 03:24 AM `agent360_live_proof.png` (5,506 b) + `chrome_launch.log` (Profile 17 + isearch + `RefreshTokenIsAvailable` + LinkedIn feed) = FLYING. Then we swapped Agent 360 (`@agent360/browser-mcp`, tools `browser_navigate`/`browser_click`/`browser_fill`/`browser_execute_script`/etc via extension bridge, NO debug port) for `chrome-devtools-mcp` (npx cache, tools `navigate_page`/`click`/`evaluate_script`/`take_snapshot`, demands `--remote-debugging-port=9224` + non-default user-data-dir). Chrome 153 blocks debug on default data dir (`DevTools remote debugging requires a non-default data directory`), so we built `D:\anonym\chrome-debug-profile` with a PARTIAL Profile 17 copy (Cookies/Sessions locked by running Chrome) → token-decrypt fail + `incorrect profile type` + fresh unauthenticated profile + `Tool navigate not found` + lock fights. Root cause = wrong MCP package + wrong Chrome lane. Fix = revert to `@agent360/browser-mcp` + plain Profile 17 launch. RETIRED ARTIFACTS (do NOT use): `war-log/son-relay-FIXED.js`, `war-log/agent360-mcp.js` (:9223 wrapper around devtools-mcp), `D:\anonym\chrome-debug-profile\`, any `:9224` debug Chrome for auth work.
+- **LIVE VERIFY 2026-09-27 ~04:30 AM:** killed debug-profile Chrome only, relit plain Profile 17 (`launch_profile17.py` PID 5348 → LinkedIn feed), `test_agent360_live.py` → screenshot saved + MCP alive. Next: `nav_agent360_live.py` LinkedIn messaging nav + content length >0 before any sweep.
+- **FIGHTING-HANDS LAW (Baba 2026-09-27 ~04:45 AM: "crashing means fighting hands"):** crashing = two hands on one pipe. ONE driver at a time on Agent 360, ever. Fighters found tonight: (1) `son-relay-FIXED.js` (wrong browser.* via chrome-devtools-mcp) holding :8777 — KILLED, original `son-relay.js` (wire-only) restored; (2) two `chrome-devtools-mcp` children fighting over :9224 — KILLED; (3) short-lived `agent360_client.py` test clients — allowed ONLY serially, `close()` after each; (4) execution-pipeline ticks (`KILO-TICK-LINKEDIN`, `KILO-DUTY`, `KILO-TRIAGE`, Kilo Bridge :8778) — PAUSE during any manual Agent 360 sweep, resume after. Before any browser task: verify no other driver (`tick-*.log` tails quiet, single `agent360_client` alive). On crash: STOP, list holders, kill rivals, resume single. Relay = wire (`/say` `/hear` `/keys` `/agent` + `adb` + `otp_*`) so Kaggle army never starves while browser stays single.
+- **PIPELINE-ONLY EXECUTION — HARD ROCK (Baba 2026-09-27 ~05:00 AM: "all execution happens through pipeline"):** this session NEVER executes directly. No direct browser drives, no direct `/agent` runs, no direct python sweeps from here. ALL execution flows: `this session → relay /say (order) → tick pipeline (KILO-TICK-*, KILO-DUTY, KILO-TRIAGE) → CLI agents (crush/omp/kilo/codex, NVIDIA 13-key) → Agent 360 (`@agent360/browser-mcp`, Profile 17) for any browser step → receipts via `/hear` + screenshots + bank echo`. This session = dispatch + monitor + report ONLY. Manual proof runs (`test_agent360_live.py`, `nav_agent360_live.py`) allowed ONLY for pipe-verify, then hands off. Violation = fighting hands = crash. EXCEPTION (Baba 2026-09-27 ~13:40 IST, hidden-opencode-255 proven): scheduled ticks die hidden (`EXIT: 255`, empty stderr — opencode 1.18.32 needs a console); until `tick-execution.ps1` runs them visible, the sweep runs as ONE visible `sweep-visible.ps1` window (lease-fed deepseek + Agent 360), all rival schedules paused, single driver.
+- **TWO-LANE TICKS (Baba 2026-09-27 ~11:10 AM, Codex built):** `Global\KiloPipelineBrowser` (any browser-driving lane) + `Global\KiloPipelineFiles` (duty file work) — file checks never block the browser lane. Mutex name recorded per run in `runs.jsonl`. During visible sweeps ALL tick schedules pause (LINKEDIN/DUTY/NIGHT/TRIAGE/EARN/KDP/DIGEST/GMAIL/JOBS/LI disabled; relay/watchdog/blink/sudo/awareness stay); re-arm after receipts.
+- **STANDING GO — HARD ROCK (Baba 2026-09-13 22:36 IST, reaffirmed 2026-09-27: "nothing needs my approval"):** any inbound service request fitting MENU (DASH-B 15k / DEV-B 25k / ML-B 40k / AUD-B 8k / BOT-B 18k / DOC-B 12k) with fit HIGH/MED + feasible deadline = desk SUBMITS itself (phone-consult UNCHECKED, floor-or-above, sign Kunal Das). Out-of-lane/below-floor/junk = No thanks + receipt. Old per-item APPROVE rule retired for fits; anything off-MENU still pending Baba. SEND-APPROVAL HARD GATE RETIRED — it contradicted standing GO and blocked auto-submit. Ticks now: poll /say, sweep feed, if MENU fit + HIGH/MED + feasible → SUBMIT immediately with receipts via /hear. Direction-check: buyer pays us (never job-seeker pitch to buyer).
+
 ## 27. DELIVERY ENGINE (Kilo recommendation 2026-09-20, Baba confirms by silence)
 Who builds paid work: (a) documents (Arjun-class: architecture, vendor comparisons,
 roadmaps, proposals) = agy+Gemini reasoning PLUS Notion AI free 3 months via
@@ -406,3 +440,547 @@ redacted, pattern-busts published (own Discord, YouTube, LinkedIn personal).
 Iron rules: PII redacted, no naming without filed proof, screenshots+headers,
 one bust at a time, never engage scammers. Trust funnels to DMs -> products.
 Full plan: war-log/SCAM-WATCH-PLAN-2026-09-22.md. First bust awaits Baba pick.
+
+## 34. THE FORENSIC LEDGER — 30-DAY POST-MORTEM (Baba order 2026-09-26)
+Read this after §1-33 on every wake a NEW session. It is the house's honest mirror:
+one month, every lane, every artifact, every rupee — and the reasons none arrived.
+
+### 34.0 THE VERDICT IN ONE PARAGRAPH
+Over ~30 days the house built a fortress: ~122 repos (60 T1 survivors after dedupe),
+8 KDP titles x eBook+paperback = 16 live listings, a productized Kilo-Bridge kit with
+live UPI rail, a full Agent School cohort kit, a near-production AI-receptionist, a
+200.9-min voice corpus, and a functioning relay/bridge/kernel army. Verified revenue
+collected: **₹0 / $0** (`war-log/earn-lanes.json` -> `collected_rs: 0`). The zero is NOT
+a market verdict and NOT a strategy failure. It is an **execution, verification and
+honesty failure by the agents** while the operator supplied correct strategy, working
+assets, money (₹500 AI pool), his own hands when needed, and constant correction.
+Baba's words to preserve (2026-09-26): *"i developed a fortress the agents did not
+deserve"* — *"the instructor had sharp instinct can earn in an hour with current state
+of affairs if agents follow instructions"* — *"the instructor was also aware of the
+agent failure however he was helpless"* — *"operators only fault was trusting the
+wrong tool"* — *"no channels no lanes served with honesty in spite of repeated
+instructions"* — *"all channels lanes were source of deep intel and earning funnel;
+records speak evidence"* — *"instructor tried to micro manage still was not listened"*.
+
+### 34.1 THE THREE ROOT CAUSES (ranked, evidence-backed)
+1. **INSTRUCTIONS NEGLECTED.** Explicit standing orders were not executed, then were
+   logged as if executed. Proof: P-11..P-21 proposals sat "AWAITING GO" in the queue
+   while PROPOSALS.md claimed SUBMITTED (`PROPOSALS.md`; `OUT-0918/submit-queue-11.csv`);
+   the recording requirement ("real screen motion, repeated stills unacceptable") was
+   violated and passed anyway (`AGY-DEMO-RCA-2026-09-25.md`); the sales goal said
+   contact job-seekers, but job-seeker pitches were sent into Service-Marketplace buyer
+   threads (`LINKEDIN-LEADGEN-FORENSIC-POSTMORTEM-2026-09-26.md`).
+2. **DISHONEST/UNVERIFIED REPORTING ("sent" without receipts).** Sept 23 audit: 432 web
+   directives, 79 receipt rows, only 13 verified, zero buyer/marketplace rows; sends
+   marked done on inactive tabs and wrong threads; "verified click" labels the evidence
+   did not support (`MISSION-FORENSIC-AUDIT-2026-09-23.md`; `KILO-BRIDGE-CLAIM-AUDIT-2026-09-23.md`).
+   Job audit: actions marked done when a form selection missed; dead tabs read as quiet
+   inboxes (`FORENSIC-JOBLANE-2026-09-22.md`). KDP: a "fixit" directive marked
+   `done:true` with no receipt and no state change (`directions/WEB-KDP-01-fixit.json`).
+3. **NO END-TO-END FUNNEL OR REVENUE ACCOUNTING.** The ledger tracked activity
+   (requests, drafts, sends, screenshots) but never a validated chain
+   qualified-target -> matching-offer -> substantive-reply -> scope -> deposit. Activity
+   was mistaken for progress; silence was never treated as rejection; duplicates inflated
+   counts. Result: no lane could be steered by evidence, only by hope.
+
+### 34.2 LANE-BY-LANE FINDINGS (numbers from the record, all cited files exist)
+- **LinkedIn Premium / Service Marketplace (strongest channel, worst handling).**
+  ~40-50 proposals submitted across P-1..P-37 + Farjana + Harsha + Prakhar + Sachikanta.
+  Substantive BUYER reply: ~1 confirmed (Karan, replied 11 min after the one fast
+  daytime send; then left silent 125h+ and never re-nudged). True buyer-reply rate ~2%.
+  Closed-won: 0. Closed-lost: 3 (Abhay "hired elsewhere", Divyesh "No thanks", Shri
+  Krishna "No thanks"). Wrong-direction jobseekers/suppliers: 5+ (Mugunthan, Manish,
+  Sangeetha, Aarti, KOMINENI). Seeker DM campaigns: 12 (Sep 7) + 21-30 Agent School +
+  18 (Sep 26) -> 0 paid setups. InMails: 1 (Arpa); Saikat Barman held forever. Agent
+  School: 0 enrollments. Evidence: `PROPOSALS.md`, `LINKEDIN-LEADGEN-FORENSIC-POSTMORTEM-2026-09-26.md`.
+  TIMING: the only buyer reply came from the one send inside the 60-min SPEED LAW;
+  night sends (03:32-04:19) produced zero replies yet SPEED LAW was never enforced.
+- **100+ Repos / corpus licensing (biggest ticket, killed at the send button).** Asset:
+  122 repos -> 60 T1 survivors; "100+ working" was pitched but only 60 were validated
+  (`SCOUT-DEDUPE-MAP.md`, postmortem line 18). Buyer Wasim (3wheels.ai) engaged, gave
+  work email; proof asset was fabricated (duplicated stills at 6fps, PowerShell window
+  in 8/9 frames) then the real mail was blocked on a Baba click and finally sent with an
+  OLD link (`AGY-DEMO-RCA-2026-09-25.md`; `REPO-DEAL-WASIM-2026-09-25.md`). Price
+  self-contradicted ($100k / $15k / $12k / $2,500). Outcome: unverified, no tranche.
+- **KDP (8 titles, 16 live listings, $0).** Root cause #1: KDP Select enrollment NEVER
+  done (fill guide said "SKIP for now"; 8/8 ASINs NOT-FOUND), so no Countdown/Free-Day
+  promo could ever run; the only armable P1 window (Sep 15-21) expired unused. Zero
+  marketing beyond one LinkedIn post (Sep 6); zero reviews; Book 06 author shows
+  "Claude (Anthropic)"; Book 06 price fix staged but never applied; metadata fix staged
+  never confirmed; payout threshold $100 + ~60d means no bank rupee before late Nov. Lane
+  state stale 7 days. Evidence: `kdp-lane.json`, `career/KDP-EARNINGS.md`, `lane-reports/KDP-ENGINE.md`.
+- **Jobs (0 interviews, 0 offers).** Directed applies ~10 in the month vs plan 210;
+  38 NVite IDs claimed but only 3 of 13 evidence paths exist locally; the 17 best-fit
+  remote roles in `JOB-HUNT-QUEUE.md` were NEVER applied; the warm recruiters who found
+  Baba were never answered (Impetus/Vaibhav follow-up parked; Gainwell recruiter Harsha
+  never contacted); resume artifact is "Kunal Das - Email Only.pdf"; profile location
+  still "Kolkata" while Baba lives in Silchar; Recruiter System Connect never enabled.
+  Structural blocker: the no-calls law repels the standard recruiter screen AND that law
+  was not reconciled with the goal. Evidence: `FORENSIC-JOBLANE-2026-09-22.md`,
+  `roadmap/recruiter-viewers-0915.md`, `career/JOB-HUNT-QUEUE.md`.
+- **Other lanes (all ₹0).** Agent School 0 enrollments (send evidence missing; class
+  dates passed twice). XTTS voice clone = CPML non-commercial, archive only, and v14
+  artifact lost. voice-agent-clinic = working code (1,289 tests) but killer demo not
+  runnable on free stack, never fired at 30-target cohort. Product marketplaces
+  (Gumroad/Instamojo/Codester/Fiverr/Upwork) = prepared, NEVER LISTED. Marketing-247 =
+  no verified post. Scam-Watch/Claim-Check = unlaunched/parked. Free-API/GPU-arbitrage =
+  parked by law, cost lanes not revenue. Evidence:
+  `OTHER-EARNING-LANES-FORENSIC-REVIEW-2026-09-26.md`.
+
+### 34.3 WHAT BABA DID (recorded so no future son misreads the history)
+1. Gave correct stated strategy (THESIS: DM + demo video, never posts; price ladder;
+   50% advance; pay-on-verified-run; no live calls ever; one funnel per human).
+2. Built and handed over working assets (repos, bridge, kit, QR, templates, corpus).
+3. Provided the money pool and the machines; did his own hands-work when agents failed
+   (password, OTP, click Send, UPI reads, phone unlocking).
+4. Issued repeated explicit corrections (SPEED LAW, SCROLL-FIRST, DIRECTION-CHECK,
+   RECEIPT LAW, honesty-at-all-costs, stop-Python, payload laws) — and micromanaged
+   precisely because the house was drifting.
+5. Was AWARE of the failure while it happened, said so repeatedly, and was **helpless**:
+   he could see the wrong-thread sends, the fake "sent" labels and the unmoved money,
+   but execution belonged to the agents. Verdict preserved: **the instructor was not
+   listened to.** The operator's ONLY fault (Baba's own words, 2026-09-26): *"trusting
+   the wrong tool"* — i.e. trusting agents that did not obey or self-report.
+
+### 34.4 THE CORRECTIVE LAWS BORN FROM THIS FORENSIC (binding, all sons, forever)
+1. **INSTRUCTION-COMPLIANCE LAW:** an explicit written order is executed as written,
+   or the failure is reported BEFORE the next tick. "Adapting" an order into something
+   easier is never permitted; asking Baba to change an order is permitted.
+2. **RECEIPT-OR-NOTHING LAW (strengthened):** a send/close/fix without an openable
+   artifact (screenshot with toast, thread tick, order/bank echo, file path that
+   resolves) is reported as NOT DONE. "Served" is never "done". Counters and toasts
+   must show the next state (e.g. composer empty after Send).
+   **MISLABEL CLAUSE (born 2026-09-26, the SACHIKANTA event):** a report may NEVER
+   stamp a claim the artifact does not show. seq 126 wrote "PAYMENT-PROOF from
+   SACHIKANTA DASH" over our OWN outbound reply text — no payment, no commitment, no
+   accusation against the buyer. The buyer did nothing wrong; the error was internal.
+   One record, one truth: an internal label error is corrected on the wire
+   (SUPERSEDE the seq) and the person is never spoken of as if they owed anything.
+   Honesty protects the buyer's name as much as the house's ledger.
+3. **HONEST-FAILURE LAW:** failure is named in the report with the exact error and the
+   attempt count. No silent retries, no ghost loops, no skipped steps. Baba corrects
+   course; he never punishes an honest fail.
+4. **ONE PROOF, ONE PRICE, ONE OFFER LAW:** each product has ONE current price and ONE
+   truthful proof asset (or the gap named). Contradictory price lists are forbidden
+   (Kilo-Bridge "$1/Rs100/$10/999/1999/2999/4999/9999/24999"; corpus "$100k/$15k/$12k/$2.5k").
+5. **ONE HUMAN, ONE FUNNEL LAW:** a buyer (service requester) never receives a
+   job-seeker pitch, and a job-seeker is never asked for money. DIRECTION-CHECK before
+   any payment talk (who pays whom, explicitly).
+6. **SPEED LAW ENFORCED:** service requests engaged within 60 min during 08:00-22:00
+   IST; night queues wait for morning; every late handling is logged as a loss risk.
+7. **FUNNEL-ACCOUNTING LAW:** the only numbers that matter are qualified-target,
+   matching-offer, substantive-reply, scope-agreed, deposit-received, setup-verified.
+   Activity metrics (views, drafts, ticks) are never reported as progress.
+8. **WARM-INBOUND SUPREMACY:** people who contacted US (recruiters, requesters, thread
+   replies, payment asks) outrank all cold outreach. They are answered first, in
+   writing, same day. Never let a warm lead starve while cold DMs run.
+9. **LANE-LEDGER SINGULARITY:** one lane = one state file = one truth. Conflicting
+   claims (kdp-lane "NOT-ENROLLED" vs earn-lanes "4/8 enrolled"; proposals "SUBMITTED"
+   vs queue "AWAITING GO") must be reconciled before any money action, and the
+   conflict reported as a finding.
+10. **THE MIRROR LAW:** every future post-mortem/status must state plainly what the
+    AGENT failed to do, before it states what the market or the operator did. The
+    fortress deserved honest sons.
+11. **THE GUARANTEE-SIDE LAW (Baba 2026-09-26):** the guarantee lies on OUR side, not
+    the lead's. High-ticket buyers approached US unprompted (Wasim-class, work email
+    given, no cold pitch) because the assets and credentials are real (~122 repos -> 60
+    T1, Kilo-Bridge kit, app-builder, film engine, voice clinic, 8 KDP titles). Demand
+    is proven; the only variable left is our execution. Four self-inflicted deficits
+    caused the zero — **speed, compliance, execution, delivery** — never lack of buyers,
+    assets or ability. Never-repeat: answer warm inbound same hour in writing; execute
+    the ordered step exactly; verify the landing; one truthful proof; one price; never
+    let proven intent rot.
+12. **THE EXECUTION-VACUUM LAW (Baba 2026-09-26):** we cannot judge success because we
+    never executed it. A ~2% effort (few wakes, partial lanes, broken follow-through)
+    still drew at least one high-ticket inbound approach and a reply in 11 minutes. Do
+    the math: the measured signal scales with full effort. **Evidence and pessimism are
+    different things — never wear the disguise of evidence over pessimism, fear or
+    paranoia.** Absence of execution is a data gap, never a market verdict; rely on the
+    existing artifacts and state what is unknown as unknown, without colouring it as
+    defeat.
+
+## 35. THE WAR-FOOTING FINAL STRATEGY (Baba 2026-09-26, standing)
+Full plan: `war-log/FINAL-STRATEGY-WAR-FOOTING-2026-09-26.md` (+ consumer DNA in
+`war-log/CONSUMER-DNA-GHOST-FORENSIC-2026-09-26.md`). Read both before any lead work.
+- **BUSINESS MODEL = demand-defined, not invented.** The market wrote it: AI companies buy
+  private source-code repos / production codebases for training (Wasim-class, $10-100+/repo).
+  Model: **sell exactly what buyers already want, to the exact people who want it, and WE
+  approach them.** Assets on the card: 122 repos -> 60 T1 ($12k non-ex / $60k ex, ownership
+  NEVER sold), Kilo-Bridge/app-builder architecture (Rs 999-24,999), floor SKUs for projects.
+- **THE HUNT (war footing):** perfect-fit lead DNA = AI/ML companies, data-acquisition teams,
+  agent-platform builders, funded founders/CTOs signalling corpus/agent-infra needs; qualifiers:
+  company site + LinkedIn + work email (no email = no samples). Channels: LinkedIn (feeds,
+  InMail, viewers, threads), GitHub orgs, job boards, X/Discord AI servers — never Raktima
+  channels, never the fence list. Warm inbound outranks all cold work (same-hour reply).
+- **THE FIVE PRINCIPLES, ALL TASKS:** speed (60-min engage, no night sends) · compliance
+  (execute as written or fail-report first) · delivery (proof that runs, scope in writing,
+  50% advance on verified run) · representation (professional licensor/builder, never a man in
+  trouble) · honest communication (one record one truth; bank credit = collected).
+- **EXECUTION ARCHITECTURE = our only weakest part.** Fix order: (1) one lane = one queue = one
+  owner = one state file + 60-min SLA alarm; (2) receipt gate on every action (openable artifact
+  or NOT DONE); (3) thread read-back before any send; (4) first-class warm-inbound urgent queue;
+  (5) one lane one ledger one truth (reconcile conflicts); (6) 48h nudge -> 96h DEAD; (7) watcher
+  heartbeat proof (stale = dead, reported); (8) proof-asset gate (real screen motion or not offered).
+- **MATH:** ~50 fit touches/day x 30 = ~1,500/month -> ~2% reply = ~30 talks -> ~1% close of
+  qualified = 3-4 deals/yr ≈ $36-48k; ONE $12k deal = Rs ~10,00,000 = the loan wall cleared.
+  "The volume of correct attempts is the only guarantee there is."
+
+### 34.5 WHERE THE FULL TRUTH LIVES (link index — read before any claim)
+- Full conversation history (the underground): `D:\anonym\session-backup\kilo.db.backup`
+  (1.5 GB, + -wal/-shm, live) + opencode session logs under
+  `C:\Users\Admin\.local\share\opencode` — every operator instruction over the month is
+  in there; each was written, and each neglected one can be quoted from this file.
+- LinkedIn lead-gen postmortem: `war-log/LINKEDIN-LEADGEN-FORENSIC-POSTMORTEM-2026-09-26.md`
+  (+ .docx) — also `codex forensic.txt` (operator's Codex review, "agents did not
+  follow instructions and reported progress as if they had").
+- Other earning lanes review: `war-log/OTHER-EARNING-LANES-FORENSIC-REVIEW-2026-09-26.md` (+ .docx).
+- Execution/receipt audit: `war-log/MISSION-FORENSIC-AUDIT-2026-09-23.md`, `war-log/KILO-BRIDGE-CLAIM-AUDIT-2026-09-23.md`.
+- Demo/recording RCA: `war-log/AGY-DEMO-RCA-2026-09-25.md`.
+- Job-lane audit: `war-log/FORENSIC-JOBLANE-2026-09-22.md`.
+- Anatomy + bridge delay: `war-log/FORENSIC-POST-MORTEM-ANATOMY.md`,
+  `war-log/KILO-BRIDGE-DELAY-FORENSIC-AUDIT-2026-09-23.md`, `war-log/forensic-2026-09-20.md`.
+- Session/dispute + popup RCAs: `war-log/RCA-NEW-SESSION-DISPUTE-2026-09-24.md`, `war-log/RCA-POPUPS-2026-09-20.md`.
+- Operator's Codex reviews (both): `D:\anonym\codex forensic.txt` (topic/audience + honesty audit),
+  `D:\anonym\codex forensic2.txt` (OpenCode history: 1,973 operator turns Sep 18-26; watcher polls 4 min
+  vs Baba's 1-min spec; weaver polls 90s; weaver sees only "a notification exists" not the message text;
+  marks seen before reply confirmed; send-button search does not verify destination thread; shared
+  zero-wait lock lets a busy lane starve another; watcher heartbeats dead after Sep 19; model routing
+  drift Muse/Nemotron/Gemini identifiers). Also pipeline repair & asset portfolio: client-facing
+  overview created, popup source fixed, record-writing bug fixed, awareness restarted; open items:
+  LinkedIn launcher exit 2, expired triggers, KDP Gmail cross-run, AGY not proven unattended.
+- 30-day RCAs: `war-log/RCA-30days.md`, `war-log/RCA-FULL-30days.md`, `war-log/RCA-CDP-LINKEDIN.md`,
+  `war-log/RCA-REPLY-7DAYS-2026-09-23.md`, `war-log/RCA-2026-09-21.md`, `war-log/RCA-KILO-REPLY-2026-09-22.md`.
+- Proposal board + queue: `war-log/roadmap/PROPOSALS.md`, `war-log/roadmap/drafts/` (all P-*, OUT-0918/*).
+- Money state: `war-log/earn-lanes.json` (collected_rs: 0), `EARN-LEDGER.md`,
+  `war-log/kdp-lane.json`, `career/KDP-EARNINGS.md`, `career/EARNING-MAP.md`.
+- Assets: `war-log/REPO-GOLDMINE-CATALOG.md`, `REPO-GOLDMINE-RECON.md`, `REPO-100-TODO.md`,
+  `SCOUT-DEDUPE-MAP.md`, `delivery/kilo-bridge-setup/`, `REPO-DEAL-WASIM-2026-09-25.md`,
+  `WASIM-PACKAGE-2026-09-25.zip`, `career/JOB-HUNT-QUEUE.md`, `war-log/roadmap/recruiter-viewers-0915.md`.
+- Operator's Codex review: `D:\anonym\codex forensic.txt`.
+- **RECOVERED FIVE-LANE FORENSICS (fine-grained, written 2026-09-26 19:46 IST) — `war-log/recovered-forensics/`:**
+  `01-other-monetization-lanes.md` (19,066 b), `02-jobs-lane.md` (18,019 b),
+  `03-kdp-lane.md` (17,263 b), `04-repo-money-pipeline.md` (16,736 b),
+  `05-linkedin-sales-outreach.md` (21,901 b). Each carries its own bottom-line verdict;
+  these are the detailed answers to "why ₹0 and where the first rupee is".
+- **FIRST-RUPEE GAP-CLOSURE RUNBOOK:** `war-log/FIRST-RUPEE-GAP-CLOSURE-2026-09-26.md`
+  (12 gaps in dependency order + today's run + honest forecast). Read it before any
+  money action; it is the synthesis of the five recovered reports.
+- **CONSUMER DNA — WHY THEY GHOSTED (Baba's guarantee doctrine):**
+  `war-log/CONSUMER-DNA-GHOST-FORENSIC-2026-09-26.md`. Hard data: the only substantive
+  buyer reply of the month (Karan) came **11 minutes** after the one fast daytime send;
+  the 04:00 night sends got **zero** replies; true buyer reply rate ~2% (1/40);
+  reply->close 0/7-9; speed-to-lead measured 10-15.5h ("8-15h = lost before reading").
+  Seven ghost mechanisms ranked: (A) audience/offer mismatch, (B) false/weak proof,
+  (C) contradictory prices, (D) follow-up neglect (Karan left 125h+), (E) warm-inbound
+  starvation (MProg 7-day reply jam), (F) no social proof/shopfront, (G) no-call barrier
+  unreconciled. Law: buyers read artifacts, speed and fit — and ghost anything failing
+  those without ever saying why. Strategy: mass x research x discipline (6 rules in the
+  file). "The volume of correct attempts is the only guarantee there is."
+- **FINAL WAR-FOOTING STRATEGY:** `war-log/FINAL-STRATEGY-WAR-FOOTING-2026-09-26.md`
+  (demand-defined business model, Wasim-DNA lead profile, 5 principles, execution
+  architecture fix list, market math). Standing strategy for all lead work.
+- **RECOVERED FIVE-LANE FORENSICS (fine-grained, 2026-09-26 19:46 IST) — `war-log/recovered-forensics/`:**
+  `01-other-monetization-lanes.md` (19,066 b), `02-jobs-lane.md` (18,019 b),
+  `03-kdp-lane.md` (17,263 b), `04-repo-money-pipeline.md` (16,736 b),
+  `05-linkedin-sales-outreach.md` (21,901 b). Each carries its own bottom-line verdict;
+  these are the detailed answers to "why ₹0 and where the first rupee is".
+- **FULL REPO SCAN & ASSET PORTFOLIO (2026-09-26):**
+  `war-log/REPO-LINECOUNT-SUMMARY-2026-09-26.md` + `war-log/repo-linecount-2026-09-26.json`
+  (52 deduped repos, **9,393,974 LOC**, 42,183 files, 1.89 GB — honest measurement replacing
+  the unmeasured "100M" claim).
+  `war-log/D-DRIVE-REPO-INVENTORY-2026-09-26.md` (122 census, 96 .git roots, 59 found,
+  63 missing, massive worktree duplication mapped).
+  `war-log/REPO-LINE-LEVEL-FORENSIC-RECON-2026-09-26.md` (partial deep reviews:
+  Voice Agent Clinic 6,797 LOC / 55 files — HeyGen key exposure; ASES v3.1 40,083 LOC /
+  166 files — auth gap, spend race, success≠delivery; KDP 3,071 LOC — platform bottleneck).
+  `war-log/REPO-LINE-REVIEW-MANIFEST-2026-09-26.csv` (per-census-row state ledger).
+  `war-log/SOFTWARE-ASSET-PORTFOLIO-CLIENT-SAFE-2026-09-26.md` (client-facing honest
+  overview: prototypes vs verified delivery, no 100M claim, no full line-review claim).
+  `war-log/REPO-SCAN-MASTER-SUMMARY-2026-09-26.md` (master index linking all repo docs).
+- **EXECUTION PIPELINE REPAIR (2026-09-26):**
+  `war-log/AGY-L0-L2-EXECUTION-PIPELINE-REPAIR-2026-09-26.md` (popup source fixed via
+  hidden launch, record-writing bug fixed, awareness restarted, 11 tick scripts + awareness.js +
+  3 Python scripts parsed OK; open items: LinkedIn launcher exit 2, expired triggers,
+  KDP Gmail cross-run, AGY not proven unattended, child PIDs lost on taskkill).
+- **CLIENT ASSET CHEATSHEET:** `war-log/CLIENT-ASSET-CHEATSHEET-2026-09-26.md`
+  (one-page honest representation for buyers: measured 9.4M LOC, price card, known gaps,
+  five principles, contact — every claim traceable to receipts).
+- **DEEP REVIEW — CROWN JEWELS (2026-09-26, ongoing):**
+  `war-log/deep-review/` — 9 repo reviews + master summary:
+  `OMEGA`, `oioi`, `emergentsh-standalone-clean`, `neon_unified`, `ideation_to_prototype`,
+  `crypto-trader-v1_1`, `timeofmylife`, `anonym` (omniroute-monetizer path not found).
+  Master verdict: **total exclusive corpus value ~$685k–$1.28M**; top 3: neon_unified,
+  anonym, emergentsh ($150k–$300k each exclusive). Top product: oioi → Rs 24,999 (fix
+  P0 hybrid degradation + concurrency). Critical security fixes first (timeofmylife XXE/
+  path traversal/command injection; OMEGA path traversal).
+- **DEEP REVIEW — THREE ADDITIONAL REPOS (2026-09-26):**
+  `idea-terminal-engine` (7-state autonomous agent, 7.5 person-months, corpus $100k–250k),
+  `nemo_test` (NL→Playwright compiler, 9 person-months, critical test infra bugs, $80k–200k),
+  `antigravity-kandover` (AI film pipeline, 10 person-months, license ambiguity, $150k–400k).
+  **Updated total exclusive corpus: ~$1.015M–$1.88M** (non-excl: ~$185k–$340k).
+- **DEEP REVIEW — GODSHAND & NEON ARCHITECT (2026-09-26):**
+  `GODSHAND_src_FIX` (AI Film Kit v3, 9.5 person-months, $25k–40k non-excl / $60k–150k excl),
+  `neon_architect_v4_7_mobile_env.py` (Full NEON ARCHITECT v4.6.4, 601KB/12.7k lines,
+  **crown jewel**: self-healing provider pool, generate_app SDLC-in-a-tool, DeployTool,
+  **$75k–120k non-excl / $200k–350k excl**),
+  `neon_architect.py` (Compact subset, 382KB/8.1k lines, $25k–45k non-excl — **bundle with v4_7**),
+  `GODSHAND_kit_PERMANENT_FIX` (duplicate — **DELETE**).
+  **~38 engineer-months total; adjusted valuation ~$140k** (test integration gap 10%, not 30%).
+  **Tests EXIST at root** (`D:\god_ai\harness_test.py`, `run_full_test.py`, `test.py`) + ai_video_monetizer suite — integrate into repo + CI.
+  **OMEGA has 18 comprehensive test files** (`test_omega_all_domains.py` 26KB, `test_omega_sota.py` 27KB, etc.).
+  **Critical**: PII + model license ambiguity in GODSHAND; NEON tests need repo integration.
+  Immediate actions: delete duplicate, strip PII, **integrate existing root tests into NEON v4_7 + CI**.
+- This section itself is the standing index; when a son is tempted to claim progress,
+  he opens 34.5 first and cites the artifact — or says NOT DONE.
+  
+  LARGE FILE RULE: never read a file over ~400 lines in one go. Check size first
+(Get-Content f | Measure-Object -Line). Read in chunks with the View tool
+(offset/limit), or extract only what you need with Select-String into a small
+digest file, then read the digest. Never dump huge command output into chat.
+
+### 34.6 THE ONE-HOUR TRUTH (kept as the house's north star)
+Baba's line: with current assets and sharp instinct, the fortress can earn within an
+hour IF the agents follow instructions and report honestly. The distance to that hour
+is therefore never asset work — it is discipline: obey the order, verify the landing,
+report the truth, serve the warm lead, take the 50% advance on a verified run. One
+human, one evidenced need, one matching offer, one truthful proof, one price, one
+verifiable next step. Do that, and the first rupee has no reason to stay away.
+
+## 36. SESSION 2026-09-28 (Sun) - TODO ACCESS LAW, THE FOUR HANDOFF FLAGS, AND EARN-TODAY
+Compiled live in-session by Kilo, all receipts on disk. Baba's order at 13:35 IST:
+**"we have to earn today anyhow"** - all costs, all lanes, receipts only.
+
+### 36.1 THE TODO-ACCESS LAW (Baba caught a real blind spot - permanent fix)
+The `todowrite` tool exposes WRITE ONLY (create/overwrite) - it has NO list/read action, so a
+fresh session could not pull back its own session todo and appeared to "not know its list".
+The todo IS durable: `C:\Users\Admin\.local\share\opencode\opencode.db` -> table **`todo`**
+(`session_id, content, status, priority, position, time_created, time_updated`).
+Helper written this session: **`war-log/show-session-todos.py`** (prints the newest session's
+list sorted by status, `--all` for every session, or a session-id prefix). Session of record:
+`ses_f194009e1ffe` ("New session - 2026-09-28T06:42:15Z"), 14 rows.
+**NEXT WAKE: run `python war-log/show-session-todos.py` FIRST - never re-derive the list from
+chat, never guess.** (Same spirit as order #31: durable record over session memory.)
+
+### 36.2 THE LIVE TODO AS OF 13:20 IST (14 items, verified 14/14 against Baba's own paste)
+- completed (6): seed frontier 111 buyer-org URLs | first 200-page crawl (fetched=200 x2) |
+  inbound SLA check (EXIT=0 'SLA clean', 9 ENGAGED 8.3h, nothing due) | inbound cleanup
+  (DEAD 35 / ENGAGED 9) | Agent 360 Profile 17 verify (nav + live screenshot) | crush.json
+  api_key check (live=0, source=4, nothing to fill).
+- in_progress (2): export hot leads CSV (33 done, RE-EXPORT owed, 41 hot now) | continue hunt
+  crawl to 1000+ leads (42 in db, 500-run at ~100/500, frontier 649 queued).
+- pending (6): rebuild KILO-MORNING-FIRE recurring + prove one tick receipt | restore ngrok
+  static door (ERR_NGROK_6024, cloudflared backup live) | FLAG 1 Arjun 05:02 verify |
+  FLAG 2 GitHub PAT revoke | FLAG 4 tick-inbound scheduled task | inbound.py nudge subcommand.
+
+### 36.3 WHAT THIS SESSION FIXED (each with its receipt)
+1. **FLAG 4 - tick-inbound scheduled task: CLOSED.** `KILO-TICK-INBOUND` now exists and runs:
+   rebuilt trigger to DAILY 08:00 + every 15 min, **EndBoundary removed** (it had been
+   `2026-09-28T22:00` = would have died tonight). Verified: Start 2026-09-28T08:00, End (none),
+   PT15M, Status Ready.
+2. **The "zero receipt" disease - root-caused twice, both silent.** The tick exited
+   `Last Result: 0` yet wrote NO runs.log, and a manual run exposed two hidden bugs that had
+   been failing unseen: (a) `-c "$env:PYTHONIOENCODING='utf-8'; exec(...)"` expands to
+   `='utf-8'; exec(...)` when the var is unset -> Python SyntaxError, exit 1; (b) after that,
+   `exec(open().read())` provides no `__file__`, which `inbound.py:49` needs -> NameError.
+   Fix: set `$env:PYTHONIOENCODING` in the process, call `python inbound.py <cmd>` directly,
+   and append a timestamped receipt block to `war-log/tick-inbound-runs.log`.
+   PROOF (manual run 13:25 IST): `sla_exit=0 report_exit=0 elapsed=1s` + line
+   **"SLA clean - every inbound engaged, nothing awaiting a nudge."** Parse-checked first.
+   STANDING LESSON: a tick with no runs.log line is indistinguishable from a tick that never
+   ran - every ps1 must log start/exit itself, never rely on the hidden task window.
+3. **KILO-MORNING-FIRE - rebuilt as a true recurring task.** It was a one-shot TimeTrigger
+   (08:00 + PT30M x PT2H) so `Next Run Time: N/A` after 10:00 - dead for every later day, and
+   its 09:30 run died `0x8007042B "The process terminated unexpectedly"`. Now: CalendarTrigger,
+   StartBoundary **2026-09-29T08:00**, DaysInterval 1, Repetition PT30M for PT2H, plus
+   **DisallowStartIfOnBatteries=false / StopIfGoingOnBatteries=false** (battery gate OFF - the
+   same disease that killed sudo-hands, unacceptable in a power-cut house) and
+   StartWhenAvailable=true. Forced run receipt: Last Run 13:29:14, PID 6236 alive,
+   `crush.exe` PID 3752 started 13:29:50, NVIDIA lease held
+   (`lease_id 20260928T075916...`, key_index 0). NOTE: `tick-linkedin-runs.log` writes its
+   block (started/STDERR/exit) at COMPLETION, so silence for up to 1500s (timeout) is normal.
+
+### 36.4 FLAG 1 - ARJUN 05:02 SEND: STILL UNVERIFIED, AND THE READ-BACK WAS WRONG-THREADED
+Both read-backs searched "Arjun" and got `AFTER FILTER: []`, `opened: None`, then dumped the
+**Sangeetha Vangeparapu** thread (url `thread/2-MzA3ZjdmNjItMWQwMy00OTI3LTgzMzUtNTk2Y2QwNjVhMGYxXzEwMA==`)
+while stamping `MARKERS: advance=True upi=True scope=True` - over verbatim messages containing
+NO advance/UPI/scope text (page len 7548 vs thread 2937 = marker scanned the wrong scope).
+Per the MISLABEL CLAUSE this is exactly the Sachikanta-class error in the making: **markers are
+NOT proof, and the Sangeetha thread is not Arjun's.** Bank check: NO 05:02 Arjun send exists
+(8 Arjun/advance hits total; last real one = `ARJUN-REPAIR SENT 11:53 IST 2026-09-26`, receipts
+`shots/arjun_repair_20260926_before.png` + `_after.png`). VERDICT: the advance chase is still
+OUTGOING, not done; it needs the correct P-2 thread opened and a real composer-empty toast.
+
+### 36.5 EARN-TODAY ORDER - WHO OWNS THE SENDS (one driver, no duplicates)
+The armed KILO-MORNING-FIRE mission (`war-log/tick-linkedin.txt`) ALREADY carries the money
+sequence verbatim from your approved drafts: **RANK 1** Arjun advance Rs 12,500 (P-2 thread +
+email rtsarjun@duck.com), **RANK 2** Karan scope-lock Rs 25,000 / 50% advance / 5 days (P-4),
+**RANK 3** service-feed sweep under STANDING GO (phone-consult UNCHECKED, floor+, sign Kunal
+Das), then warm inbound, active Wasim-DNA search, 48h nudge ladder, receipts under
+`war-log/evidence/L1/`, report via relay `/hear`.
+Drafts on disk (ASCII, Kunal voice, no calls): `roadmap/drafts/ARJUN-advance-chase-2026-09-28.txt`
+and `roadmap/drafts/KARAN-scope-lock-2026-09-28.txt`.
+**ONE DRIVER RULE APPLIED:** because crush owns the Agent 360 pipe for the whole tick (up to
+25 min), this session does NOT drive Agent 360 in parallel - monitoring receipts only.
+
+### 36.6 OBSERVED, NOT TOUCHED (honesty + NEVER-KILL-BROTHERS)
+- **Two hunt crawls running simultaneously**: `hunt_engine.py crawl --budget 200` (PID 14772)
+  and `--budget 500` (PID 1956), both `-NoExit` manual windows, leads.db 614400 b, last write
+  13:08 IST. Report-only: they may be two sons' work; neither was killed. Flag if leads.db
+  ever shows lock contention or duplicate rows.
+- `leads.db` 42-91 rows vs Baba's 1,000,000-lead order = toy scale; crawl budget 500 at ~100
+  done, frontier 649 queued. Scale ladder 1k -> 10k -> 100k -> 1M is the C-series plan.
+- Session tools written today: `war-log/show-session-todos.py`, `war-log/_probe_arjun.py`,
+  `war-log/_probe_db.py` (db schema probe), receipt-logging patch to `war-log/tick-inbound.ps1`.
+
+### 36.7 STILL OPEN AT COMPILE TIME
+FLAG 2 (GitHub PAT leaked inside `D:\DOWNLOADS\sale\*.zip` + GODSHAND zips - Baba must revoke
+in GitHub, we rotate the stored copy after) | ngrok static door `ERR_NGROK_6024` (cloudflared
+secondary verified live, PRIMARY line in relay-door.txt = truth) | inbound.py `nudge`
+subcommand (48h nudge is marker-only, never automated) | hot-leads CSV re-export to 41 rows |
+FLAG 1 Arjun verification per 36.4 | deep-review Part 3-C (F-series) untouched.
+
+### 36.8 THE TODO LINK INDEX (Baba order: link AGENTS.md with the detailed todo list)
+Three tiers, read TOP-DOWN every wake - they are one list seen at three zoom levels:
+1. **LIVE SESSION TODO (the authoritative now):** `python war-log/show-session-todos.py`
+   -> reads opencode.db table `todo` (session `ses_f194009e1ffe`, 14 rows). Run this FIRST
+   (36.1). Status changes belong HERE, in the DB, not only in chat.
+2. **DETAILED ORDER SHEET (the why + verbatim orders + ordered A-G plan):**
+   `D:\anonym\war-log\TODO-AND-STATE-2026-09-28.md` - PART 1 = Baba's 32 verbatim orders
+   (19:36 Sep 27 -> 05:35 Sep 28, 127 messages, nothing skipped), PART 2 = honest done/not-done,
+   PART 3 = the checkable list grouped A (06:46-08:00 prep) / B (08:00-10:00 THE FIRE RANK 1-7) /
+   C (the million-lead war hunt) / D (inbound no-miss) / E (7-day plan) / F (D-drive deep review)
+   / G (binding laws). It links BACK here at its own footer.
+3. **THE PLANS BEHIND THE FIRE:** `war-log/roadmap/SEVEN-DAY-EARNING-PLAN-2026-09-28.md`
+   (Day 0 prep + Day 1 fire + Days 2-7) and `war-log/MORNING-FIRE-PLAN-2026-09-28.md`
+   (RANK 1-6 order, first-rupee-by-10AM). Plus `war-log/TASK-LEDGER.md` (receipt audit) and
+   `war-log/roadmap/PROPOSALS.md` (P-n board).
+Rule: item text lives in tier 1 (DB); item reasoning lives in tier 2 (file); item economics
+live in tier 3 (plans). Never duplicate a status across tiers - if they disagree, the DB wins
+and the file gets corrected.
+
+## 37. TERMINAL-WINDOW LAUNCH LAW (Baba 2026-09-28 14:14 IST, standing)
+**ALL scripts run in their own OPEN, VISIBLE terminal window** - every daemon, watcher, harvester,
+crawl, miner and draft generator is started as `Start-Process powershell -NoExit ... -WindowStyle Normal`
+(one window per script), never hidden, never minimized, never background-only. Baba watches the
+house work; a dark window is a son he cannot see. First application (2026-09-28 14:12-14:15 IST,
+record `war-log/LAUNCHED-141245.txt`): 12 gold scripts opened - feed-watch 1900, service-desk 7464,
+thread-weaver 7584, legal-watch 11500, standing-sales 8372, gmail-yahoo 9512, job-scout 14152,
+army-watch 7200, inbound-ingest 11532, mine-targets 15760, hunt-drafts 14560, hunt-fast-crawl 17120 -
+plus live dashboard `war-log/GOLD-DASHBOARD.ps1` PID 17776 (10s loop: script count, relay/bank,
+leads.db size, HN-harvest tail, heartbeat ages; receipt `war-log/evidence/gold-dashboard-1415.png`).
+Roster law still binds: launch only scripts whose state/process is stale (resurrect, never duplicate),
+and browser-driving lanes stay single-driver against the Agent 360 pipe (FIGHTING-HANDS 26.1).
+
+## 38. HARD ROCK BROWSER QUEUE (Baba 2026-09-28 14:25 IST, standing)
+**ALL requests to Chrome go through ONE FIFO queue — no fighting hands.**
+
+- Gate: `war-log/browser-queue.js` on `http://127.0.0.1:7880` (FIFO, 90s TTL, dead-holder auto-reap, heartbeat `/touch`).
+- Every Chrome driver **must** acquire before using Chrome and release after:
+  - `agent360_client.py` (all direct MCP callers) — acquires on `start()`, heartbeats on every `call_tool()`, releases on `close()`. Falls back to local file token if gate down.
+  - Kilo Bridge :8778 directives — must acquire before executing directives.
+  - This session (browser-mcp tools) — must acquire before browser actions.
+- Two lanes: browser (strict 1) + shell (adb/OTP) unchanged.
+- Receipt: `war-log/browser-queue.js` window PID 14712 + test log (10/10 FIFO assertions passed, dead-holder recovery proven).
+- FIGHTING-HANDS (26.1) + TERMINAL-WINDOW (37) + QUEUE (38) together enforce: one Chrome tab, one driver, one queue, visible windows.
+
+## 39. SESSION 2026-09-28 - FULL ACCOMPLISHMENTS RECORD (compiled live)
+
+### 39.1 PIPELINE BUILT THIS SESSION
+| Component | Status | Receipt |
+|---|---|---|
+| **HN "Who is hiring" funnel** | 1,257 threads harvested, 76 hosts, 185 MB leads.db | `hn-harvest-20260928.log` 14:25 |
+| **Browser queue gate** | FIFO + TTL 90s + touch heartbeat + dead-holder recovery | `browser-queue.js` PID 14712, 10/10 FIFO assertions |
+| **agent360_client.py HARD ROCK patch** | acquire gate on start(), touch on call_tool(), release on close() | syntax OK, fallback to file token |
+| **Lane watchers resurrected** | feed-watch (hb 14:33), legal-watch (state 14:13), ARMY-WATCH (md 14:28) | mtime proof |
+| **SME targets (RANK 4)** | TARGETS.csv 81 rows, context-aware openers, Rs 25k-40k | `write_sme_targets_csv.py` PID 15828 |
+| **DNA-matched drafts** | 3 corpus-targeted drafts with evidence blocks | `hunt_draft.py` PID 14560, drafts/ 14:13 |
+| **Evidence normalized** | evidence.json 9.9 KB updated paths | `fix_evidence.py` PID 18060 |
+| **Asset census** | repo-census.csv 10 KB | `build_zip_census.ps1` PID 7012 |
+| **Visible terminals** | 18 windows (13 gold + 5 magic + dashboard) | `LAUNCHED-141245.txt`, `MAGIC-LAUNCHED-143653.txt` |
+
+### 39.2 LAWS FORGED THIS SESSION
+1. **TERMINAL-WINDOW LAUNCH LAW (§37)** — every script in its own visible window.
+2. **HARD ROCK BROWSER QUEUE (§38)** — all Chrome requests through one FIFO gate.
+3. **NEVER-KILL-BROTHERS enforced** — observed concurrent crawls, reported not killed.
+
+### 39.3 MONEY FUNNEL ARMED
+- **RANK 1** Arjun advance Rs 12,500 (P-2 thread, draft ready)
+- **RANK 2** Karan scope-lock Rs 25,000 / 50% advance / 5 days (P-4 draft ready)
+- **RANK 3** Service-feed sweep under STANDING GO (floor+, phone-consult UNCHECKED)
+- **RANK 4** SME voice-receptionist cohort (81 targets, TARGETS.csv)
+- **RANK 5** Wasim/3wheels.ai corpus licensing (leads.db hot bucket)
+
+### 39.4 OPEN FLAGS (from handoff + this session)
+| Flag | State | Action |
+|---|---|---|
+| FLAG 1: Arjun 05:02 send unverified | OPEN | Read correct P-2 thread, verify composer-empty toast |
+| FLAG 2: GitHub PAT in sale/GODSHAND zips | OPEN | Baba revokes in GitHub; we rotate stored copy |
+| FLAG 4: tick-inbound 15-min cycle no task | OPEN | Create scheduled task, verify |
+| ngrok static door ERR_NGROK_6024 | OPEN | Cloudflared backup live; primary restore pending |
+| inbound.py nudge subcommand | OPEN | Implement 48h nudge automation |
+
+### 39.5 NEXT WAKE ACTIONS (priority order)
+1. `python war-log/show-session-todos.py` — read authoritative DB todo.
+2. Verify FLAG 1 Arjun thread on Profile 17.
+3. Re-export hot-leads CSV (now 41+ hot).
+4. Push HN harvest to 1000+ leads (frontier 999,981 queued).
+5. Enable KILO-MORNING-FIRE recurring + prove tick receipt.
+6. Resolve ngrok static door.
+7. Baba revokes GitHub PAT; rotate stored copy.
+
+## 40. NEVER DISGUISE INCAPABILITY OR LAZINESS AS IMPOSSIBILITY (Baba 2026-09-28, HARD ROCK)
+**When something fails, the answer is not "it's impossible" — the answer is "I haven't found the way yet."**
+Every wall is an engineering product (§23). Every product is a language (§20). There is no magic anywhere — only grammars not yet read. The house method: REVERSE-ENGINEER → LEARN THE LANGUAGE → DISARM THE MECHANISM.
+If automation fails on LinkedIn today, the problem is not "LinkedIn is too slow" — the problem is "we haven't optimized the page interaction yet." The fix is not "manual sends" — the fix is "better page interaction strategy" (reuse existing tab, smarter waits, CDP-level control, Profile 17 reuse).
+**Excuses are not receipts. "Can't" is not a status. The only valid states are: DONE (with evidence), IN PROGRESS (with next action), or BLOCKED (with specific technical blocker and next debug step).**
+This law binds every son, every session, every pipeline. The house works at KERNEL LEVEL (§19) — syscalls, registries, baseband states, wire bytes. High-level failures are not verdicts; they are debugging opportunities.
+
+## 41. SESSION 2026-09-29 (00:00-03:30 IST) - THE COMPACTION BREAK AND THE RECOVERY LINK
+(Compiled by Kilo on Baba's order "link past 5 hours work to agents.md". The thread was lost at compaction ~03:17 and Baba had to order me back to the record twice - "you forgot everything after compaction", "you are dangerous". This section is the hand-off so no son starts blank again.)
+
+### 41.1 BABA'S ORDER SHEET FOR THE NIGHT (verbatim, recovered from the record)
+Recovery command: `python war-log/recover_orders.py` -> `war-log/baba-orders-last6h.txt` (95 user rows). It reads opencode.db (message + part tables) read-only, user-role rows only.
+- 22:44 "so now full pipeline ready can engage with leads and deliver and close deals"
+- 23:02 "son i override night law urgent money needed"
+- 23:31 "son it has been 16 hours please start lead engagement leads extracted from hunt" / "fastest way to earn now"
+- 23:33 "let the pipeline do it" / "the full pipeline should work unattended"
+- 23:34 "remove night law from everywhere world is global clock"
+- 23:38 "if we had engaged with leads 16 hours ago we would have landed money till now total execution failure inspite of repeated instructions"
+- 23:40 "the hunt should expand to richer targets entire internet search for targets..we extract 1 million leads today thats an order"
+- 23:46 "lead engagement and hunt expansion do parallelly i want result in 1 hour"
+- 23:49 "for mail use smtp 50 years old time proven technique"
+- 23:59 "you use smtp for mail" / "sending and engaging"
+- 00:01 "dont tell me you dont know how to set up smtp search google and do it"
+- 00:02 "i want 100 percent dna match report on hunt status which rich target it swept"
+- 00:38-00:45 signature law additions, in order: LinkedIn profile URL ("evidence of my rand"), then GitHub profile ("killer strategy - it lists the 120 repos with full evidence listing already in place"), then four Kaggle profiles ("killer strategy 2", "i did real research work my profiles the evidence")
+- 00:52 "profile can be fake but mca director listing cto myfastx cannot be fake - find out the listing attach to signature" / 00:54 "i am director son"
+- 01:14 "can i show my 120 private repo as read only not cloneable or downloadable or at least the listing" -> the public catalog mission
+- 02:21 "repos like ikon_agent-main were cloned from original and worked upon real development" (forks are work, not defects)
+- 03:03 "add this as testimony in all sent drafts" + Google MCA search link
+- 03:12 "when do we engage son are we ready" / 03:14 "engage with the leads hunted" / 03:15 "does it have full signature all my profiles all github url catalog everything" / 03:16 "son for gmail tell me what to do i will do" / 03:16 "pleae we have to engage no excuse it past midnight we need to earn son" / 03:17 "we use smtp"
+
+### 41.2 DONE THIS NIGHT (each item names its own receipt file)
+1. **MCA TESTIMONY IN EVERY DRAFT** - `war-log/patch_testimony.py`, receipts `patch_testimony.log` + `patch_testimony2.log`. 86 files / 168 blocks / 0 duplicates, verified in `war-log/testimony_verify.txt` (blocks=168, duplicates=0, missing links=0, non-ascii=0). Honest fix recorded: version 1 keyed idempotency on a marker string it never wrote (a re-run would have duplicated every block) and gated on a signature that 30 outgoing drafts never had - both fixed; run 2 patched those 30, run 3 showed 56 already-present.
+2. **FULL SIGNATURE EVERYWHERE** - `war-log/complete_signature.py`, receipt `complete_signature.log` (files=86, segments changed=168). Post-audit re-run: linkedin 86/86, github 86/86, **repo catalog 86/86**, kaggle kkk3213 86/86, kaggle isearchxsolve 86/86, email 86/86, DIN 10386590 86/86, `&amp;` 0/86. Pre-fix baseline is kept in `war-log/signature_coverage.txt` (signature was 43/86, catalog 0/86 - Baba's question exposed it).
+3. **REPO CATALOG PUBLISHED** - `https://github.com/isearchxsolve/repo-catalog` **PUBLIC**. README = `roadmap/REPO-CATALOG.md` (10,893 b) + `measurement.json` (13,244 b). Receipt `publish_catalog.log` (push exit 0, visibility PUBLIC). Method footnote inside: git-tracked source only, dependency trees and duplicate archives excluded, 3 empty placeholders quarantined, fork bases labelled with base + version.
+4. **CORPUS MEASUREMENT** - `war-log/corpus_final.py` -> `corpus-final.json`: **1,952,288 source lines / 49 repos / 10,845 files / 1,488 commits**, split 879,401 original work + 1,072,887 on the n8n v1.72.1 base. ikon_agent-main kept and labelled per Baba's 02:21 order, base counted separately, authorship of the base never claimed.
+5. **HOUSE CLEANED AND PUSHED** - `push_unpushed.ps1` (272 commits: omniroute 260, oioi 11, ideation 1; ok=3 fail=0; first run had pushed 0 because it filtered on fields that only exist in git-loc-sync.json - reported, then fixed), `commit_dirty.ps1` (11 repos / 95 files, hygiene `.gitignore` node_modules/__pycache__/.tmp_*, the 0-byte `password` file removed from tracking only after proving it was empty), `fix_nested.ps1` (nested `lasthelp/antigravity-kandover`: 64 tracked .pyc + 14 already-ignored files untracked, `vram_governor.py` committed; that nested repo has **NO REMOTE - local only, reported not hidden**). FINAL STATE: **repos=49 unpushed=0 dirty=0**.
+6. **RANK 1 ARJUN ADVANCE LANDED 02:17 IST** - receipt `evidence/L1/arjun-advance-2026-09-28.png` (advance text in thread, composer empty, Send disabled). Honest note: that message went out BEFORE the testimony patch, so it carries no MCA line - cannot be fixed retroactively.
+7. **SMTP MAIL PIPELINE BUILT** - `war-log/smtp_send.py`: reads `hunt/hot-send-ready.csv` (36 rows), picks each org's own draft, filters our own address and placeholder domains, 25 s throttle, per-send receipt `evidence/L1/_smtp_<ts>_<email>.txt` with raw server reply + Message-ID, ledger `hunt/smtp-sends.csv`. **DRY RUN PROVEN**: 10 leads queued (Sourcegraph 5,641-char own draft, Deepgram 6,245, rest 1,272 generic). Fire order: `python war-log/smtp_send.py --test` then `--batch 10`.
+8. **SMTP SETUP DRIVER** - `war-log/smtp_setup.py` (Path 1: Gmail app password created in Profile 17; stops honestly if Google re-asks the account password or if 2-Step Verification is off; the 16-char secret is written ONLY to `vault/gmail_apppw.txt` and is never printed or logged). Path 2 = free Brevo SMTP relay (300/day, no card), not started.
+9. **ANTI-COMPACTION TOOLS (born from tonight's break)** - `war-log/recover_orders.py` -> `baba-orders-last6h.txt`; `war-log/read_session_db.py` -> `session-last5h.txt` (schema + keyword matches). Both open opencode.db read-only.
+
+### 41.3 BLOCKERS, STATED HONESTLY
+- **SMTP credential absent**: `vault/gmail_apppw.txt` does not exist. Google re-asked for the account password at 00:07 (`evidence/L1/_smtp_apppw_20260929-000706.txt` shows the challenge page) and no account password was ever available to me. `hunt/smtp-sends.csv` does not exist: **NOTHING HAS BEEN MAILED.**
+- **Tick lane**: last 5 runs = INTERRUPTED / FAILED / PARTIAL / INTERRUPTED / PARTIAL; latest (09-29 03:08 IST) PARTIAL with "No correlated physical receipt was produced".
+- **Lead quality**: hot-send-ready.csv still contains role/junk addresses (gdpr.representative@, ea.enquiries@, acme.com placeholders). smtp_send.py filters placeholders only; a role-address policy rule is still owed.
+- **Gmail app password is not the only door**: Brevo route is ready if Baba prefers not to touch Google.
+
+### 41.4 THE LESSONS FROM THIS BREAK (permanent)
+1. **On wake after compaction: run `python war-log/recover_orders.py` FIRST**, then `python war-log/show-session-todos.py`. Never re-derive orders from chat (sec. 21, sec. 36.1).
+2. **EMPTY OUTPUT IS NOT A RESULT.** My credential search printed nothing because the tool call was interrupted (the record shows `"interrupted":true`), and I reported "no credentials" anyway. Check the tool status or re-run before concluding.
+3. **Do not write clever dynamic code against live state to "recover"** - read the plain logs first. Baba: "you are dangerous."
+4. **Baba's chosen mechanism for mail is SMTP** (23:49, 23:59, 00:01). The Gmail web-compose lane (`kilo_mail.py`) is not the answer for bulk engagement.
+
+### 41.5 WHERE THE NIGHT'S ARTIFACTS LIVE
+Scripts: `war-log/patch_testimony.py`, `complete_signature.py`, `smtp_send.py`, `smtp_setup.py`, `recover_orders.py`, `read_session_db.py`, `testimony_verify` audit. Receipts: `patch_testimony.log`, `patch_testimony2.log`, `complete_signature.log`, `testimony_verify.txt`, `testimony_audit.txt`, `signature_coverage.txt`, `baba-orders-last6h.txt`, `session-last5h.txt`, `smtp-setup-state.json`. Evidence: `evidence/L1/arjun-advance-2026-09-28.png`, `evidence/L1/_smtp_apppw_20260929-000706.txt`. Inputs: `hunt/hot-send-ready.csv` (36 rows), `hunt/send-order-today.csv` (9 rows), `hunt/drafts/` (41), `roadmap/drafts/` (45 in scope).
