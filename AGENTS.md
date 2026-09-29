@@ -1244,3 +1244,64 @@ navigate reloaded the page mid-read -> 38 chars).
   call_tool ('NoneType stdin'), and close() releases the browser queue ticket.
 - AGENTS previous sections: 41 (compaction recovery), 42-42.8 (SMTP, price range,
   fortress, one-to-one DNA, IDEA-B).
+
+
+## 44. SESSION 2026-09-29 (morning) - THE 24/7 LIVE PIPELINE (Baba: "make it live unattended")
+Baba's order verbatim: "yes son and once pipeline is ready make it live unattended 24/7
+high priority is sending pending drafts then open other lanes linkedin etc. for engagement
+including reaching out to new leads all lanes should e watched 24/7 for new messages".
+
+### 44.1 THE SENDER IS LIVE UNATTENDED
+- war-log/smtp_loop.py - visible window SMTP-LOOP-247 (one logical instance; hermes-venv
+  python re-execs the base interpreter - a parent+child pair is ONE loop, never kill
+  either half blindly). Cycle: 10 mails from hunt/hot-send-matched.csv (THE matched
+  queue, 862 fresh at boot) every 40 min = 360/day under the Gmail ceiling; sender keeps
+  25s per mail; empty queue idles 60 min and re-checks (loop never exits). Log:
+  hunt/smtp-loop.log. First live cycle 08:12 IST: 10/10 code 250. Canary before it: 3
+  personal bodies verified for demo block + RANGE + testimony + ASCII + no call
+  promises; every mail receipt in evidence/L1/_smtp_*.
+- SIGNATURE gained the house line "I work in writing only - no calls, please." (the new
+  composed bodies had silently lost it).
+- pick_segment leak closed (returned the WHOLE file when no EMAIL: label existed) + 39
+  corpus drafts patched: old flat number -> 1,952,288/49 truth, local
+  D:\anonym\clean-export paths -> public catalogue link. receipt
+  hunt/patch-drafts-number.log, leftover=0.
+
+### 44.2 THE DEFECT THE PIPELINE HAD (found by testing, never assumed)
+Mailed pairs were created in the LAPTOP showcase.db while the buyer logs into the
+KAGGLE room's own db -> demo-selftest refused (raw proof). Fix: token-guarded POST
+/provision on the room (showcase/app.py), token injected into the kernel at BUILD time
+from demo/state/provision-token.txt [LOCAL ONLY, gitignored], smtp_send.demo_block
+calls the room for host=kaggle. Kernel v3 + repo-catalog 0c050af + war-pipe 7b96500.
+PROOFS: demo/receipts/e2e-provision-* VERDICT=PASS (incl. wrong-pw refused), then the
+true buyer path - pair read FROM the sent receipt -> live login -> 71 cards.
+
+### 44.3 THE WATCH ROSTER - WHAT RUNS 24/7 NOW
+Re-armed on Baba's yes: KILO-DUTY, KILO-TRIAGE, KILO-TICK-EARN, KILO-TICK-KDP (all
+Running). Repaired + re-armed: KILO-DIGEST (trigger had expired 9/19 -> recreated daily
+22:30), KILO-AGY-ROTATE (trigger fine, was Disabled). Already live: KILO-TICK-LINKEDIN,
+KILO-TICK-INBOUND, KILO-MORNING-FIRE, KILO-DEMO, relay/watchdog/sudo/awareness/phone.
+Resurrected dead sessions (visible windows, one each): feed-watch, legal-watch,
+inbound_ingest, standing_sales_monitor (I first launched a duplicate standing_sales and
+killed MY newcomer tree only - the yesterday instance was left alone, NEVER-KILL-
+BROTHERS). job_scout = finite census reporter (EXIT=0), not a watcher - no relaunch
+duty. HELD (phone not attached AND equivalent lanes already live): KILO-GMAIL/KILO-LI/
+KILO-JOBS phone-ADB ticks - gmail-yahoo window + tick-linkedin + thread-weaver already
+cover those channels; enabling them now = duplicate hands + guaranteed failures with no
+phone. STILL DISABLED BY LAW/CHOICE: KILO-DUTY-NIGHT (night law removed 9/28),
+KILO-FAILOVER / RELAY-NANNY / WATCHDOG (infra, disabled for cause - ONE KILLER law,
+SYSTEM watchdog only).
+
+### 44.4 BUGS FIXED LIVE IN LEGAL-WATCH v2 (it had NEVER run - no run log ever existed)
+1. module-level sys.path.insert before any import sys -> NameError on boot (import moved
+   to line 5); 2. trigger() referenced an undefined client -> module CLIENT set by main(),
+   guarded skip when no browser client; 3. scan_gmail ran ONCE per boot (first=True) ->
+   now EVERY cycle; 4. relaunched, boot announced on the wire (order-bank LEGAL-WATCH v2
+   boot). LSP caught bug 2; a foreground probe caught bug 1 - probe before relaunch.
+
+### 44.5 STATE AT COMPILE TIME
+Ledger hunt/smtp-sends.csv = 146 rows (receipts per row). Queues: matched 862 fresh
+draining; hot-send-ready2 27,482 = SUPERSEDED (old matcher, not the legal queue).
+Payment: payment_watch loop live (4 real bank SMS caught, all review-only, never
+auto-credit). Demo room: bachelor-seal trycloudflare, host=kaggle, /provision live.
+Wise account still pending Baba; Kotak/UPI details in vault/bank_details.txt.
