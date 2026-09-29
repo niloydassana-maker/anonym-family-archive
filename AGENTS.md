@@ -1149,3 +1149,98 @@ it for you in few weeks in 100 usd"**.
   / "idea validation" / "build an MVP" / pre-seed / non-technical solo founder) is a
   SEPARATE class from repo-licence buyers - ONE HUMAN ONE FUNNEL: a founder gets IDEA-B,
   an existing-product company gets the §42.7 repo offer, never both.
+
+
+## 43. SESSION 2026-09-29 (early morning) - THE DEMO LANE, PAYMENT DETECTION AND THE SELF-GUIDED LAW
+Compiled live by Kilo. Baba's orders this window, verbatim: 'run the particular project
+server and expose a ngrok or cloudfare url with the ui... with necessary user credntial
+created for them'; 'we can provide them demo url during our first reachout mail with a
+created user credential..more convincing; lets crack the pipeline e2e and make it live and
+unattended'; 'if laptop ecomes over loaded do we host on kaggle on demand'; 'we dont hide
+kaggle session limits we tell them'; 'one cveat we cannot promise walkthrough demo on call
+it will not scale... we use the kaggle route we tell them the steps for walking through
+themselves much more convincing not a cover up'; 'son we need to sync d drive which is
+ahead of git kaggle pulls from git for the demo'; 'for international payments we opt for
+wise payment gateway fastest one we provide our ank account details'; 'the user should
+provide screenshot of payment'; 'how we detect the payment'; bank details delivery (Kotak
+A/c 55505593812 / IFSC KKBK00065993 / branch KOLKATA-GARIAHAT / UPI 9830739230@kotakbank)
+- full block in vault/bank_details.txt [GITIGNORED], payment UPI confirmed:
+isearch.xsolve-3@okhdfcbank (legacy kunal.colab-1 = WRONG, corrected in pins.txt).
+
+### 43.1 THE LIVE DEMO LANE (three tiers, one disclosure law)
+- Tier 1 always-on floor: public repo-catalog README (a dead tunnel never 404s the proof).
+- Tier 2 showcase (LIVE): war-log/demo/showcase/app.py - Flask+SQLite, 71 repo cards from
+  REPO-CATALOG-V2.md, per-buyer pbkdf2 logins (create_user), /health for probes. Runs on
+  laptop 8899 OR inside the Kaggle kernel (self-sufficient: catalog shipped alongside).
+- Tier 3 KAGGLE HOST (LIVE, Baba's route): kernels/kilo-demo (isearchxsolve/kilo-demo,
+  built by war-log/demo/build_kaggle_demo.py) - git-clone FIRST from
+  github.com/isearchxsolve/repo-catalog (Baba: 'kaggle pulls from git'; sources pushed
+  commit 4b0b334: showcase/app.py + REPO-CATALOG-V2.md + DEMO-PLAYBOOK.md), embedded
+  bytes only as fallback, cloudflared quick tunnel, smoke pair created inside the kernel,
+  announcement on the wire via public door /say. Receipt: order-bank seq -
+  'DEMO-KAGGLE UP url=https://commissioners-buying-ordinary-determination.trycloudflare.com
+  user=demo-smoke ... host=kaggle (12h session - disclose window in every mail)'.
+  E2E over the PUBLIC url VERDICT=PASS (login 200 / wrong pw REFUSED / logged-in /
+  71 cards / health 200), receipt demo/receipts/e2e-kaggle-*.txt; state adopted
+  host=kaggle (demo/state/showcase.json) so every future mail carries the Kaggle url.
+- Mail integration: smtp_send.demo_block(row) - probes /health first (NEVER print a dead
+  url), provisions a per-recipient pair, inserts the 4-step self-guided walk BEFORE the
+  signature. RECEIPT: evidence/L1/_smtp_20260929-064215_*.txt (code 250 + LIVE DEMO block
+  + creds in body).
+- SELF-GUIDED LAW (Baba): no demo call is ever promised - does not scale and a
+  developer-driven walkthrough is a cover-up. Every mail gives the buyer numbered steps
+  to walk the room THEMSELVES (login -> cards -> catalogue verify links -> reply with the
+  repo to scope). DISCLOSURE LAW: hosting window stated plainly in every mail (laptop
+  tunnel or Kaggle 12h) - limits are told, never hidden.
+- UNATTENDED: demo/keepalive.ps1 (visible window, single-instance by title, 10-min
+  probe -> restart -> re-e2e) + scheduled task KILO-DEMO every 15 min (idempotent).
+- Command set: demo.py up/status/down/creds, provision.py, e2e_login_test.py,
+  build_kaggle_demo.py; playbook war-log/demo/DEMO-PLAYBOOK.md.
+
+### 43.2 PAYMENT DETECTION - HOW THE PIPELINE KNOWS MONEY ARRIVED (Baba's question)
+Three doors feed ONE conservative matcher (war-payment source order: Google Messages;
+phone/adb lane RETIRED by Baba's word):
+1. DOOR 1 bank SMS - payment_watch.py reads messages.google.com/web read-only via
+   Agent360 (queue-gated), keeps bank senders (*KOTAK*, UCOB, HDFC, PhonePe, Paytm...)
+   with credit vocabulary, dedupes by state (paywatch-state.json), matches open deals in
+   closing/deals.csv: STRONG = body carries DEAL-<n> (we demand it in the UPI remark),
+   WEAK = amount equals the exact 50% advance; NO MATCH -> UNMATCHED review list, NEVER
+   auto-credited. PROVEN LIVE 07:33 IST: 4 real bank SMS caught (Kotak x2, UCO
+   'Credited Rs.1,000' x2), all held for review because no deal is open, evidence file
+   written, state seen=4. Loop window running (10-min cadence).
+2. DOOR 2 buyer screenshot (Baba's order) - payment-request template now DEMANDS both the
+   DEAL-n remark and the payment screenshot attached to the reply; the Gmail lane files
+   it as proof (ingestion still to build).
+3. DOOR 3 Wise email - international credits, same matcher (pending Wise account).
+CREDIT GATE: closing/deal.py payment REFUSES without --ref AND --proof - only then
+payments.csv + PAID_ADVANCE + wire bank echo. Silence is never payment.
+MCP LESSONS (raw, never relearn): execute_script needs the EXPRESSION form
+('document.body.innerText'); the arrow form returns {'result':{}, 'method':'debugger'}.
+get_page_content returns only the skeleton. Read FIRST, navigate only if thin (a blind
+navigate reloaded the page mid-read -> 38 chars).
+
+### 43.3 MONEY RULES SETTLED THIS WINDOW
+- 50% ADVANCE everywhere: quote/payment templates, IDEA-B card, service-desk SKUs,
+  cheatsheet price card - no advance, no work; balance on a VISIBLE verified run.
+- PAY CHANNELS in templates.txt: international WISE (fastest, account details on reply;
+  Wise account still PENDING from Baba), domestic UPI isearch.xsolve-3@okhdfcbank,
+  IMPS/NEFT Kotak A/c 55505593812 IFSC KKBK00065993 (invoice-level info Baba sent for
+  this purpose; PINs stay in pins.txt and are never printed).
+- closing/templates.txt = 9 fixed ASCII segments (scope-lock, quote-lic, quote-ideab,
+  payment-request, paid-ack, delivery-ideab, delivery-licence, nudge-48h, decline) served
+  by closing/deal.py templates <name>.
+
+### 43.4 BUGS FOUND AND FIXED LIVE (receipts in the files)
+- PowerShell: a single-quoted path at command start is EXPRESSION mode -> ParserError
+  'Unexpected token tunnel' killed the first tunnel spawns; '&' call operator is
+  mandatory. Double Tee on one file starved the URL parser (parse both capture files).
+- demo.py kill-tree on down (taskkill /T /F) so no tunnel survives teardown.
+- kaggle kernels push 409 = metadata id mismatch (kkk3213 vs the isearchxsolve seat);
+  id aligned -> version 2 pushed, green run.
+- /kaggle/src is READ-ONLY (OSError Errno 30) - kernel writes to /kaggle/working.
+- A self-matching process filter killed my own shell once (the filter string appeared
+  in my own command line) - split the pattern, exclude 800.
+- 50-line payment_watch client contract: Agent360Client() must .start() before
+  call_tool ('NoneType stdin'), and close() releases the browser queue ticket.
+- AGENTS previous sections: 41 (compaction recovery), 42-42.8 (SMTP, price range,
+  fortress, one-to-one DNA, IDEA-B).
