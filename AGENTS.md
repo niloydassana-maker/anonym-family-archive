@@ -1359,3 +1359,29 @@ feed-watch (240s) | gmail-yahoo (60s) | thread-weaver (90s, GUARDED) | legal-wat
 payment_watch evidence lane, KILO-TICK-INBOUND scheduled. Phone ticks (KILO-GMAIL/
 LI/JOBS) STILL HELD - phone not attached + equivalent lanes live; enable on Baba's
 word when the phone docks.
+
+## 45. PER-CYCLE LEASE - FINAL VERIFICATION (2026-09-29 13:00-13:10 IST)
+The §44.6 fixes were code-complete but the six lanes still ran the OLD lifetime-hold
+code in memory. This round loaded the new code and PROVED it under live load:
+1. COMPILE: py_compile exit=0 on agent360_client + all four rewritten daemons
+   (feed/gmail/legal/weaver) + payment_watch.
+2. CLEAN RESTART: killed ONLY my own 8 console trees (feed, legal, gmail, weaver,
+   2x paywatch dup, 2x inbound dup) via taskkill /T; brother's standing_sales 8372
+   and SMTP-LOOP-247 untouched (NEVER-KILL-BROTHERS honored mid-restart).
+   POWERShell LESSON: `foreach ($pid in ...)` ABORTS ENTIRELY ($pid is read-only)
+   - first attempt killed NOTHING and reported exit codes from a loop that never
+   ran; survivors list is the only trustworthy receipt. exit=255 from taskkill
+   under PS = error-record noise, verify by re-enumeration.
+3. RELAUNCH: six visible windows (§37) - FEED-WATCH, LEGAL-WATCH, GMAIL-YAHOO-WATCH,
+   THREAD-WEAVER, PAYWATCH-LOOP (--loop --every 600), INBOUND-INGEST (while-wrapper).
+4. 10-MIN SOAK PROOF: lanes 2/2/2/2/2 + inbound mid-sleep normal; gate
+   /status holder=agent360:7680 (gmail child) queue=[] granted=542 released=544;
+   token file age=2s touched by the ACTIVE holder (real rotation, not a stale file);
+   gmail heartbeat 13:10:00 IST; wire boots 07:30:16Z LEGAL v2 / 07:30:17Z FEED v5 /
+   07:30:21Z WEAVER v3; **ZERO error entries since 07:29Z** (no FEED-WATCH-ERR,
+   no STEAL, no FAIL); INBOUND wrapper console alive since 13:00:06.
+5. SENDER along the same window: smtp-loop cycle 12:38 IST sent=10 all code=250,
+   ledger hunt/smtp-sends.csv = 206 rows (146 -> 206 = +60 = six clean cycles).
+LAW (standing): a browser daemon that holds the token outside its scan window is a
+starver - per-cycle start()/scan()/close() is the ONLY pattern; the client's stale-
+steal (>120s) is the safety net, never the plan.
