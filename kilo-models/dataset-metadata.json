@@ -1,0 +1,16 @@
+{
+  "title": "father-xtts",
+  "id": "kkk3213/father-xtts",
+  "is_private": true,
+  "licenses": [{"name": "other"}],
+  "resources": [
+    {
+      "path": "father_last_fp16.pth",
+      "description": "v15 fine-tuned XTTS-v2 GPT (426 tensors, 441M params) fp16 - Baba voice 40-epoch deva run 2026-09-13"
+    },
+    {
+      "path": "config.json",
+      "description": "GPTTrainer config from the tune run"
+    }
+  ]
+}

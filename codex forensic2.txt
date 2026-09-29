@@ -1,0 +1,27 @@
+Baba, I completed the client-facing asset overview and repaired several concrete execution-pipeline defects. I can’t honestly call the entire pipeline failproof or the full line-by-line repository audit complete.
+
+### Client-facing repo overview
+
+I created Software and Digital Asset Portfolio — Evidence-Led Overview (/D:/anonym/war-log/SOFTWARE-ASSET-PORTFOLIO-CLIENT-SAFE-2026-09-26.md) and linked it from the repo scan master summary (/D:/anonym/war-log/REPO-SCAN-MASTER-SUMMARY-2026-09-26.md).
+
+The overview distinguishes code and publishing materials from verified operation, delivery, customers, and revenue. It records that the census covers 122 repository names: 59 have exact local directory-name matches, and 63 do not. Those numbers do not mean 122 separate products. The report does not claim that the “100 million lines” estimate is measured or that every source line has been reviewed.
+
+The strongest evidenced assets include substantial software prototypes and engineering systems, a voice-agent project, and a developed KDP publishing package. The reviewed records do not establish production readiness, live listings, customer acceptance, or revenue. The report recommends choosing one canonical project revision and producing a reproducible demo with an acceptance check before offering a specific capability to a client.
+
+### Execution pipeline
+
+I updated the pipeline repair report (/D:/anonym/war-log/AGY-L0-L2-EXECUTION-PIPELINE-REPAIR-2026-09-26.md). The ten lane tasks were observed enabled, hidden through their launcher, and configured to queue overlapping runs. Their scheduled “Running” state is not proof their missions completed.
+
+The known popup source was the awareness recovery branch launching a visible cmd /k kilo. That branch now uses a hidden, logged, noninteractive launch with a persistent cooldown. I restarted awareness; its new process logged a fresh start and cycle. The recovery event itself was not forced, so I haven’t verified a popup-free recovery event end to end. The Task Scheduler Hidden field for awareness remains false; its VBS launcher starts Node hidden.
+
+I also fixed a concrete record-writing bug: the runner used a .NET file-move overload unavailable on this Windows PowerShell host. That left a KDP blocked-run record as run.json.tmp. The code now uses compatible same-volume replacement, and I recovered and read back that blocked receipt. PowerShell parsing passed for 11 tick scripts, Node syntax checking passed for awareness.js, and Python parsing passed for three scripts. No business lane tick was manually run.
+
+### What is still open
+
+The LinkedIn launcher’s recorded exit code 2 has no confirmed root cause.
+Some tick triggers may have expired; enabled status alone doesn’t prove they have a future run.
+The KDP Gmail prerequisite remains cross-run, and receipts don’t yet cover every kind of lane action.
+AGY is a plausible bounded adapter, but the evidence does not prove it is reliable enough as an unattended executor.
+The 122-entry census and selected architecture reviews are complete; a full semantic, line-by-line review of every in-scope file is not.
+
+One restart caveat: restarting the old awareness process with taskkill /T also ended child PIDs 10488, 4424, and 11312. Their command lines weren’t captured, so I can’t establish whether any detached work was among them. I recorded that uncertainty in the pipeline report.

@@ -22,3 +22,15 @@
 - FFmpeg completed at 21:44:12 local time. Output: D:\anonym\KILO_FULL_MISSION_RECORD_RERUN_20260925_RAW.mp4, 53,429,703 bytes.
 - ffprobe confirms MP4 container, H.264 video, 1280x720, 6 fps, duration 3,890.67 seconds (about 64:51); no audio stream.
 - FFmpeg warned: “File ended prematurely” while reading the MKV. The source was force-stopped and lacks a normal Matroska close/trailer. The MP4 was finalized and readable by ffprobe, but its ending may be cut off; original MKV is preserved as the source.
+
+## Presentation update — 2026-09-26
+- Added a timecoded motion-evidence section to `assets/KILO_MISSION_RECAP_SANITIZED_20260925.mp4`, using two 20-second excerpts directly from the preserved raw recording: `00:35:50–00:36:10` (Naukri workflow) and `00:43:50–00:44:10` (Foundit role workflow).
+- The excerpts show the original screen transitions between the work log and job pages. The captions state that these are page/workflow evidence, not application receipts. The Foundit profile-header area is cropped out.
+- Final recap: 1920×1080 H.264, 30 fps, 87 seconds, silent source retained. Raw MKV and MP4 were left unchanged.
+- Visual review of recap frames at 00:00:35, 00:00:39, and 00:00:52 confirms the excerpts show the Naukri page transition and the Foundit role-page/log transition.
+
+## Full-screen live evidence clips — 2026-09-26
+- Created standalone, full-screen, continuous video excerpts directly from the preserved raw MP4, with no titles, side-by-side layout, or overlays:
+  - `assets/KILO_LIVE_EVIDENCE_NAUKRI_20260925.mp4` — source 00:35:50–00:36:10.
+  - `assets/KILO_LIVE_EVIDENCE_FOUNDIT_20260925.mp4` — source 00:43:50–00:44:10.
+- Both are silent because the raw capture has no audio track. Each is 1280×720 at 6 fps. The complete uncut MP4 remains preserved at `assets/KILO_FULL_MISSION_RECORD_RERUN_20260925_RAW.mp4`.

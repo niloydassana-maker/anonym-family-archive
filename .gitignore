@@ -1,4 +1,4 @@
-.kilo/
+﻿.kilo/
 *.log
 __pycache__/
 .venv/
@@ -63,3 +63,20 @@ career/LIFE-RECORDS/
 *.mp4
 *.mkv
 *.pth
+.aider*
+
+## local heavy dirs - never into the archive (sync review 2026-09-29)
+chrome-debug-profile-RETIRED-2026-09-27/
+kilo-models/ds/
+scratch/
+clean-export/
+lastnight/
+lane-demo/
+AGENTS.md.restored
+login
+
+## embedded repos (own remotes under isearchxsolve - synced independently)
+war-pipe/
+lane-kdp/kdp-polished/
+lane-kdp/the-beholder-project/
+lane-sme/voice_agent_avatar/

@@ -1,0 +1,17 @@
+file 'D:/anonym/assets/mission-recap-cards/01-cover.png'
+duration 6
+file 'D:/anonym/assets/mission-recap-cards/02-career-status.png'
+duration 10
+file 'D:/anonym/assets/mission-recap-cards/03-recorded-pages.png'
+duration 8
+file 'D:/anonym/assets/mission-recap-cards/04-uncut-evidence.png'
+duration 10
+file 'D:/anonym/assets/mission-recap-cards/04-youtube-check.png'
+duration 10
+file 'D:/anonym/assets/mission-recap-cards/05-verdict.png'
+duration 8
+file 'D:/anonym/assets/mission-recap-cards/06-recording-limits.png'
+duration 8
+file 'D:/anonym/assets/mission-recap-cards/07-close.png'
+duration 7
+file 'D:/anonym/assets/mission-recap-cards/07-close.png'

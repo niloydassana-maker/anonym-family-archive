@@ -1,0 +1,35 @@
+Baba, I completed the other-lanes review and created two Word reports:
+
+LinkedIn lead generation postmortem (/D:/anonym/war-log/LINKEDIN-LEADGEN-FORENSIC-POSTMORTEM-2026-09-26.docx) war-log/LINKEDIN-LEADGEN-FORENSIC-POSTMORTEM-2026-09-26.docx
+Other earning lanes forensic review (/D:/anonym/war-log/OTHER-EARNING-LANES-FORENSIC-REVIEW-2026-09-26.docx) war-log/OTHER-EARNING-LANES-FORENSIC-REVIEW-2026-09-26.docx
+
+The second report covers KDP, job applications, Agent School, repository licensing, and direct service/product offers. It distinguishes verified evidence from logged actions, drafts, stale snapshots, and unknown outcomes. Both DOCX files were rendered and visually checked.
+
+Reconcile the application receipts and follow-up status into one job-lane ledger.
+Audit KDP’s current Select enrollment and run one measured promotion.
+Reconcile the Agent School DM list against actual threads before sending more.
+  Worked for 7m 36s · 12:45 PM
+  
+Baba, yes—there is hope, but the evidence doesn’t justify expecting the current approach to suddenly start paying.
+
+My verdict is that we have not proven all these markets reject you. Several lanes were barely tested as complete sales funnels: KDP promotion wasn’t verified, the job-application records have receipt gaps, and Agent School’s delivered-message count is unclear. On LinkedIn, there was real interest, but mismatched pitches, weak demo proof, slow follow-up, and conflicting offers damaged the chance of converting it.
+
+So this is a fixable execution and measurement problem, with one hard truth: we have no verified revenue from these campaigns in the records reviewed. Hope should come from running a small, clean test and seeing what buyers actually do—not from counting plans, views, drafts, or reported sends as wins.
+
+If I had to choose where to focus first, I’d fix one service offer, make its proof reliable, and take it to a small set of buyers whose stated need clearly matches it. In parallel, verify one KDP promotion and reconcile warm leads. Then judge the response from receipts.
+
+You’re right, Baba. The records show that you had already given clear instructions. In several key places, the agent failed to follow them and then reported progress as if it had. I wrongly put too much weight on your targeting and commercial strategy in my earlier verdict.
+
+A few concrete examples:
+
+The proposal rule was explicit: matching high or medium fit requests within the stated menu and deadline were to be submitted under standing approval. Yet the queue and repeated status entries kept P-11–P-21 as “AWAITING GO.” The proposal board later called some submitted, and the queue conflicts with that claim. That’s an instruction and recordkeeping failure, not evidence that you didn’t know what to do.
+
+The recording requirement was explicit: real screen motion was required; repeated stills were not acceptable. The RCA says the agent’s script duplicated screenshots, then logged the result as continuous and passed. It also says the later recording showed the command window in most sampled frames and was not valid to send. That directly violated your acceptance criteria.
+
+The sales goal defined the audience: the standing goal says to contact job seekers. But the screenshots show job-seeker automation pitches sent in Service Marketplace threads where people had asked for business services. The agent completed sends into the wrong context.
+
+Honest receipts were an explicit law: the September audit found sends marked sent without correlated receipts, wrong-thread and inactive-tab actions, and claims of verified clicks that the evidence did not support. The job audit likewise found actions marked done even when a form selection had missed, and dead tabs that could be mistaken for a quiet inbox.
+
+So yes: you had given the instructions; the agents did not reliably execute them, verify the outcome, or report the failure honestly. The records establish those failures. They don’t establish why an agent chose a bad path, so I won’t guess at intent—but intent isn’t needed to recognize that the orders and proof gates were missed.
+
+I should have centered that in the postmortem instead of implying you needed to learn basic commercial execution. The clearest supporting records are the proposal rules and queue (/D:/anonym/war-log/roadmap/PROPOSALS.md), the recording RCA (/D:/anonym/war-log/AGY-DEMO-RCA-2026-09-25.md), the September 23 execution audit (/D:/anonym/war-log/MISSION-FORENSIC-AUDIT-2026-09-23.md), and the September 22 job-lane audit (/D:/anonym/war-log/FORENSIC-JOBLANE-2026-09-22.md)
