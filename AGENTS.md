@@ -1305,3 +1305,57 @@ draining; hot-send-ready2 27,482 = SUPERSEDED (old matcher, not the legal queue)
 Payment: payment_watch loop live (4 real bank SMS caught, all review-only, never
 auto-credit). Demo room: bachelor-seal trycloudflare, host=kaggle, /provision live.
 Wise account still pending Baba; Kotak/UPI details in vault/bank_details.txt.
+
+### 44.6 THE BROWSER LEASE ROTATION (bug found live, fixed at the SHARED CLIENT)
+Symptom chain this morning: gmail-yahoo heartbeat frozen since 9/28 14:48, legal/
+weaver/gmail relaunched then went silent, FEED-WATCH-ERR 'str' has no attribute 'get'
+x6 on the wire. ROOT CAUSES (both in war-log/agent360_client.py, hit by ALL seven
+browser daemons - fixed ONCE there, never per-daemon):
+1. LIFETIME FILE TOKEN: sweep-browser.token was acquired in start() and released
+   only on close() - but daemons live forever, so the first holder (feed-watch)
+   kept the browser for LIFE. The GATE (7880) has a 90s TTL + touch, the file token
+   had neither: every other watcher blocked 600s in start() then CRASHED
+   (TimeoutError). Proof on the wire: four daemons died exactly 600s after boot.
+2. RAW list_tabs(): returned the MCP envelope dict; daemons iterate it -> keys are
+   STRINGS -> tab.get() = 'str' has no attribute 'get' (the feed-watch error).
+FIXES (all in agent360_client.py):
+- IDLE YIELD: _acquire_browser_token steals from a holder whose token mtime is
+  >120s old (TOKEN_STALE_S) - a working holder touches the token on every
+  call_tool (added), an idle one between cycles hands the browser over, exactly
+  like the gate TTL. WinError 32 (waiters' read handles) handled with a bounded
+  40x50ms retry around the remove.
+- OWNERSHIP GUARD: call_tool refuses to send after a legitimate steal
+  (LeaseLostError) -> FIGHTING-HANDS impossible at the tool level. Reacquire
+  waits its clean turn (600s), it does not fail the cycle.
+- _parse_tabs(): content[].text JSON -> LIST of tab dicts (canonical shape);
+  list_tabs() now returns that list; robust_switch_to_messaging updated too.
+- PER-CYCLE LEASE PATTERN (the house pattern, now on ALL daemons): start() ->
+  scan -> close() INSIDE the loop, sleep OUTSIDE the client. A 60s-cadence driver
+  that holds the lease never goes stale and starves everyone else - holding only
+  during the scan means FIFO turns in seconds. Applied to feed-watch v5,
+  gmail-yahoo v2, legal-watch v2, thread-weaver v3 (payment_watch and
+  inbound_ingest already had it).
+- LAUNCH FLAGS (my own error, recorded so no son repeats it): payment_watch only
+  loops with `--loop --every 600` (without it: one cycle then exit - looked like
+  a crash); inbound_ingest is a ONE-SHOT per invocation, so its window wraps it
+  in `while ($true) { python hunt/inbound_ingest.py; sleep 600 }`.
+- KILO-TICK-INBOUND (scheduled 15min) already covers SLA+report kernel-side
+  (inbound.py sla/report) - inbound_ingest is the BROWSER capture layer only.
+PROOF (all on wire or files): STEAL logged from idle pid 6536 (age 1361s);
+probe ACQUIRED 20s + parsed 1 real tab + RELEASED clean; gate then showed
+holder + 3 queued (true FIFO); heartbeats 09:06-09:07 = gmail/feed/weaver/service-
+desk/watchdog fresh; boots on bank: WEAVER v3 03:30:30Z, LEGAL v2, FEED v5;
+zero new FEED-WATCH-ERR after relaunch; smtp loop CYCLE 2 = 10/10 code 250 at
+08:56:34. NOTE: WEAVER-WARN no linkedin tab (throttled 30m) is honest - Profile 17
+LinkedIn tab not open between ticks; weaver acts when the tab exists.
+STANDING_SALES (yesterday 14:12, brother's window): kept untouched per NEVER-KILL-
+BROTHERS; 4.1s CPU in 19h = dormant, still runs OLD client code - if Baba wants it
+on the new lease code, it needs a restart ON HIS WORD.
+
+### 44.7 SIX-LANE WATCH ROSTER AS OF 09:08 IST 2026-09-29 (all visible windows)
+feed-watch (240s) | gmail-yahoo (60s) | thread-weaver (90s, GUARDED) | legal-watch
+(1800s) | payment_watch --loop 600s | inbound_ingest wrapper (600s) - plus army-watch
+(node), service-desk, standing_sales (brother, dormant), smtp-loop (40min cadence),
+payment_watch evidence lane, KILO-TICK-INBOUND scheduled. Phone ticks (KILO-GMAIL/
+LI/JOBS) STILL HELD - phone not attached + equivalent lanes live; enable on Baba's
+word when the phone docks.
