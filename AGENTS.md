@@ -1113,7 +1113,39 @@ this section**; the first 68 blind sends measured 54% wrong class (§42.3 audit)
   `1,072,887 (incl. base)` is the n8n base and must never be sold as our work), pain sentence
   chosen over job-title headers (slash-stacked headers score -50), subject names THEIR repo.
 - **RECEIPTS:** first one-to-one batch of 10 sent 05:47-05:51 IST, **all code 250**;
-  ledger `hunt/smtp-sends.csv` = **100 rows, 100 x 250**; 25 receipts with raw `DATA 250`.
+  ledger `hunt/smtp-sends.csv` = **120 rows, 120 x 250** (30 one-to-one by 06:02 IST).
   Artifacts: `war-log/build_catalog2.py`, `hunt/repo_dna_match.py`, `hunt/lead_filter.py`,
   `_preview_personal.py` (READ-BEFORE-SEND preview, always run it), `personal-preview.txt`,
   logs `build-catalog2.log`, `hunt/repo-dna-match.log`, `smtp-batch10-personal.log`.
+
+### 42.8 THE SERVICE PROVIDER MODEL - IDEA-B (Baba 2026-09-29 06:05/06:25 IST, standing)
+Baba's pivot, verbatim: "kilo so far we cahsed the product usiness model now lets chase
+the service provider model..we provide the following service with pitch
+D:\ideation_to_prototype\idea-terminal-engine--we target all startup who are in initial
+pphase with just an idea..or ongoing development..no prototype ready...not sure will the
+idea really succeed" / "the startup culture office killer" / and the headline offer:
+**"why wait months years and lacs of money for the idea to prove itself when we can do
+it for you in few weeks in 100 usd"**.
+- **THE OFFER:** raw idea (their words) -> written sprint -> distilled blueprint +
+  architecture/plan + **running Python/Flask prototype** + the test evidence that really
+  ran (pytest, QA floor, anti-triviality, state audit) + GTM v1 notes - OR the honest
+  FAILED verdict with everything above still theirs. Deliverable list and the five-step
+  written process (scope lock -> quote -> run -> recorded demo -> handoff) are FIXED in
+  `roadmap/IDEA-SERVICE-CARD.md`; the engine's real 7-state pipeline and its honest gaps
+  (no hosted URL, PLAN hardcoded to Python Flask, single run per process, OmniRoute SPOF)
+  are quoted FROM that card - never softened.
+- **PRICE:** entry **USD 100** (the headline, stated up front - Baba set it), complex
+  USD 400-800, cohorts quoted above USD 800; 50% advance, balance on verified run; free /
+  equity-only = decline. Marginal compute = $0 (free-tier inference). Ranges elsewhere,
+  fixed number only after written scope lock; NO CALLS anywhere.
+- **PITCH:** Baba's manifesto verbatim from `servicemodel.txt`, ASCII-folded, leading with
+  his USD-100 line - `roadmap/drafts/IDEA-B-pitch.txt` (segment format, subject "Why wait
+  months and lacs? Your idea -> running prototype in weeks (Kunal Das)"). Read-back proof:
+  3,135 chars, 0 non-ASCII, 0 fences, testimony at end.
+- **WIRING:** `IDEA-B` added to service-desk MENU (both the MENU constant and the agy
+  prompt) and to the PROPOSALS standing-GO menu line, so an inbound idea-stage request
+  with fit HIGH/MED + feasible deadline submits itself under standing GO.
+- **LEAD CLASS:** idea-stage DNA ("just an idea" / "no prototype" / "technical co-founder"
+  / "idea validation" / "build an MVP" / pre-seed / non-technical solo founder) is a
+  SEPARATE class from repo-licence buyers - ONE HUMAN ONE FUNNEL: a founder gets IDEA-B,
+  an existing-product company gets the §42.7 repo offer, never both.
