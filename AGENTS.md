@@ -1074,4 +1074,46 @@ Compiled by Kilo live. Baba's three orders this window, verbatim:
 `SMTP-INCIDENT-BATCH2-2026-09-29.md`; logs `smtp-probe.log`, `smtp-test4.log`, `smtp-batch10.log`,
 `smtp-batch10b.log`, `smtp-batch7.log`, `smtp-batch3-20.log`, `smtp-batch4-matched.log`,
 `patch-price.log`, `patch-price2.log`, `hunt/vertical-match.log`, `hunt/sent-audit.log`;
-evidence `evidence/L1/_smtp_*.txt` (75 receipts).
+evidence `evidence/L1/_smtp_*.txt` (75 receipts). NOTE: the 2,612 figure above is the
+FIRST matcher; §42.7 supersedes it with 916.
+
+### 42.7 ONE-TO-ONE REVERSE DNA MATCH (Baba 2026-09-29 05:15/05:30 IST, binding)
+Baba's words: "we do individual dna matching one to one repo vs dna lead..the lead should
+need to find the perfect match searching in catalogs" / "the catalog should descrie each
+repo otherwise dna leads cannot reverse match with their dna" / "our drafts should address
+individual reverse dna matching for each lead point to the answer to their problem their pain".
+Answer to his question "did we do perfect dna matching algorithm before sending" = **NO until
+this section**; the first 68 blind sends measured 54% wrong class (§42.3 audit).
+- **THE PIPE:** `build_catalog2.py` -> `roadmap/REPO-CATALOG-V2.md` + `hunt/repo-verticals.json`
+  (71 repos: vertical, problem, architecture, tokens, LOC, language; 12 crown jewels carry the
+  full deep-review architecture). `hunt/repo_dna_match.py` scores EVERY clean lead against EVERY
+  offerable repo -> `hunt/dna-match-report.csv` (all 11,213) + `hunt/hot-send-matched.csv`
+  (**the only legal send queue: 916 = 40 HIGH + 876 MED, 894 fresh at compile time**).
+  `smtp_send.py` then composes the per-lead body: quotes THEIR pain sentence, names THEIR repo +
+  its architecture + a catalog anchor, then price RANGE + signature + testimony.
+- **THE FOUR MATCH RULES (all proven by defects found live, never weaken):**
+  1. **Rarity is measured against the AUDIENCE, not the catalog.** v1 measured rarity across
+     59 repos, so `backend;building;engineering` looked rare and scored 17 on a Curse hiring
+     page - a false match. Words are weighted by their DF over the 11,213 clean leads
+     (>=3% = no DNA, >=1% = weak, <1% = rare), and code keywords (`class complete framework
+     function package import return string object method member ...`) are NEVER DNA.
+  2. **DIRECTION AGREEMENT is mandatory:** the repo's vertical must agree with the lead's own
+     words or domain (`vertical_match.VERTICALS` keywords / known-buyer domains). Without it an
+     Oracle commerce page matched a film repo - the wrong-thread failure again. 7,001 rows
+     rejected on direction alone.
+  3. **House/snapshot repos are never offered:** `anonym-family-archive`, `war-pipe`,
+     `for-zipping`, `state-*`, `sale-*`, `_` are denied (297 false gate rows before the deny).
+  4. **FIT = evidence, not score:** HIGH = score>=6 + >=2 of that repo's rare tokens in the
+     lead's words + direction agree; MED = >=1 rare token + direction agree. LOW/NONE never
+     send. Unproven review pairings are refused - fuzzy matching had attached the
+     `god_ai/emergentsh-standalone-clean` review to `emergentsh_latest` (different directory);
+     `resolve_review` now accepts only exact / containment-with-version-remainder matches.
+- **BODY LAWS:** ASCII only (0 non-ASCII verified), no markdown fences or `**` in plain text,
+  no mid-word truncation, proof line only when `loc` is the repo's OWN count (ikon_agent-main's
+  `1,072,887 (incl. base)` is the n8n base and must never be sold as our work), pain sentence
+  chosen over job-title headers (slash-stacked headers score -50), subject names THEIR repo.
+- **RECEIPTS:** first one-to-one batch of 10 sent 05:47-05:51 IST, **all code 250**;
+  ledger `hunt/smtp-sends.csv` = **100 rows, 100 x 250**; 25 receipts with raw `DATA 250`.
+  Artifacts: `war-log/build_catalog2.py`, `hunt/repo_dna_match.py`, `hunt/lead_filter.py`,
+  `_preview_personal.py` (READ-BEFORE-SEND preview, always run it), `personal-preview.txt`,
+  logs `build-catalog2.log`, `hunt/repo-dna-match.log`, `smtp-batch10-personal.log`.
