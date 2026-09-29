@@ -1385,3 +1385,84 @@ code in memory. This round loaded the new code and PROVED it under live load:
 LAW (standing): a browser daemon that holds the token outside its scan window is a
 starver - per-cycle start()/scan()/close() is the ONLY pattern; the client's stale-
 steal (>120s) is the safety net, never the plan.
+
+## 46. SESSION 2026-09-29 (afternoon) - BABA'S ALL-LANES ORDER + THE WATCHDOG GAP
+Baba's verbatim orders this window, none skipped (his command: "UPDATE AGENTS.MD WITH
+ALL MY ORDERS"):
+1. "RESTART WILL KILL ALL SCRIPTS RUNNING [taskbar image of ~15 PowerShell windows]
+   IF YOU ENSURE THEY CAN RECOVER I RESTART" - restart CONDITIONAL on a proven
+   boot-recovery for every live script.
+2. "IF RESTART OF LAPTOP IS SO COMPLICATED LETS DO UAC / 12 HOURS GRINDING NO RUPEE
+   EARNED / I CANNOT SUSTAIN FURTHER I DECLARE / 6 MONTHS SURVIVED NO MORE" - the
+   operator at his wall. No lecture, no ceremony: money first, complexity zero.
+3. "WE NEED ALL LANES OPEN AND THIS ITEM PLEASE WITHOUT ADO - IDEA-B founder lead
+   harvest (Ask/Show HN, Indie Hackers, pre-seed DNA)".
+4. "ALL LANES LINKEDIN WHATSAPP SHOULD OPEN FOR FULL ENGAGEMENT FOR LEADS AND
+   WATCHDOG WATCHING FOR NEW MESSAGES / ALL LANES I MEAN IT LITERALLY / UPDATE TODO
+   NOW" + "ALL LANES THERE ARE 10 LANES ALL SHOULD OPEN".
+5. "UPDATE AGENTS.MD WITH ALL MY ORDERS" (this section).
+
+### 46.1 THE TEN LANES (his count - this is the roster)
+(1) SMTP outreach loop  (2) reply inbox watch (gmail-yahoo)  (3) LinkedIn engagement
+(thread-weaver + KILO-TICK-LINKEDIN, weaver ordered FLIPPED to LIVE)  (4) LinkedIn
+service feed (feed-watch, 60-min SPEED LAW)  (5) proposals/service desk
+(service-desk + standing_sales)  (6) inbound (inbound_ingest + KILO-TICK-INBOUND)
+(7) WhatsApp (Kilo Bridge :8778 + phone ticks KILO-GMAIL/LI/JOBS + WA-web lane)
+(8) payment watch (payment_watch, screenshot/DEAL-remark matcher)  (9) legal watch
+(legal-watch)  (10) army wire (relay :8777 + watchdog + army-watch). OPEN = daemon
+alive + watcher armed + engagement path enabled (weaver LIVE, tabs open). BLOCK regex
+(money/meds/courts/Raktima) and LEGAL-SHIELD fixed templates STILL bind - "literally
+open" never touches those (RAKTIMA ABSOLUTE SILENCE LAW).
+
+### 46.2 THE WATCHDOG GAP (critical finding, fix owed)
+- KILO-RELAY-WATCHDOG task does NOT exist (was MISSING from scheduler). The live wire
+  tree is relay-watchdog.ps1 PID 6740 session 0 (parent = Task Scheduler svchost,
+  started 2026-09-25 by a mechanism NO LONGER in any boot path - no task action, no
+  Run key, no Startup entry references it) -> it births ngrok PID 10228 (--domain
+  retrain-schnapps-upbeat) + son-relay PID 17992 as children. CONSEQUENCE: next
+  reboot/power-cut = wire DEAD with nothing to restart it.
+- FIX READY, NOT YET REGISTERED: war-log/KILO-RELAY-WATCHDOG.xml (SYSTEM S4U,
+  Boot+Logon +45s, IgnoreNew, battery-proof, RestartOnFailure 1min x999, PT0S) +
+  planned war-log/REBOOT-RECOVERY.ps1 (idempotent visible-window relaunch of the
+  14 console daemons + relay-health probe with watchdog start fallback) as
+  KILO-REBOOT-RECOVERY (ONLOGON +1:30). Register via sudo-hands; test = run once
+  (everything alive -> all SKIP, receipt RECOVERY-REBOOT-<ts>.txt + wire announce).
+- KILO-RELAY task is a RED HERRING (runs li_relay.py, last run 9/25 result 267014);
+  KILO-WATCHDOG + KILO-RELAY-NANNY stay Disabled by law (ONE KILLER).
+- Session-0 processes hide CommandLine from non-elevated CIM - probe watchdog/relay
+  via sudo-hands elevated or via HTTP /health, never trust an invisible-process scan.
+
+### 46.3 STATE FACTS THIS WINDOW (receipts on disk)
+- WIRE alive: /health ok relay-live bank=11977 reports=273; heartbeat fresh 14:34.
+- SENDER grinding: 9 cycles today 08:12-14:07 IST x 10 = 90 accepted (code 250),
+  ledger hunt/smtp-sends.csv 227 rows, every send has evidence/L1 receipt, next
+  cycle ~14:47. Money answer to Baba's "12h no rupee": volume of correct attempts +
+  reply watch; zero collected stays ZERO until a reply converts (FUNNEL-ACCOUNTING).
+- USB adb: BOTH phones' ADB interfaces had NO DeviceInterfaceGUIDs (generic WinUSB,
+  class {88BAE032-...} instead of adb's {F72FE0D4-...}); GUID + ConfigFlags=0
+  PLANTED (IQOO MI_02 + Nokia MI_00 + sw keys 0001/0002) via sudo-hands, but
+  pnputil returns 3010 "reboot required" on every re-enumeration - the ONE pending
+  wall. FIX-ADB-UAC.ps1 (one UAC, re-plant, virtual replug, adb verdict, shutdown
+  /r /t 15 with cancel) = Baba's single-click path whenever he chooses. Money does
+  NOT depend on it (mail lane is pure server-side).
+- Network: laptop fell off home WiFi (profiles saved incl Infinity System_5G) ->
+  both wireless phone lanes dead; internet now via IQOO USB tether 10.33.85.17 +
+  NordVPN. NOT a hijack.
+- IDEA-B harvest v1 (idea_b_harvest.py) ran 13:40: 1000 hits -> 55 leads ->
+  hot-send-ideab.csv; verify SEND=16/HOLD=32/DROP=7 (port 25 egress blocked ->
+  RCPT probing impossible; gmail HOLD = HN-provenance only). v2 extension for Baba's
+  item IN PROGRESS: QUERIES+DNA+IH constants ADDED, tag sweeps + Indie Hackers
+  functions + merge-write NOT YET WIRED (file currently constants-only - finish
+  before running).
+- Door note: ngrok.exe runs in session Services (PID 10228) though NO Windows
+  service entry exists - it is a CHILD of the watchdog, not a service.
+- TODO access law (§36.1): show-session-todos.py read FIRST; todowrite writes;
+  Baba ordered the TODO updated NOW (owed at compile time).
+
+### 46.4 BABA'S STATEMENT ON RECORD (kept for every future son)
+"12 HOURS GRINDING NO RUPEE EARNED / I CANNOT SUSTAIN FURTHER I DECLARE / 6 MONTHS
+SURVIVED NO MORE" - after building all of this. The son's duty: remove every ounce
+of ceremony from his path (zero clicks unless a click is truly required), keep all
+lanes literally open, watch replies like a hawk, and report honestly - the fortress
+earns only when the funnel converts, and the funnel converts only when we keep
+firing correct attempts at speed.
