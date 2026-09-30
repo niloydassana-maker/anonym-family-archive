@@ -1823,3 +1823,46 @@ then kill the parent, then soak-test 60s before claiming it is dead.
    UTF8 (no BOM) or edit by patch, and check 'git diff --numstat' after touching the identity file.
 5. Baba's word is the last resort AND the first resource (sec.21): he named the phone lane weeks ago.
 
+### 51. WHATSAPP PRESENCE LAW + THE MAIL REDIRECT (01.10 ~04:20-04:50 IST)
+Baba's order was "fire" on the WhatsApp DNA queue. It did not fire, and the reason is on the record:
+- **The DNA gate passed 5 leads, and 5/5 of their numbers have no WhatsApp account.** The presence
+  probe (`war-log/wa_presence_probe.py` -> `war-log/wa-presence-probe.csv`, screenshot per number in
+  `evidence/L1/wa-probe-*.png`) returned 3 NOT_ON_WA + 2 UNKNOWN. The screen said it plainly:
+  "+91 85997 51172 isn't on WhatsApp. Do you want to invite them to join?"
+- **Root cause:** the strike numbers were minted by `hunt/backfill_indian_phones.py`, which pulled
+  phone numbers off each company's own website/contact page. Provenance was real (receipt
+  `hunt/backfill-phones-receipt.txt`: clarisights.com -> +918599751172 etc.) but **published is not
+  the same as present on WhatsApp**, and the `channels=email,linkedin,whatsapp` column in leads.db
+  was an unverified harvester claim, not a checked fact.
+- **The striker behaved correctly.** `wa_strike_phone.py` returned NOT_ARMED with a hold receipt and
+  tapped nothing - no message, no SMS invite from Baba's handset. Receipt:
+  `evidence/L1/wa-hold-Clarisights-20261001-043908.png`. It also carries its own hard DNA gate
+  (`dna_gate_ok`) that refuses any number not marked gate=SEND in `_wa_dna_gate.csv`.
+- **NEW LAW (fail-closed, coded into `_wa_dna_gate.py` via `load_presence()`):** a lead may enter the
+  WhatsApp queue only if a probe returned `CHAT_READY`. Unprobed = UNPROBED = HOLD. After this law
+  the gate reads `gates={'HOLD': 38} sendable_slots=0`. A WhatsApp send without proven presence is
+  not outreach, it is an SMS invite from Father's own phone.
+- **Copy law fixes found by reading, not assuming** (the queue on disk had been built by an older
+  build): `make_body` now (a) picks ONE funnel per lead from the lead's own words - idea-stage marks
+  -> IDEA-B (USD 100 entry / 400-800 complex), existing product company -> repo LICENCE, never both
+  (sec.42.8); (b) quotes only the PRICE-CARD ranges, never a flat rupee number (sec.42.2); (c) states
+  "we licence, ownership never transfers, no exclusivity in writing" (DIRECTIVE 2); (d) omits the
+  demo room unless /health answers 200 - the 29.09 trycloudflare tunnel was DEAD, so the old queue
+  would have sent buyers a dead link (disclosure law); (e) never ships a half sentence - if the
+  catalog's `problem` field is pre-truncated the body points at the catalog entry instead (sec.42.7).
+- **The redirect that DID fire:** the same DNA-passed leads that were never contacted by mail went to
+  Baba's chosen lane (SMTP, sec.41.4) through `war-log/_wa_to_mail.py` -> `hunt/wa-to-mail.csv` ->
+  `smtp_send.py --list hunt\wa-to-mail.csv --batch 2`. Result: `junaid@myhubble.money` 250 and
+  `vijayaraj.palaniraj@realimage.com` 250 (Message-IDs in `hunt/smtp-sends.csv`, per-send receipts in
+  `evidence/L1/_smtp_*`). Direct named contacts only; role addresses held. **Dedupe honoured:**
+  Clarisights (deepak.karki) and Gooey.AI (hireme, devs) were already mailed on 30.09 and were NOT
+  re-contacted; Flameback Capital held because we hold only `careers@`.
+- **Lead-quality finding, stated plainly:** these strike leads came from HN "who is hiring" threads of
+  varying age (HN item 8983896 = ~2015, 17215094 = ~2019, 29551474/36575861 = ~2023) and the DNA fit
+  rode on thin single tokens ("browser", "trading", "audio"). The channel was not the only weakness -
+  the supply needs freshness gating and a stronger token bar before volume is worth firing.
+- **Collected today: 0 rupees.** Two correct, evidenced attempts added to the funnel; the WhatsApp
+  lane needs numbers probed present before it can carry anything.
+- **Wire record of this whole sequence: order-bank seq 12815.**
+
+
