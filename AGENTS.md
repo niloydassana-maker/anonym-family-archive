@@ -1991,3 +1991,17 @@ message under Baba's eye. Nothing about that loop needs Chrome, and nothing in i
 without a verified number. Still open: `wa-sendable.csv` holds ONE number, so the harvest must keep
 running to fill it; the freshness gate for the mail-era corpse rows is still not coded.
 
+
+### 51.8 THE VERIFIER CAUGHT MY OWN FALSE POSITIVE (same hour) - the loop is self-correcting
+The harvest next surfaced `+18444398274` on `vapi.ai` (an AI voice platform, a genuine DNA-match
+buyer) at tier `tel/5`. Phone verification answered in WhatsApp's own words: **"+1 (844) 439-8274
+isn't on WhatsApp. Do you want to invite them to join?"** - focus
+`com.whatsapp.invite.ui.SMSPreviewInviteParticipantsActivity`. A NANP **toll-free/freephone** line
+(800/822/832/833/835/844/855/866/877/880-889) is a company routing number and can never hold a
+WhatsApp account, so: (1) the row is marked `verified=no, status=dead` and can never reach a send
+queue, and (2) the guard is now in `wa_extract.PLACEHOLDER_RES` with a named regression test
+(`_test_wa_extract.py` now **33/33**, engine **12/12**).
+**This is the proof the loop works: extract -> verify on the phone -> the phone disagrees -> the
+filter gets sharper, in minutes, and the wrong number never reaches a human.** One verified number
+(`+919833450000`) and one proven-dead (`+18444398274`) is a better ledger than 142 unverified rows.
+
