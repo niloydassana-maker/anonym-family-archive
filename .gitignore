@@ -78,5 +78,31 @@ login
 ## embedded repos (own remotes under isearchxsolve - synced independently)
 war-pipe/
 lane-kdp/kdp-polished/
+
+## PRIVATE family records - NEVER publish (Baba law 2026-09-30)
+/MEDICAL-HISTORY-BOTH-2026-09-29.md
+/PARTNER-BRIEF-2026-09-29.md
+/UNEMPLOYMENT-STATUS-7MONTHS-2026-09-29.md
+/two profiles.txt
+MEDICAL-*
+PARTNER-BRIEF-*
+UNEMPLOYMENT-*
+
+## scratch probes + tool dirs
+.commandcode/
+test_agent360.py
+test_agent360_simple.py
+run_agent360_test.py
+
 lane-kdp/the-beholder-project/
 lane-sme/voice_agent_avatar/
+war-log/demo/state/provision-token.txt
+
+# Baba private records - LOCAL ONLY, never push (added 2026-09-30 by Kilo
+# during the full-cycle health run: these four hold medical, partner and case
+# lore. Untracked here, and they must stay that way. See KILO-IDENTITY 1/18.)
+MEDICAL-HISTORY-BOTH-*.md
+PARTNER-BRIEF-*.md
+UNEMPLOYMENT-STATUS-*.md
+two profiles.txt
+.commandcode/
