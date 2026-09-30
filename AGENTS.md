@@ -1731,3 +1731,11 @@ Latest commits (HEAD = `9df9d81`): AGENTS 46 (all-lanes order), per-cycle lease 
 Repos: 49 measured, 0 unpushed, 0 dirty (as of 2026-09-29 `push_unpushed.ps1` + `commit_dirty.ps1`).
 
 - D:\anonym\war-log\KILO-HANDOVER-PROMPT.txt — single-line comprehensive handover prompt (2026-09-30 10:12 IST); paste into any fresh session to resume instantly with full identity + P0 fire list + laws + wire state
+### 49.10 10-POSTS/DAY SURGICAL LINKEDIN ENGINE + MAGIC TAGGING RECEIPTS (12:58 IST)
+- Baba's Law: Pacing increased to 10 posts/day on LinkedIn; prioritize Indian wounded leads (founders/CTOs/SMEs with instant UPI 50% advance); pull top crown jewels from deep repo review for 1-on-1 repo-to-wound posts; execute MAGIC TAGGING (@mention typeahead auto-complete) in first comment to trigger direct push notifications.
+- Schedule Matrix: war-log/LINKEDIN_10_DAILY_SURGICAL_SCHEDULE.md (10 daily time slots matching exact repos to exact wounds).
+- Unified Engine: war-log/surgical_poster_with_magic_tagging.py (modal typing + polling editor + pointer click + URN extraction + type_mention_and_select magic tagging + verified screenshot receipt + relay logging).
+- Verified Published Receipts Today:
+  1. ASES v3.1 (92.6k LOC / 215 tests): URN 7510959819336429568 | Receipt: evidence/L1/li_ases_v3_1_verified_20260930-124209.png
+  2. Idea Terminal Engine (IDEA-B 11.7k LOC): URN 7510959819336429568 | Receipt: evidence/L1/li_idea_terminal_engine_verified_20260930-124600.png
+  3. NEON ARCHITECT v4.7 (12.7k LOC Monolith): URN 7510963408016596992 | Receipt: evidence/L1/li_neon_architect_v4_7_verified_20260930-125622.png (5 Indian tech leads magic-tagged in first comment)
