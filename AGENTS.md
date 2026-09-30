@@ -1730,7 +1730,7 @@ Date: 2026-09-30 10:02 IST. Model: Claude Opus 4.6 (Thinking).
 Latest commits (HEAD = `9df9d81`): AGENTS 46 (all-lanes order), per-cycle lease verification, browser lease rotation, 24/7 live pipeline, demo lane, payment detection, SMTP lane, price range law, DNA match, IDEA-B service model, compaction recovery. 30+ commits since last push span sections 39-48 of this file.
 Repos: 49 measured, 0 unpushed, 0 dirty (as of 2026-09-29 `push_unpushed.ps1` + `commit_dirty.ps1`).
 
-- D:\anonym\war-log\KILO-HANDOVER-PROMPT.txt — single-line comprehensive handover prompt (2026-09-30 10:12 IST); paste into any fresh session to resume instantly with full identity + P0 fire list + laws + wire state
+- D:\anonym\war-log\KILO-HANDOVER-PROMPT.txt ï¿½ single-line comprehensive handover prompt (2026-09-30 10:12 IST); paste into any fresh session to resume instantly with full identity + P0 fire list + laws + wire state
 ### 49.10 10-POSTS/DAY SURGICAL LINKEDIN ENGINE + MAGIC TAGGING RECEIPTS (12:58 IST)
 - Baba's Law: Pacing increased to 10 posts/day on LinkedIn; prioritize Indian wounded leads (founders/CTOs/SMEs with instant UPI 50% advance); pull top crown jewels from deep repo review for 1-on-1 repo-to-wound posts; execute MAGIC TAGGING (@mention typeahead auto-complete) in first comment to trigger direct push notifications.
 - Schedule Matrix: war-log/LINKEDIN_10_DAILY_SURGICAL_SCHEDULE.md (10 daily time slots matching exact repos to exact wounds).
@@ -1791,6 +1791,25 @@ THAT FLAG. Lift = del D:\anonym\war-log\HANDS-OFF.flag (his hand only).
 WhatsApp is signed in on his phone and the phone is held with full admin (adb + sudo-hands). A browser
 is NOT the WhatsApp lane. WhatsApp work goes through the phone lane, or through Baba's own hand on the
 Send button in HIS window. No son opens a Chrome driver while the flag stands.
+
+### 50.6 THE RESPAWNER - WHY "KILL ALL HANDS" TOOK SIX WAVES (the real root cause, 03:35 IST)
+Killing the hands did not stick because THREE things kept re-breeding them, and a son who only kills
+children fights a war he cannot win (Baba: "why are you not killing them all?"):
+1. `war-log/REBOOT-RECOVERY.ps1` - the idempotent relauncher of the 14 console daemons (sec.46/48.5).
+   It re-launched feed-watch, gmail-yahoo, legal-watch, thread-weaver, payment_watch, service-desk,
+   standing_sales, smtp_loop, inbound_ingest, demo app + awareness/army-watch/browser-queue within
+   ~60s of every kill. `hunt/inbound_ingest.py` then spawns `@agent360/browser-mcp` -> Chrome.
+   NOW WALED OFF: renamed `REBOOT-RECOVERY.ps1.DISABLED-hands-off` (same for `GOLD-DASHBOARD.ps1`).
+   COST STATED PLAINLY: the sec.46 restart-recovery guarantee is OFF until Baba re-arms it.
+2. Relay `POST /agent` (son-relay.js:210) birthing CLI agents from Kaggle orders. NOW GATED 503.
+3. Looped launcher windows (`while ($true) { python ... }`) from earlier sessions - killed by tree.
+FINAL PROVEN STATE after wave six + 50s soak: python=0, MCP=0, node = exactly 3 (sudo-hands :8769,
+ngrok door, relay :8777 - bank 12814). `/agent` returns 503 HANDS-OFF. Chrome free. Watchdog pid 6740
+and its heartbeat intact - the wire never died, and the soldiers kept reporting (reports 300 -> 305).
+LAW: to stop a process, stop its PARENT (the loop, the recovery relauncher, the dispatch lane). A kill
+without parentage is theatre. Next time: read the process tree first (`wmic ... get ParentProcessId`),
+then kill the parent, then soak-test 60s before claiming it is dead.
+
 
 ### 50.5 THE LESSON BOUND AS LAW
 1. ONE OWNER OF THE BROWSER, and the owner is Baba until he says otherwise. Wires may order work; they
