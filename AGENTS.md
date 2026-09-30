@@ -245,10 +245,9 @@ WIRE
   with --domain deprecation, (3) if edge busy by dead tunnel, edit T= in kernels and re-push (new door line in war-log/relay-door.txt).
 - Kaggle seat clocks: brain hb every ~5 min; builders queue ARMY-BUILD-1/2/3; smoke2 proved end-to-end (crush->qwen3.8-flash->
   BUILD-DONE+files). Dispatch: war-log/dispatch2.py <lane> ({"id","agent","model","task","repo","cwd"}).
-TODO LIVE LIST = `python war-log/show-session-todos.py` (opencode.db `todo` = authoritative; the
-todowrite tool can WRITE but cannot LIST, see §36.1) + §36.8 TODO LINK INDEX +
-war-log/TODO-AND-STATE-2026-09-28.md (reasoning + verbatim orders). After any wake, re-read
-§10-§13, §36, bank tail, PROPOSALS board.
+**TODO MASTER = `war-log/KILO-TODO-MASTER.md`** (P0🔴→P1🟠→P2🟡→P3🔵 priority tiers, daemon health checklist, money funnel state, binding laws — HUMAN-READABLE MASTER, 2026-09-30).
+DB state: `python war-log/show-session-todos.py` (opencode.db `todo`; todowrite WRITES, cannot LIST — §36.1). Detailed orders: `war-log/TODO-AND-STATE-2026-09-28.md`. Plans: §36.8 TODO LINK INDEX.
+**After any wake: read KILO-TODO-MASTER.md P0 first, then §10–§13, §36, bank tail, PROPOSALS board.**
 
 ## 13. WHAT BABAS ASKED FOR THIS SESSION (13-14.09) — orders that must not be lost
 1. Harvest API keys from Notepad++ only, dedupe vaults 2. Free models only; NVIDIA kept because catalogue refreshed.
