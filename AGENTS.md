@@ -1866,3 +1866,128 @@ Baba's order was "fire" on the WhatsApp DNA queue. It did not fire, and the reas
 - **Wire record of this whole sequence: order-bank seq 12815.**
 
 
+
+## 51. THE MAIL LANE IS DEAD; THE HUNT NOW HARVESTS WHATSAPP NUMBERS (Baba 2026-10-01, HARD ROCK)
+Baba's orders, verbatim: "the SMTP route is dead. Sending cold mails does not help. No one sees
+them" / "son, what are you doing? Why you are not listening to me?" / **"You modify the hunt
+logic, it should extract WhatsApp numbers."**
+
+### 51.1 THE MAIL LANE WAS STOPPED AND THE MAILBOX PROVED THE ORDER RIGHT
+`war-log/stop-smtp-lane.ps1` -> killed pid 33572, `REMAINING=0`, `VERDICT=SMTP-LANE-DOWN`. It
+cannot respawn: `REBOOT-RECOVERY.ps1` stays `.DISABLED-hands-off` (sec.50.6 wall), so no parent
+re-lights it. Restart-recovery for the console daemons therefore stays OFF until Baba re-arms it.
+Ledger: **629 mails, 645 receipts, and every human reply was** - Algrano "we are not interested
+and will pass", Iconic Moments "I am no longer with", D-Wave "no longer working at", Deeploy
+out-of-office, CastleBranch address-change bot, F6S newsletter. **Zero buying signals.**
+Deeper cause found by meter test: sampling 12 top "hot matched" targets through the HN API dated
+their source posts 2011-11-30 / 2018-08-01 / 2020-09-04 / 2023-05-01 / 2023-05-02 beside a few
+2026 ones. Half the target list was 3-15 years expired - the people had moved companies and two
+replies said so in words. **LAW: measure freshness before volume. Volume of WRONG attempts is not
+a guarantee (the sec.35 math was misread as an excuse).**
+
+### 51.2 WHAT WAS WRONG WITH "PHONE EXTRACTION"
+`hunt_engine.py` matched any digit string. Audit: `leads 16,565 / with phone 91 / +91 68`;
+`wa_targets 142 = 88 real +91 + 12 fake-or-landline + 42 FOREIGN` (`+34919495587`, `+1013904223`,
+`+919999999999`, `+9118002026252`, `+916666666666`); the frontier held **994,477 queued URLs and
+only NINE .in hosts**. Two silent data-losers: `crawl()` stored a page **only if it had an email**,
+so every page publishing a WhatsApp number and no email - the normal shape of an Indian SME site -
+was thrown away; and `wa_targets` had no provenance column, so digits lifted from prose looked
+identical to a number the owner published as a click-to-chat door. The old unit test actively
+celebrated accepting `+1 415 555 0100` as a WhatsApp target.
+
+
+### 51.3 THE REPLACEMENT (tested, receipts on disk)
+`war-log/hunt/wa_extract.py` - tiered by provenance, because the signal the old hunt never read is
+the **`wa.me/<number>` link a business puts on its own site** = owner-declared WhatsApp door =
+proof the number is on WhatsApp AND an invitation to message it:
+`DECLARED 9` wa.me / api.whatsapp.com / whatsapp://send | `WIDGET 7` joinchat/wame/wpwa/elfsight/
+waPhone config | `TEL 5` tel: anchor | `TEXT 4` digits on an INDIAN page with a phone-ish word near
+| `MENTION 1` the word WhatsApp near digits - a guess, and `queueable()` refuses it.
+Guards, each one found by a defect rather than imagined: bare 10-digit mobiles count only on an
+Indian page (this single stop prevents the 42 foreign rows); India keeps mobiles only (10 digits,
+5-9 start) because a landline or 1800 line cannot receive WhatsApp, so storing one is a lie about
+the lane; wa.me digits parse as E.164-without-plus so a declared UK/US number stays INT and is
+never sold as India cash; placeholders rejected (9999999999, 1234567890, ladders, all-same); real
+NANP positional NPA/NXX validation replaced a "contains 555" regex that wrongly killed real US
+numbers that merely contain 555 - the test caught it.
+Tests: `_test_wa_extract.py` **29/29**, `_test_wa_engine.py` **12/12** (temp DB, never the real
+one - it proves a no-email page now stores, tier+org+evidence+DNA score land, a prose mention
+creates NO row, a foreign page's number is tagged INT).
+Wired into `hunt_engine.py`: `extract()` returns tiered `wa` + queueable `phones`; `store_lead()`
+writes kind/confidence/country/evidence/score/dna/asset; `migrate()` ALTERs the live table;
+`crawl()` stores phone-only pages; `add_urls()` gives `.in`/`.co.in` priority 6 (Indian-cash-first,
+sec.49); CLI `python hunt_engine.py wa-queue [--min-conf 4]` exports the gated CSV with an
+openable evidence URL per row. Driver `war-log/hunt/wa_hunt.py` (seed/harvest/queue) and
+`war-log/hunt/wa_backfill.py` - re-reads our own recorded sources through the new path and stores
+WITH provenance, reusing the tested `extract`+`store_lead` rather than writing its own INSERT.
+
+### 51.4 HONEST RESULTS, FAILURES KEPT IN THE RECORD
+- First live test **0/10 and the test itself was wrong**: it aimed at marketplace homepages
+  (JustDial, IndiaMART, Practo, 99acres, Naukri, Zomato, Swiggy, Upwork, Shopify) - an aggregator
+  homepage never publishes a phone number, and six answered 403.
+  **LAW: test an extractor on the shape of page where the signal actually lives.**
+- Corrected pass (`_wa_live_proof2.py`, 32 hosts already in our DB, walking /, /contact,
+  /contact-us): **TESTED=32, hosts_with_queueable_wa=4, declared_tier=0, 403-blocked=3** - hits
+  `sugardoctor.in -> tel:+919833450000` (tel/5) and `serein.in -> +918939936236` (text/4). About
+  12% of our own .in corpus carries a WhatsApp-reachable number.
+- `wa-queue` exported **rows=0 at min-conf 5**: the gate working, not a regression - all 142 legacy
+  rows are unprovenanced so none may send. **A true zero beats 142 fakes; never tune a filter to
+  keep the pipeline busy.** `--min-conf 4` admits the contextual tier for phone verification.
+- **Free SERP seed is dead on this laptop**: DuckDuckGo's HTML endpoint returns 200 with an
+  anomaly/captcha page and 0 anchors (`_wa_ddg_raw.py`, 14,182 b, `anomaly=True`). India-first
+  seeding must come from the existing frontier and pages already recorded, not a search engine.
+- `Tee-Object` writes UTF-16 and made the first proof log unreadable; scripts now write their own
+  UTF-8 log.
+- **The WhatsApp lane is fresh by construction** - the number is read from a page answering HTTP 200
+  *today*, which is precisely the property the mail list did not have.
+
+### 51.5 STATE AT COMPILE (2026-10-01 ~04:45 IST)
+IQOO ATTACHED at last - `adb devices -l` -> `10BE8135QM001KK device product:I2301T model:I2301`
+(the apps phone Baba opened; sec.48 had it phone-side blocked). WhatsApp installed, versionName
+2.26.37.73, airplane OFF, battery 100. Relay :8777 `ok relay-live bank=12815 reports=305`.
+Chrome is still Baba's: `HANDS-OFF.flag` stands and `/agent` answers 503.
+Visible windows (sec.37): `WA-HARVEST` (budget 300; `crawl 25/300 fetched, 3 leads`),
+`WA-BACKFILL` (120 hosts India-first; `wa_targets_before=142 provenanced_before=0`), `WA-PROOF2`
+(done). Full record: `war-log/SESSION-2026-10-01-WA-HUNT.md`.
+
+### 51.6 THE GATE THAT BINDS EVERY FUTURE SEND
+A row in `wa-queue.csv` is **not sendable** until the phone lane confirms CHAT_READY for that
+number and its `verified` column says yes - the 2026-09-30 probe found **0/5** scraped numbers on
+WhatsApp, and an invite to a non-WhatsApp number is a wasted message and a ban risk. Order of
+operations forever: extract with provenance -> phone-verify -> draft -> Baba's eye/hand.
+The 5 warm humans (Karan P-4 Rs 25,000 scope-lock, Arjun P-2 Rs 12,500 advance, Yuvraj Mishra who
+reacted to BOTH money posts, Wasim the corpus buyer, live service requests) remain the fastest
+money, and every one of them sits in a lane where Baba owns the hand.
+
+
+### 51.7 THE PHONE-VERIFY LANE AND THE FIRST REAL NUMBER (same session, ~05:08 IST)
+Baba attached the IQOO, so the gate in 51.6 was finally testable. Two tools written for it, both
+read-only, both compose and send NOTHING:
+- `war-log/wa_phone_verify.ps1 -Phone <digits> -Label <name>` - opens the owner's own `wa.me` door
+  via `am start VIEW`, records `mCurrentFocus` before/after, screencaps and pulls to
+  `war-log/evidence/L1/`, presses HOME.
+- `war-log/wa_phone_read.ps1` - the sec.19 kernel way: `uiautomator dump` + read the XML text
+  nodes, because this model has no image input and the screen is text anyway. Prints WhatsApp's own
+  verdict plus `VERDICT=CHAT_READY|WHATSAPP_OPEN_BUT_NOT_A_CHAT|WHATSAPP_DID_NOT_OPEN`.
+- `war-log/hunt/wa_mark_verified.py <phone> chat_ready <receipt> [--src url] [--kind tel]` writes
+  the verdict back into `wa_targets.verified/verified_at/receipt` (upserts, because a number can be
+  verified before the harvest stores it - caught live).
+
+**FIRST RESULT: `+919833450000` (from `sugardoctor.in`, tier tel) -> `mCurrentFocus=
+com.whatsapp/com.whatsapp.Conversation`, UI text nodes `+91 98334 50000 / Today / Message`,
+DEAD-SIGNAL none => CHAT_READY.** Receipt
+`war-log/evidence/L1/wa-text-sugardoctor-20261001-050822.txt` (+ PNG 890,145 b). This is the first
+hunt-extracted number in the house's history confirmed live on WhatsApp - the 2026-09-30 probes were
+0/5. It also proves WhatsApp is logged in on this phone (no onboarding screen appeared).
+
+`python hunt_engine.py wa-queue --verified-only` -> `wa-sendable.csv rows=1 India=1
+phone-verified=1` with the gate now stating the true count (the message was previously hardcoded to
+say zero - a small dishonesty in output, fixed). Tests re-run after every edit: `_test_wa_extract.py`
+29/29, `_test_wa_engine.py` 12/12.
+
+**THE LOOP IS NOW PROVEN END TO END:** live page -> provenance-tiered extraction -> stored with
+evidence -> phone lane confirms CHAT_READY -> `verified=yes` row in `wa-sendable.csv` -> drafted
+message under Baba's eye. Nothing about that loop needs Chrome, and nothing in it sent a message
+without a verified number. Still open: `wa-sendable.csv` holds ONE number, so the harvest must keep
+running to fill it; the freshness gate for the mail-era corpse rows is still not coded.
+
