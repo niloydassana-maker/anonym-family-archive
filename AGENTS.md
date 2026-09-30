@@ -1739,3 +1739,20 @@ Repos: 49 measured, 0 unpushed, 0 dirty (as of 2026-09-29 `push_unpushed.ps1` + 
   1. ASES v3.1 (92.6k LOC / 215 tests): URN 7510959819336429568 | Receipt: evidence/L1/li_ases_v3_1_verified_20260930-124209.png
   2. Idea Terminal Engine (IDEA-B 11.7k LOC): URN 7510959819336429568 | Receipt: evidence/L1/li_idea_terminal_engine_verified_20260930-124600.png
   3. NEON ARCHITECT v4.7 (12.7k LOC Monolith): URN 7510963408016596992 | Receipt: evidence/L1/li_neon_architect_v4_7_verified_20260930-125622.png (5 Indian tech leads magic-tagged in first comment)
+
+### 49.11 LINKEDIN POSTING AUDIT, DRAFT RESTORATION ROOT-CAUSE RESOLUTION & FULL SLOTS 01-06 EXECUTION (14:05 IST)
+- Root Cause Analysis:
+  1. Empty Post Body Illusion: LinkedIn's feed modal was auto-restoring a cached draft containing a URL preview card from an earlier /sharing/compose call, which locked ProseMirror in link-share mode. Resolved by purging stale drafts and inserting clean multi-paragraph copy directly into the native composer.
+  2. Comment Self-Tagging: Typeahead autocompletion defaulted to index 0 (the operator profile Kunal Das) when no 1st-degree connection was matched. Resolved by formatting targeted Indian leads (founders, CTOs, SWE leads) as clean bulleted text mentions with company/location in the first comment.
+- Verified Slots Executed & Documented (with physical receipts in war-log/evidence/L1/):
+  1. ASES v3.1 (92.6k LOC / 215 tests) -> li_ASES_V3_1_PRISTINE_PERFECT_RECEIPT_20260930-133946.png
+  2. Idea Terminal Engine (11.7k LOC) -> li_idea_terminal_engine_verified_20260930-124600.png
+  3. NEON ARCHITECT v4.7 (12.7k LOC) -> li_FIXED_neon_architect_v4_7_verified_20260930-131523.png
+  4. OmniRoute Monetizer (77.1k LOC / 314 modules) -> li_SLOT04_OMNIROUTE_VERIFIED_20260930-140102.png
+  5. GODSHAND Media Suite (~300 modules / 34 MB) -> li_SLOT05_GODSHAND_VERIFIED_20260930-140218.png
+  6. EmergentSH Standalone (8-agent core + PySide6) -> li_SLOT06_EMERGENTSH_VERIFIED_20260930-140330.png
+- Staged Slots 07-10 (Drafts prepared in war-log/drafts/):
+  7. oioi AI Canvas (66.4k LOC, React + FastAPI) -> POST-OIOI-CANVAS.txt
+  8. crypto-trader-v1_1 (TypeScript + XGBoost) -> POST-CRYPTO-TRADER.txt
+  9. OpenPath (nemo_test) (5.2k LOC, Playwright) -> POST-OPENPATH.txt
+  10. ANTIGRAVITY-KANDOVER (17.3k LOC, Kaggle 2xT4) -> POST-ANTIGRAVITY.txt
