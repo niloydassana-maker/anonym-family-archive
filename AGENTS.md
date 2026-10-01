@@ -2005,3 +2005,56 @@ queue, and (2) the guard is now in `wa_extract.PLACEHOLDER_RES` with a named reg
 filter gets sharper, in minutes, and the wrong number never reaches a human.** One verified number
 (`+919833450000`) and one proven-dead (`+18444398274`) is a better ledger than 142 unverified rows.
 
+## 52. SESSION 2026-10-01 (05:15-05:40 IST) - THE NOKIA C30 STRIKE EXECUTED: LINKEDIN SLOTS 07-10 PUBLISHED
+
+Baba's order: "son please go through the agents.md and carry on the pending linked in surgical
+strike on Nokia C30." The pending strike = LinkedIn surgical slots 07-10 (oioi AI Canvas,
+crypto-trader-v1_1, OpenPath/nemo_test, ANTIGRAVITY-KANDOVER) - staged since 09-30 23:06 and
+failing on the phone lane all night (01:20-04:57, five aborts). All four are LIVE as of 05:31 IST.
+
+### 52.1 THE TWO ROOT CAUSES (both proven on device, never guessed)
+1. `input text` INJECTION DROPS CHARACTERS in the Nokia's LinkedIn composer: the 04:56 r2
+   checkpoint dump held "The  archiecturalbottleecks tht killgenerativeAI cavas applcations"
+   against the true draft - about one char lost per nine injected. The old runner refused to
+   publish (its verify caught it) - correct behaviour, wrong method: injection typing on this
+   editor can never pass a char-for-char gate.
+2. uiautomator dumps could silently read STALE or TRUNCATED files: the 04:57 full-verify read
+   empty while the composer actually held the draft (kilo_verify.xml never existed on the
+   phone; the old retry happily re-read old files). A truncated write also starts with
+   "<?xml" and passed the old completeness check.
+
+### 52.2 THE FIX - war-log/phone_linkedin_publisher_v3.py (BLESSED PATH FOR PHONE POSTS)
+- Drafts arrive via ACTION_SEND intent straight into
+  com.linkedin.android/.publishing.sharing.SharingDeepLinkActivity ("Share in a post"):
+  base64-decoded on device into the intent extra = EXACT bytes, ZERO typing events.
+  Path found live: system sharesheet lists "Private message" + "Share in a post"; the resolver
+  needs select-row-then-"Just once", so the DIRECT COMPONENT is used and the sheet is skipped.
+  v4 probe: 585/585 chars arrived, head+tail intact, no truncation.
+- dump() hardened: rm-first + require uiautomator's "dumped to" marker + require a complete
+  </hierarchy> document. Never trust a startswith("<?xml") check alone.
+- The leave-post dialog's real button text is exactly "Discard"; its title is "Discard draft" -
+  tapping the title does nothing (found live).
+- Publish = tap the composer's Post button (real clickable Button [600,53][699,137]).
+- Verify = composer EditText text vs draft, char-for-char after entity decode + newline norm.
+
+### 52.3 THE FOUR POSTS - PUBLISHED AND VERIFIED 05:27-05:31 IST
+07 oioi AI Canvas        FULL PASS 2597/2597  evidence/L1/phone_SLOT07_OIOI_published_20261001-052748.png
+08 crypto-trader-v1_1    FULL PASS 2559/2559  evidence/L1/phone_SLOT08_CRYPTO_TRADER_published_20261001-052919.png
+09 OpenPath (nemo_test)  FULL PASS 2608/2608  evidence/L1/phone_SLOT09_OPENPATH_published_20261001-053016.png
+10 ANTIGRAVITY-KANDOVER  FULL PASS 2646/2646  evidence/L1/phone_SLOT10_ANTIGRAVITY_published_20261001-053131.png
+Each post: LinkedIn's own "Post successful." toast in the feed dump + the post visible at the
+top of Kunal Das's feed (dumps: war-log/shots/slot07..10_published.xml) + wire receipt
+PHONE-LINKEDIN-POST in the order bank (12817-12820). Identity proof on the Nokia: the feed's
+personalized ad addresses "Kunal" and published dumps show "Kunal Das" as the author.
+
+### 52.4 PRE-POST HYGIENE + WHAT REMAINS
+- DISCLOSURE FIX before posting (war-log/_fix_demo_links.py): all four drafts carried a DEAD
+  trycloudflare demo link (all three known tunnels DNS-dead). Replaced with the always-live
+  catalog proof line ("Live verification - measured records, not claims"); the dead bullet was
+  removed from the four COMMENT files. Never ship a dead URL.
+- Chrome stayed untouched: the strike rode the PHONE lane only (sec.50 HANDS-OFF stands).
+- Schedule board updated: LINKEDIN_10_DAILY_SURGICAL_SCHEDULE.md rows 07-10 = PUBLISHED with
+  receipt names. Full local record: war-log/SESSION-2026-10-01-NOKIA-STRIKE.md.
+- OPEN: first-comment magic tagging on these four posts (the comment box needs typed text -
+  same injection-drop problem; chunked typing + per-chunk verify is the candidate fix).
+
