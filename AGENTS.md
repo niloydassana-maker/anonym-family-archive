@@ -2058,3 +2058,60 @@ personalized ad addresses "Kunal" and published dumps show "Kunal Das" as the au
 - OPEN: first-comment magic tagging on these four posts (the comment box needs typed text -
   same injection-drop problem; chunked typing + per-chunk verify is the candidate fix).
 
+## 53. SESSION 2026-10-01 (13:45-14:00 IST) - THE PHONE-DM BLOCKER SOLVED + P-38 YASASWA RECORD REPAIRED
+
+Baba's order: get the pending P-38 follow-up/proposal to LinkedIn lead **Yasaswa Brahmam** sent
+from the Nokia C30 and correctly recorded (his original marketplace proposal was never logged -
+"exhibition system failure"). Both done.
+
+### 53.1 THE BLOCKER FROM THE PREVIOUS SESSION, ROOT-CAUSED (two masks over one wall)
+The prior session concluded "`adb shell input text` is not registering characters in the
+composer" and tried many workarounds without success. There were TWO independent causes:
+1. **No ADBKeyboard; Gboard ate characters.** The Nokia had only Gboard as its IME; `input text`
+   injects keystroke-by-keystroke through the active IME and Gboard's autocorrect silently
+   merged/dropped characters in LinkedIn's composer (evidenced by the old checkpoint:
+   "The  archiecturalbottleecks tht killgenerativeAI" vs the true draft - ~1 char per 9 lost).
+   **FIX:** install injection-only ADBKeyboard (`D:\anonym\apk\ADBKeyboard.apk`),
+   `ime enable` + `ime set com.android.adbkeyboard/.AdbIME`. It bypasses the prediction layer -
+   exact bytes in (2121/2121 landed).
+2. **Plain `--es msg` mangles multi-line text.** Use the unicode-safe action:
+   `am broadcast -a ADB_INPUT_B64 --es msg <base64-of-utf8-draft>`; clear first with
+   `am broadcast -a ADB_CLEAR_TEXT`.
+
+### 53.2 THE VERIFICATION TRAP (why a whole session was lost)
+**`uiautomator dump` reads this LinkedIn composer as EMPTY even when it is FULL** - a false
+negative on this build. The previous session trusted the dump and re-tried blindly. **The
+SCREENSHOT is the truth** (sec.24 SCREEN BEFORE DECISION). This session caught it only by
+looking at the actual pixels and seeing the entire draft sitting there.
+
+### 53.3 THE SEND + RECEIPT (RECEIPT-OR-NOTHING held)
+- Geometry on 720x1640: composer center **(360,1477)**; Send button **(653,1477)**.
+- After Send the composer returned to "Write a message…" - the cleared composer IS the receipt.
+- Receipts: `evidence/L1/nokia-p38-sent-20261001.png` (composer cleared + full P-38 scope-lock
+  message in the thread under Kunal Das + delivered tick) and `nokia-p38-sent-full-20261001.png`.
+  Wire receipt: relay :8777 seq **12822** `P-38-YASASWA SENT 2026-10-01 13:51 IST`.
+- **Post-send hygiene:** ADBKeyboard has no on-screen keyboard, so Gboard was **restored** as the
+  default IME - Baba's handset is left exactly as he left it.
+
+### 53.4 THE RECORD REPAIRED (the exhibition-system failure)
+- `roadmap/PROPOSALS.md` P-38 row updated: the ~Sep 30 marketplace proposal stays
+  **SUBMITTED / UNVERIFIED** (no toast artifact survives - LinkedIn clears it; the surviving
+  artifact is the buyer's own **"Sure"** reply + the "Via Services Page" thread label), and the
+  **2026-10-01 follow-up is SENT with a held receipt**. Not stamped DONE (sec.34.4.2 MISLABEL
+  CLAUSE). 48h nudge clock restarted 2026-10-01 13:51.
+- `war-log/YASASWA-BRAHMAM-LEAD-20261001.md` updated with the full sent+receipt block.
+- The lead is a **premium Custom Software Development buyer** ("Via Services Page", 1st-degree,
+  replied "Sure") = DEV-B exact, ₹25,000 fixed Phase-1, standing-GO liable.
+
+### 53.5 TOOLS PROMOTED + CLEANED
+Working method documented in **`war-log/PHONE-LINKEDIN-DM-METHOD-20261001.md`** (read this before
+any future phone DM). Reusable tools promoted from throwaway probes: `war-log/phone_linkedin_dm.py`
+(clear + B64-inject + screenshot-verify; never sends), `phone_read_text.py`, `phone_read_click.py`,
+`phone_read_composer.py`. **52 throwaway probe scripts QUARANTINED (not deleted)** to
+`war-log/_quarantine-20261001/` per the never-lose-a-record spirit.
+
+### 53.6 LAW BORN
+**PHONE COMPOSER LAW:** on the Nokia C30's LinkedIn composer, never trust the uiautomator text
+attribute - it can read empty on a full composer. Verify with a screenshot, always. And any
+handset left with ADBKeyboard active must have its native IME restored before you let go of it.
+
