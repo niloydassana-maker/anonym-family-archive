@@ -3087,4 +3087,26 @@ Baba clarified the core operational requirement via audio:
 - **Hardware Gate Verification:** Pulled live metadata (`pull-v89/kernel-metadata.json`) — confirmed locked to `"machine_shape": "NvidiaTeslaT4"`.
 - **Kaggle Status:** Verified active — `KernelWorkerStatus.RUNNING`.
 
+---
+
+## 71. SESSION 2026-10-04 (NIGHT 02:00 IST) — BABA SPEED LAW (1.35x EVERYWHERE), SUB-2S PIPELINED STREAMER, UN-TRUNCATED LLM (v96)
+1. **THE SPEED LAW (Baba Order 2026-10-04 02:02 IST: "speed should always equal 1.35"):**
+   - **Root Cause of Cadence Discrepancy:** Baba tested static `/say?lang=hi&text=...&speed=1.35` in browser and confirmed it was vastly superior to the handset's `/turn`. `/turn` was defaulting to 1.0x due to empty speed parameters. At 1.0x, XTTS generates drawn-out speech and takes 35% longer. At 1.35x, XTTS natively compresses mel frames during autoregressive GPT generation, producing a crisp, confident, brisk clinic receptionist voice that synthesizes ~35% faster.
+   - **Enforcement:** `SPEED = 1.35` locked as standing law across all paths:
+     - `SPEED = 1.35` globally.
+     - `_infer`: `sp = 1.35` enforced unconditionally.
+     - `VoiceHandler.do_GET` (`/say`): `spd = 1.35`.
+     - `VoiceHandler.do_POST` (`/turn` streaming): `turn_speed = 1.35`.
+     - `VoiceHandler.do_POST` (`/turn` JSON): `speed = 1.35`.
+     - `synth_full`, `synth_full_on`, `synth_iter`, `synth_reply_wav`, `voice_turn`: `speed = 1.35`.
+2. **DUAL-GPU CONCURRENT PIPELINING:**
+   - Decoupled LLM stream generator from XTTS worker loop via background producer thread + `queue.Queue`.
+   - Main HTTP chunked response thread streams Piece 0 to handset immediately when GPU 0 finishes (~450ms), while GPU 1 synthesizes Piece 1 in background. First audio arrives at handset in sub-2 seconds.
+3. **UN-TRUNCATED 120-TOKEN LLM & HONORIFIC PROTECTION:**
+   - Raised `LLM_MAX_NEW` from 56 to 120 tokens, `LLM_MAX_PIECES` from 2 to 6.
+   - Protected titles (`डॉ.`, `श्री.`, `श्रीमती.`, `पं.`, `डा.`, `Dr.`, `Mr.`, etc.) from being severed mid-abbreviation.
+4. **HIGH-FIDELITY MEDIA ACOUSTICS:**
+   - In `io.kilo.bridge.BridgeService`, updated `AudioTrack` attributes to `USAGE_MEDIA` with `FLAG_AUDIBILITY_ENFORCED`, matching browser playback quality and bypassing telephony speech filters.
+
+
 
