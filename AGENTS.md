@@ -3005,5 +3005,27 @@ Baba provided live voice guidance:
 - Rebuilt `KiloBridge-v10.apk` and installed to handset `10BE8135QM001KK` (Success).
 - Pushed live tunnel `https://despite-impressed-predict-ppc.trycloudflare.com` to phone and verified via `adb shell cat`.
 
+## 68. SESSION 2026-10-03 (NIGHT 23:15-23:25 IST) — AUTO-LANGUAGE STT (NO MORE "APPOINTMENT" HALLUCINATIONS) & ULTRA-FAST 573ms MODEL ON 10 LIVE ROTATING KEYS (v87)
 
+Baba tested questions ("What is doctor's name, what is his name", "Hello") and diagnosed two critical issues:
+1. Whisper STT was hallucinating words like `अपुइंटमेंग की आप्टाइ मिसको` instead of recognizing Baba's actual speech.
+2. Latency at the LLM level was too high, with Nemotron models timing out or taking 4 to 7 seconds ("rotate the keys with the live keys, take the fastest keys").
 
+### 68.1 ROOT CAUSE ANALYSIS & DUAL FIX
+1. **STT Language Forcing & Prompt Bias Discovered:**
+   - *Cause:* `kernel.py` hardcoded `language="hi"` and supplied `STT_PROMPT="नमस्ते डॉक्टर साहब, मुझे अपॉइंटमेंट और टाइमिंग की जानकारी चाहिए।"`. When Baba asked questions in English ("what is doctor's name..."), Whisper forced English phonetics into Devanagari Hindi syllables matching the prompt's words (`अपुइंटमेंग की आप्टाइ...`).
+   - *Fix:* Updated `stt_lang()` to return `None` (auto-detect) for bilingual callers. Whisper now dynamically identifies whether the caller speaks English or Hindi (`det_l = info.language`).
+   - *Language Matching:* If English is detected, `lang` switches to `"en"` so the LLM responds in English; if Hindi is detected, it responds in Hindi.
+   - *STT Prompt Neutralized:* Changed to neutral `"Hello, clinic consultation. नमस्ते, क्लिनिक परामर्श।"` — zero biased keywords ("अपॉइंटमेंट").
+
+2. **LLM Reasoning Stall & Ultra-Fast Model Benchmark:**
+   - *Cause:* `nvidia/nemotron-3-ultra-550b-a55b` is a 550B reasoning model that returns thinking tokens under `reasoning_content` (blank under standard `delta.content`) and takes 3.5s to 7s or hits timeouts.
+   - *Probed & Validated Models on NVIDIA NIM:* Tested all 80 models. Discovered `meta/llama-3.2-11b-vision-instruct` provides **first token in 573 ms** (6x faster than 550b) and answers directly in clean conversational Hindi or English without reasoning preamble:
+     - Prompt: *"What is the doctor name?"* -> First Token: 573ms -> Reply: *"Our doctors are Dr. Sen and Dr. Roy."*
+     - Prompt: *"डॉक्टर किस बीमारी का इलाज करते हैं?"* -> First Token: 615ms -> Reply: *"हमारे क्लिनिक में डॉक्टर सामान्य चिकित्सा और परिवार स्वास्थ्य से संबंधित बीमारियों का इलाज..."*
+   - *10 Live NVIDIA Keys Benchmarked & Rotated:* Tested all 13 keys from vault. Removed 403s and 503s. Built verified 10-key pool `NV_HEALTHY` starting with fastest: `nvapi-sxRltc...` (929ms), `nvapi-57cxgK...` (1160ms), `nvapi-BToFe6...` (1289ms).
+
+### 68.2 DEPLOYMENT RECEIPTS (v87)
+- **Git Push:** `isearchxsolve/war-pipe` updated to commit `11909b6` on `main`.
+- **Kaggle Push:** Kernel version 87 successfully pushed (`id_no: 135151318`).
+- **Hardware Gate Verification:** Pulled live metadata (`pull-v87/kernel-metadata.json`) — confirmed locked to `"machine_shape": "NvidiaTeslaT4"`.
