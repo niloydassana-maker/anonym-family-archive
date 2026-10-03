@@ -2918,3 +2918,45 @@ cancelled (CANCEL_ACKNOWLEDGED, tunnel 530).
    seat first_pcm; yardstick is the phone clock, never the server number (60.2 law).
 3. Keys -> Kaggle Secrets before anything ships (63.4).
 
+## 65. SESSION 2026-10-03 (EVENING 18:00-22:10 IST) — DUAL-T4 PARALLEL XTTS (v83), DYNAMIC SPEED, CLINIC PERSONA, PHONE V8/V9 BRIDGE AUDIT & BACKUP
+
+Baba and Kilo completed the full live-conversation pipeline on Kaggle and conducted end-to-end phone testing:
+
+### 65.1 WHAT WAS BUILT & PUSHED TO KAGGLE (kilo-voice-live v82 & v83)
+1. **v82 DYNAMIC SPEED PARAMETER:**
+   - Added runtime speed control (`?speed=`, HTTP header `X-Speed`, or JSON body `{"speed": ...}`) across `/turn`, `synth_full`, `synth_iter`, `_turn_stream`, `synth_reply_wav`, and `voice_turn`.
+   - Allows fine-tuning output cadence on the fly without restarting or re-deploying kernels.
+2. **v83 CLINIC PERSONA & DOCTOR AVAILABILITY:**
+   - Ingested clinic consultation schedule into `_SHIPPED_PERSONA` and prompt templates.
+   - Dr. Sen: today 6:00 PM – 8:00 PM.
+   - Dr. Roy: tomorrow morning.
+   - Fixed Nemotron LLM hallucination and vagueness; verified accurate clinic responses under live test queries.
+3. **v83 DUAL-T4 PARALLEL XTTS ARCHITECTURE (`m2` on GPU 1):**
+   - Baba insight: Nemotron LLM runs via cloud API inference, leaving Kaggle's second T4 GPU underutilized (only Whisper STT running on GPU 1, consuming ~1 GB out of 16 GB VRAM).
+   - Loaded second XTTS instance `m2` on `cuda:1` alongside Whisper STT.
+   - Built `synth_full_on(text, lang, speed, gpu_idx)` with dual TTS locks.
+   - In `_turn_stream`: piece 0 synthesizes on GPU 0 while piece 1 synthesizes concurrently on GPU 1 via `ThreadPoolExecutor(max_workers=2)`.
+   - Drains synthesized audio futures sequentially to client.
+   - **Result:** Halved total XTTS synthesis latency for 2-sentence clinic replies.
+4. **TIMEOUT HARDENING:**
+   - Raised client & relay socket timeouts from 5s to 15s in `pull_and_play.py` and test harnesses to absorb network jitter.
+
+### 65.2 PHONE KILOBRIDGE AUDIT & LIVE TURN DIAGNOSIS
+1. **Bridge Inspection:**
+   - Inspected `d:\kilo-build\bridge-v9` (`io.kilo.bridge` v9.0, built on standalone SDK + JDK 17).
+   - Identified that `BridgeService` implements `ListenLoop` + VAD (`VAD_RMS_ON=70`, `VAD_RMS_OFF=40`) streaming directly to `tunnel() + "/turn"`.
+2. **Root Cause of Phone Silence Caught:**
+   - Phone logcat revealed `io.kilo.bridge` was reading `/sdcard/Android/data/io.kilo.bridge/files/voice_url.txt` (candidate #1 in `tunnel()`).
+   - That file held a stale tunnel (`highlights-microwave-interfaces-perspective.trycloudflare.com`), causing `Unable to resolve host` on turn POSTs while mic was actively recording (`MIC_SPEECH_START`).
+   - Fixed by pushing current live tunnel `https://sodium-organisation-aus-thank.trycloudflare.com` to app external files dir.
+
+### 65.3 SNAPSHOTS, BACKUPS & GIT SYNC (2026-10-03 22:05 IST)
+1. **Local Sources & Backups:**
+   - Active Source: `d:\anonym\war-pipe\kilo-core\kernels\kilo-voice-live\kernel.py` (v83, 182 KB).
+   - Session Backup Snapshot: `d:\anonym\session-backup\BACKUP-20261003-KERNEL-LIVE-V83\`
+   - Permanent Zip Archive: `d:\anonym\session-backup\kilo-voice-live-v83-20261003.zip` (476 KB).
+2. **Git Synchronizations:**
+   - `war-pipe` repository (`isearchxsolve/war-pipe`): Committed and pushed v83 updates to `main` (`8ddab94`).
+   - `anonym-family-archive`: Master branch updated with full mission receipts.
+
+
