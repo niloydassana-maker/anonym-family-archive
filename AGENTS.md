@@ -2959,4 +2959,28 @@ Baba and Kilo completed the full live-conversation pipeline on Kaggle and conduc
    - `war-pipe` repository (`isearchxsolve/war-pipe`): Committed and pushed v83 updates to `main` (`8ddab94`).
    - `anonym-family-archive`: Master branch updated with full mission receipts.
 
+## 66. SESSION 2026-10-03 (NIGHT 22:30-22:55 IST) — ANTI-REPETITION WHISPER STT, CLINIC ILLNESS SPECIALTIES, AND STATIC-FREE AUDIOTRACK STREAMING (v86)
+
+Baba tested live interactive calls from his handset and diagnosed three specific defects: (1) Whisper repeating tokens in a loop, (2) LLM unable to name which illnesses the clinic treats, and (3) static noise burst at the end of audio playback. All three root-caused, coded, tested, and shipped.
+
+### 66.1 ROOT CAUSES & SURGICAL FIXES
+1. **Whisper STT Loop Fix (`kernel.py` v86):**
+   - *Cause:* `STT_PROMPT` was a raw comma-separated list of keywords (`"डॉक्टर साहब, क्लिनिक, अपॉइंटमेंट..."`), and Whisper was running with `vad_filter=False` and no repetition penalty. On quiet buffers or slight pauses, Whisper's language model looped on keywords.
+   - *Fix:* Replaced `STT_PROMPT` with a natural grammatically complete sentence (`"नमस्ते डॉक्टर साहब, मुझे अपॉइंटमेंट और टाइमिंग की जानकारी चाहिए।"`).
+   - *Defense:* Added `vad_filter=True` with Silero VAD (300 ms min silence), `repetition_penalty=1.2`, and `no_repeat_ngram_size=3` across all transcription entry points (`_turn_stream`, `_handle_hear`, `voice_turn`).
+   - *Hallucination Gate:* Added `is_hallucination(text)` check in `/turn` to drop any degenerate phrases before reaching the LLM.
+2. **Clinic Specialties & Illness Ingestion (`kernel.py` v86):**
+   - *Cause:* `DEFAULT_PERSONA` only listed consultation hours, with zero medical specialty information. When asked what the doctor treats, the model gave a fallback error.
+   - *Fix:* Ingested full clinic scope: General Medicine & Family Healthcare (बुखार, खांसी-जुकाम, वायरल बुखार, सिरदर्द, पेट दर्द/गैस, बीपी, शुगर/डायबिटीज, एलर्जी, सामान्य स्वास्थ्य).
+3. **Static Noise Elimination in AudioTrack (`BridgeService.java` v10):**
+   - *Cause:* At the end of streaming PCM audio, the server sends a trailing JSON string (`{"end": true, ...}`). In `oneTurn()`, the substring search missed `{"end"` when split across 8192-byte read buffers, causing the ASCII JSON bytes to be fed directly into `AudioTrack` as raw 24 kHz audio — heard as a loud burst of static noise.
+   - *Fix:* Rewrote buffer streaming with boundary-safe detection: checks for `{` character preceding `"end"` in incoming bytes, cleanly slices raw PCM before the brace, and routes trailer bytes to an in-memory buffer without ever passing them to `track.write()`.
+   - *Build & Install:* Rebuilt `KiloBridge-v10.apk`, signed with debug keystore, and installed cleanly to handset (`10BE8135QM001KK`).
+
+### 66.2 DEPLOYMENT & SYNC RECEIPTS
+- **Kaggle Push:** Kernel version 86 pushed clean to `isearchxsolve/kilo-voice-live`.
+- **Git Push:** `isearchxsolve/war-pipe` updated to commit `5456731` on `main`.
+- **Handset Updated:** `KiloBridge-v10.apk` installed and listening.
+
+
 
