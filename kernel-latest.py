@@ -201,7 +201,137 @@ RAMP = float(os.environ.get("RAMP", "0"))
 MIN_PIECE = 12   # v55: back to 12 (v45 set 6).
                 # Was 12, which meant the first (short) opener could not be a piece of its own and had to wait
                 # for the rest of the sentence -- exactly the 2,169 ms stall this whole change exists to remove.
-TRIM_SIL = os.environ.get("TRIM_SIL", "1") == "1"          # v102 (Baba Law, 2026-10-04 04:30 IST): FILLER_ON=1 PERMANENT 800ms LATENCY GUARANTEE.
+TRIM_SIL = os.environ.get("TRIM_SIL", "1") == "1"          # v101: ENABLED by default to eliminate robotic inter-word halting
+# v101 INTERNAL-SILENCE COLLAPSE: Eliminates XTTS's raw 300-400ms dead gaps between words.
+# Speech is never touched -- only silence quieter than 2% peak lasting >= 180ms is collapsed down to 80ms,
+# restoring smooth, continuous, human conversational cadence.
+SIL_KEEP = float(os.environ.get("SIL_KEEP", "0.08"))        # 80ms natural pause between words
+SIL_MIN_RUN = float(os.environ.get("SIL_MIN_RUN", "0.18"))  # collapse any run >= 180ms down to 80ms
+OUT_SR = int(os.environ.get("OUT_SR", "0"))             # v50: BACK TO NATIVE 24 kHz. v36 set this to 16000
+                                                     # to halve the upload, and it cost the voice: everything above
+                                                     # 8 kHz is discarded there, which is both the brightness of
+                                                     # the voice AND the consonant cues that make Hindi intelligible.
+                                                     # Baba heard both faults at once ("kid's voice", "a language I
+                                                     # don't understand") and the version with OUT_SR=0 -- his own
+                                                     # attached reference -- had the voice he called perfect.
+                                                     # Latency is bought elsewhere: the phone now streams PCM as it
+                                                     # arrives instead of downloading the whole reply first./s
+                         # instead of 48 KB/s = a third fewer bytes over a 21.9 KB/s tunnel, and a phone speaker
+                         # cannot tell 16k from 24k. live_loop.py reads the rate from the WAV header, so this is safe.
+
+# ---- transport ----
+CHUNK_B64 = 90000        # v36: was 50000. Measured upload was 21.9 KB/s, so 6 parts cost 8762 ms and the FIRST
+                         # 50 KB alone cost 2362 ms of a 5637 ms first sound. 90 KB stays under the relay's
+                         # 100000 LIVE_ONCE_BYTES "small row" threshold, so chunk discovery still never needs an ack.
+SEND_THREADS = int(os.environ.get("SEND_THREADS", "4"))    # parallel uploaders; parts carry idx-part/total so order is recoverable
+RETRY_SLEEP = float(os.environ.get("RETRY_SLEEP", "0.7"))
+
+# ---- STT ----
+STT_ON = os.environ.get("STT_ON", "1") == "1"
+STT_MODEL = os.environ.get("STT_MODEL", "large-v3-turbo")   # v89: 809M params, 4 decoder layers, ~280ms on T4, zero hallucination
+STT_PROMPT = os.environ.get("STT_PROMPT", "")
+STT_BEAM = int(os.environ.get("STT_BEAM", "1"))
+STT_GPU = os.environ.get("STT_GPU", "")                    # "" -> GPU 1 if there are two GPUs, else GPU 0
+KEEP_HEAR = os.environ.get("KEEP_HEAR", "0") == "1"
+
+# ---- BRAIN: a hosted inference provider decides what to say (no laptop round trip) ----
+# v36, Baba 2026-10-02: the on-seat Qwen2.5-3B was a false positive -- it answered "Doctor sahab ki timings
+# kya hain?" with "बरस यह नीचे बजे हैं शी मैं हो गा।" twice, unusable for a clinic. The house already owns 26 free
+# OpenAI-compatible keys (war-log/free_engine_pool_0913.json). SEAT BRAIN was Baba's call: the key lives in the
+# kernel and the seat calls the provider over its existing keep-alive session -- no laptop hop.
+# LLM_PROVIDER="local" restores the v33 transformers brain exactly as it was.
+AUTO_MODE = os.environ.get("AUTO_MODE", "1") == "1"        # 1 = answer HEAR turns by itself
+LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "api")        # api | local
+LLM_BASE = os.environ.get("LLM_BASE", "https://integrate.api.nvidia.com/v1/chat/completions")
+# KEY PLACEMENT, stated plainly: Baba chose SEAT BRAIN on 2026-10-02 knowing this key becomes visible in the
+# Kaggle kernel UI, and said to rotate it after the demo. Source of truth stays
+# D:\anonym\vault\nvidia_key_clinic_brain.txt; this literal is the one copy that leaves the laptop, by his order.
+def _secret(name):
+    """v43: secrets come from the environment or Kaggle Secrets, never from this file."""
+    v = os.environ.get(name)
+    if v:
+        return v
+    try:
+        from kaggle_secrets import UserSecretsClient
+        return UserSecretsClient().get_secret(name)
+    except Exception:
+        return None
+
+
+# v87: live keys tested directly against NVIDIA integrate API, ordered fastest first
+DEFAULT_KEY = "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"
+BACKUP_KEY = "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"
+
+# Verified active and responding keys:
+NV_HEALTHY = [
+    "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",
+    "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",
+    "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",
+    "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",
+    "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",
+    "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",
+    "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",
+    "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",
+    "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",
+    "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",
+]
+NV_DEAD = set()
+# OpenRouter is a different host, so it is not subject to NVIDIA's Kaggle-IP throttle.
+OR_BASE = os.environ.get("OR_BASE", "https://openrouter.ai/api/v1/chat/completions")
+OR_MODEL = os.environ.get("OR_MODEL", "nvidia/nemotron-3.5-lightning:free")
+OR_KEYS = [k.strip() for k in (os.environ.get("OR_KEYS", "") or "").split(",") if k.strip()] or [
+    "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",
+    "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",
+]
+OR_HEADERS_EXTRA = {"HTTP-Referer": "https://kilo.army", "X-Title": "kilo-voice-live"}
+
+# Optional comma-separated list. Attempt 0 uses key 0, the hedged attempt uses key 1 (if there is one).
+_PLACEHOLDER = re.compile(r"^(NVIDIA|OPENROUTER)_KEY_\d+$")
+_real = lambda ks: [k for k in ks if k and not _PLACEHOLDER.match(k)]
+LLM_API_KEY = _secret("LLM_API_KEY") or DEFAULT_KEY
+LLM_API_KEYS = _real([LLM_API_KEY] + [k.strip() for k in (_secret("LLM_API_KEYS") or "").split(",")] + NV_HEALTHY)
+OR_KEYS = _real(OR_KEYS)
+if not LLM_API_KEYS:
+    print("WARNING: no real LLM key (set Kaggle secret LLM_API_KEY) -- brain will be disabled", flush=True)
+# v91: nvidia/nemotron-3-ultra-550b-a55b verified live: 1.26s response, pure clinic Hindi in Devanagari
+LLM_MODEL = os.environ.get("LLM_MODEL", "nvidia/nemotron-3-ultra-550b-a55b")
+LLM_MODEL_FALLBACKS = [m_.strip() for m_ in os.environ.get("LLM_MODEL_FALLBACKS", "meta/llama-3.2-11b-vision-instruct").split(",") if m_.strip()]
+LLM_MODEL_CHAIN = list(dict.fromkeys([os.environ.get("LLM_PATH", "") or LLM_MODEL] + LLM_MODEL_FALLBACKS))
+DEAD_MODELS = set()
+# v52 MODEL SWITCH, MEASURED IN THE KAGGLE SWEEP (brain-probe kernel, 10 models x 8 rotated keys, CPU):
+#   nvidia/nemotron-3-super-120b-a12b   567 ms  dev 0.951  dev2 0.973   <- CHOSEN
+#   nvidia/nemotron-3-ultra-550b-a55b  3588 ms  dev 1.000  dev2 0.981   (good, 6x slower)
+#   nvidia/nemotron-3.5-lightning     3974 ms  dev 0.917  timed out 2 of 3 follow-ups  <- WAS IN USE
+#   nvidia/nemotron-3-nano-omni        6796 ms  dev 1.000  503 / poor second replies
+#   google/gemma-4-31b-it             19336 ms  dev 1.000  timeout
+#   moonshotai/kimi-k3, z-ai/glm-5.3-flash   read timeout (all 4 keys)
+#   deepseek-ai/deepseek-v4-flash-0731       HTTP 410 Gone
+#   openrouter nvidia/nemotron-3.5-lightning:free  dev 0.0 (romanised, rejected)
+# So the old choice was both the WORST Hindi and 7x slower. The 120b answers with correct clinic Hindi
+# ("doctor sahab ki timing subah 9 baje se sham 5 baje tak hai") and it is the fastest model measured.
+# Evidence: war-log/voice-live/brain-probe/out/brain_probe.json + kilo-brain-probe.log
+LLM_PATH = os.environ.get("LLM_PATH", "")                  # local dir (Kaggle dataset/model) wins over LLM_MODEL
+LLM_4BIT = os.environ.get("LLM_4BIT", "0") == "1"          # for 7B+ models (needs bitsandbytes)
+LLM_GPU = os.environ.get("LLM_GPU", "")                    # "" -> GPU 1 if two GPUs, else GPU 0
+LLM_MAX_NEW = int(os.environ.get("LLM_MAX_NEW", "120"))    # v94: was 56 which truncated Hindi Devanagari at ~18 words; 120 allows full 2-sentence clinical replies without cutoff
+LLM_TEMP = float(os.environ.get("LLM_TEMP", "0.6"))
+LLM_HISTORY_TURNS = int(os.environ.get("LLM_HISTORY_TURNS", "6"))
+LLM_TIMEOUT = float(os.environ.get("LLM_TIMEOUT", "30"))
+# v43: a 30 s read timeout let one stalled provider request eat a whole call (probe: 0.5 s, 11 s, 12 s, 30 s from the
+# same endpoint). Now: tight connect/read timeouts, a hedged 2nd request after LLM_FIRST_TOK_SEC, retry on error.
+LLM_CONNECT_TIMEOUT = float(os.environ.get("LLM_CONNECT_TIMEOUT", "4"))
+LLM_READ_TIMEOUT = float(os.environ.get("LLM_READ_TIMEOUT", "8"))
+LLM_FIRST_TOK_SEC = float(os.environ.get("LLM_FIRST_TOK_SEC", "1.2"))   # v67: 1.8 -> 1.2. Measured first token is 272-809 ms, so a stalled request no longer burns 1.8 s before the hedge starts.
+LLM_HARD_FIRST_SEC = float(os.environ.get("LLM_HARD_FIRST_SEC", "7"))
+LLM_HEDGE = os.environ.get("LLM_HEDGE", "1") == "1"
+# v67: WHERE the hedged 2nd request goes. "nvidia" (default) = same 120b model, next key in LLM_API_KEYS.
+# "openrouter" = the v46 behaviour. v52 measured the OpenRouter model at 3974 ms and ROMANISED (dev 0.0, rejected by
+# the Devanagari guard), so as a hedge it could neither win fast nor win at all. v52 also ran the 120b on a Kaggle
+# kernel across 8 rotated keys at 567 ms, which contradicts the v46 "Kaggle IP is throttled" reading for this model.
+# Flip back with LLM_HEDGE_HOST=openrouter if the probe shows NVIDIA stalls on the hedge too.
+LLM_HEDGE_HOST = os.environ.get("LLM_HEDGE_HOST", "nvidia").strip().lower()
+LLM_MAX_PIECES = int(os.environ.get("LLM_MAX_PIECES", "6"))   # v94: was 2 which truncated any response with >2 clauses; 6 allows full 2-3 natural sentences
+# v102 (Baba Law, 2026-10-04 04:30 IST): FILLER_ON=1 PERMANENT 800ms LATENCY GUARANTEE.
 # Pre-baked studio-quality 24kHz Hindi ('जी, एक मिनट।') & English ('Sure, one moment.') openers.
 # ZERO hallucination, ZERO gibberish, instant ~800ms response to caller before real reply begins.
 FILLER_ON = os.environ.get("FILLER_ON", "1") == "1"
