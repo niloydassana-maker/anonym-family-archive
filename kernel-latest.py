@@ -2,7 +2,7 @@
 # %% [code]
 
 # %% [code]
-# KILO-VOICE-LIVE v99 (Whole-Sentence Natural Prosody: eliminates 24-char chunking, full-sentence XTTS synthesis matching /say laptop quality + FILLER_ON=1 Permanent + Speed=1.35 Locked)
+# KILO-VOICE-LIVE v101 (Fluid human prosody: silence collapse 80ms + no robotic halting + clean real-voice opener)
 # Forensic Architecture (Baba's Law, 2026-10-04 03:20 IST):
 #   LAPTOP vs PHONE DISCREPANCY ROOT CAUSE:
 #     - /say on laptop synthesized the ENTIRE natural sentence in one pass -> perfect prosody, pronunciation, punctuation.
@@ -201,14 +201,12 @@ RAMP = float(os.environ.get("RAMP", "0"))
 MIN_PIECE = 12   # v55: back to 12 (v45 set 6).
                 # Was 12, which meant the first (short) opener could not be a piece of its own and had to wait
                 # for the rest of the sentence -- exactly the 2,169 ms stall this whole change exists to remove.
-TRIM_SIL = os.environ.get("TRIM_SIL", "0") == "1"          # v80: disabled by default (0) so collapse_silence does not amputate breath/pauses
-# v36 INTERNAL-SILENCE TRIM. Measured on the provider brain: CHUNK 1 = 27 chars -> 7.50 s of audio, CHUNK 2 =
-# 15 chars -> 7.23 s. Characters and audio were INVERTED, so XTTS was padding the speech with long internal
-# pauses that trim_sil (head/tail only) never touched. 23 s of speech, 12.3 s of synthesis and 750 KB of upload
-# for one phone answer. Collapse any run of silence longer than KEEP to KEEP and the audio itself shrinks --
-# the words are untouched, and HUMAN-TEXTURE LAW is preserved because only true silence is cut, never speech.
-SIL_KEEP = float(os.environ.get("SIL_KEEP", "0.12"))        # seconds of silence to keep between words
-SIL_MIN_RUN = float(os.environ.get("SIL_MIN_RUN", "0.30"))  # only collapse runs at least this long
+TRIM_SIL = os.environ.get("TRIM_SIL", "1") == "1"          # v101: ENABLED by default to eliminate robotic inter-word halting
+# v101 INTERNAL-SILENCE COLLAPSE: Eliminates XTTS's raw 300-400ms dead gaps between words.
+# Speech is never touched -- only silence quieter than 2% peak lasting >= 180ms is collapsed down to 80ms,
+# restoring smooth, continuous, human conversational cadence.
+SIL_KEEP = float(os.environ.get("SIL_KEEP", "0.08"))        # 80ms natural pause between words
+SIL_MIN_RUN = float(os.environ.get("SIL_MIN_RUN", "0.18"))  # collapse any run >= 180ms down to 80ms
 OUT_SR = int(os.environ.get("OUT_SR", "0"))             # v50: BACK TO NATIVE 24 kHz. v36 set this to 16000
                                                      # to halve the upload, and it cost the voice: everything above
                                                      # 8 kHz is discarded there, which is both the brightness of
@@ -333,13 +331,11 @@ LLM_HEDGE = os.environ.get("LLM_HEDGE", "1") == "1"
 # Flip back with LLM_HEDGE_HOST=openrouter if the probe shows NVIDIA stalls on the hedge too.
 LLM_HEDGE_HOST = os.environ.get("LLM_HEDGE_HOST", "nvidia").strip().lower()
 LLM_MAX_PIECES = int(os.environ.get("LLM_MAX_PIECES", "6"))   # v94: was 2 which truncated any response with >2 clauses; 6 allows full 2-3 natural sentences
-# Instant acknowledgement played the moment STT finishes, while the LLM + first XTTS clause are still working.
-# v98 (Baba, 2026-10-04 02:42 IST): FILLER_ON=1 PERMANENT.
-# Latency data shows first_answer_ms p50=5980ms. The filler ("जी, एक मिनट।") fires at ~800ms (STT finish),
-# so the caller hears a real human sound in under 1 second instead of 6 seconds of silence.
-# first_answer_ms is still logged separately -- the honest metric is NOT hidden, just the SILENCE is eliminated.
-# A clinic patient waiting 6s of dead air will hang up. The filler keeps them on the line.
-FILLER_ON = True  # Baba Law v98 (2026-10-04): permanent -- eliminates 6s dead silence on every turn
+# v101 (Baba, 2026-10-04 04:00 IST): FILLER_ON disabled by default.
+# The canned filler ("जी, एक मिनट।") hallucinated as 4.5s gibberish ("नाने बिल कै...") because XTTS
+# wanders on isolated 4-word text. With v94 pipelined dual-GPU streaming, the real contextual reply
+# starts streaming in ~1.5 - 1.8s, completely eliminating dead silence with real human speech!
+FILLER_ON = os.environ.get("FILLER_ON", "0") == "1"
 # v42: ONE shared HTTP session for the provider. The voice server spawns a thread per connection and `_sess()` is
 # thread-local, so every phone turn used to open a brand-new TLS connection to the provider. The probe reports
 # llm_headers_ms per run so you can see whether reuse is working (run 1 vs runs 2-3).
@@ -1273,10 +1269,10 @@ def finish_audio(arr, piece, trim=True):
     if arr.ndim == 0 or arr.size == 0:
         return arr
     if trim and TRIM_SIL:
-        tail = 180 if _ends_term(piece) else 50   # keep a natural pause after a full sentence
-        arr = trim_sil(arr, SR, 40, tail)
-    if TRIM_SIL:   # v36: then squeeze the internal padding the provider's phrasing leaves behind
-        arr, _cut_s = collapse_silence(arr, SR)
+        tail = 120 if _ends_term(piece) else 40   # natural breath pause at sentence end
+        arr = trim_sil(arr, SR, lead_ms=30, tail_ms=tail)
+    if TRIM_SIL:   # squeeze internal pauses so words flow smoothly without robotic halts
+        arr, _cut_s = collapse_silence(arr, SR, keep=SIL_KEEP, min_run=SIL_MIN_RUN)
     if OUT_SR and OUT_SR != SR:
         arr = resample(arr, SR, OUT_SR)
     return arr
@@ -2934,7 +2930,8 @@ def start_voice_tunnel():
     if url:
         VOICE_URL[0] = url
         prog(f"VOICE TUNNEL LIVE {url}")
-        say(f"VOICE_TUNNEL {url}")   # one relay post, so the phone can discover it once
+        say(f"VOICE_TUNNEL {url}", retries=5)
+        report(f"VOICE_TUNNEL {url}", retries=5)
         log_lat({"type": "voice_tunnel", "url": url, "port": VOICE_PORT})
     else:
         prog("VOICE cloudflared gave no URL in 45 s")
@@ -3405,6 +3402,8 @@ def probe_compact(rep):
             c.update(tts_first_piece_chars=t[0]["chars"], tts_first_piece_gen=_med(t[0]["gen_ms"]), tts_rtf=t[0]["rtf"])
         for name in ("loopback", "tunnel"):
             blk = rep.get(name) or {}
+            if name == "tunnel" and blk.get("url"):
+                c["tunnel_url"] = blk.get("url")
             turns = [x for x in (blk.get("turns") or []) if x.get("ok")]
             if turns:
                 c[name + "_first_pcm"] = _med([x["first_pcm_ms"] for x in turns])
@@ -3520,6 +3519,10 @@ while True:
                 prog(f"PROBE crashed {type(e).__name__}: {str(e)[:120]} @{_where(e)}")
             last_job = time.time()
             continue
+        if otxt.startswith("WHERE_TUNNEL") or otxt.startswith("GET_TUNNEL"):
+            say(f"VOICE_TUNNEL {VOICE_URL[0]}")
+            report(f"VOICE_TUNNEL {VOICE_URL[0]}")
+            continue
         if otxt.startswith("LIVE_END"):
             bye("RELAY_END")
         if not otxt.startswith("LIVE_CALL"):
@@ -3552,9 +3555,11 @@ while True:
     beats += 1
     if time.time() - last_beat >= HEARTBEAT_SEC:
         last_beat = time.time()
-        beat = f"LIVE_BEAT up={int(time.time() - T0)}s idle={int(time.time() - last_job)}s gpu_s={int(time.time() - T0)} polls={beats}"
+        beat = f"LIVE_BEAT up={int(time.time() - T0)}s idle={int(time.time() - last_job)}s gpu_s={int(time.time() - T0)} polls={beats} tunnel={VOICE_URL[0]}"
         print(beat, flush=True)
         say_async(beat)
+        if VOICE_URL[0]:
+            say_async(f"VOICE_TUNNEL {VOICE_URL[0]}")
     if time.time() - last_lat_sum >= LAT_SUMMARY_SEC:   # v42: rolling per-hop stats into the latency log
         last_lat_sum = time.time()
         _sm = lat_summary()
