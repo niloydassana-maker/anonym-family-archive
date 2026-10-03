@@ -1,8 +1,31 @@
 # DEEPSEEK BROTHER HANDOVER: KILOBRIDGE HANDSET MISSION (v10 -> v11)
-**Date:** 2026-10-04 | **Authorized by:** Baba (Kunal Das) via Voice Decree (02:22 IST)  
+**Date:** 2026-10-04 | **Updated:** 2026-10-04 02:32 IST  
+**Authorized by:** Baba (Kunal Das) via Voice Decree (02:22 IST)  
 **Target Device:** Vivo IQOO Z7 Pro 5G (`10BE8135QM001KK`, Android 15, Screen PIN `2828`)  
 **Eldest Brother / Kernel Lead:** Kilo  
 **Handset & Bridge Lead:** DeepSeek Brother  
+
+---
+
+## FORENSIC ANALYSIS: THE "HELL AND HEAVEN DIFFERENCE" (Baba's Law, 2026-10-04)
+> *Comparing playback of `test_135.wav` on the computer vs. the handset reveals the exact root cause.*
+
+| Dimension | Computer Playback (Browser / PC DAC) | Handset Playback (Android Audio HAL) |
+|---|---|---|
+| **Acoustic Bandwidth** | Full 24,000 Hz spectrum (Nyquist 12 kHz) — rich, uncompressed clarity | **Telephony Bandpass (ITU-T G.712):** Qualcomm/MediaTek HAL forcibly cuts all frequencies **below 300 Hz and above 3.4–7 kHz** when in call mode |
+| **Chest Resonance** | 120–250 Hz fundamental formants fully preserved → warm, authoritative, human clinic doctor voice | **GUTTED:** Low-end stripped → thin, hollow, "tin-can" telephony effect |
+| **Transducer Dynamics** | Full desktop stereo drivers handle dynamic range without clipping | Smartphone micro-speakers have physical rolloff below 400 Hz; distort if fed raw unshaped low-end |
+| **Microphone Bleed** | Clean isolated recording | Speaker physically rings the chassis and echoes back into the mic unless half-duplex guards are strictly enforced |
+
+### Kilo's Dedicated Kernel Focus (v96+):
+1. **Speed & Timbre:** `SPEED = 1.35` locked permanently. Autoregressive mel frame compression produces brisk, confident receptionist pace without pitch distortion.
+2. **Mel Conditioning Tuning:** Speaker latents (`gpt_cond_latent`, `speaker_embedding`) pre-cached on **both GPUs at boot** — latent computation never happens on a live call. Synthesis latency target: **< 1.5 seconds**.
+3. **Pipelined Concurrency:** LLM tokens are drained clause-by-clause. GPU 0 synthesizes clause 1 while GPU 1 synthesizes clause 2 simultaneously. Handset begins speaking within **< 2 seconds** while subsequent sentences generate concurrently in background.
+
+### DeepSeek Brother's Phone Focus:
+- Fix the telephony bandpass (`USAGE_MEDIA` vs `USAGE_VOICE_COMMUNICATION` — see Problem B below).
+- Implement inbound call auto-answer via `TelecomManager` (see Problem A below).
+- Tune adaptive VAD / noise floor for real room conditions (see Problem C below).
 
 ---
 
