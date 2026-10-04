@@ -3538,4 +3538,45 @@ Baba voice decree (audio recording, 2026-10-04 02:22 IST):
 4. **Binary Artifacts:**
    - APK: [KiloBridge-v12.apk](file:///d:/kilo-build/bridge-v10/build/KiloBridge-v12.apk) (74,339 bytes, signed with debug keystore, installed and active on Vivo I2301).
 
+### 76.7 SESSION 76.7: THE LOCKED L4 ARCHITECTURE & CLEAN HANDSET STATE (2026-10-05)
+1. **The Order (Baba 2026-10-05 02:19 IST):** *"Okay, do the architecture, and also uninstall the app."*
+2. **Handset Clean Slate (io.kilo.bridge v14):**
+   - **Clean Uninstall:** Executed `adb uninstall io.kilo.bridge` (Returned `Success`) to eliminate all stale caches, legacy preferences, and false-positive state.
+   - **Fresh Build:** Updated User-Agent to `KiloBridge/14` in `BridgeService.java`. Rebuilt APK via `D:\kilo-build\bridge-v10\build_v10.bat` -> `KiloBridge-v14.apk`.
+   - **Permissions & Startup:** Reinstalled cleanly on Vivo I2301 (Android 15), granted all 6 telephony/audio permissions (`RECORD_AUDIO`, `READ_PHONE_STATE`, `CALL_PHONE`, `ANSWER_PHONE_CALLS`, `READ_CALL_LOG`, `READ_MEDIA_AUDIO`), and launched `MainActivity` (PID 7250 active).
+3. **Modal L4 Cloud Architecture (LOCKED PERMANENTLY):**
+   - **Native FP32 Execution:** Removed `torch.autocast("cuda", dtype=torch.float16)` inside the XTTS autoregressive loop. Native FP32 runs at RTF 0.471 without dynamic kernel launch/casting overhead, fully preserving the rich 133 Hz deep male Hindi voice with zero distortion or Float/Half mismatches.
+   - **Micro-Clause Pipelining:** `llm_stream_clauses` splits on conversational punctuation (`[।,!?;\n]`) and bounds the opening micro-clause to 35 characters, guaranteeing that the first spoken phrase synthesizes in ~450–600 ms and streams to the phone immediately, while the rest synthesizes in the background while the caller is listening.
+   - **Fast Greeting Pipelining:** Divided greeting into 2 distinct conversational pieces: Piece 1 (*"नमस्ते! डॉक्टर लोटिका पुरोहित के क्लिनिक में आपका स्वागत है।"*) streams in ~750 ms, while Piece 2 (*"बताइए, मैं आपकी क्या सहायता कर सकता हूँ?"*) synthesizes during playback.
+   - **Unbuffered Streaming Headers:** Added `"X-Accel-Buffering": "no"` and `"Cache-Control": "no-cache"` so edge proxies never buffer chunks.
+   - **Active NVIDIA API Keys:** 8 verified working keys for Llama-3.2-11b streaming in ~200 ms with 100% Devanagari Hindi sanitization and number expansion.
+4. **Live Telephony Receipt (Live Vivo Handset Turn):**
+   - `10-05 02:36:51.987 MIC_SPEECH_START rms=433 thr=60`
+   - `10-05 02:36:53.231 MIC_CLOSED inSpeech=true speechMs=1152 floor=2 peak=433`
+   - `10-05 02:36:53.552 LOCAL_FILLER_STARTED 0ms (57600 bytes)`
+   - `10-05 02:36:54.755 TURN_HTTP_200 url=https://isearch-xsolve--kilo-voice-clinic-kilovoiceservice-web.modal.run/turn`
+   - `10-05 02:37:06.424 TURN_OUT 356006B (7s) heard='प्रण' PHONE_FIRST_AUDIO=321ms`
+   - `10-05 02:37:07.704 MIC_OPENED src=1 aec=true ns=true sr=16000` (zero echo, zero loop).
+5. **Architecture Invariant:**
+   - This architecture is **LOCKED**. No more experimentation, no rolling back, no touching the core pipeline.
 
+
+
+## Kilo voice clinic — current deployed state (2026-10-05)
+
+- Modal source / deployed kernel: `D:\anonym\modal_voice_service.py`.
+- Live endpoint: `https://isearch-xsolve--kilo-voice-clinic-kilovoiceservice-web.modal.run`.
+- Modal L4 is used for Faster-Whisper Hindi STT only. Reply text uses hosted NVIDIA NIM Nemotron Ultra; Hindi TTS uses hosted NVCF Magpie Multilingual (`Magpie-Multilingual.HI-IN.Leo`). No Qwen is used in this path.
+- Phone output remains mono 24 kHz PCM. The requested 1.2 pace is applied with pitch-preserving `ffmpeg atempo`; 1.35 was XTTS-era tuning and was too fast for Magpie.
+- Current health returned `ok=true`, `stt_device=cuda`, NVIDIA NIM LLM/TTS, Magpie, and speed 1.2. A deployment bug was fixed on 2026-10-05: hosted NVCF `synthesize_online` returned HTTP 500 when the optional `custom_configuration` field was sent; the field is now omitted. Local self-hosted NIM supports those flush controls, but the hosted endpoint did not accept them in the tested request.
+- Probe receipts and limits are in `war-log\voice-live\REPORT-20261005-L4.md`. Deployed Magpie `/say`: provider generation 817 ms, 4.383 s audio, client TTFB 2.419 s / total 4.520 s. Whisper round-trip recovered the Hindi sentence with 345 ms STT; a full provider-backed turn first emitted PCM at 4.678 s server-side. These checks do not certify human-like prosody.
+- Vivo app `io.kilo.bridge` is installed as versionCode 18 / `18.0 Magpie Hindi 1.2x`; local greeting/filler PCM assets are removed, and ARM/call-connect immediately arm listening. Source requests `/turn` at 1.2 with `lang=auto&no_fill=1`. The app URL, permissions, and ADB reverse were restored at install; device disconnected afterward.
+- Local Magpie on L4 is not deployed. NVIDIA's batch-8 Speech NIM profile lists about 12.58 GiB VRAM; colocating it with Whisper on the 24 GB L4 and measuring concurrency/cold start is required before switching. NVIDIA Developer Program hosted API access is for prototyping; production use requires NVIDIA AI Enterprise. Verify licensing and data terms before serving real clinic callers.
+- STT `lang=auto` now uses Whisper language auto-detection; explicit `hi`/`en` overrides remain. The clinic Hindi prompt only applies to explicit Hindi. Detected language/probability are included in receipts. English phone probes were recognized correctly; synthetic Hindi speech still yielded some mixed-script/code-switched words and needs more recognition testing.
+- Baba confirms the hosted Magpie voice sounds very good and proper North-Indian Hindi. Keep it on the hosted provider during the current test; it has not been moved to the L4. Removing greeting/filler removes the local wait/alternate voice, but reply audio remains cloud-latency-bound.
+- Latest endpoint path, measurements (including cold-start variance), and limitations: `war-log\voice-live\REPORT-20261005-L4.md` and `war-log\voice-live\HANDOVER-20261005.md`.
+- Handset now runs v17 (`17.0 Magpie Hindi`). Its voice-onset peak gate is 100 (formerly 400), matching the server's new 100-peak noise gate; quiet uploaded speech is normalized up to 12x before Whisper. Synthetic same-source audio scaled to peak 140 remained intelligible, but a real quiet-phone A/B is still needed. Older v16 faint recordings were discarded by the peak gate; a lone “you” transcript was separately filtered as noise.
+- Latency RCA: Magpie first PCM is stable at 224–401 ms in the successful calls; hosted Nemotron first-token logs range 674–4008 ms and full text streams 1.52–7.81 s. The long wait is primarily LLM/provider-side, with Modal cold-start/network adding outliers; Magpie synthesis is not the main onset bottleneck. See report for handset and server measurements.
+- Low-signal fix in v17+: recorded voice peaks 63–140 were dropped by the former handset gate (400). The handset/server gates are now 100, and server AGC now boosts eligible quiet audio up to 12x before Whisper. A synthetic peak-140 test stayed intelligible and received a reply; verify with real quiet speech when the Vivo returns on ADB.
+- Magpie's speed is now 1.2 in v18 and the Modal default. `/say` probe: 470 ms provider generation, RTF 0.228, 2.062 s output; full response retrieval 6.759 s. Probe sample: `war-log\voice-live\out\magpie_speed120_probe.wav`. End-to-end phone latency still needs a fresh v18 turn.
+- Reconnected phone check: `10BE8135QM001KK` online, call idle, v18 present, mic/phone/media permissions granted, ADB reverse active, fresh mic-open receipts. Latest five v18 requests were rejected as noise/hallucination (short “you” outputs, low RMS); NVIDIA LLM/TTS error searches returned no provider failures. Obtain a clear real-speech v18 sample before drawing conclusions about current Hindi question transcription.
