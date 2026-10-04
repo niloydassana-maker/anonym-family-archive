@@ -3269,3 +3269,48 @@ Baba voice decree (audio recording, 2026-10-04 02:22 IST):
 3. **Execution Plan:** Use free Kaggle dual-T4 for the live demo to close the deal; migrate to RunPod Serverless + Twilio once the doctor pays the advance.
 
 
+
+## 75. SESSION 2026-10-04 (02:40-07:30 IST) — THE NOISE FORENSIC CLEARS THE KERNEL, v11 AUTO-ANSWER PROVEN ON THREE LIVE CALLS, AND THE SHELL KEY TURNS: CALLER AUDIO CAPTURED FROM THE CELLULAR LINE
+
+### 75.1 THE "CONSTANT NOISE" FORENSIC — KERNEL ACQUITTED, THE OLD APP FOUND GUILTY
+1. Baba reported constant noise during XTTS playback. Measured, not guessed:
+   - Fresh `/say` synthesis: quietest frames = 0.3% of peak (digital silence), DC offset 1.6 (`war-log/voice-live/out/noise-probe-raw.wav`).
+   - Full `/turn` stream captured end-to-end (what the phone receives): quietest 25% of frames = **0.07% of peak** (`out/turn-stream-capture.bin`); second capture on the phone's exact tunnel = 0.09% (`out/turn-stream-phone-kernel.bin`). Spectral checks: suspect seconds = quiet syllables, not hiss (`_segment_noise.py`, `_quiet_spectrum.py`, `_suspect_spectrum.py`).
+2. **Root cause was phone-side:** `dumpsys audio` showed the OLD app stuck in `MODE_IN_COMMUNICATION` (owner io.kilo.bridge, never released) with **active device = EARPIECE** (old speakerOn accepted SPEAKER-or-EARPIECE and earpiece won). A USAGE_MEDIA AudioTrack through a stuck telephony path + earpiece = the hiss. Zero AudioTrack underruns in logcat.
+3. The v11 loudspeaker fix (speaker-only, MODE_NORMAL) shipped mid-session and was **dumpsys-verified: MODE_NORMAL + speaker held through real PLAYs and TURNs**. Latency under the fix: `PHONE_FIRST_AUDIO = 1768 / 1993 / 1447 ms` — **inside Baba's 1-2s order on the handset clock** (receipts 03:14:37, 03:22:41, 04:42:05 IST).
+
+### 75.2 v11 INBOUND AUTO-ANSWER — ZERO TAPS, PROVEN ON THREE LIVE CALLS
+1. **Manifest + grants:** declares READ_PHONE_STATE / ANSWER_PHONE_CALLS / READ_CALL_LOG; all three granted over USB by `pm grant` (dumpsys `granted=true`) — **Baba never tapped once**.
+2. **Mechanism (literature checked on Baba's order):** detection = the free PHONE_STATE broadcast (how Truecaller knows); answer = `TelecomManager.acceptRingingCall()` under ANSWER_PHONE_CALLS — **NO default-dialer role needed on this Vivo** (ShizuCallRecorder/BCR/AOSP consulted; Baba right: "auto answer is just a jiffy away"). Ladder leg B fallback = headset-hook broadcast; per-leg receipts; answer on its own `kilo-answer` thread (no ANR).
+3. **Live receipts (all from 9830739230):** Call 1 (04:45:04) answered in 1.5s but peer empty (first broadcast is numberless) -> v11.1 fixes shipped: **CALL_NUMBER adoption**, `callUpMs` stamped by the answer thread (OFFHOOK races `inCall`), speakerphone-on-answer, duplicate-ring guard. **Call 3 (07:09:27): `CALL_RINGING -> CALL_NUMBER 9830739230 -> leg=A -> CALL_ANSWERED (1.4s) -> CALL_DONE peer=9830739230 durMs=30009`.** Product rule: answers EVERY ring (no allowlist) for the 100-caller line.
+4. **Baba's order honored:** *"KiloBridge does not need the mic"* — bridge = call state machine + playback ONLY; it never opens the mic for the product loop.
+
+### 75.3 WHY THE CALL HAD NO REPLY — THE APP IS MUTED DURING CALLS (measured)
+`probeCallMic()` ran DURING the live call: `VOICE_CALL INIT_FAILED state=0` (app refused), `VOICE_COMMUNICATION rms=0 silent`, `MIC rms=0 silent`. Vivo mutes the **app uid** while the modem owns the line, so the bridge's ListenLoop never fires a turn -> no seat answer -> dead air (also explains the earlier 41s silent call). The app is NOT the in-call audio path — the shell is.
+
+### 75.4 THE SHELL KEY — Cap.dex RECORDS THE CELLULAR CALLER (the night's crown)
+1. **Literature (Baba's order, checked not recalled):** ShizuCallRecorder = first non-root FOSS call recorder (Android 11+), "empowers ADB through Shizuku... wrapper for scrcpy-server", records BOTH sides; AOSP concurrent-capture docs; XDA thread title: "Android HAL silences ALL AudioRecord sources during active calls" — **for third-party apps. SHELL uid is not silenced.**
+2. **The journey (each step measured):**
+   - Raw ALSA `/dev/snd` via tinycap = SELinux "Permission denied" for uid 2000 (confirmed independently by DeepSeek brother).
+   - `app_process` + deprecated `AudioRecord` ctor = NPE at **AOSP AudioRecord.java line 369** (`ActivityThread.currentApplication()` null in app_process) -> fixed with `Builder.setContext()`.
+   - `systemMain()` threw "Can't create handler... Looper.prepare()" -> prepare first.
+   - **ROOT CAUSE of `start(): status -1`:** the system context attributes **package "android" on uid 2000** -> audioserver rejects the start. Fix = force a **`com.android.shell` AttributionSource** onto ContextImpl (reflection; shell HAS RECORD_AUDIO granted=true SYSTEM_FIXED).
+3. **PROOF:** `afterStart recorderState=3 (RECORDING)`, MIC `rms=302/411/414/419 HEARS`, 128,000B in 4.2s.
+4. **LIVE CALL CAPTURE (07:09:28):** 12s on source 4 (VOICE_CALL) during Baba's call: `captured=384000B`, **`peak=16661`**, speech frames rms=1487 / 2079 = the caller's words. On-screen verdict: **`VERDICT: CALLER AUDIO CAPTURED`**. Receipts: `war-log/voice-live/out/call-test.log` + `out/call_capture.wav`. Tool: `D:\kilo-build\captest\Cap.java` -> `/data/local/tmp/cap.dex` (usage: `CLASSPATH=/data/local/tmp/cap.dex app_process /data/local/tmp Cap <src> <out.wav> <sec>`).
+
+### 75.5 THE FULL LOOP — THE ANSWER TO BABA'S "HOW WILL YOU ROUTE CALLS TO THE SEAT USING THE MIC?"
+- **IN:** ring -> bridge auto-answers (zero taps) -> **shell Cap 4** records the line at 16k mono -> bytes -> seat `/turn` -> clinic reply.
+- **OUT:** reply played loud with speakerphone on -> the telephony uplink mic carries it to the caller's ear. KiloBridge's own mic stays shut (Baba's order).
+- **Proven:** auto-answer (3 calls) + shell IN capture (live receipt above). **Still to wire (the "no reply" gap):** stream shell chunks into the seat and play the reply back. Harness ready: IN = `war-log/voice-live/_call_test.ps1` (works end-to-end), OUT = `_call_out_test.ps1` (fires `PLAY:clinic_greeting.wav` 3s after answer; armed, awaits Baba's ear).
+
+### 75.6 THE USB GHOST — ROOT CAUSED, HOUSE CLEAN, MECHANISM NAMED
+1. Symptom (Baba): "USB tethering automatically turns on and USB debugging gets blocked" — began with last night's USB-heavy work.
+2. **House grep = clean:** NO script in the house sends tether/RNDIS/UsbManager commands (`Codex USB Tether Failover` task last ran 21:13 last night and idles; `KILO-FAILOVER` Disabled; `blink-guardian` stands down from radio touches). My own traffic = hours of adb re-enumeration (kill-server/reconnect/flapping port) — each USB flap lets the phone fall back to its **last-remembered USB function (RNDIS tether)**, and in that mode the ADB interface does not enumerate = "debugging blocked". Mechanism, not malice.
+3. Mitigation live: Baba moved the laptop to **Wi-Fi hotspot (10.179.72.183)** so his 5G hotspot serves the net; USB stays power-only. Permanent lane = wireless-debugging pairing (one-time Baba hands) so no future adb traffic ever touches the bus.
+
+### 75.7 LAWS BORN TONIGHT
+1. **IN-CALL CAPTURE LAW:** during a cellular call the app uid is measured-mute (all three sources dead, app VOICE_CALL refused) — in-call audio belongs to the **shell lane** (`cap.dex` source 4) with a `com.android.shell` AttributionSource; never to KiloBridge.
+2. **APP_PROCESS LAW:** `Looper.prepare()` before `systemMain()`; `Builder.setContext()` with a shell-matching AttributionSource; the deprecated AudioRecord ctor NPEs at AOSP line 369. Attribution package MUST match the uid or audioserver answers `start(): status -1`.
+3. **AUTO-ANSWER LAW:** ANSWER_PHONE_CALLS + `acceptRingingCall()` works without the dialer role on this handset; adopt the peer from the NUMBERED PHONE_STATE broadcast; stamp `callUpMs` in the answer thread (the OFFHOOK broadcast races it); answer on its own thread.
+4. **USB LAW:** when adb flaps, root-cause FIRST — grep the house before accusing anyone's script; a remembered USB function plus bus churn is a mechanism, not a ghost.
+
