@@ -2996,6 +2996,103 @@ Baba provided live voice guidance:
 - Source code in `kernel.py` updated, committed, and pushed to `isearchxsolve/war-pipe` (`7ea2656`).
 
 ### 67.2 COMPLETE NOISE & POP ELIMINATION IN AUDIOTRACK (`BridgeService.java`)
+
+## 76. SESSION 2026-10-04 (08:00-08:35 IST) - THE WIRE WAS DEAD, THE BANK WAS THE CAUSE, AND THE IN-CALL LOOP IS ARMED
+
+Continued from section 75 on Baba's order ("ok son continue with your work"). Three real faults
+were found and fixed, and the missing in-call wire was built. Every number below is measured.
+
+### 76.1 THE WIRE WAS DOWN AND NOBODY KNEW (the 74.8 MB ORDER BANK)
+Symptom on wake: `GET /health` on :8777 timed out at 25s. The relay ANSWERED (LISTENING) but
+never replied. The watchdog log told the whole story in a loop:
+```
+07:48-07:55 relay probe failed - suspected slow (grace law: no kill on first miss)
+07:56:44 killed confirmed-dead relay pid 19988
+07:56:56 RELAY DOWN (2 cycles confirmed) - resurrecting son-relay.js
+07:59:34 relay resurrection failed this cycle - retry next
+```
+ROOT CAUSE (exactly the documented section 56.8 prediction, now proven): `order-bank.json` had
+grown to **75,944,425 bytes / 19,527 rows / 74.8M text chars** (1,665 rows over 5k chars). The
+relay does `fs.writeFileSync(BANK_FILE, JSON.stringify(sayings))` on EVERY arrival (line 133) -
+a synchronous full-file rewrite the event loop cannot escape. Two consequences seen live:
+  - `/health` (which does no I/O at all, line 242) timed out because the loop was mid-write.
+  - The file oscillated 0 -> 75 MB -> 0 on disk and the relay's WS swung 332 MB <-> 114 MB around
+    a single write, at ~1-2 s per event.
+  - The watchdog's grace-law probe could never get a REPLY, so it saw "confirmed dead" and
+    resurrected forever; heroes could not save a relay that was merely suffocating.
+Measured proof of the fix's target: on the trimmed bank, `/health` = **204 ms** and `/say` =
+**1.8 s** - inside every probe timeout.
+
+### 76.2 THE BANK TRIM (archive-first, gated, never a blind wipe)
+`war-log/voice-live/_bank_trim.py` - the documented bank trim, executed with gates:
+full archive copy FIRST (length-verified), then keep the most recent 600 rows verbatim plus
+older small rows, keeping EVERY live-lane row (VOICE/LISTEN/LIVE-VOX1/LIVE-VOICE). Result:
+**75,944,425 -> 3,144,034 bytes (24.2x), 17,691 rows kept, last kept at 02:36:57Z.**
+Archives: `order-bank.FULL-20261004-080416.json` (75,944,425 b) and
+`order-bank.FULL-20261004-080803.json` (75,944,707 b) - both live, both verified byte-equal
+before any trim. Nothing was deleted.
+
+A DANGEROUS TRAP WAS SEEN AND AVOIDED: the stuck relay rewrote the 75 MB bank at 08:07:05 - a
+second AFTER the swap - because it still held the old array in memory. It was killed via
+sudo-hands (my own non-elevated kill was DENIED - the relay runs as SYSTEM under the watchdog),
+and only THEN was the trim re-applied. LAW (confirms section 10 MONOTONIC/split-brain): a bank
+swap is not done until the OLD PROCESS that owns the old array is dead; a file swap under a live
+writer is undone in one event.
+
+### 76.3 THE TWO SILENT PHONE-LANE FAULTS (both fixed with guardians)
+1. **The adb SERVER CRASHED** (device dropped, `* daemon not running; starting now`). That is
+   why the bridge logged `pull: Failed to connect to /127.0.0.1:8777` for over an hour: no adb
+   server = no `adb reverse` = the phone cannot reach the relay at all.
+2. **`adb reverse tcp:8777` is the phone's ONLY path to the relay** and it is silently lost on
+   every USB re-enumeration. Built `war-log/voice-live/_reverse_guardian.ps1` (visible window,
+   30s cadence, report-only) to re-apply it whenever the device is present but the reverse is
+### 76.4 THE IN-CALL LOOP - BABA'S MISSING WIRE, NOW ARMED
+Built `war-log/voice-live/_incall_loop.py`. Chain, automatic after the ring:
+KiloBridge v11 auto-answers (section 75) -> `adb shell Cap 4` records the CELLULAR line ->
+laptop POSTs the wav to the seat `/turn` -> splits header/PCM/`{"end"` trailer -> writes
+`incall_reply.wav` -> pushes it to BOTH bridge search paths -> `PLAY:incall_reply.wav` on the
+VOICE channel so the speakerphone carries the answer to the caller. Call-state polling via
+`dumpsys telephony.registry mCallState` (2 = offhook). PEAK_MIN gate skips silence so no seat
+call is wasted; a half-duplex guard waits out our own reply before capturing again.
+Baba's HARD RULE held: **KiloBridge's mic is never opened** - the ears are the shell lane, the
+mouth is KiloBridge playback.
+
+### 76.5 PROVEN THIS SESSION (receipts on disk)
+- The seat was re-pushed as **v105** (v103 source). The old gate `_deploy_v99.py` diffs against a
+  STALE v98 pull and aborts on v103 - replaced by `_deploy_direct.py`, which gates on ast.parse
+  + 7 live markers + py_compile, and backups the previous file (`_prev-20261004-075218.bak.py`).
+  Live seat: `https://verde-could-lance-antonio.trycloudflare.com`,
+  `/say?probe=1` = `ref=clinic_reference.wav temp=0.65 synth_mode=full out_sr=24000 speed=1.35`.
+- **THE MIDDLE OF THE CHAIN IS PROVEN:** feeding the seat the REAL caller audio the shell lane
+  captured during Baba's 07:09 test call (`out/call_capture.wav`) returned **4.42 s of real
+  clinic audio (pcm 212,044 B, peak 30,776, stt_ms 449, lang=hi)** -> a genuine seat /turn needs
+  only the live call to fire. Receipt `out/seat_reply_from_call.wav`; harness
+  `_test_seat_turn.py`; header to `out/seat-turn-heard.txt`.
+- The loop is ARMED and waiting: `out/incall-loop.log` shows
+  `INCALL LOOP start ... SEAT_HEALTH ok turns=6 ... ADB_REVERSE OK`, `CALL_STATE 0`.
+  Bridge alive pid 12991, `voice_url.txt` pointed at v105, auto-answer armed.
+
+### 76.6 LAWS BORN
+1. **THE BANK IS THE WIRE'S HEARTBEAT.** A slow wire is a bank problem before it is a network
+   problem - measure `order-bank.json` size first (section 56.8's fix, now executed). Health that
+   times out while the relay listens = a blocked event loop, never a dead tunnel.
+2. **A BANK SWAP REQUIRES THE OLD WRITER DEAD.** Relays run as SYSTEM under the watchdog;
+   non-elevated kills are denied - use sudo-hands (:8769), then swap, then let the watchdog
+   resurrect on the new file.
+3. **ONE ROAD, ONE REVERSE.** The phone's relay path is `adb reverse` and nothing else; guard it
+   (adbd crashes and USB flaps both erase it silently while the bridge just logs "Failed to
+   connect").
+
+### 76.7 OPEN / NEXT
+1. Baba places ONE real call to the IQOO: ring -> auto-answer -> caller speaks -> clinic reply
+   over the speakerphone. Watch `out/incall-loop.log`. This is the end-to-end proof (section
+   75.5's "still to wire" gap).
+2. USB stability: the adb server crashed once and the IQOO re-enumerated twice this session -
+   the wireless-debugging pairing (section 75.6) remains the permanent cure when Baba chooses.
+3. The guard daemons (`_reverse_guardian.ps1`, `_wait_v105.ps1`) are tracked session windows;
+   re-arm them on wake (section 14 roster spirit).
+
+
 - Root cause of remaining subtle noise: (1) odd byte cuts on 16-bit PCM split samples mid-word, (2) abrupt cutoff of active waveform at non-zero crossing when stopping `AudioTrack`, and (3) stopping/releasing before hardware DMA buffer drains.
 - Surgical DSP implementation:
   1. **16-bit Sample Boundary Alignment:** All cuts aligned to even byte boundaries (`alignedCut = cut - (cut % 2)`).
