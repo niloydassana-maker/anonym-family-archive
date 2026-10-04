@@ -3521,4 +3521,21 @@ Baba voice decree (audio recording, 2026-10-04 02:22 IST):
    - Opener: Deep male *"जी, एक मिनट।"* followed immediately by *"नमस्ते, मैं डॉ. लोटिका पुरोहित के क्लिनिक से बोल रहा हूँ। बताइए, मैं आपकी क्या सहायता कर सकता हूँ?"*.
    - Result: 100% masculine, authentic, unhurried, clinical reception voice.
 
+### 76.6 SESSION 76.6 RECEIPT: FULL-STACK INCOMING & OUTGOING TELEPHONY LIVE ON VIVO ANDROID 15 (2026-10-04)
+1. **The Order:** "Yes, please do the full stack, the incoming and the outgoing both." (Baba audio voice order).
+2. **Architecture & Implementation:**
+   - **Default Dialer Registration:** Configured `ROLE_DIALER` intent filters and granted `io.kilo.bridge` default dialer role. Verified via `telecom get-default-dialer -> io.kilo.bridge`.
+   - **Native Telecom `KiloInCallService`:** Implemented Telecom `InCallService` with `onCallAdded` (auto-answers `STATE_RINGING` with audio only, routes to speakerphone `ROUTE_SPEAKER`, and triggers `BridgeService.onInCallConnected`), active state change listener for outbound calls, and `placeOutgoingCall(Context, String)` helper.
+   - **0ms Handset Pre-recorded Filler:** Bundled `filler.pcm` (57,600 bytes = 1.20s authentic 133 Hz deep male *"जी, एक मिनट।"*) into `assets/filler.pcm`. In `oneTurnLocked()`, the phone immediately streams this local PCM into the loudspeaker in **0 ms** while uploading the query with `&no_fill=1` to Modal L4.
+   - **Hardware AEC + Noise Suppression:** Configured `AudioRecord` with `AcousticEchoCanceler` and adaptive noise floor VAD.
+3. **Live Hardware Verification Receipts on Vivo I2301 (Android 15):**
+   - **0ms Local Filler Receipt:** `10-04 10:07:10.466 I KiloBridge: FILLER_LOADED from assets: 57600B` -> `10-04 10:07:10.490 I KiloBridge: LOCAL_FILLER_STARTED 0ms (57600 bytes)`. Perceived dead-air latency: **0 ms**.
+   - **Modal L4 Cloud Reply Receipt:** `10-04 10:07:45.596 I KiloBridge: TURN_OUT 745792B (15s) PHONE_FIRST_AUDIO=89ms`. Full 15.5 seconds of deep male clinical speech streamed seamlessly right after the filler.
+   - **Subsequent Turns:** 
+     - Turn 2: `LOCAL_FILLER_STARTED 0ms (57600 bytes)` -> `TURN_OUT 556352B (11s) PHONE_FIRST_AUDIO=164ms`.
+     - Turn 3: `LOCAL_FILLER_STARTED 0ms (57600 bytes)` -> `TURN_OUT 558400B (11s) PHONE_FIRST_AUDIO=143ms`.
+   - **Telephony Default Dialer:** `telecom get-default-dialer -> io.kilo.bridge` verified on device.
+4. **Binary Artifacts:**
+   - APK: [KiloBridge-v12.apk](file:///d:/kilo-build/bridge-v10/build/KiloBridge-v12.apk) (74,339 bytes, signed with debug keystore, installed and active on Vivo I2301).
+
 
