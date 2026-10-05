@@ -541,7 +541,6 @@ WEB_DEMO_HTML = """<!DOCTYPE html>
         </div>
 
         <div class="controls-container">
-            <button id="langToggleBtn" class="lang-toggle-btn active-hi" onclick="toggleLang()" title="भाषा बदलें">🌐 हिन्दी</button>
             <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="बोलने के लिए दबाएँ">🎤</button>
             <input type="text" class="text-input" id="userInput" placeholder="यहाँ बोलें या टाइप करें..." onkeypress="handleKey(event)" oninput="handleInput()">
             <button class="send-btn" id="sendBtn" onclick="sendText()" title="भेजें">➔</button>
@@ -571,7 +570,6 @@ WEB_DEMO_HTML = """<!DOCTYPE html>
         let noiseRms = 0;
         let speechDetected = false;
         let discardRecording = false;
-        let currentLang = 'hi-IN'; // 'hi-IN' or 'en-IN'
 
         // Single shared HTML5 Audio Element to guarantee permanent iOS/Android autoplay
         const player = new Audio();
@@ -585,23 +583,6 @@ WEB_DEMO_HTML = """<!DOCTYPE html>
                     audioUnlocked = true;
                     player.pause();
                 }).catch(() => {});
-            }
-        }
-
-        // Language toggle for Web Speech
-        function toggleLang() {
-            unlockAudio();
-            const btn = document.getElementById('langToggleBtn');
-            if (currentLang === 'hi-IN') {
-                currentLang = 'en-IN';
-                btn.className = 'lang-toggle-btn active-en';
-                btn.innerText = '🌐 English';
-                document.getElementById('userInput').placeholder = "Speak in English or type...";
-            } else {
-                currentLang = 'hi-IN';
-                btn.className = 'lang-toggle-btn active-hi';
-                btn.innerText = '🌐 हिन्दी';
-                document.getElementById('userInput').placeholder = "यहाँ बोलें या टाइप करें...";
             }
         }
 
@@ -750,7 +731,7 @@ WEB_DEMO_HTML = """<!DOCTYPE html>
         function stopMic() {
             isRecording = false;
             document.getElementById('micBtn').classList.remove('recording');
-            document.getElementById('userInput').placeholder = currentLang === 'hi-IN' ? "यहाँ बोलें या टाइप करें..." : "Speak in English or type...";
+            document.getElementById('userInput').placeholder = "यहाँ बोलें या टाइप करें...";
             updateLiveButton();
         }
 
@@ -843,7 +824,7 @@ WEB_DEMO_HTML = """<!DOCTYPE html>
             const thinkingId = appendThinking();
             try {
                 const wav = await blobToWav16k(blob);
-                const lang = currentLang === 'hi-IN' ? 'hi' : 'en';
+                const lang = 'hi';
                 const response = await fetch(`/turn?speed=1.2&lang=${lang}&session_id=${encodeURIComponent(sessionId)}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'audio/wav', 'X-Session-ID': sessionId, 'X-Voice-Lang': lang },
@@ -1259,25 +1240,17 @@ class KiloVoiceService:
         print("[MODAL L4] Warm-up complete! Serverless engine ready.")
 
     def detect_lang(self, text: str) -> str:
-        # HINDI BY DEFAULT LAW (Baba 2026-10-05: voice should be in Hindi)
-        t = (text or "").lower()
-        if any(s in t for s in ("in english", "speak english", "speak in english")):
-            return "en"
+        # HINDI ONLY (stable)
         return "hi"
 
     def llm_stream_clauses(self, user_text: str, history: list = None):
-        lang = self.detect_lang(user_text)
-        hint = "Reply in simple spoken Hindi, Devanagari script." if lang == "hi" else "Reply in concise spoken English."
+        hint = "Reply in simple spoken Hindi, Devanagari script."
         t0 = time.time()
         emitted = 0
-        # Stream complete sentences to the Hindi-capable provider TTS. Character slicing mid-sentence was
-        # resetting prosody and made the reply sound clipped and robotic.
         for clause in self._llm_api_clauses(user_text, hint, history=history):
             clause = sanitize_hindi_for_xtts(clause)
             if not clause:
                 continue
-            # Streaming providers can occasionally append an orphan one-character
-            # fragment after a complete sentence. Do not voice that fragment.
             if emitted and len(re.sub(r"[^\w\u0900-\u097f]+", "", clause)) <= 1:
                 print(f"[LLM PROVIDER TAIL DROPPED] orphan fragment='{clause}'", flush=True)
                 continue
@@ -1457,17 +1430,11 @@ class KiloVoiceService:
 
         if not text or not text.strip():
             return
-        lang = self.detect_lang(text)
-        if lang == "hi":
-            clean_text = sanitize_hindi_for_xtts(text)
-            language_code = "hi-IN"
-            voice = TTS_VOICE
-        else:
-            clean_text = text.strip()
-            language_code = "en-US"
-            voice = "Magpie-Multilingual.EN-US.Leo"
+        clean_text = sanitize_hindi_for_xtts(text)
+        language_code = "hi-IN"
+        voice = TTS_VOICE
         if clean_text[-1] not in "।.!?":
-            clean_text += "।" if language_code == "hi-IN" else "."
+            clean_text += "।"
         speed = min(1.5, max(0.8, float(speed)))
         boundary = "----KiloVoice" + uuid.uuid4().hex
         fields = {
