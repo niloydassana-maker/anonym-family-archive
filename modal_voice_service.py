@@ -69,7 +69,7 @@ CLINIC_SYSTEM_PROMPT = """आप 'शुगरडॉक्टर क्लिन
 # Keep conversational inference on the hosted provider. The Modal L4 is reserved
 # for Whisper and XTTS so LLM weights cannot contend with speech synthesis VRAM.
 VOICE_LLM_PROVIDER = "NVIDIA NIM"
-VOICE_LLM_MODEL = "nvidia/nemotron-3-ultra-550b-a55b"
+VOICE_LLM_MODEL = "nvidia/nemotron-3-super-120b-a12b"
 TTS_DEFAULT_SPEED = 1.2
 TTS_MODEL = "magpie-tts-multilingual"
 TTS_VOICE = "Magpie-Multilingual.HI-IN.Leo"
@@ -215,6 +215,7 @@ class KiloVoiceService:
         # the Modal L4 remains dedicated to Whisper STT.
         self.llm_local = None
         self.llm_local_name = None
+        self.sessions = {}
         print(f"[LLM PROVIDER] {VOICE_LLM_PROVIDER} / {VOICE_LLM_MODEL}", flush=True)
 
         print("[MODAL L4] Warm-up complete! Serverless engine ready.")
@@ -226,14 +227,14 @@ class KiloVoiceService:
             return "en"
         return "hi"
 
-    def llm_stream_clauses(self, user_text: str):
+    def llm_stream_clauses(self, user_text: str, history: list = None):
         lang = self.detect_lang(user_text)
         hint = "Reply in simple spoken Hindi, Devanagari script." if lang == "hi" else "Reply in concise spoken English."
         t0 = time.time()
         emitted = 0
         # Stream complete sentences to the Hindi-capable provider TTS. Character slicing mid-sentence was
         # resetting prosody and made the reply sound clipped and robotic.
-        for clause in self._llm_api_clauses(user_text, hint):
+        for clause in self._llm_api_clauses(user_text, hint, history=history):
             clause = sanitize_hindi_for_xtts(clause)
             if not clause:
                 continue
@@ -248,11 +249,14 @@ class KiloVoiceService:
             yield clause
         print(f"[LLM PROVIDER STREAM] {time.time()-t0:.2f}s clauses={emitted}", flush=True)
 
-    def _llm_api_clauses(self, user_text: str, hint: str):
+    def _llm_api_clauses(self, user_text: str, hint: str, history: list = None):
         messages = [
             {"role": "system", "content": CLINIC_SYSTEM_PROMPT + "\n" + hint},
-            {"role": "user", "content": user_text},
         ]
+        if history:
+            # Latency guard: cap history to last 6 messages (~200 tokens) so prefill latency overhead is <15ms
+            messages.extend(history[-6:])
+        messages.append({"role": "user", "content": user_text})
         payload = {
             "model": VOICE_LLM_MODEL,
             "messages": messages,
@@ -589,7 +593,9 @@ class KiloVoiceService:
                 "tts_tempo_pitch_preserving": TTS_DEFAULT_SPEED,
                 "phone_local_filler_bytes": 0,
                 "phone_local_greeting": False,
-                "stt_language_mode": "Whisper auto-detect unless explicit hi/en"
+                "stt_language_mode": "Whisper auto-detect unless explicit hi/en",
+                "conversation_cache": True,
+                "active_sessions": len(getattr(self, "sessions", {})),
             }
 
         @web_app.post("/say")
@@ -658,6 +664,40 @@ class KiloVoiceService:
             else:
                 user_audio_bytes = body
                 direct_text = ""
+
+            # SESSION & CALL IDENTIFICATION (Twilio CallSid or client session)
+            j_dict = j if ("json" in content_type and "j" in locals() and isinstance(j, dict)) else {}
+            session_id = (
+                req.headers.get("X-Call-Sid") or
+                req.headers.get("X-Twilio-CallSid") or
+                req.headers.get("X-Session-ID") or
+                req.headers.get("X-Caller-ID") or
+                req.query_params.get("CallSid") or
+                req.query_params.get("call_sid") or
+                req.query_params.get("session_id") or
+                req.query_params.get("caller") or
+                j_dict.get("call_sid") or
+                j_dict.get("session_id") or
+                (getattr(req.client, "host", None) if hasattr(req, "client") and req.client else "default_session")
+            )
+            reset_session = req.query_params.get("reset", "0") == "1" or j_dict.get("reset") is True
+
+            now = time.time()
+            if not hasattr(self, "sessions"):
+                self.sessions = {}
+            stale_keys = [k for k, v in self.sessions.items() if now - v.get("last_seen", 0) > 600]
+            for k in stale_keys:
+                self.sessions.pop(k, None)
+
+            if reset_session or session_id not in self.sessions:
+                self.sessions[session_id] = {"history": [], "last_seen": now}
+
+            sess = self.sessions[session_id]
+            # 5-minute idle timeout: clear history for a new phone call
+            if now - sess.get("last_seen", 0) > 300:
+                sess["history"] = []
+            sess["last_seen"] = now
+            session_history = list(sess.get("history", []))
 
             # STT
             user_text = direct_text
@@ -872,19 +912,66 @@ class KiloVoiceService:
                     headers={"X-Sample-Rate": "24000", "X-Channels": "1"})
 
             if not user_text:
-                # ANTI-LOOP LAW: Do not play audio on silence/noise, as that triggers feedback loops
-                print(f"[TURN DROPPED] Empty or noise utterance raw='{heard_raw}', returning empty.", flush=True)
+                # If the handset has already captured a speech-length segment with
+                # measurable energy, a Whisper noise/hallucination rejection must
+                # not become silent dead air. Ask for one repeat in the same Magpie
+                # voice. Truly empty/very quiet or sub-second uploads remain silent;
+                # echo turns are handled by the separate echo guard above.
                 if not drop_reason:
                     drop_reason = "empty_transcript"
+                clarify = bool(user_audio_bytes) and sig_dur >= 0.9 and sig_peak >= 180 and sig_rms >= 24
+                if clarify:
+                    clarify_text = "माफ़ कीजिए, आपकी आवाज़ साफ़ नहीं आई। कृपया एक बार फिर कहिए।"
+                    print(f"[TURN CLARIFY] reason={drop_reason} dur={sig_dur}s peak={sig_peak} rms={sig_rms}", flush=True)
+
+                    async def clarify_stream():
+                        import asyncio
+                        t_clarify = time.time()
+                        hdr = json.dumps({"cid": "turn", "heard": heard_raw, "stt_ms": stt_ms,
+                                          "sr": 24000, "clarification": True}) + "\n"
+                        yield hdr.encode("utf-8")
+                        pcm = b""
+                        try:
+                            pcm = await asyncio.to_thread(self.synthesize_pcm, clarify_text, turn_speed)
+                            if pcm:
+                                if not hasattr(self, "_recent_replies"):
+                                    self._recent_replies = deque(maxlen=5)
+                                self._recent_replies.append(clarify_text)
+                                yield pcm
+                        except Exception as e:
+                            print(f"[TURN CLARIFY TTS FAIL] {type(e).__name__}: {e}", flush=True)
+                        total_ms = int((time.time() - t_turn0) * 1000)
+                        first_pcm_ms = int((time.time() - t_clarify) * 1000) if pcm else None
+                        turn_event(src=src, bytes=len(user_audio_bytes), stt_ms=stt_ms,
+                                   heard=heard_raw, reply=clarify_text if pcm else "",
+                                   clarification=True, empty=not bool(pcm), drop_reason=drop_reason,
+                                   signal_peak=sig_peak, signal_rms=sig_rms,
+                                   first_pcm_ms=first_pcm_ms, total_ms=total_ms,
+                                   llm_local=self.llm_local_name, tts_speed=turn_speed)
+                        trailer = json.dumps({"end": True, "heard": heard_raw,
+                                              "reply": clarify_text if pcm else "",
+                                              "clarification": True, "empty": not bool(pcm),
+                                              "first_pcm_ms": first_pcm_ms, "stt_ms": stt_ms,
+                                              "total_ms": total_ms}) + "\n"
+                        yield trailer.encode("utf-8")
+
+                    return StreamingResponse(
+                        clarify_stream(), media_type="application/octet-stream",
+                        headers={"X-Sample-Rate": "24000", "X-Channels": "1",
+                                 "X-Accel-Buffering": "no", "Cache-Control": "no-cache"})
+
+                print(f"[TURN DROPPED] empty/quiet segment raw='{heard_raw}' dur={sig_dur}s peak={sig_peak} rms={sig_rms}; no clarification audio", flush=True)
                 turn_event(src=src, bytes=len(user_audio_bytes), stt_ms=stt_ms,
                            heard=heard_raw, reply="", empty=True, drop_reason=drop_reason,
-                           signal_peak=sig_peak, signal_rms=sig_rms,
+                           signal_peak=sig_peak, signal_rms=sig_rms, signal_duration=sig_dur,
                            llm_local=self.llm_local_name)
 
                 async def empty_stream():
-                    hdr = json.dumps({"cid": "turn", "heard": "", "stt_ms": stt_ms, "sr": 24000, "empty": True}) + "\n"
+                    hdr = json.dumps({"cid": "turn", "heard": heard_raw, "stt_ms": stt_ms,
+                                      "sr": 24000, "empty": True, "drop_reason": drop_reason}) + "\n"
                     yield hdr.encode("utf-8")
-                    trailer = json.dumps({"end": True, "heard": "", "reply": "", "empty": True}) + "\n"
+                    trailer = json.dumps({"end": True, "heard": heard_raw, "reply": "", "empty": True,
+                                          "drop_reason": drop_reason}) + "\n"
                     yield trailer.encode("utf-8")
 
                 return StreamingResponse(
@@ -964,7 +1051,7 @@ class KiloVoiceService:
                             yield pcm
                             await asyncio.sleep(0.001)
                 else:
-                    for clause in self.llm_stream_clauses(user_text):
+                    for clause in self.llm_stream_clauses(user_text, history=session_history):
                         clause_clean = clause.strip()
                         if not clause_clean:
                             continue
@@ -983,6 +1070,11 @@ class KiloVoiceService:
                     self._recent_replies = deque(maxlen=5)
                 if full_reply:
                     self._recent_replies.append(full_reply)
+                    sess["history"].append({"role": "user", "content": user_text})
+                    sess["history"].append({"role": "assistant", "content": full_reply})
+                    # Sliding window: keep max 8 messages (4 user-assistant pairs) to protect latency
+                    sess["history"] = sess["history"][-8:]
+                    sess["last_seen"] = time.time()
 
                 total_ms = int((time.time() - t_turn0) * 1000)
                 turn_event(
@@ -998,7 +1090,9 @@ class KiloVoiceService:
                     "reply": full_reply,
                     "first_pcm_ms": t_first_pcm or total_ms,
                     "stt_ms": stt_ms,
-                    "total_ms": total_ms
+                    "total_ms": total_ms,
+                    "session_id": str(session_id),
+                    "history_turns": len(sess.get("history", [])) // 2,
                 }) + "\n"
                 yield trailer.encode("utf-8")
 
