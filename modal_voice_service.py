@@ -805,18 +805,23 @@ WEB_DEMO_HTML = """<!DOCTYPE html>
             if (newline < 0) throw new Error("सर्वर से turn header नहीं मिला।");
             const decoder = new TextDecoder();
             const header = JSON.parse(decoder.decode(bytes.subarray(0, newline)));
-            const marker = new Uint8Array([10, 123, 34, 101, 110, 100, 34, 58]);
-            let end = -1;
-            outer: for (let i = newline + 1; i <= bytes.length - marker.length; i++) {
-                for (let j = 0; j < marker.length; j++) if (bytes[i + j] !== marker[j]) continue outer;
-                end = i; break;
+            let trailerEnd = bytes.length;
+            while (trailerEnd > newline + 1 && bytes[trailerEnd - 1] === 10) trailerEnd--;
+            let trailerStart = -1;
+            let trailer = null;
+            for (let i = trailerEnd - 1; i > newline; i--) {
+                if (bytes[i] !== 123) continue;
+                try {
+                    const candidate = JSON.parse(decoder.decode(bytes.subarray(i, trailerEnd)));
+                    if (candidate && candidate.end === true) {
+                        trailerStart = i;
+                        trailer = candidate;
+                        break;
+                    }
+                } catch (_) {}
             }
-            if (end < 0) throw new Error("सर्वर का turn पूरा नहीं हुआ।");
-            const trailerStart = end + 1;
-            let trailerEnd = bytes.indexOf(10, trailerStart);
-            if (trailerEnd < 0) trailerEnd = bytes.length;
-            const trailer = JSON.parse(decoder.decode(bytes.subarray(trailerStart, trailerEnd)));
-            return { header, trailer, pcm: bytes.slice(newline + 1, end) };
+            if (trailerStart < 0) if (end < 0) throw new Error("सर्वर का turn पूरा नहीं हुआ।");
+            return { header, trailer, pcm: bytes.slice(newline + 1, trailerStart) };
         }
 
         function pcm24kToWav(pcmBytes) {
