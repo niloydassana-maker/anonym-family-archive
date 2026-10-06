@@ -1,0 +1,5 @@
+$ErrorActionPreference = 'Continue'
+Set-Location 'D:\anonym\delivery\kilo-bridge-setup'
+Write-Host '=== RCA micro-test: one browser action only ==='
+crush run -m nvidiafree/nvidia/nemotron-3-super-120b-a12b 'Using the shell tool, run exactly this command and report its raw output, nothing else: python scripts/_now.py'
+Write-Host '=== micro-test done ==='

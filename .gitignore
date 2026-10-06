@@ -106,3 +106,12 @@ PARTNER-BRIEF-*.md
 UNEMPLOYMENT-STATUS-*.md
 two profiles.txt
 .commandcode/
+
+# Key-bearing recovery snapshots + scratch - never ship literal provider keys
+# (added 2026-10-07: RESCUE kernels + root nemotron test carried literal nvapi- keys
+#  in the git index; untracked and closed off here so `git add -A` cannot re-add them)
+RESCUE-kaggle-reset/
+/test_nemotron_models.py
+# The kit's root AGENTS.md is a 356 KB dupe of the house constitution (holds truncated
+# key fragments). The buyer constitution is docs/AGENTS-EMPLOYMENT.md. Never ship this one.
+/delivery/kilo-bridge-setup/AGENTS.md

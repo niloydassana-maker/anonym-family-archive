@@ -28,22 +28,13 @@ image = (
     modal.Image.debian_slim(python_version="3.11")
     .apt_install("ffmpeg", "git")
     .pip_install(
-        "torch",
-        "transformers<4.44",
         "click",
         "faster-whisper",
-        "accelerate",
-        "sentencepiece",
         "fastapi[standard]",
         "requests",
         "scipy",
         "numpy",
-        "nvidia-cublas-cu12",
-        "nvidia-cudnn-cu12",
     )
-    .env({
-        "LD_LIBRARY_PATH": "/usr/local/lib/python3.11/site-packages/nvidia/cublas/lib:/usr/local/lib/python3.11/site-packages/nvidia/cudnn/lib:/usr/local/lib/python3.11/site-packages/nvidia/cuda_runtime/lib:/usr/local/lib/python3.11/site-packages/nvidia/cuda_nvrtc/lib:$LD_LIBRARY_PATH"
-    })
 )
 
 # Spoken Hindi receptionist prompt: natural, warm North Indian cadence without canned wording.
@@ -1085,7 +1076,7 @@ WEB_DEMO_HTML = """<!DOCTYPE html>
 """
 
 
-# Keep conversational inference on the hosted provider. The Modal L4 is reserved
+# Keep conversational inference on the hosted provider. The Modal CPU container is reserved
 # for Whisper and XTTS so LLM weights cannot contend with speech synthesis VRAM.
 VOICE_LLM_PROVIDER = "NVIDIA NIM"
 VOICE_LLM_MODEL = "nvidia/nemotron-3-super-120b-a12b"
@@ -1170,7 +1161,13 @@ def provider_api_keys():
     return [k.strip() for k in os.environ.get("NVIDIA_API_KEYS", "").split(",") if k.strip()]
 
 @app.cls(
-    gpu="l4",
+    # CPU-ONLY deployment (2026-10-06 Baba order: "shift isearch modal completely
+    # to cpu, currently stt uses gpu shift it to cpu"). Whisper is the only GPU
+    # consumer in this service (LLM + TTS are hosted NVIDIA NIM/NVCF), so no GPU
+    # is allocated at all. cpu=4 / memory=8GiB sized for faster-whisper
+    # large-v3-turbo int8 on CPU.
+    cpu=4,
+    memory=8192,
     image=image,
     scaledown_window=300,  # Keep warm for 5 minutes of idle conversation
     timeout=600,
@@ -1180,42 +1177,28 @@ class KiloVoiceService:
     @modal.enter()
     def setup(self):
         import os
-        import torch
         from faster_whisper import WhisperModel
 
         os.environ["COQUI_TOS_AGREED"] = "1"
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        print(f"[MODAL L4] Initializing Kilo Voice Engine on {self.device}...")
+        self.device = "cpu"
+        print("[MODAL CPU] Initializing Kilo Voice Engine on cpu (no GPU allocated)...", flush=True)
 
-        # Preload nvidia cublas/cudnn shared libraries with RTLD_GLOBAL
-        import ctypes
-        import glob
-        for libdir in [
-            "/usr/local/lib/python3.11/site-packages/nvidia/cublas/lib",
-            "/usr/local/lib/python3.11/site-packages/nvidia/cudnn/lib",
-            "/usr/local/lib/python3.11/site-packages/nvidia/cuda_runtime/lib",
-        ]:
-            for so in glob.glob(f"{libdir}/*.so*"):
-                try:
-                    ctypes.CDLL(so, mode=ctypes.RTLD_GLOBAL)
-                except Exception:
-                    pass
+        # 2026-10-06 CPU shift: the CUDA cublas/cudnn RTLD_GLOBAL preload that
+        # used to live here is gone -- there is no GPU in this container.
 
         # Hindi synthesis uses NVIDIA's Hindi-capable Magpie model through NVCF.
         # XTTS-v2's published language list does not include Hindi; round-trip
         # checks confirmed its streamed Hindi output was frequently unintelligible.
         print(f"[TTS PROVIDER] NVIDIA NIM / {TTS_MODEL} / {TTS_VOICE}", flush=True)
 
-        # Load Faster-Whisper on the Modal L4 with CUDA validation & CPU fallback.
-        print("[MODAL L4] Loading Faster-Whisper large-v3-turbo...")
-        try:
-            self.whisper = WhisperModel("large-v3-turbo", device=self.device, compute_type="float16")
-            dummy_pcm = np.zeros(16000, dtype=np.float32)
-            list(self.whisper.transcribe(dummy_pcm, beam_size=1)[0])
-            print("[MODAL L4] Faster-Whisper on CUDA float16 validated successfully!")
-        except Exception as e:
-            print(f"[MODAL L4] Faster-Whisper CUDA failed ({e}), falling back to CPU float32...")
-            self.whisper = WhisperModel("large-v3-turbo", device="cpu", compute_type="float32")
+        # Load Faster-Whisper on CPU. int8 is the standard CPU compute type for
+        # ctranslate2: ~2x faster than float32 with negligible accuracy loss on
+        # large-v3-turbo.
+        print("[MODAL CPU] Loading Faster-Whisper large-v3-turbo (device=cpu, compute_type=int8)...")
+        self.whisper = WhisperModel("large-v3-turbo", device="cpu", compute_type="int8")
+        dummy_pcm = np.zeros(16000, dtype=np.float32)
+        list(self.whisper.transcribe(dummy_pcm, beam_size=1)[0])
+        print("[MODAL CPU] Faster-Whisper CPU int8 validated successfully!", flush=True)
 
         # Warm the provider route at boot and fail early if API credentials or
         # Hindi synthesis are unavailable. The phone still owns its instant filler.
@@ -1227,17 +1210,17 @@ class KiloVoiceService:
             if _pk < 3000:
                 raise RuntimeError(f"pre-warm audio peak {_pk} is dead - refusing to serve a broken voice")
         except Exception as e:
-            print(f"[MODAL L4] PRE-WARM GATE FAILED: {e}", flush=True)
+            print(f"[MODAL CPU] PRE-WARM GATE FAILED: {e}", flush=True)
             raise
 
         # Provider-only inference: NVIDIA hosts both Nemotron text and Magpie TTS;
-        # the Modal L4 remains dedicated to Whisper STT.
+        # this container is CPU-only: Whisper STT runs on cpu, LLM/TTS are hosted.
         self.llm_local = None
         self.llm_local_name = None
         self.sessions = {}
         print(f"[LLM PROVIDER] {VOICE_LLM_PROVIDER} / {VOICE_LLM_MODEL}", flush=True)
 
-        print("[MODAL L4] Warm-up complete! Serverless engine ready.")
+        print("[MODAL CPU] Warm-up complete! Serverless engine ready.")
 
     def detect_lang(self, text: str) -> str:
         # HINDI ONLY (stable)
@@ -1553,7 +1536,7 @@ class KiloVoiceService:
         from fastapi import FastAPI, Request
         from fastapi.responses import JSONResponse, StreamingResponse
 
-        web_app = FastAPI(title="Kilo Voice Clinic - Modal L4 Production")
+        web_app = FastAPI(title="Kilo Voice Clinic - Modal CPU Production")
 
         self.turn_events = deque(maxlen=25)
         self.last_audio = b""  # AUDIO EVIDENCE (2026-10-05): keep the most recent
@@ -1582,9 +1565,10 @@ class KiloVoiceService:
         def health():
             return {
                 "ok": True,
-                "engine": "kilo-voice-modal-l4-whisper-nvidia-tts",
-                "gpu": "NVIDIA L4 (Whisper STT)",
+                "engine": "kilo-voice-modal-cpu-whisper-nvidia-tts",
+                "gpu": None,
                 "stt_device": str(self.device),
+                "stt_compute_type": "int8",
                 "voice": TTS_VOICE,
                 "speed": TTS_DEFAULT_SPEED,
                 "llm_local": self.llm_local_name,

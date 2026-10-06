@@ -1,0 +1,101 @@
+[
+ {
+  "model": "meta/llama-3.2-11b-vision-instruct",
+  "text_ok": true,
+  "text_ms": 600,
+  "text": "PONG",
+  "vis_ok": true,
+  "vis_ms": 749,
+  "vis": "Pink."
+ },
+ {
+  "model": "meta/llama-3.2-90b-vision-instruct",
+  "text_ok": true,
+  "text_ms": 70903,
+  "text": "PONG",
+  "vis_ok": true,
+  "vis_ms": 71280,
+  "vis": "Red."
+ },
+ {
+  "model": "microsoft/phi-3-vision-128k-instruct",
+  "text_ok": false,
+  "text_ms": 585,
+  "text": "HTTPError: HTTP Error 404: Not Found",
+  "vis_ok": false,
+  "vis_ms": 282,
+  "vis": "HTTPError: HTTP Error 404: Not Found"
+ },
+ {
+  "model": "microsoft/kosmos-2",
+  "text_ok": false,
+  "text_ms": 282,
+  "text": "HTTPError: HTTP Error 404: Not Found",
+  "vis_ok": false,
+  "vis_ms": 275,
+  "vis": "HTTPError: HTTP Error 404: Not Found"
+ },
+ {
+  "model": "nvidia/neva-22b",
+  "text_ok": false,
+  "text_ms": 313,
+  "text": "HTTPError: HTTP Error 404: Not Found",
+  "vis_ok": false,
+  "vis_ms": 306,
+  "vis": "HTTPError: HTTP Error 404: Not Found"
+ },
+ {
+  "model": "nvidia/vila",
+  "text_ok": false,
+  "text_ms": 290,
+  "text": "HTTPError: HTTP Error 404: Not Found",
+  "vis_ok": false,
+  "vis_ms": 319,
+  "vis": "HTTPError: HTTP Error 404: Not Found"
+ },
+ {
+  "model": "adept/fuyu-8b",
+  "text_ok": false,
+  "text_ms": 308,
+  "text": "HTTPError: HTTP Error 404: Not Found",
+  "vis_ok": false,
+  "vis_ms": 258,
+  "vis": "HTTPError: HTTP Error 404: Not Found"
+ },
+ {
+  "model": "moonshotai/kimi-k3",
+  "text_ok": false,
+  "text_ms": 120168,
+  "text": "TimeoutError: The read operation timed out",
+  "vis_ok": false,
+  "vis_ms": 120303,
+  "vis": "TimeoutError: The read operation timed out"
+ },
+ {
+  "model": "deepseek-ai/deepseek-v4.1-flash",
+  "text_ok": false,
+  "text_ms": 120259,
+  "text": "TimeoutError: The read operation timed out",
+  "vis_ok": false,
+  "vis_ms": 120222,
+  "vis": "TimeoutError: The read operation timed out"
+ },
+ {
+  "model": "google/gemma-3-12b-it",
+  "text_ok": false,
+  "text_ms": 415,
+  "text": "HTTPError: HTTP Error 404: Not Found",
+  "vis_ok": false,
+  "vis_ms": 425,
+  "vis": "HTTPError: HTTP Error 404: Not Found"
+ },
+ {
+  "model": "google/gemma-3-4b-it",
+  "text_ok": false,
+  "text_ms": 403,
+  "text": "HTTPError: HTTP Error 404: Not Found",
+  "vis_ok": false,
+  "vis_ms": 373,
+  "vis": "HTTPError: HTTP Error 404: Not Found"
+ }
+]

@@ -1,0 +1,8 @@
+# apply_answers.txt - operator-confirmed answers for apply-flow gates.
+# Format: one "key|answer" per line. The key is matched (lowercase, substring)
+# against the recruiter question text. Set ONLY by the operator's word.
+# NEVER invent a figure here (correctness > convenience).
+#
+# "How many years of hands-on experience do you have in GenAI/LLM?"
+# grounded in career/EARNING-MAP.md: "Since 2024 I've gone fully agentic" -> 2 years.
+genai|2
