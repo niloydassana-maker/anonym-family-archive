@@ -469,6 +469,132 @@ class Agent360Client:
     def close_tab(self, tab_id):
         return self.call_tool('browser_close_tab', {'tab_id': tab_id})
 
+    # ===== VERIFYING VERBS (2026-10-07) - the tool layer returns POST-ACTION STATE =====
+    # WHY HERE: a reasoning agent given a bare goal FABRICATED executions when it had
+    # to author its own click choreography. The fix is that every verb PROVES its own
+    # effect before returning: a click hands back the resulting URL + toast; a fill is
+    # RE-READ from the DOM. A verb that cannot produce a post-state never claims one.
+    # ADDITIVE & self-contained (uses only call_tool), so it cannot disturb the gate/
+    # token logic the 20+ live a360_* daemons rely on. JS .click() only - PACE 1.
+
+    def _js(self, expr):
+        """execute_script, fully unwrapped to the raw script value.
+        Handles the MCP envelope ({content:[{type:text,text:JSON}]}) AND the
+        {'result': <value>} wrapper execute_script uses, and parses a JSON string
+        value back to an object. Returns the value, or {'error':..} on tool error."""
+        res = self.call_tool('browser_execute_script', {'code': expr})
+        if isinstance(res, dict) and res.get('isError'):
+            return {'error': res.get('error')}
+        val = res
+        if isinstance(res, dict) and res.get('content'):
+            for b in res.get('content', []) or []:
+                if b.get('type') == 'text':
+                    t = b.get('text', '')
+                    try:
+                        val = json.loads(t)
+                    except Exception:
+                        val = t
+                    break
+        if isinstance(val, dict) and 'result' in val:
+            val = val['result']
+        if isinstance(val, str):
+            sval = val.strip()
+            if sval[:1] in '[{' and sval[-1:] in ']}':
+                try:
+                    return json.loads(sval)
+                except Exception:
+                    return val
+        return val
+
+    def url(self):
+        """Current page URL ('' if unreadable)."""
+        u = self._js('location.href')
+        return u if isinstance(u, str) else ''
+
+    def toast(self):
+        """Best-effort visible toast/alert/snackbar text ('' if none)."""
+        r = self._js(
+            "(function(){var sels=['[role=alert]','.toast','[class*=toast]',"
+            "'[class*=Toast]','[class*=snack]','[class*=Snack]','[class*=notification]',"
+            "'[class*=Notification]'];for(var i=0;i<sels.length;i++){var e="
+            "document.querySelector(sels[i]);var t=e?(e.innerText||'').trim():'';"
+            "if(t)return t.slice(0,200);}return '';})()")
+        return r if isinstance(r, str) else ''
+
+    def readback(self, selector):
+        """READ a field's ACTUAL value from the DOM (the fill-verification half).
+        Handles input.value, textarea.value and contenteditable textContent."""
+        r = self._js(
+            "(function(){var e=document.querySelector(%s);if(!e)return {found:false,value:''};"
+            "var ce=e.getAttribute('contenteditable');"
+            "var v=(ce==='true')?(e.textContent||''):((e.value!==undefined)?e.value:"
+            "((e.innerText!==undefined)?e.innerText:''));"
+            "return {found:true,value:String(v)};})()" % json.dumps(selector))
+        if isinstance(r, str):
+            try:
+                r = json.loads(r)
+            except Exception:
+                r = {}
+        return r if isinstance(r, dict) else {'found': False, 'value': ''}
+
+    def fill_verified(self, selector, value, max_retries=3):
+        """Fill a field, then RE-READ it. ok is True only when readback == value.
+        THE CORE FIX: the old lanes reported 'filled' while the field stayed EMPTY
+        (input dispatched at the wrong node). A fill not read back is not a fill."""
+        last = {}
+        for attempt in range(max_retries):
+            self.call_tool('browser_fill', {'selector': selector, 'value': value})
+            time.sleep(0.4)
+            rb = self.readback(selector)
+            actual = rb.get('value') or ''
+            last = {'ok': bool(rb.get('found')) and actual.strip() == str(value).strip(),
+                    'selector': selector, 'expected': value, 'actual': actual,
+                    'attempts': attempt + 1}
+            if last['ok']:
+                return last
+            time.sleep(0.4 * (attempt + 1))
+        return last
+
+    def find_and_click(self, desc, max_retries=3):
+        """Find an element by VISIBLE TEXT and click it (JS .click(), PACE 1).
+        Returns {ok,url,toast,url_changed,clicked}, never a bare 'clicked'. ok is
+        True only when a real element matched and .click() ran; the resulting URL and
+        toast are handed back so the caller judges the effect. The mouse path is never
+        used (Input.dispatchMouseEvent times out on this machine - PACE.md 1)."""
+        want = json.dumps(desc)
+        last = {'ok': False, 'url': self.url(), 'toast': '', 'clicked': 'not-found'}
+        for attempt in range(max_retries):
+            url_before = self.url()
+            r = self._js(
+                "(function(){var want=" + want + ";"
+                "var all=document.querySelectorAll('button,a,[role=button],[role=link],"
+                "input[type=submit],input[type=button],[role=tab],li,span,div');"
+                "var best=null;"
+                "for(var i=0;i<all.length;i++){var e=all[i];"
+                "var t=(e.innerText||e.value||e.getAttribute('aria-label')||'').trim();"
+                "if(!t)continue;if(t.toLowerCase().indexOf(String(want).toLowerCase())<0)continue;"
+                "var rr=e.getBoundingClientRect();if(rr.width<1||rr.height<1)continue;"
+                "if(!best||t.length<best.t.length)best={e:e,t:t};}"
+                "if(!best)return {found:false};"
+                "try{best.e.click();}catch(err){return {found:true,clicked:false};}"
+                "return {found:true,clicked:true,label:best.t.slice(0,80)};})()")
+            if not isinstance(r, dict) or not r.get('found'):
+                last['clicked'] = 'not-found'
+                time.sleep(0.5 * (attempt + 1))
+                continue
+            time.sleep(1.0)
+            last = {'ok': bool(r.get('clicked')), 'url': self.url(), 'toast': self.toast(),
+                    'clicked': r.get('label') or desc,
+                    'url_changed': self.url() != url_before, 'attempts': attempt + 1}
+            if last['ok']:
+                return last
+            time.sleep(0.5 * (attempt + 1))
+        return last
+
+    # Aliases matching the mission's verb vocabulary so goal-runner prose maps 1:1.
+    findclick = find_and_click
+    fill_checked = fill_verified
+
     # ===== ROBUST WRAPPERS (retry + wait + backoff) =====
     def robust_click(self, selector, max_retries=5, base_delay=1.0):
         """Click with wait_for_selector + exponential backoff retries."""
