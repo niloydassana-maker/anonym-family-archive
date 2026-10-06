@@ -1,0 +1,537 @@
+TOTAL PAGES: 15
+
+=== PAGE 1 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+TransportLah  Final Design Proposal
+Ride green. Earn rewards. Climb the leaderboard.
+A gamified, privacy-first green commute rewards platform for Singapore
+Product thesis
+Singapore already has strong journey planners and bus timing apps. TransportLah differentiates itself by turning 
+verified public transport usage into Green Points, contests, public leaderboards, sponsor promotions and 
+measurable CO2 impact.
+Prepared: June 2026
+
+=== PAGE 2 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+Table of Contents
+ 1. Executive Summary
+ 2. Product Vision and Target Users
+ 3. Market Research and Competitive Positioning
+ 4. LTA DataMall API Foundation
+ 5. Core User Features
+ 6. Lightweight Ride Verification Service
+ 7. Fare-Smart Routes
+ 8. Gamification: Green Points, Badges and Levels
+ 9. Promotions, Contests and Leaderboards
+ 10. Admin Portal
+ 11. System Architecture
+ 12. Data Model
+ 13. Fraud, Privacy and Consent
+ 14. Proposed Wireframes and App Experience
+ 15. MVP Scope and Roadmap
+ 16. Success Metrics
+ 17. References
+
+=== PAGE 3 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+1. Executive Summary
+TransportLah is proposed as a Singapore public transport companion app that rewards greener commuting. It 
+combines live public transport data, lightweight ride verification, fare-smart route comparison, Green Points, public 
+leaderboards, admin-managed promotions and sponsor-backed contests.
+The app should avoid competing head-on with established transport utilities on journey planning alone. Instead, it 
+should use transport data as the foundation and build a differentiated engagement layer: verified rides + rewards + 
+sustainability + contests.
+Recommended positioning
+Singapore's green commute rewards and challenge platform, powered by public transport data and privacy-first 
+ride verification.
+Strategic Pillar What It Means
+Daily utility Live arrivals, route options, train alerts, crowd context and fare-smart 
+comparisons.
+Trustworthy rewards A lightweight confidence-scoring service validates rides before points 
+and leaderboard credit are awarded.
+Green identity Users build a visible profile around verified rides, CO2 avoided, 
+streaks and achievements.
+Campaign platform Admins and sponsors can create contests, promotions and public or 
+organisation-specific leaderboards.
+Privacy-first design Raw GPS is used only during active ride verification and retained 
+temporarily.
+2. Product Vision and Target Users
+2.1 Product Vision
+TransportLah should make public transport usage rewarding, social and measurable. The product experience should 
+be built around a simple loop: Plan ride -> Verify ride -> Earn points -> Join contests -> Climb leaderboard -> 
+Redeem rewards.
+The primary tagline is: Ride green. Earn rewards. Climb the leaderboard.
+2.2 Target Users
+Segment Needs TransportLah Value
+Daily commuters Reliable commute information and motivation 
+to use public transport.
+Live arrivals, fare-smart routes, verified points 
+and rewards.
+Students Affordable travel and social challenges. School leaderboards, badges and low-cost 
+commute nudges.
+Office workers Daily commute planning and employer 
+sustainability initiatives.
+Company challenges, off-peak incentives and 
+team dashboards.
+Families Simplicity, savings and reward visibility. Profile impact summaries, wallet and family-
+friendly challenges.
+Sponsors Measurable green campaign participation. Admin promotions, contest registration and 
+reward fulfilment.
+Schools / companies Behaviour-change campaigns. Verified team leaderboards and aggregate 
+impact reporting.
+
+=== PAGE 4 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+3. Market Research and Competitive Positioning
+Singapore already has a mature transport app ecosystem. Existing apps are strong in live bus timing, multimodal 
+route planning, train alerts, fare-card account services and taxi/private-hire booking. TransportLah should therefore 
+not be positioned as another generic journey planner.
+3.1 Competitor Review
+App Current Strengths Opportunity for TransportLah
+MyTransport.SG
+Official LTA app with personalisation, nearby 
+transport information, MRT/road alerts and 
+multimodal journey planning.
+No strong public green rewards, contest 
+registration, sponsor promotion or verified 
+leaderboard layer.
+SimplyGo
+Travel expenditure/history, card balance, card 
+services, top-ups, reward points and journey 
+planning.
+Strong payment and card utility, but not a broad 
+public green commute challenge platform.
+Citymapper
+Best-in-class multimodal navigation, live departures, 
+disruptions, step-by-step route guidance and saved 
+stops/lines.
+Excellent navigation, but not locally positioned 
+around green rewards, verified commuter identity or 
+public contests.
+Moovit Public transport planning, live arrivals, maps, 
+service alerts and step-by-step directions.
+Utility-focused; weak on local sponsor campaigns, 
+verified rewards and leaderboards.
+SG BusLeh Bus-first UX, bus location on map, capacity bars, 
+unified search and EZ-Link balance support.
+Strong bus timing utility, but not a full green mobility 
+engagement platform.
+SBS Transit app
+Real-time bus arrivals, bus route details, 
+delayed/diverted services, train delays and 
+disruption alerts.
+Operator-centric; no broad multi-operator reward 
+and contest layer.
+Grab / CDG Zig Taxi/private-hire booking, payments, promotions 
+and trip history.
+Competes for mobility wallet attention but does not 
+primarily reward public transport use.
+3.2 Strategic Insight
+ Basic bus arrivals, nearby stops, route planning, MRT alerts and favourites are table stakes.
+ TransportLah should focus investment on features that existing transport apps do not strongly cover: verified 
+green rides, Green Points, public leaderboards, contests, admin promotions and sustainability reporting.
+ The user promise should be: Save money, ride greener, earn rewards.
+Strategic conclusion
+Use LTA transport data as the foundation, but build the differentiated value layer above it: verified rides + Green 
+Points + contests + leaderboards + promotions + sustainability reporting.
+4. LTA DataMall API Foundation
+The LTA DataMall guide provides a practical foundation for live public-transport and mobility features. Relevant APIs 
+include Bus Arrival, Bus Services, Bus Routes, Bus Stops, Passenger Volume, Train Service Alerts, Facilities 
+Maintenance, Station Crowd Density Real Time and Forecast, Planned Bus Routes and Bicycle Parking.
+Important design constraint: passenger-volume APIs are aggregated and generated for previous-month data. They 
+help with analytics and planning, but they do not prove that an individual user took a specific ride. Therefore, 
+TransportLah needs its own lightweight ride verification layer unless a future authorised fare-card integration is 
+secured.
+Feature Area Relevant LTA APIs Use in TransportLah
+Live bus arrivals Bus Arrival ETA, current estimated bus location, load/crowding, 
+wheelchair accessibility and vehicle type.
+Bus network context Bus Services, Bus Routes, Bus Stops Service validation, stop geofencing, route matching 
+and first/last bus rules.
+Train context Train Service Alerts, Station Crowd Density Real 
+Time/Forecast, Facilities Maintenance Disruptions, crowd levels and accessibility alerts.
+Analytics Passenger Volume by Bus/Train and OD datasets Demand patterns, campaign insights and aggregate 
+planning. Not user ride proof.
+Active mobility Bicycle Parking Bike-to-transit challenges and station-adjacent 
+
+=== PAGE 5 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+mobility nudges.
+Road/mobility context Traffic Incidents, Speed Bands, Estimated Travel 
+Times
+Phase 2 multimodal context and comparison to car 
+travel.
+4.1 API Integration Principles
+ Do not call LTA APIs directly from the mobile client. Use a backend proxy to protect the AccountKey.
+ Cache high-volume data such as bus stops, routes and services.
+ Use active-stop polling for Bus Arrival rather than constantly polling every stop.
+ Handle 500-record pagination via $skip where applicable.
+ Treat LTA data as transport context and validation support, not as user ride evidence.
+5. Core User Features
+5.1 Journey Planner
+Users can search by origin and destination and compare route options. The planner should support bus, MRT/LRT 
+and mixed-mode journeys, but the MVP should not try to outbuild Citymapper or Google Maps. Its priority is to 
+support fare-smart, green and reward-aware route decisions.
+5.2 Live Bus Stop Screen
+The live bus stop screen shows services arriving soon, ETA, destination, stops away, load/crowding, wheelchair 
+accessibility, vehicle type and whether arrival time is monitored from bus location or schedule-based.
+Bus Load UI Treatment
+SEA - Seats Available Green badge / low crowd indicator
+SDA - Standing Available Amber badge / medium crowd indicator
+LSD - Limited Standing Red badge / high crowd indicator
+5.3 Train Status Screen
+The train module shows train service status, affected lines/stations, free public bus or MRT shuttle notices during 
+disruptions, real-time and forecasted station crowd levels, and lift maintenance notices.
+5.4 Green Ride Check-in
+The check-in experience should be voluntary and transparent. The app should say “Start Green Ride” and “We are 
+verifying your ride,” rather than implying surveillance or perfect certainty.
+6. Lightweight Ride Verification Service
+TransportLah should use a confidence-based ride verification engine instead of continuous tracking or a single GPS 
+signal. The service should classify rides as verified, probable, low-confidence or rejected based on a combination of 
+stop proximity, service validity, bus arrival context, route matching, speed plausibility and alighting location.
+6.1 Verification Flow
+1. User taps Start Ride.
+2. App captures 1-3 GPS points near a stop or station.
+3. Backend checks proximity to a valid bus stop or train station.
+4. User confirms service or route option.
+5. Backend validates that the service serves the selected stop and that the stop is in the right sequence.
+6. Backend checks live or recent Bus Arrival context where relevant.
+
+=== PAGE 6 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+7. During the ride, the app samples GPS lightly and preferably calculates first-pass route matching on device.
+8. User taps End Ride, or the app suggests auto-ending near a downstream stop/station.
+9. Backend computes verification score and awards points according to verification tier.
+10. Raw GPS trace is deleted or downsampled after the retention window.
+6.2 GPS Sampling Strategy
+Ride Phase Sampling
+Start check-in 1-3 points
+First 3 minutes Every 10-15 seconds
+During ride Every 30-60 seconds
+Near expected alighting Every 10-15 seconds
+After ride ends Stop completely
+6.3 Ride Confidence Score
+Signal Purpose Weight
+Starts near valid bus stop Plausible boarding point 15
+Selected service serves stop Route validity 10
+Bus Arrival context matches check-in time Bus plausibly arrived 20
+Movement follows bus route corridor Strong movement validation 25
+Speed pattern is bus-like Rejects walking/cycling/implausible travel 10
+Remains near route corridor Prevents drive-by check-ins 10
+Exits near downstream stop Plausible alighting point 10
+Score Decision Reward Impact
+80-100 Verified ride Full points and leaderboard eligible
+60-79 Probable ride Partial points; not high-value contest eligible
+40-59 Low confidence Personal stats only
+Below 40 Rejected or flagged No points
+6.4 Route Matching Logic
+ride_is_plausible =
+  user starts near stop N
+  AND selected service serves stop N
+  AND user moves in the direction of stop N+1, N+2, N+3...
+  AND user remains within 100-200m of the route corridor
+  AND speed is within a bus-like range
+  AND user exits near a downstream stop
+6.5 Verification Tiers
+Tier Verification Reward Impact
+Tier 0 Manual ride claim Personal stats only
+Tier 1 GPS near valid stop + plausible route Basic points
+Tier 2 GPS + LTA live bus context + route following Full points
+Tier 3 Tier 2 + QR/NFC/device integrity Contest/reward eligible
+Tier 4 Future fare-card/SimplyGo partner 
+verification Highest trust
+
+=== PAGE 7 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+7. Fare-Smart Routes
+Fare-Smart Routes helps users compare routes by estimated fare, travel time, crowd level, Green Points and CO2 
+avoided. In Singapore, public bus and MRT/LRT fares are distance-based, so the cheapest route is usually the 
+lowest valid chargeable journey distance, subject to transfer rules.
+7.1 Route Comparison Experience
+Route Option Time Est. Fare Transfers Crowd Green Points
+Fastest 32 min $1.95 2 Medium 25
+Cheapest 41 min $1.67 1 Low 30
+Least crowded 45 min $1.83 2 Low 35
+Best rewards 39 min $1.83 2 Medium 45
+The route card should explain trade-offs in plain language, e.g. “Save about $0.28, but the journey may take 9 
+minutes longer.”
+7.2 Fare Estimation Logic
+ Total route distance and route sequence.
+ Bus route stop distance and station origin/destination.
+ Transfer limits and timing windows.
+ Same-service and same-station re-entry constraints.
+ Fare profile: adult, student, senior, concession or tourist.
+ Monthly pass status, where relevant.
+ Clear labelling as estimated unless official fare-source integration is used.
+7.3 Transfer Validity Warnings
+Situation App Warning
+Long transfer wait This route may be charged as a new journey if the transfer wait is too 
+long.
+Same bus service repeated Taking the same bus service again may be treated as a new trip.
+Same MRT station re-entry Exiting and re-entering the same train station may break fare 
+continuity.
+Too many transfers This route may exceed the maximum transfer limit.
+Very long route This may be treated as a separate journey depending on total 
+duration.
+Fare-Smart positioning
+Save money, ride greener, earn rewards.
+8. Gamification: Green Points, Badges and Levels
+The Green Points engine should reward consistent public transport usage, not only distance. It should encourage 
+verified bus/train rides, multimodal journeys, off-peak travel, low-crowd choices and challenge participation.
+Activity Points
+Verified bus ride 10
+Verified train ride 12
+Bus + train multimodal journey 25
+Off-peak ride +5
+High-confidence verification +5
+Weekly streak: 5 public transport days +50
+
+=== PAGE 8 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+Monthly green commuter badge +100
+Bicycle parking discovery/check-in near station +5
+8.1 Badges
+Badge Criteria
+First Green Ride First verified ride
+Bus Hero 20 bus rides in a month
+Rail Champion 20 train rides in a month
+Multimodal Master 10 mixed bus/train journeys
+Off-Peak Optimiser 10 off-peak rides
+Carbon Saver Estimated 25 kg CO2 avoided
+Consistency Champion 4-week public transport streak
+Verified Commuter 10 high-confidence rides
+Levels: Seedling -> Sprout -> Leaf -> Tree -> Rainforest -> Green Champion.
+9. Promotions, Contests and Leaderboards
+9.1 Promotions Section
+Admins can publish campaigns, sponsor offers and reward announcements. Promotions should be discoverable from 
+the home dashboard and rewards tab.
+Promotion Field Description
+Promotion title Short campaign name
+Sponsor Brand or organisation
+Description Campaign details
+Start / end date Validity period
+Eligibility Public, school, company or location-based
+Reward type Voucher, points, badge or lucky draw
+Verification requirement Manual, GPS, high-confidence or QR/NFC
+Status Draft, scheduled, live or expired
+9.2 Contest Registration
+Users should be able to register for contests from the app. Each contest defines transport modes, scoring rules, 
+required verification tier, leaderboard type, prize pool, privacy mode and anti-fraud rules.
+Contest Scoring
+Monthly Green Commuter Total verified public transport rides
+Bus Champion Verified bus rides only
+MRT Explorer Unique MRT/LRT stations visited
+Off-Peak Saver Off-peak rides
+Team Green Challenge Company/school team points
+Neighbourhood Challenge Area-based leaderboard
+High-Confidence Hero Only Tier 2+ rides count
+9.3 Public Leaderboards
+Leaderboards should support overall, weekly, friends, teams, neighbourhood, mode-specific and verified-only views. 
+Public rankings should use display names and should count verified rides only.
+
+=== PAGE 9 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+10. Admin Portal
+The admin portal turns TransportLah into a campaign platform. It should allow authorised admins, sponsors, schools 
+and companies to create promotions, configure contests, review suspicious rides and manage rewards.
+Admin Role Capabilities
+Super Admin Full access
+Campaign Manager Promotions and contests
+Sponsor Admin Sponsor-specific promotions
+Support Agent User queries and reward fulfilment
+Fraud Reviewer Review suspicious ride claims
+Analyst Read-only dashboards
+ Create, schedule and retire promotions.
+ Configure contest rules, verification tiers, reward pool and leaderboard visibility.
+ Review suspicious ride claims and top contest winners before reward fulfilment.
+ Export contest results and aggregate impact reports.
+ Publish push notifications and in-app announcements.
+11. System Architecture
+11.1 Mobile App
+Recommended stack: Flutter or React Native for iOS and Android. Main modules: Home, Plan, Live Arrivals, Active 
+Ride, Rewards, Contests, Leaderboards, Profile, Admin web views and Notification Centre.
+11.2 Backend Services
+Service Responsibility
+User Service Login, profile, privacy preferences and display name.
+Journey Service Route search, live arrivals and station status.
+LTA Data Service API integration, caching, pagination and AccountKey protection.
+Lightweight Ride Verification Service GPS/event-based ride confidence scoring.
+Fare Optimisation Service Fare estimation, transfer validity and route comparison.
+Gamification Service Points, badges, levels and streaks.
+Contest Service Registration, scoring, eligibility and contest lifecycle.
+Leaderboard Service Public/private rankings and Redis sorted sets.
+Promotion Service Admin-created offers and campaigns.
+Reward Service Voucher issuance and redemption status.
+Fraud Service Anomaly detection and manual review.
+Notification Service Push, email and in-app alerts.
+11.3 Data Layer
+Component Recommended Technology
+Transactional data PostgreSQL
+Geospatial queries PostGIS
+Active ride state Redis
+Leaderboards Redis sorted sets
+Event processing SQS, Kafka or Kinesis
+Promotion images S3/object storage
+Analytics BigQuery, Redshift, Snowflake or Databricks
+11.4 Reference Flow
+User searches journey
+  -> Journey Service generates route candidates
+
+=== PAGE 10 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+  -> LTA Data Service enriches with arrivals/stops/routes
+  -> Fare Optimisation Service estimates fare and transfer validity
+  -> Gamification Service estimates points
+  -> App displays Fastest, Cheapest, Greenest and Best Rewards options
+User starts ride
+  -> Ride Verification Service validates stop/service/context
+  -> Redis stores active ride state
+  -> GPS/sensor proof packet is processed
+  -> Verification score is computed
+  -> Points ledger is updated
+  -> Leaderboard is refreshed
+12. Data Model
+Entity Key Fields
+User user_id, display_name, email, privacy_mode
+Ride ride_id, user_id, mode, service_no, start_stop, end_stop, start_time, end_time, 
+distance_km, verification_status
+RideVerification ride_id, verification_score, verification_tier, route_match_score, 
+gps_quality_score, speed_score, lta_context_score
+GreenPointsLedger ledger_id, user_id, ride_id, points, reason, timestamp
+Badge badge_id, name, criteria, icon
+UserBadge user_id, badge_id, earned_at
+Contest contest_id, title, rules, start_date, end_date, status, required_verification_tier
+ContestRegistration contest_id, user_id, registered_at
+LeaderboardEntry contest_id, user_id, points, rank, rides, co2_saved
+Promotion promo_id, title, sponsor, description, image_url, start_date, end_date
+Reward reward_id, user_id, promo_id, voucher_code, redemption_status
+FraudSignal signal_id, user_id, ride_id, reason, severity, status
+FareEstimate route_id, fare_profile, estimated_fare, transfer_validity_status, warnings
+13. Fraud, Privacy and Consent
+13.1 Fraud Controls
+ Location plausibility and stop geofence checks.
+ Bus service and route validation.
+ Speed plausibility and impossible movement detection.
+ Duplicate ride and repeated short ride detection.
+ Daily point caps and minimum ride distance/duration.
+ GPS spoofing and device integrity checks.
+ QR/NFC verification for high-value contests.
+ Manual review of top contest winners and suspicious rides.
+ Verified-only leaderboards for public contests.
+13.2 Privacy Model
+Data Retention
+Raw GPS trace 24-72 hours
+Flagged ride trace Until review is complete
+Aggregated ride summary Long term
+
+=== PAGE 11 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+Leaderboard score Contest duration + audit window
+CO2 and points summary Long term
+The app should use display names on public leaderboards, let users hide exact ride history, and explain that raw 
+location data is used only during active ride verification. Long-term records should store summaries, not precise 
+movement traces.
+14. Proposed Wireframes and App Experience
+The proposed UX follows a reward-led flow: Plan ride -> Verify ride -> Earn points -> Join contests -> Climb 
+leaderboard -> Redeem rewards. The screens are designed to feel like a daily green mobility companion rather than 
+a surveillance app.
+14.1 Key Screens
+Screen Purpose
+Landing / Onboarding Explain “Ride green. Earn rewards. Climb the leaderboard.”
+Home Dashboard Show Green Points, verified rides, CO2 avoided, streak and quick actions.
+Journey Planner Search routes and choose fastest, cheapest, greenest or best rewards.
+Route Options Compare time, fare, crowding, transfers and points.
+Route Detail Show step-by-step journey and Start Ride Verification CTA.
+Live Bus Arrivals Show ETA, load/crowd, destination and live validation context.
+Ride Verification Show ride progress and verification checklist.
+Ride Completed Celebrate points and CO2 avoided.
+Rewards Wallet Show points, featured rewards, categories and history.
+Promotions and Contests Discover, register and track campaign progress.
+Leaderboard Show global/friends/company/school ranks.
+Profile and Impact Show user level, monthly impact, badges and privacy settings.
+Admin Promotions Manage banners, sponsor content and engagement metrics.
+Admin Create Contest Configure contest dates, rules, rewards and verification tier.
+
+=== PAGE 12 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+14.2 Wireframe Board 1
+Wireframe board 1: Home dashboard, route options, active ride verification, rewards, leaderboard and supporting screens.
+
+=== PAGE 13 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+14.3 Wireframe Board 2
+Wireframe board 2: Detailed app screens, design system, admin screens and full product flow.
+
+=== PAGE 14 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+14.4 UX Language Principles
+Use Avoid
+Start Green Ride Start tracking
+We are verifying your ride We are monitoring you
+Ride verified with high confidence We know you were on the bus
+Raw location is used only during ride verification Always-on GPS tracking
+15. MVP Scope and Roadmap
+15.1 MVP Must-Haves
+Priority Feature Reason
+1 Lightweight ride verification Core differentiator and reward integrity.
+2 Green Points wallet Creates reward loop and user identity.
+3 Public verified-only leaderboard Creates social competition.
+4 Admin promotions Enables campaign monetisation.
+5 Contest registration Converts rewards into structured engagement.
+6 Fare-Smart Routes - basic Adds everyday utility and savings angle.
+7 CO2 avoided estimate Supports green positioning.
+8 Live bus arrivals Table-stakes daily utility.
+9 Train alerts and station crowd info Table-stakes daily utility.
+10 Basic fraud controls Protects leaderboards and rewards.
+15.2 MVP Exclusions
+ Full fare-card integration.
+ Payment wallet or card top-ups.
+ Real voucher marketplace at launch.
+ Best-in-class turn-by-turn journey navigation.
+ Continuous GPS streaming or long-term raw GPS storage.
+ Advanced ML recommendations.
+15.3 Phase 2 Enhancements
+ SimplyGo or fare-card partner integration.
+ Corporate green commute dashboards.
+ School/team challenges and verified commute certificates.
+ Sponsor reward marketplace.
+ AI commute coach and personalised green nudges.
+ Advanced fare optimiser with fare profiles and pass logic.
+ Predictive crowd avoidance and multimodal active-mobility rewards.
+ QR/NFC verification for high-value campaigns.
+ ML-based fraud detection.
+16. Success Metrics
+Category Metrics
+Product DAU, WAU, ride check-ins per user, verified ride completion rate, 
+retention.
+Engagement Contest registrations, leaderboard participation, reward redemption, 
+notification CTR.
+Sustainability Verified public transport rides, estimated CO2 avoided, off-peak 
+share, multimodal journeys.
+Commercial Sponsor campaigns, promotion views, contest joins, reward fulfilment 
+
+=== PAGE 15 ===
+TransportLah Final Design Proposal | Confidential Concept Draft
+and repeat sponsors.
+Operational LTA API cache hit rate, API error rate, verification latency, fraud 
+review queue, leaderboard refresh latency.
+17. References
+ LTA DataMall API User Guide & Documentation, Version 6.8, 21 Apr 2026: Uploaded source document
+ MyTransport.SG app listing - Apple App Store: https://apps.apple.com/sg/app/mytransport-sg/id1306661188
+ MyTransport.SG app listing - Google Play: https://play.google.com/store/apps/details?
+hl=en_SG&id=sg.gov.lta.mytransportsg
+ LTA DataMall App Zone: https://datamall.lta.gov.sg/content/datamall/en/app-zone.html
+ SimplyGo app overview: https://simplygo.com.sg/simplygo-app/
+ SimplyGo travel fares: https://simplygo.com.sg/travel-fares/
+ SimplyGo transfer fare rules: https://simplygo.com.sg/transfer-fare-rules/
+ Citymapper - Google Play listing: https://play.google.com/store/apps/details?id=com.citymapper.app.release
+ Citymapper - App Store listing: https://apps.apple.com/sg/app/citymapper-your-transport-app/id469463298
+ Moovit - App Store listing: https://apps.apple.com/sg/app/moovit-public-transport-live/id498477945
+ Moovit public transport guide: https://moovitapp.com/
+ SG BusLeh - Google Play listing: https://play.google.com/store/apps/details?hl=en_SG&id=originally.us.buses
+ SBS Transit mobile app: https://www.sbstransit.com.sg/sbs-transit-mobile-app
+ LTA fare calculator: https://www.lta.gov.sg/content/ltagov/en/map/fare-calculator.html
+ PTC distance fares and transfer rules: https://www.ptc.gov.sg/fares/distance-fares-and-transfer-rules/
+ PTC public transport fares and passes: https://www.ptc.gov.sg/fares/public-transport-fares-and-passes/
+Note: Competitor research is based on public app listings and official pages available during proposal preparation. 
+Feature availability may change over time.
+

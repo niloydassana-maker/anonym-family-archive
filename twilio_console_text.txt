@@ -1,0 +1,1 @@
+Error: Cannot access "about:blank" at origin "null". Extension must have permission to access the frame's origin, and matchAboutBlank must be true.

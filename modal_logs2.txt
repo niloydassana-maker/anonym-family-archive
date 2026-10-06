@@ -1,0 +1,110 @@
+Downloading shards: 100%|██████████| 4/4 [01:19<00:00, 19.92s/it]
+
+[1ALoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+[1ALoading checkpoint shards:  25%|██▌       | 1/4 [00:05<00:16,  5.57s/it]
+[1ALoading checkpoint shards:  50%|█████     | 2/4 [00:10<00:10,  5.22s/it]
+[1ALoading checkpoint shards:  75%|███████▌  | 3/4 [00:14<00:04,  4.87s/it]
+[1ALoading checkpoint shards: 100%|██████████| 4/4 [00:19<00:00,  4.58s/it]
+[1ALoading checkpoint shards: 100%|██████████| 4/4 [00:19<00:00,  4.79s/it]
+[LLM LOCAL] loaded Qwen/Qwen2.5-7B-Instruct in 102.0s on cuda
+[MODAL L4] Warm-up complete! Serverless engine ready.
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'नमस्ते' | LLM_local=True
+[SYNTH] infer=5377ms post=9ms audio=4.93s RTF=1.09 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते! आपका स्वागत है ड'
+[STREAM FIRST AUDIO FAST GREETING] 5518ms | Piece: 'नमस्ते! आपका स्वागत है डॉक्टर लोटिका पुरोहित के क्लिनिक में। बताइए, मैं आपकी क्या सहायता कर सकता हूँ?'
+   POST /turn -> 200 OK  (duration: 5.80 s, execution: 5.73 s)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'क्लिनिक का समय क्या है?' | LLM_local=True
+[TURN DROPPED] sig_peak=0 below speech threshold (400), dropping noise 'क्लिनिक का समय क्या है?'.
+[TURN DROPPED] Empty or noise utterance raw='क्लिनिक का समय क्या है?', returning empty.
+   POST /turn -> 200 OK  (duration: 175.1 ms, execution: 112.7 ms)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'मुख्य डॉक्टर कौन हैं?' | LLM_local=True
+[TURN DROPPED] sig_peak=0 below speech threshold (400), dropping noise 'मुख्य डॉक्टर कौन हैं?'.
+[TURN DROPPED] Empty or noise utterance raw='मुख्य डॉक्टर कौन हैं?', returning empty.
+   POST /turn -> 200 OK  (duration: 190.1 ms, execution: 129.9 ms)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'परामर्श की फीस क्या है?' | LLM_local=True
+[TURN DROPPED] sig_peak=0 below speech threshold (400), dropping noise 'परामर्श की फीस क्या है?'.
+[TURN DROPPED] Empty or noise utterance raw='परामर्श की फीस क्या है?', returning empty.
+   POST /turn -> 200 OK  (duration: 174.4 ms, execution: 113.6 ms)
+/usr/local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[TURN RECEIVED] src=KiloBridge/13 bytes=61484 dur=1.92s peak=1945 rms=137 | STT: 299ms | Heard: 'झाल' | LLM_local=True
+[TURN DROPPED] Empty or noise utterance raw='झाल', returning empty.
+   POST /turn -> 200 OK  (duration: 1.07 s, execution: 1.00 s)
+Runner terminated.
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'नमस्ते' | LLM_local=True
+[SYNTH] infer=5329ms post=9ms audio=4.97s RTF=1.07 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते! आपका स्वागत है ड'
+[STREAM FIRST AUDIO FAST GREETING] 5376ms | Piece: 'नमस्ते! आपका स्वागत है डॉक्टर लोटिका पुरोहित के क्लिनिक में। बताइए, मैं आपकी क्या सहायता कर सकता हूँ?'
+   POST /turn -> 200 OK  (duration: 5.51 s, execution: 5.45 s)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'क्लिनिक का समय क्या है?' | LLM_local=True
+[TURN DROPPED] sig_peak=0 below speech threshold (400), dropping noise 'क्लिनिक का समय क्या है?'.
+[TURN DROPPED] Empty or noise utterance raw='क्लिनिक का समय क्या है?', returning empty.
+   POST /turn -> 200 OK  (duration: 173.5 ms, execution: 99.6 ms)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'मुख्य डॉक्टर कौन हैं?' | LLM_local=True
+[TURN DROPPED] sig_peak=0 below speech threshold (400), dropping noise 'मुख्य डॉक्टर कौन हैं?'.
+[TURN DROPPED] Empty or noise utterance raw='मुख्य डॉक्टर कौन हैं?', returning empty.
+   POST /turn -> 200 OK  (duration: 162.5 ms, execution: 102.3 ms)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'परामर्श की फीस क्या है?' | LLM_local=True
+[TURN DROPPED] sig_peak=0 below speech threshold (400), dropping noise 'परामर्श की फीस क्या है?'.
+[TURN DROPPED] Empty or noise utterance raw='परामर्श की फीस क्या है?', returning empty.
+   POST /turn -> 200 OK  (duration: 162.8 ms, execution: 101.1 ms)
+[TURN RECEIVED] src=KiloBridge/13 bytes=102444 dur=3.2s peak=6083 rms=239 | STT: 204ms | Heard: 'प्रणाओ' | LLM_local=True
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/container_io_manager.py", line 987, in handle_input_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 143, in run_input_async
+    async for value in gen:
+  File "/pkg/modal/_runtime/container_io_manager.py", line 316, in call_generator_async
+    async for result in gen:
+  File "/pkg/modal/_runtime/asgi.py", line 227, in fn
+    app_task.result()  # consume/raise exceptions if there are any!
+    ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/applications.py", line 1215, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 1310, in handle
+    await super().handle(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 282, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_voice_service.py", line 789, in turn
+    clean_user_toks = set(re.sub(r"[^\w\u0900-\u097f]+", " ", user_text.lower()).split())
+                          ^^
+UnboundLocalError: cannot access local variable 're' where it is not associated with a value
+   POST /turn -> 500 Internal Server Error  (duration: 1.22 s, execution: 1.16 s)
+/usr/local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[TURN RECEIVED] src=KiloBridge/13 bytes=92204 dur=2.88s peak=3974 rms=227 | STT: 162ms | Heard: 'झाल' | LLM_local=True
+[TURN DROPPED] Empty or noise utterance raw='झाल', returning empty.
+   POST /turn -> 200 OK  (duration: 1.09 s, execution: 1.03 s)

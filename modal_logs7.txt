@@ -1,0 +1,71 @@
+
+
+[1ADownloading shards:   0%|          | 0/4 [00:00<?, ?it/s]
+[1ALoading checkpoint shards: 100%|██████████| 4/4 [00:21<00:00,  5.21s/it]
+[1ALoading checkpoint shards: 100%|██████████| 4/4 [00:21<00:00,  5.47s/it]
+[LLM LOCAL] loaded Qwen/Qwen2.5-7B-Instruct in 89.3s on cuda
+[MODAL L4] Warm-up complete! Serverless engine ready.
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'नमस्ते' | LLM_local=True
+[SYNTH] infer=5730ms post=10ms audio=5.07s RTF=1.13 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते! आपका स्वागत है ड'
+[STREAM FIRST AUDIO FAST GREETING] 5972ms | Piece: 'नमस्ते! आपका स्वागत है डॉक्टर लोटिका पुरोहित के क्लिनिक में। बताइए, मैं आपकी क्या सहायता कर सकता हूँ?'
+    GET /turn -> 200 OK  (duration: 83.3 s, execution: 6.30 s)
+[modal-client] 2026-10-04T20:36:46+0000 Received a cancellation signal while processing input ('in-01M449X93BPZ5MGZKS708V6P1D:1791145976940-0',)
+[TURN RECEIVED] src=KiloBridge/13 bytes=149548 dur=4.67s peak=3173 rms=198 | STT: 255ms | Heard: 'कर दो' | LLM_local=True
+[TURN DROPPED] Empty or noise utterance raw='कर दो', returning empty.
+[TURN RECEIVED] src=KiloBridge/13 bytes=147500 dur=4.61s peak=17668 rms=3249 | STT: 172ms | Heard: 'प्रणाओ' | LLM_local=True
+
+[1ADownloading shards: 100%|██████████| 4/4 [01:10<00:00, 16.96s/it]
+[1ADownloading shards: 100%|██████████| 4/4 [01:10<00:00, 17.66s/it]
+[LLM LOCAL] 2ms reply='नमस्ते, कैसे मदद कर सकता हूं?'
+
+[1ALoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+[SYNTH] infer=2642ms post=4ms audio=2.13s RTF=1.24 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते, कैसे मदद कर सकता'
+[STREAM FIRST AUDIO] 4887ms | Piece: 'नमस्ते, कैसे मदद कर सकता हूं?'
+   POST /turn -> 200 OK  (duration: 41.2 s, execution: 5.02 s)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'क्लिनिक का समय क्या है?' | LLM_local=True
+[1ADownloading shards:  25%|██▌       | 1/4 [00:14<00:42, 14.31s/it]
+[LLM LOCAL] 4ms reply='सुबह नौ बजे से दोपहर दो बजे तक, और शाम पांच बजे से रात आठ बजे तक।'
+[1ALoading checkpoint shards:  25%|██▌       | 1/4 [00:04<00:13,  4.43s/it]
+[SYNTH] infer=4264ms post=7ms audio=4.02s RTF=1.06 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='सुबह नौ बजे से दोपहर दो '
+[STREAM FIRST AUDIO] 8589ms | Piece: 'सुबह नौ बजे से दोपहर दो बजे तक, और शाम पांच बजे से रात आठ बजे तक।'
+   POST /turn -> 200 OK  (duration: 12.3 s, execution: 8.72 s)
+[1ALoading checkpoint shards:  50%|█████     | 2/4 [00:08<00:09,  4.51s/it]
+[1ALoading checkpoint shards:  75%|███████▌  | 3/4 [00:13<00:04,  4.66s/it]
+[1ADownloading shards:  50%|█████     | 2/4 [00:28<00:28, 14.36s/it]
+[1ALoading checkpoint shards: 100%|██████████| 4/4 [00:18<00:00,  4.83s/it]
+[1ALoading checkpoint shards: 100%|██████████| 4/4 [00:18<00:00,  4.73s/it]
+[LLM LOCAL] loaded Qwen/Qwen2.5-7B-Instruct in 93.6s on cuda
+[MODAL L4] Warm-up complete! Serverless engine ready.
+[TURN RECEIVED] src=KiloBridge/13 bytes=342060 dur=10.69s peak=19906 rms=1421 | STT: 179ms | Heard: 'प्रणाल' | LLM_local=True
+[LLM LOCAL] 2ms reply='शुभ रात्रि, कैसे मदद कर सकता हूं?'
+[TURN RECEIVED] src=kilo-live-test bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'नमस्ते' | LLM_local=True
+[SYNTH] infer=4385ms post=7ms audio=3.18s RTF=1.38 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='शुभ रात्रि, कैसे मदद कर '
+[STREAM FIRST AUDIO] 8104ms | Piece: 'शुभ रात्रि, कैसे मदद कर सकता हूं?'
+   POST /turn -> 200 OK  (duration: 8.34 s, execution: 8.24 s)
+
+[SYNTH] infer=5089ms post=9ms audio=4.77s RTF=1.07 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते! आपका स्वागत है ड'
+[STREAM FIRST AUDIO FAST GREETING] 5707ms | Piece: 'नमस्ते! आपका स्वागत है डॉक्टर लोटिका पुरोहित के क्लिनिक में। बताइए, मैं आपकी क्या सहायता कर सकता हूँ?'
+   POST /turn -> 200 OK  (duration: 7.10 s, execution: 6.87 s)
+[1ADownloading shards:  75%|███████▌  | 3/4 [00:43<00:14, 14.46s/it]/usr/local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[TURN RECEIVED] src=kilo-live-test bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'क्लिनिक का समय क्या है?' | LLM_local=True
+[LLM LOCAL] 4ms reply='सुबह नौ बजे से दोपहर दो बजे तक, और शाम पांच बजे से रात आठ बजे तक।'
+[SYNTH] infer=4187ms post=9ms audio=3.87s RTF=1.08 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='सुबह नौ बजे से दोपहर दो '
+[STREAM FIRST AUDIO] 8512ms | Piece: 'सुबह नौ बजे से दोपहर दो बजे तक, और शाम पांच बजे से रात आठ बजे तक।'
+   POST /turn -> 200 OK  (duration: 8.75 s, execution: 8.65 s)
+
+[1ADownloading shards: 100%|██████████| 4/4 [00:56<00:00, 13.78s/it]Downloading shards: 100%|██████████| 4/4 [00:56<00:00, 14.00s/it]
+
+[TURN RECEIVED] src=kilo-live-test bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'मुख्य डॉक्टर कौन हैं?' | LLM_local=True
+[LLM LOCAL] 3ms reply='मुख्य डॉक्टर डॉक्टर लोटिका पुरोहित हैं।'
+[1ALoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+[SYNTH] infer=2248ms post=4ms audio=2.17s RTF=1.04 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='मुख्य डॉक्टर डॉक्टर लोटि'
+[STREAM FIRST AUDIO] 5140ms | Piece: 'मुख्य डॉक्टर डॉक्टर लोटिका पुरोहित हैं।'
+   POST /turn -> 200 OK  (duration: 5.37 s, execution: 5.27 s)
+[TURN RECEIVED] src=KiloBridge/13 bytes=514092 dur=16.06s peak=23193 rms=1123 | STT: 180ms | Heard: 'प्रणी को' | LLM_local=True
+[1ALoading checkpoint shards:  25%|██▌       | 1/4 [00:04<00:14,  4.86s/it]/usr/local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+
+[MODAL L4] Initializing Kilo Voice Engine on cuda...
+[MODAL L4] Loading XTTS-v2 model...
+[1ALoading checkpoint shards:  50%|█████     | 2/4 [00:09<00:09,  4.75s/it]

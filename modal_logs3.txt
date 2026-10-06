@@ -1,0 +1,136 @@
+  File "/usr/local/lib/python3.11/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 1310, in handle
+    await super().handle(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 282, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_voice_service.py", line 789, in turn
+    clean_user_toks = set(re.sub(r"[^\w\u0900-\u097f]+", " ", user_text.lower()).split())
+                          ^^
+UnboundLocalError: cannot access local variable 're' where it is not associated with a value
+   POST /turn -> 500 Internal Server Error  (duration: 1.22 s, execution: 1.16 s)
+/usr/local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[TURN RECEIVED] src=KiloBridge/13 bytes=92204 dur=2.88s peak=3974 rms=227 | STT: 162ms | Heard: 'झाल' | LLM_local=True
+[TURN DROPPED] Empty or noise utterance raw='झाल', returning empty.
+   POST /turn -> 200 OK  (duration: 1.09 s, execution: 1.03 s)
+/usr/local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[MODAL L4] Initializing Kilo Voice Engine on cuda...
+[MODAL L4] Loading XTTS-v2 model...
+[MODAL L4] Pre-computing and caching speaker conditioning latents...
+[MODAL L4] Speaker conditioning latents pinned in GPU VRAM.
+[MODAL L4] mixed precision via torch.autocast(fp16); weights stay float32.
+[MODAL L4] Loading Faster-Whisper large-v3-turbo...
+[MODAL L4] Faster-Whisper on CUDA float16 validated successfully!
+[MODAL L4] Running pre-warm inference with cached latents...
+[TURN RECEIVED] src=KiloBridge/13 bytes=112492 dur=3.51s peak=3344 rms=121 | STT: 355ms | Heard: 'प्रुट' | LLM_local=True
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/container_io_manager.py", line 987, in handle_input_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 143, in run_input_async
+    async for value in gen:
+  File "/pkg/modal/_runtime/container_io_manager.py", line 316, in call_generator_async
+    async for result in gen:
+  File "/pkg/modal/_runtime/asgi.py", line 227, in fn
+    app_task.result()  # consume/raise exceptions if there are any!
+    ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/applications.py", line 1215, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 1310, in handle
+    await super().handle(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 282, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 360, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_voice_service.py", line 789, in turn
+    clean_user_toks = set(re.sub(r"[^\w\u0900-\u097f]+", " ", user_text.lower()).split())
+                          ^^
+UnboundLocalError: cannot access local variable 're' where it is not associated with a value
+   POST /turn -> 500 Internal Server Error  (duration: 1.40 s, execution: 1.32 s)
+[SYNTH] infer=3256ms post=5ms audio=2.32s RTF=1.40 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते।'
+[MODAL L4] pre-warm peak=23263 autocast=True
+
+[1ADownloading shards:   0%|          | 0/4 [00:00<?, ?it/s]Cancellation requested; stopping current tasks.
+
+[1ADownloading shards:   0%|          | 0/4 [00:12<?, ?it/s]
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'नमस्ते' | LLM_local=True
+Runner terminated.
+[SYNTH] infer=5605ms post=9ms audio=4.90s RTF=1.14 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते! आपका स्वागत है ड'
+[STREAM FIRST AUDIO FAST GREETING] 5657ms | Piece: 'नमस्ते! आपका स्वागत है डॉक्टर लोटिका पुरोहित के क्लिनिक में। बताइए, मैं आपकी क्या सहायता कर सकता हूँ?'
+   POST /turn -> 200 OK  (duration: 5.91 s, execution: 5.84 s)
+[TURN RECEIVED] src=KiloBridge/13 bytes=65388 dur=2.04s peak=3208 rms=198 | STT: 292ms | Heard: 'झाल' | LLM_local=True
+[TURN DROPPED] Empty or noise utterance raw='झाल', returning empty.
+   POST /turn -> 200 OK  (duration: 3.82 s, execution: 405.4 ms)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'क्लिनिक का समय क्या है?' | LLM_local=True
+[TURN DROPPED] sig_peak=0 below speech threshold (400), dropping noise 'क्लिनिक का समय क्या है?'.
+[TURN DROPPED] Empty or noise utterance raw='क्लिनिक का समय क्या है?', returning empty.
+   POST /turn -> 200 OK  (duration: 176.1 ms, execution: 109.9 ms)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'मुख्य डॉक्टर कौन हैं?' | LLM_local=True
+[TURN DROPPED] sig_peak=0 below speech threshold (400), dropping noise 'मुख्य डॉक्टर कौन हैं?'.
+[TURN DROPPED] Empty or noise utterance raw='मुख्य डॉक्टर कौन हैं?', returning empty.
+   POST /turn -> 200 OK  (duration: 177.0 ms, execution: 107.5 ms)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'परामर्श की फीस क्या है?' | LLM_local=True
+[TURN DROPPED] sig_peak=0 below speech threshold (400), dropping noise 'परामर्श की फीस क्या है?'.
+[TURN DROPPED] Empty or noise utterance raw='परामर्श की फीस क्या है?', returning empty.
+   POST /turn -> 200 OK  (duration: 168.9 ms, execution: 113.5 ms)

@@ -1,0 +1,1 @@
+line 1787: '                full_reply = re.sub("[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f\\x7f\\u200b-\\u200f\\ufeff\\ufffd]", "", full_reply)\n'

@@ -1,0 +1,13 @@
+                                 Active Containers in environment:             
++------------------------------------------------------------------------------
+| Container ID                  | App ID                    | App Name         
+|-------------------------------+---------------------------+------------------
+| ta-01M447Z4T2WHSYMVCA163F5ZDR | ap-yShsQ2Fo9b0lUGpQb2ZG4M | kilo-voice-clinic
+|                               |                           |                  
+|                               |                           |                  
+| ta-01M447Z4T2RA77TGZD67D81YCR | ap-yShsQ2Fo9b0lUGpQb2ZG4M | kilo-voice-clinic
+|                               |                           |                  
+|                               |                           |                  
+| ta-01M448C44WD46XREZNMM6061SR | ap-yShsQ2Fo9b0lUGpQb2ZG4M | kilo-voice-clinic
+| ta-01M448E2CHBA55JM556ZYZN8WR | ap-yShsQ2Fo9b0lUGpQb2ZG4M | kilo-voice-clinic
++------------------------------------------------------------------------------

@@ -1,0 +1,42 @@
+/usr/local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+/usr/local/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[MODAL L4] Initializing Kilo Voice Engine on cuda...
+[MODAL L4] Loading XTTS-v2 model...
+[MODAL L4] Pre-computing and caching speaker conditioning latents...
+[MODAL L4] Speaker conditioning latents pinned in GPU VRAM.
+[MODAL L4] mixed precision via torch.autocast(fp16); weights stay float32.
+[MODAL L4] Loading Faster-Whisper large-v3-turbo...
+[MODAL L4] Faster-Whisper on CUDA float16 validated successfully!
+[MODAL L4] Running pre-warm inference with cached latents...
+[SYNTH] infer=3797ms post=6ms audio=2.84s RTF=1.34 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते।'
+[MODAL L4] pre-warm peak=27055 autocast=True
+
+[1ADownloading shards:   0%|          | 0/4 [00:00<?, ?it/s]
+[1ADownloading shards:  25%|██▌       | 1/4 [00:18<00:54, 18.33s/it]
+[1ADownloading shards:  50%|█████     | 2/4 [00:35<00:35, 17.62s/it]
+[1ADownloading shards:  75%|███████▌  | 3/4 [00:52<00:17, 17.41s/it]
+[1ADownloading shards: 100%|██████████| 4/4 [01:08<00:00, 16.66s/it]Downloading shards: 100%|██████████| 4/4 [01:08<00:00, 17.03s/it]
+
+[1ALoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]
+[1ALoading checkpoint shards:  25%|██▌       | 1/4 [00:05<00:15,  5.04s/it]
+[1ALoading checkpoint shards:  50%|█████     | 2/4 [00:10<00:09,  5.00s/it]
+[1ALoading checkpoint shards:  75%|███████▌  | 3/4 [00:15<00:05,  5.00s/it]
+[1ALoading checkpoint shards: 100%|██████████| 4/4 [00:19<00:00,  4.82s/it]
+[1ALoading checkpoint shards: 100%|██████████| 4/4 [00:19<00:00,  4.89s/it]
+[LLM LOCAL] loaded Qwen/Qwen2.5-7B-Instruct in 92.7s on cuda
+[MODAL L4] Warm-up complete! Serverless engine ready.
+[TURN RECEIVED] src=KiloBridge/13 bytes=38592 dur=1.2s peak=26185 rms=3839 | STT: 230ms | Heard: 'hello, hello, oh' | LLM_local=True
+[LLM LOCAL] 2ms reply='नमस्ते, कैसे मदद कर सकता हूं?'
+[SYNTH] infer=2551ms post=5ms audio=2.11s RTF=1.21 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते, कैसे मदद कर सकता'
+[STREAM FIRST AUDIO] 5712ms | Piece: 'नमस्ते, कैसे मदद कर सकता हूं?'
+   POST /turn -> 200 OK  (duration: 7.13 s, execution: 6.87 s)
+    GET /lastturns -> 200 OK  (duration: 496.0 ms, execution: 241.2 ms)
+[SYNTH] infer=3897ms post=6ms audio=3.07s RTF=1.27 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='क्लिनिक का समय क्या है?'
+   POST /say -> 200 OK  (duration: 5.56 s, execution: 5.31 s)
+[TURN RECEIVED] src=KiloBridge/13 bytes=49196 dur=1.54s peak=2617 rms=197 | STT: 171ms | Heard: 'प्रणाओ' | LLM_local=True
+[LLM LOCAL] 2ms reply='नमस्ते, कैसे मदद कर सकता हूं?'
+[SYNTH] infer=2669ms post=4ms audio=2.12s RTF=1.26 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते, कैसे मदद कर सकता'
+[STREAM FIRST AUDIO] 5384ms | Piece: 'नमस्ते, कैसे मदद कर सकता हूं?'
+   POST /turn -> 200 OK  (duration: 6.12 s, execution: 5.86 s)

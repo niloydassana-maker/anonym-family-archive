@@ -1,0 +1,3 @@
+en-text-en-toggle => reply_chars=114 pcm=329340 total_ms=2124 turn_lang=en reply=The clinic is open from nine AM to two PM and five PM to eight PM, Monday through Saturday, and closed on Sundays.
+hi-text-hi-toggle => reply_chars=117 pcm=368066 total_ms=3709 turn_lang=hi reply=सुबह नौ बजे से दोपहर दो बजे तक, और शाम पांच बजे से रात आठ बजे तक, सोमवार से शनिवार तक। रविवार को क्लिनिक बंद रहती है।
+en-text-hi-toggle => reply_chars=126 pcm=411244 total_ms=3304 turn_lang=hi reply=क्लिनिक का समय सुबह नौ बजे से दोपहर दो बजे तक और शाम पांच बजे से रात आठ बजे तक है, सोमवार से शनिवार तक। रविवार को बंद रहता है।

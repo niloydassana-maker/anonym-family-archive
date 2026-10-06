@@ -1,0 +1,180 @@
+[MODAL L4] mixed precision via torch.autocast(fp16); weights stay float32.
+[MODAL L4] Loading Faster-Whisper large-v3-turbo...
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'नमस्ते' | LLM_local=True
+[SYNTH] infer=5705ms post=10ms audio=4.95s RTF=1.15 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते! आपका स्वागत है ड'
+[STREAM FIRST AUDIO FAST GREETING] 5918ms | Piece: 'नमस्ते! आपका स्वागत है डॉक्टर लोटिका पुरोहित के क्लिनिक में। बताइए, मैं आपकी क्या सहायता कर सकता हूँ?'
+   POST /turn -> 200 OK  (duration: 6.54 s, execution: 6.32 s)
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'नमस्ते' | LLM_local=True
+[MODAL L4] Faster-Whisper on CUDA float16 validated successfully!
+[MODAL L4] Running pre-warm inference with cached latents...
+[SYNTH] infer=4973ms post=10ms audio=4.70s RTF=1.06 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते! आपका स्वागत है ड'
+[STREAM FIRST AUDIO FAST GREETING] 5182ms | Piece: 'नमस्ते! आपका स्वागत है डॉक्टर लोटिका पुरोहित के क्लिनिक में। बताइए, मैं आपकी क्या सहायता कर सकता हूँ?'
+   POST /turn -> 200 OK  (duration: 5.81 s, execution: 5.58 s)
+[SYNTH] infer=3686ms post=5ms audio=2.86s RTF=1.29 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते।'
+[MODAL L4] pre-warm peak=27407 autocast=True
+
+[TURN RECEIVED] src=Python-urllib/3.11 bytes=0 dur=0s peak=0 rms=0 | STT: 0ms | Heard: 'क्लिनिक का समय क्या है?' | LLM_local=True
+[LLM LOCAL] 4ms reply='सुबह 9 बजे से दोपहर 2 बजे तक, और शाम 5 बजे से रात 8 बजे तक।'
+[SYNTH DIRECT INFER ERR] , falling back to tts_to_file...
+[1ADownloading shards:   0%|          | 0/4 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/root/modal_voice_service.py", line 445, in synthesize_pcm
+    out = self.xtts_model.inference(
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/models/xtts.py", line 521, in inference
+    text_tokens = torch.IntTensor(self.tokenizer.encode(sent, lang=language)).unsqueeze(0).to(self.device)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 666, in encode
+    txt = self.preprocess_text(txt, lang)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 652, in preprocess_text
+    txt = multilingual_cleaners(txt, lang)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 573, in multilingual_cleaners
+    text = expand_numbers_multilingual(text, lang)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 562, in expand_numbers_multilingual
+    text = re.sub(_number_re, lambda m: _expand_number(m, lang), text)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/re/__init__.py", line 185, in sub
+    return _compile(pattern, flags).sub(repl, string, count)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 562, in <lambda>
+    text = re.sub(_number_re, lambda m: _expand_number(m, lang), text)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 542, in _expand_number
+    return num2words(int(m.group(0)), lang=lang)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/num2words/__init__.py", line 98, in num2words
+    raise NotImplementedError()
+NotImplementedError
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/pkg/modal/_runtime/container_io_manager.py", line 987, in handle_input_exception
+    yield
+  File "/pkg/modal/_container_entrypoint.py", line 143, in run_input_async
+    async for value in gen:
+  File "/pkg/modal/_runtime/container_io_manager.py", line 316, in call_generator_async
+    async for result in gen:
+  File "/pkg/modal/_runtime/asgi.py", line 227, in fn
+    app_task.result()  # consume/raise exceptions if there are any!
+    ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/fastapi/applications.py", line 1215, in __call__
+    await super().__call__(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 676, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 1310, in handle
+    await super().handle(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 282, in handle
+    await self.app(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 152, in app
+    await response(scope, receive, send)
+  File "/usr/local/lib/python3.11/site-packages/starlette/responses.py", line 275, in __call__
+    async with create_collapsing_task_group() as task_group:
+  File "/usr/local/lib/python3.11/contextlib.py", line 231, in __aexit__
+    await self.gen.athrow(typ, value, traceback)
+  File "/usr/local/lib/python3.11/site-packages/starlette/_utils.py", line 115, in create_collapsing_task_group
+    raise exc from exc.__cause__ or context
+  File "/usr/local/lib/python3.11/site-packages/anyio/_core/_tasks.py", line 327, in _run_coro
+    retval = await self._coro
+             ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/starlette/responses.py", line 278, in wrap
+    await func()
+  File "/usr/local/lib/python3.11/site-packages/starlette/responses.py", line 252, in stream_response
+    async for chunk in self.body_iterator:
+  File "/root/modal_voice_service.py", line 802, in stream_generator
+    pcm = await asyncio.to_thread(self.synthesize_pcm, clause_clean, 1.35)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/modal_voice_service.py", line 461, in synthesize_pcm
+    self.tts.tts_to_file(
+  File "/usr/local/lib/python3.11/site-packages/TTS/api.py", line 377, in tts_to_file
+    wav = self.tts(
+          ^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/api.py", line 323, in tts
+    wav = self.synthesizer.tts(
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/utils/synthesizer.py", line 422, in tts
+    outputs = self.tts_model.synthesize(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/models/xtts.py", line 406, in synthesize
+    return self.full_inference(text, speaker_wav, language, **settings)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/models/xtts.py", line 475, in full_inference
+    return self.inference(
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/models/xtts.py", line 521, in inference
+    text_tokens = torch.IntTensor(self.tokenizer.encode(sent, lang=language)).unsqueeze(0).to(self.device)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 666, in encode
+    txt = self.preprocess_text(txt, lang)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 652, in preprocess_text
+    txt = multilingual_cleaners(txt, lang)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 573, in multilingual_cleaners
+    text = expand_numbers_multilingual(text, lang)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 562, in expand_numbers_multilingual
+    text = re.sub(_number_re, lambda m: _expand_number(m, lang), text)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/re/__init__.py", line 185, in sub
+    return _compile(pattern, flags).sub(repl, string, count)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 562, in <lambda>
+    text = re.sub(_number_re, lambda m: _expand_number(m, lang), text)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/TTS/tts/layers/xtts/tokenizer.py", line 542, in _expand_number
+    return num2words(int(m.group(0)), lang=lang)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/num2words/__init__.py", line 98, in num2words
+    raise NotImplementedError()
+NotImplementedError
+   POST /turn -> 200 OK  (duration: 4.94 s, execution: 4.70 s)
+
+[TURN RECEIVED] src=KiloBridge/13 bytes=69484 dur=2.17s peak=3906 rms=184 | STT: 283ms | Heard: 'प्रणाओ' | LLM_local=True
+[LLM LOCAL] 2ms reply='नमस्ते, कैसे मदद कर सकता हूँ?'
+[SYNTH] infer=2877ms post=4ms audio=2.19s RTF=1.31 cuda=True param_device=cuda:0 dtype=torch.float32 fallback=False gpu_name=NVIDIA L4 text='नमस्ते, कैसे मदद कर सकता'
+[STREAM FIRST AUDIO] 5671ms | Piece: 'नमस्ते, कैसे मदद कर सकता हूँ?'
+   POST /turn -> 200 OK  (duration: 6.29 s, execution: 6.07 s)
+[1ADownloading shards:  25%|██▌       | 1/4 [00:17<00:53, 17.94s/it]
+[1ADownloading shards:  50%|█████     | 2/4 [00:34<00:34, 17.39s/it]

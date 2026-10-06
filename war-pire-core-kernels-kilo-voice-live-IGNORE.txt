@@ -1,0 +1,2554 @@
+# %% [code]
+
+# %% [code]
+# KILO-VOICE-LIVE v43 — attended call engine + on-seat brain: HEAR -> Whisper -> LLM decides the reply -> XTTS speaks it.
+# Also still serves scripted LIVE_CALL orders. Pre-warms XTTS on a T4, polls the relay for LIVE_CALL / HEAR / AUTO_* orders,
+# stream chunk wavs home, log per-chunk latency to latency_log.jsonl, auto-kill when idle so Kaggle quota stops.
+# Law 15: hardware gate first. HEAVY WORK LAW: synthesis never touches the laptop. DEVA LAW: bn has no XTTS lane - hi-deva IS Baba's tongue.
+#
+# v42 = v41 + (1) hang-up handling (no BrokenPipe tracebacks, LLM stream and GPU work stop when the caller leaves),
+#       (2) self-check fixed (NameError: requests), (3) LATENCY PROBE: every hop of a voice turn is timed,
+#       returned in the /turn trailer, logged to latency_log.jsonl, served at GET /lat, and a boot-time probe
+#       (components -> loopback turn -> tunnel turn) writes probe_report.json. Order "PROBE" re-runs it live.
+import os, re, io, glob, json, time, base64, shutil, subprocess, sys, threading, queue, urllib.request, urllib.parse
+import socket, statistics, collections
+import http.server
+import socketserver
+from contextlib import nullcontext
+
+RELAY_URL = os.environ.get("RELAY_URL", "https://kennedy-til-defend-artistic.trycloudflare.com")
+RELAY_FALLBACKS = [c.strip() for c in os.environ.get("RELAY_FALLBACKS", "https://retrain-schnapps-upbeat.ngrok-free.dev").split(",") if c.strip()]
+RELAY_TOKEN = os.environ.get("RELAY_TOKEN", "GOLD24")
+SELF_BODY = os.environ.get("SELF_BODY", "LIVE-VOX1")
+OUT_BODY = os.environ.get("OUT_BODY", "KILO")
+VOICE_REF = os.environ.get("VOICE_REF", "father.wav")
+# NOTE: plain LANGUAGE is a Linux locale variable (Kaggle sets it to "en_US"), so it must not be used here.
+LANGUAGE = os.environ.get("KILO_LANG", "hi")
+
+# ---- polling: adaptive. Fast while a conversation is live, slow when idle. ----
+POLL_SEC = float(os.environ.get("POLL_SEC", "2"))              # idle poll period
+POLL_HOT_SEC = float(os.environ.get("POLL_HOT_SEC", "0.35"))   # poll period while hot (cuts ~1 s average pickup lag)
+HOT_WINDOW_SEC = float(os.environ.get("HOT_WINDOW_SEC", "600"))  # stay hot this long after the last order
+HEARTBEAT_SEC = int(os.environ.get("HEARTBEAT_SEC", "60"))
+# v39 (Baba 2026-10-02): "keep it alive for 2 hours". The seat must survive an unattended stretch so the
+# direct voice tunnel stays up and the phone can call it whenever the demo happens. IDLE_KILL_MIN was 10
+# minutes, which killed the kernel before a caller ever dialled in (first proof run: IDLE_KILL at gpu_s=600
+# with the tunnel healthy the whole time). HARD_CAP_MIN sat at 120 = the same moment as the old idle kill, so it
+# is lifted clear of it; Kaggle allows 12 h, so 175 min leaves an hour of headroom over the 2 h request.
+IDLE_KILL_MIN = float(os.environ.get("IDLE_KILL_MIN", "120"))
+HARD_CAP_MIN = float(os.environ.get("HARD_CAP_MIN", "175"))
+
+# ---- synthesis ----
+GPT_COND_LEN = float(os.environ.get("GPT_COND_LEN", "10"))
+TEMPERATURE = float(os.environ.get("TEMPERATURE", "0.4"))
+WARM_UP = os.environ.get("WARM_UP", "1") == "1"
+SYNTH_MODE = os.environ.get("SYNTH_MODE", "full")          # full = whole piece per WAV (see v28); stream = experiments only
+TTS_PRECISION = os.environ.get("TTS_PRECISION", "auto")    # auto | fp32 | autocast | half   (auto self-benchmarks, falls back to fp32)
+# XTTS-v2 per-language text limits (coqui warns/truncates above these; hi is 150, en is 250)
+MAX_CHARS_HI = int(os.environ.get("MAX_CHARS_HI", "140"))
+MAX_CHARS_EN = int(os.environ.get("MAX_CHARS_EN", "240"))
+HARD_CHARS = {"hi": 150, "en": 250}
+# First piece is short so audio starts early; each next piece may be RAMP x longer than the previous
+# (while piece k+1 synthesizes, piece k is still playing). RAMP=0 -> derived from measured speed.
+# v40: FIRST_PIECE 45 -> 26 chars. Measured per-piece synthesis on this T4 (RTF ~0.5): a 45-char first piece is
+# ~4 s of audio and ~2 s of GPU, and the whole reply was 3,800 ms. A 26-char first clause is ~2.8 s of speech,
+# which is already enough to sound like an answer starting, and cuts first-sound synthesis by roughly half.
+# Human texture is preserved: the clause still ends on a real sentence/pause boundary.
+FIRST_MAX_HI = int(os.environ.get("FIRST_MAX_HI", "20"))
+FIRST_MAX_EN = int(os.environ.get("FIRST_MAX_EN", "46"))
+RAMP = float(os.environ.get("RAMP", "0"))
+MIN_PIECE = 12
+TRIM_SIL = os.environ.get("TRIM_SIL", "1") == "1"          # trim XTTS lead/tail silence per piece
+# v36 INTERNAL-SILENCE TRIM. Measured on the provider brain: CHUNK 1 = 27 chars -> 7.50 s of audio, CHUNK 2 =
+# 15 chars -> 7.23 s. Characters and audio were INVERTED, so XTTS was padding the speech with long internal
+# pauses that trim_sil (head/tail only) never touched. 23 s of speech, 12.3 s of synthesis and 750 KB of upload
+# for one phone answer. Collapse any run of silence longer than KEEP to KEEP and the audio itself shrinks --
+# the words are untouched, and HUMAN-TEXTURE LAW is preserved because only true silence is cut, never speech.
+SIL_KEEP = float(os.environ.get("SIL_KEEP", "0.12"))        # seconds of silence to keep between words
+SIL_MIN_RUN = float(os.environ.get("SIL_MIN_RUN", "0.30"))  # only collapse runs at least this long
+OUT_SR = int(os.environ.get("OUT_SR", "16000"))            # v36: was 0 (= native 24 kHz). 16 kHz mono 16-bit is 32 KB/s
+                         # instead of 48 KB/s = a third fewer bytes over a 21.9 KB/s tunnel, and a phone speaker
+                         # cannot tell 16k from 24k. live_loop.py reads the rate from the WAV header, so this is safe.
+
+# ---- transport ----
+CHUNK_B64 = 90000        # v36: was 50000. Measured upload was 21.9 KB/s, so 6 parts cost 8762 ms and the FIRST
+                         # 50 KB alone cost 2362 ms of a 5637 ms first sound. 90 KB stays under the relay's
+                         # 100000 LIVE_ONCE_BYTES "small row" threshold, so chunk discovery still never needs an ack.
+SEND_THREADS = int(os.environ.get("SEND_THREADS", "4"))    # parallel uploaders; parts carry idx-part/total so order is recoverable
+RETRY_SLEEP = float(os.environ.get("RETRY_SLEEP", "0.7"))
+
+# ---- STT ----
+STT_ON = os.environ.get("STT_ON", "1") == "1"
+STT_MODEL = os.environ.get("STT_MODEL", "large-v3-turbo")   # v43: falls back to "small" if it cannot load
+STT_PROMPT = os.environ.get("STT_PROMPT", "डॉक्टर साहब, क्लिनिक, अपॉइंटमेंट, टाइमिंग, फ़ीस, मरीज़, नंबर")
+STT_BEAM = int(os.environ.get("STT_BEAM", "1"))
+STT_GPU = os.environ.get("STT_GPU", "")                    # "" -> GPU 1 if there are two GPUs, else GPU 0
+KEEP_HEAR = os.environ.get("KEEP_HEAR", "0") == "1"
+
+# ---- BRAIN: a hosted inference provider decides what to say (no laptop round trip) ----
+# v36, Baba 2026-10-02: the on-seat Qwen2.5-3B was a false positive -- it answered "Doctor sahab ki timings
+# kya hain?" with "बरस यह नीचे बजे हैं शी मैं हो गा।" twice, unusable for a clinic. The house already owns 26 free
+# OpenAI-compatible keys (war-log/free_engine_pool_0913.json). SEAT BRAIN was Baba's call: the key lives in the
+# kernel and the seat calls the provider over its existing keep-alive session -- no laptop hop.
+# LLM_PROVIDER="local" restores the v33 transformers brain exactly as it was.
+AUTO_MODE = os.environ.get("AUTO_MODE", "1") == "1"        # 1 = answer HEAR turns by itself
+LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "api")        # api | local
+LLM_BASE = os.environ.get("LLM_BASE", "https://integrate.api.nvidia.com/v1/chat/completions")
+# KEY PLACEMENT, stated plainly: Baba chose SEAT BRAIN on 2026-10-02 knowing this key becomes visible in the
+# Kaggle kernel UI, and said to rotate it after the demo. Source of truth stays
+# D:\anonym\vault\nvidia_key_clinic_brain.txt; this literal is the one copy that leaves the laptop, by his order.
+def _secret(name):
+    """v43: secrets come from the environment or Kaggle Secrets, never from this file."""
+    v = os.environ.get(name)
+    if v:
+        return v
+    try:
+        from kaggle_secrets import UserSecretsClient
+        return UserSecretsClient().get_secret(name)
+    except Exception:
+        return None
+
+
+LLM_API_KEY = _secret("LLM_API_KEY") or ""
+# Optional comma-separated list. Attempt 0 uses key 0, the hedged attempt uses key 1 (if there is one).
+LLM_API_KEYS = [k.strip() for k in (_secret("LLM_API_KEYS") or "").split(",") if k.strip()] or ([LLM_API_KEY] if LLM_API_KEY else [])
+LLM_MODEL = os.environ.get("LLM_MODEL", "nvidia/nemotron-3.5-lightning-30b-a3b")
+LLM_PATH = os.environ.get("LLM_PATH", "")                  # local dir (Kaggle dataset/model) wins over LLM_MODEL
+LLM_4BIT = os.environ.get("LLM_4BIT", "0") == "1"          # for 7B+ models (needs bitsandbytes)
+LLM_GPU = os.environ.get("LLM_GPU", "")                    # "" -> GPU 1 if two GPUs, else GPU 0
+LLM_MAX_NEW = int(os.environ.get("LLM_MAX_NEW", "56"))     # v36: was 160. The provider wrote 23 s of speech for a
+                                                      # phone answer; a clinic reply is one short sentence.
+LLM_TEMP = float(os.environ.get("LLM_TEMP", "0.6"))
+LLM_HISTORY_TURNS = int(os.environ.get("LLM_HISTORY_TURNS", "6"))
+LLM_TIMEOUT = float(os.environ.get("LLM_TIMEOUT", "30"))
+# v43: a 30 s read timeout let one stalled provider request eat a whole call (probe: 0.5 s, 11 s, 12 s, 30 s from the
+# same endpoint). Now: tight connect/read timeouts, a hedged 2nd request after LLM_FIRST_TOK_SEC, retry on error.
+LLM_CONNECT_TIMEOUT = float(os.environ.get("LLM_CONNECT_TIMEOUT", "4"))
+LLM_READ_TIMEOUT = float(os.environ.get("LLM_READ_TIMEOUT", "8"))
+LLM_FIRST_TOK_SEC = float(os.environ.get("LLM_FIRST_TOK_SEC", "2.5"))
+LLM_HARD_FIRST_SEC = float(os.environ.get("LLM_HARD_FIRST_SEC", "9"))
+LLM_HEDGE = os.environ.get("LLM_HEDGE", "1") == "1"
+# Reply cap: the persona asks for ONE sentence but the probe turns produced 20-30 s of audio. Stop after the first
+# complete sentence, or after this many clauses, whichever comes first.
+LLM_MAX_PIECES = int(os.environ.get("LLM_MAX_PIECES", "3"))
+# Instant acknowledgement played the moment STT finishes, while the LLM + first XTTS clause are still working.
+FILLER_ON = os.environ.get("FILLER_ON", "1") == "1"
+# v42: ONE shared HTTP session for the provider. The voice server spawns a thread per connection and `_sess()` is
+# thread-local, so every phone turn used to open a brand-new TLS connection to the provider. The probe reports
+# llm_headers_ms per run so you can see whether reuse is working (run 1 vs runs 2-3).
+LLM_SHARED_SESSION = os.environ.get("LLM_SHARED_SESSION", "1") == "1"
+PERSONA_FILE = os.environ.get("PERSONA_FILE", "")
+AB_DUMP = os.environ.get("AB_DUMP", "1") == "1"            # save ab_<precision>.wav of the same line for listening tests
+
+# ---- v42 probe knobs ----
+PROBE_ON_BOOT = os.environ.get("PROBE_ON_BOOT", "1") == "1"   # run the full latency probe once the tunnel is up
+PROBE_TUNNEL = os.environ.get("PROBE_TUNNEL", "1") == "1"     # also time a turn through our own public tunnel URL
+PROBE_TURNS = int(os.environ.get("PROBE_TURNS", "2"))         # loopback turns (tunnel gets max(1, PROBE_TURNS-1))
+LAT_SUMMARY_SEC = float(os.environ.get("LAT_SUMMARY_SEC", "300"))
+
+HDRS = {"User-Agent": "kilo-voice-live", "ngrok-skip-browser-warning": "1"}
+WORK = "/kaggle/working"
+LAT_LOG = WORK + "/latency_log.jsonl"
+
+
+# >>> LATCORE  (v42: shared by the kernel and by probe_voice_client.py -- keep stdlib-only)
+LAT_STATS = {}
+_lat_lock = threading.Lock()
+
+
+def _ms(t0):
+    """Whole milliseconds since t0 (a time.time() value)."""
+    return int((time.time() - t0) * 1000)
+
+
+def lat(name, ms):
+    """Record one latency sample (milliseconds) under `name`; summaries come from lat_summary()."""
+    if ms is None:
+        return ms
+    with _lat_lock:
+        d = LAT_STATS.setdefault(name, [])
+        d.append(float(ms))
+        if len(d) > 500:
+            del d[:100]
+    return ms
+
+
+def lat_summary():
+    out = {}
+    with _lat_lock:
+        for k, v in LAT_STATS.items():
+            if not v:
+                continue
+            s = sorted(v)
+            n = len(s)
+            out[k] = {"n": n, "min": round(s[0]), "p50": round(s[n // 2]),
+                      "p95": round(s[min(n - 1, int(n * 0.95))]), "max": round(s[-1]), "last": round(v[-1])}
+    return out
+
+
+def playback_stalls(arrivals):
+    """arrivals: [(t_seconds, audio_seconds)] in arrival order. A virtual player starts at the first arrival and
+    plays continuously; whenever it runs out of audio it stalls until the next piece lands.
+    Returns (gap_seconds_per_arrival, total_stall_seconds). This is the audible silence between clauses."""
+    gaps, stall, avail, t0 = [], 0.0, 0.0, None
+    for t, a in arrivals:
+        if t0 is None:
+            t0 = t
+        wanted = (t - t0) - stall          # audio-seconds the caller has consumed by the time this piece lands
+        gap = max(0.0, wanted - avail)
+        stall += gap
+        gaps.append(gap)
+        avail += a
+    return gaps, stall
+
+
+def build_trace(tr, pcs, first_pcm_ms, total_ms):
+    """Fold the raw per-turn marks (`tr`: absolute times + ms fields, `pcs`: per-piece records) into the trace
+    returned in the /turn trailer. `budget` is the FIRST-SOUND critical path; `unaccounted_ms` is whatever the
+    named segments do not explain (thread scheduling, GIL, socket stalls)."""
+    def d(a, b):
+        return int((tr[b] - tr[a]) * 1000) if (a in tr and b in tr) else None
+
+    out = {k: tr.get(k) for k in ("body_bytes", "body_read_ms", "b64_ms", "wavdec_ms", "stt_ms",
+                                  "header_write_ms", "header_sent_ms")}
+    out["llm_headers_ms"] = d("llm_req", "llm_headers")
+    out["llm_first_tok_ms"] = d("llm_req", "llm_first_tok")
+    out["llm_first_piece_ms"] = d("llm_req", "llm_first_piece")
+    out["first_pcm_ms"] = first_pcm_ms
+    out["total_ms"] = total_ms
+    ok = [r for r in pcs if r.get("ready_ms") is not None and r.get("audio_s") is not None]
+    gaps, stall = playback_stalls([(r["ready_ms"] / 1000.0, r["audio_s"]) for r in ok])
+    for r, g in zip(ok, gaps):
+        r["gap_ms"] = int(g * 1000)
+    out["stall_ms"] = int(stall * 1000)
+    out["pieces"] = pcs
+    p1 = next((r for r in pcs if not r.get("filler")), {})
+    budget = [("body_read", tr.get("body_read_ms")), ("b64", tr.get("b64_ms")), ("wavdec", tr.get("wavdec_ms")),
+              ("stt", tr.get("stt_ms")), ("header_write", tr.get("header_write_ms")),
+              ("llm_to_first_piece", p1.get("llm_wait_ms")), ("tts_lock_wait", p1.get("lock_ms")),
+              ("tts_gen", p1.get("gen_ms")), ("tts_post", p1.get("post_ms")), ("pcm_encode", p1.get("enc_ms")),
+              ("socket_write", p1.get("write_ms"))]
+    out["budget"] = [[k, v] for k, v in budget if v is not None]
+    if first_pcm_ms is not None:
+        out["unaccounted_ms"] = first_pcm_ms - sum(v for _, v in out["budget"])
+    return out
+# <<< LATCORE
+
+
+# >>> NET  (persistent keep-alive connections + background uploaders)
+try:
+    import requests as _rq
+except Exception:
+    _rq = None
+
+_tl = threading.local()
+FORM = {"Content-Type": "application/x-www-form-urlencoded"}   # same header urllib used to send
+
+
+def _sess():
+    s = getattr(_tl, "s", None)
+    if s is None:
+        s = _rq.Session()
+        s.headers.update(HDRS)
+        _tl.s = s
+    return s
+
+
+_llm_s = [None]
+_llm_s_lock = threading.Lock()
+
+
+def _llm_session():
+    """v42: process-wide provider session (pooled, keep-alive). Falls back to the thread-local one if disabled."""
+    if not LLM_SHARED_SESSION:
+        return _sess()
+    with _llm_s_lock:
+        if _llm_s[0] is None:
+            s = _rq.Session()
+            s.headers.update(HDRS)
+            try:
+                from requests.adapters import HTTPAdapter
+                ad = HTTPAdapter(pool_connections=4, pool_maxsize=8)
+                s.mount("https://", ad)
+                s.mount("http://", ad)
+            except Exception:
+                pass
+            _llm_s[0] = s
+        return _llm_s[0]
+
+
+def http_get(url, timeout):
+    if _rq is not None:
+        r = _sess().get(url, timeout=timeout)
+        r.raise_for_status()
+        return r.content
+    return urllib.request.urlopen(urllib.request.Request(url, headers=HDRS), timeout=timeout).read()
+
+
+def http_post(url, data, timeout):
+    if _rq is not None:
+        r = _sess().post(url, data=data, headers=FORM, timeout=timeout)
+        r.raise_for_status()
+        return r.content
+    return urllib.request.urlopen(urllib.request.Request(url, data=data, headers=HDRS), timeout=timeout).read()
+
+
+def doors():
+    return [RELAY_URL] + RELAY_FALLBACKS
+
+
+DOOR = None
+
+
+def gate():
+    global DOOR
+    for c in doors():
+        try:
+            r = json.loads(http_get(c + "/health?token=" + urllib.parse.quote(RELAY_TOKEN), 20).decode())
+            if r.get("ok"):
+                DOOR = c
+                return c
+        except Exception:
+            pass
+    return None
+
+
+def _post(path, body, text, retries=2):
+    global DOOR
+    data = json.dumps({"body": body, "text": text}).encode()
+    for i in range(retries):
+        if DOOR is None and gate() is None:
+            time.sleep(RETRY_SLEEP)
+            continue
+        try:
+            t_p = time.time()
+            http_post(DOOR + path + "?token=" + urllib.parse.quote(RELAY_TOKEN), data, 60)
+            lat("relay_post_ms", _ms(t_p))   # v42: the relay write cost (the old 70 MB order-bank rewrite shows up here)
+            return True
+        except Exception:
+            DOOR = None
+            time.sleep(RETRY_SLEEP)
+    return False
+
+
+def say(text, body=OUT_BODY, retries=2):
+    """Synchronous post to the orders channel."""
+    return _post("/say", body, text, retries)
+
+
+def report(text, body=None, retries=2):
+    """Seat -> laptop reports go on /hear (reports channel), not /say (orders channel).
+    ensure_ascii keeps the wire pure ASCII; the laptop's json.loads restores Devanagari."""
+    return _post("/hear", body or SELF_BODY, text, retries)
+
+
+_outq = queue.Queue()
+_sent = {}
+
+
+def say_async(text, body=OUT_BODY, tag=None):
+    """Queue a post so synthesis never waits on the network."""
+    _outq.put((text, body, tag))
+
+
+def _sender_loop():
+    while True:
+        text, body, tag = _outq.get()
+        try:
+            if say(text, body) and tag:
+                _sent[tag] = time.time()
+        except Exception:
+            pass
+        finally:
+            _outq.task_done()
+
+
+def flush(timeout=40.0):
+    t = time.time()
+    while _outq.unfinished_tasks and time.time() - t < timeout:
+        time.sleep(0.01)
+
+
+for _i in range(max(1, SEND_THREADS)):
+    threading.Thread(target=_sender_loop, daemon=True).start()
+# <<< NET
+
+
+def prog(msg):
+    print(msg, flush=True)
+    say_async("LIVE " + msg)
+
+
+import traceback as _tb
+
+
+def _where(exc):
+    """Last traceback frame of an exception as 'file.py:123 in func'."""
+    try:
+        fr = _tb.extract_tb(exc.__traceback__)[-1]
+        return f"{os.path.basename(fr.filename)}:{fr.lineno} in {fr.name}"
+    except Exception:
+        return "?"
+
+
+def _hook(t, v, tb):
+    frame = _tb.extract_tb(tb)[-1] if tb else None
+    say("LIVE CRASH " + t.__name__ + ": " + str(v)[:200] + " @" + (frame.name if frame else "?") + ":" + str(frame.lineno if frame else "?"))
+
+
+sys.excepthook = _hook
+
+# ---------- 0. HARDWARE GATE (law 15) ----------
+smi = subprocess.run(["nvidia-smi", "--query-gpu=index,name,memory.total", "--format=csv,noheader"],
+                     capture_output=True, text=True).stdout.strip()
+prog("nvidia-smi: " + smi.replace("\n", " | "))
+import torch as _gate
+import torch
+_names = [_gate.cuda.get_device_name(i) for i in range(_gate.cuda.device_count())]
+assert _gate.cuda.device_count() >= 1 and all("T4" in n.upper() for n in _names), \
+    f"HARDWARE GATE FAIL: expected T4, got {_names}"
+prog(f"GATE PASS: {_names}")
+N_GPU = _gate.cuda.device_count()
+
+
+# ---------- 1. coqui ----------
+def pip(*args):
+    return subprocess.call([sys.executable, "-m", "pip", "install", "-q"] + list(args))
+
+
+try:
+    import TTS  # noqa
+    prog("TTS importable")
+except Exception:
+    if pip("coqui-tts") != 0:
+        pip("--ignore-requires-python", "coqui-tts")
+
+from TTS.tts.configs.xtts_config import XttsConfig
+from TTS.tts.models.xtts import Xtts
+# ---------- 2. locate artifacts: pretrained XTTS-v2 mirror ----------
+def find(name):
+    hits = glob.glob(f"/kaggle/input/**/{name}", recursive=True)
+    return hits[0] if hits else None
+
+
+# v7: skip fine-tuned (arch mismatch), go straight to pretrained XTTS-v2 + ref audio (zero-shot)
+pre_model_path = find("model.pth")
+pre_dvae = find("dvae.pth")
+pre_mel = find("mel_stats.pth")
+pre_vocab = find("vocab.json")
+if not (pre_model_path and pre_dvae and pre_mel and pre_vocab):
+    say("LIVE NO PRETRAINED FILES - tree: " + " | ".join(glob.glob("/kaggle/input/*/*")[:30])[:900])
+    sys.exit(2)
+
+# find pretrained config
+pre_cfg_path = None
+for p in glob.glob("/kaggle/input/**/config.json", recursive=True):
+    if "xtts-v2" in p.lower() or "pretrained" in p.lower():
+        pre_cfg_path = p
+        break
+if pre_cfg_path is None:
+    pre_cfg_path = find("config.json")
+
+run_dir = os.path.dirname(pre_model_path)
+
+# copy mirror files next to model.pth BEFORE loading (best effort; /kaggle/input is read-only,
+# so failures are ignored and vocab_path is passed explicitly below)
+for src in (pre_dvae, pre_mel, pre_vocab):
+    dst = os.path.join(run_dir, os.path.basename(src))
+    if os.path.abspath(src) != os.path.abspath(dst) and not os.path.exists(dst):
+        try:
+            shutil.copy(src, dst)
+        except Exception:
+            pass
+
+pre_cfg = XttsConfig()
+pre_cfg.load_json(pre_cfg_path)
+m = Xtts.init_from_config(pre_cfg)
+m.load_checkpoint(pre_cfg, checkpoint_path=pre_model_path, checkpoint_dir=run_dir,
+                  vocab_path=pre_vocab, use_deepspeed=False)
+m.cuda()      # TTS lives on GPU 0; Whisper goes to GPU 1 (see STT section)
+m.eval()
+prog("model loaded fp32")
+
+# ref audio
+ref = None
+if VOICE_REF:
+    stem = os.path.splitext(os.path.basename(VOICE_REF))[0]
+    hits = glob.glob(f"/kaggle/input/**/{stem}*.wav", recursive=True)
+    ref = hits[0] if hits else None
+if ref is None:
+    meta_hi_hits = [p for p in glob.glob("/kaggle/input/**/metadata_hi.csv", recursive=True) if "father" in p]
+    if meta_hi_hits:
+        first = None
+        for line in open(meta_hi_hits[0], encoding="utf-8"):
+            if "|" in line:
+                first = os.path.basename(line.split("|", 1)[0])
+                break
+        if first:
+            stem = os.path.splitext(first)[0]
+            hits = glob.glob(f"/kaggle/input/**/{stem}*.wav", recursive=True)
+            ref = hits[0] if hits else None
+if ref is None:
+    hits = glob.glob("/kaggle/input/**/windows/*.wav", recursive=True)
+    ref = hits[0] if hits else None
+if ref is None:
+    say("LIVE NO REF WAV")
+    sys.exit(3)
+prog(f"ref={ref}")
+gpt_cond_latent, speaker_embedding = m.get_conditioning_latents(audio_path=[ref])
+prog("conditioning latents ready")
+
+import numpy as np
+import soundfile as sf
+
+SR = int(getattr(pre_cfg, "output_sample_rate", 24000) or 24000)
+
+
+def log_lat(rec):
+    rec["ts"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    with open(LAT_LOG, "a", encoding="utf-8") as fh:
+        fh.write(json.dumps(rec) + "\n")
+
+
+def _wavbuf(arr, sr):
+    buf = io.BytesIO()
+    sf.write(buf, arr, sr, format="WAV")
+    return buf.getvalue()
+
+
+def resample(a, sr_in, sr_out):
+    if int(sr_in) == int(sr_out):
+        return a
+    try:
+        from scipy.signal import resample_poly
+        from math import gcd
+        g = gcd(int(sr_in), int(sr_out))
+        a = resample_poly(a, int(sr_out) // g, int(sr_in) // g)
+    except Exception:
+        n = int(len(a) * sr_out / sr_in)
+        a = np.interp(np.linspace(0, len(a) - 1, n), np.arange(len(a)), a)
+    return np.ascontiguousarray(a, dtype=np.float32)
+# ---------- 3. text prep: Hindi numbers + latency-shaped splitting ----------
+# coqui's tokenizer expands digits with num2words, which has NO Hindi lane: any ASCII digit in
+# lang="hi" text raises a bare NotImplementedError(). So we spell numbers out in Hindi ourselves.
+HI_NUM = (
+    "शून्य एक दो तीन चार पाँच छह सात आठ नौ "
+    "दस ग्यारह बारह तेरह चौदह पंद्रह सोलह सत्रह अठारह उन्नीस "
+    "बीस इक्कीस बाईस तेईस चौबीस पच्चीस छब्बीस सत्ताईस अट्ठाईस उनतीस "
+    "तीस इकतीस बत्तीस तैंतीस चौंतीस पैंतीस छत्तीस सैंतीस अड़तीस उनतालीस "
+    "चालीस इकतालीस बयालीस तैंतालीस चौवालीस पैंतालीस छियालीस सैंतालीस अड़तालीस उनचास "
+    "पचास इक्यावन बावन तिरपन चौवन पचपन छप्पन सत्तावन अट्ठावन उनसठ "
+    "साठ इकसठ बासठ तिरसठ चौंसठ पैंसठ छियासठ सड़सठ अड़सठ उनहत्तर "
+    "सत्तर इकहत्तर बहत्तर तिहत्तर चौहत्तर पचहत्तर छिहत्तर सतहत्तर अठहत्तर उन्यासी "
+    "अस्सी इक्यासी बयासी तिरासी चौरासी पचासी छियासी सत्तासी अट्ठासी नवासी "
+    "नब्बे इक्यानवे बानवे तिरानवे चौरानवे पचानवे छियानवे सत्तानवे अट्ठानवे निन्यानवे"
+).split()
+assert len(HI_NUM) == 100, len(HI_NUM)
+
+_DEV_DIGITS = str.maketrans("०१२३४५६७८९", "0123456789")
+
+
+def hi_int(n):
+    if n < 100:
+        return HI_NUM[n]
+    for base, word in ((10 ** 7, "करोड़"), (10 ** 5, "लाख"), (1000, "हज़ार"), (100, "सौ")):
+        if n >= base:
+            q, r = divmod(n, base)
+            s = hi_int(q) + " " + word
+            return s + (" " + hi_int(r) if r else "")
+    return HI_NUM[n]
+
+
+def hi_numbers(text):
+    """Spell out digits, decimals, thousands-commas and % in Hindi so the tokenizer never sees a digit."""
+    text = text.translate(_DEV_DIGITS)
+    text = re.sub(r"(?<=\d),(?=\d{3}\b)", "", text)
+    text = re.sub(r"(\d+)\.(\d+)",
+                  lambda mo: hi_int(int(mo.group(1))) + " दशमलव " + " ".join(HI_NUM[int(d)] for d in mo.group(2)), text)
+
+    def _num(mo):
+        s = mo.group(0)
+        if len(s) > 9:  # too long to read as a quantity: read digit by digit
+            return " ".join(HI_NUM[int(d)] for d in s)
+        return hi_int(int(s))
+
+    text = re.sub(r"\d+", _num, text)
+    return text.replace("%", " प्रतिशत")
+
+
+def char_limit(lang):
+    return MAX_CHARS_HI if lang == "hi" else MAX_CHARS_EN
+
+
+_TERM = ".!?।॥"
+_SOFT = ",;:—–-،"
+RAMP_EFF = 1.3   # replaced by the measured value after the warm-up benchmark
+
+
+def _cut_idx(s, cap):
+    """Index at which to cut s (len(s) > cap) so the piece is <= cap chars: sentence end, then comma-type pause, then space."""
+    lo = max(1, int(cap * 0.4))
+    for i in range(cap - 1, lo - 1, -1):
+        if s[i] in _TERM and (i + 1 >= len(s) or s[i + 1].isspace()):
+            return i + 1
+    for i in range(cap - 1, lo - 1, -1):
+        if s[i] in _SOFT and i + 1 < len(s) and s[i + 1].isspace():
+            return i + 1
+    sp = s.rfind(" ", lo, cap + 1)
+    return sp if sp > 0 else cap
+
+
+def take_piece(s, cap):
+    """Cut s into (piece <= cap chars, rest)."""
+    s = s.strip()
+    if len(s) <= cap:
+        return s, ""
+    cut = _cut_idx(s, cap)
+    return s[:cut].strip(), s[cut:].strip()
+
+
+_STREAM_TERM = "।!?॥"
+class SpeechChunker:
+    """Turns an LLM token stream into speakable pieces as early as possible. The first piece ends at the first
+    sentence end (or, failing that, a comma-type pause) that is long enough; later pieces grow by RAMP_EFF like plan_pieces."""
+    MIN_END = 8
+
+    def __init__(self, lang):
+        self.limit = char_limit(lang)
+        self.cap = min(FIRST_MAX_HI if lang == "hi" else FIRST_MAX_EN, self.limit)
+        self.soft_min = 10 if lang == "hi" else 24
+        self.buf = ""
+        self.k = 0
+
+    def feed(self, text):
+        self.buf += text
+        return self._drain(False)
+
+    def finish(self):
+        return self._drain(True)
+
+    def _cut(self, b, final):
+        cap = self.cap
+        for i, c in enumerate(b[:cap]):
+            if (c in _STREAM_TERM or (c == "." and i + 1 < len(b) and b[i + 1].isspace())) and i + 1 >= self.MIN_END:
+                return i + 1
+        if self.k == 0:
+            for i, c in enumerate(b[:cap]):
+                if c in _SOFT and i + 1 < len(b) and b[i + 1].isspace() and i + 1 >= self.soft_min:
+                    return i + 1
+        if len(b) > cap:
+            return _cut_idx(b, cap)
+        return len(b) if final else 0
+
+    def _drain(self, final):
+        out = []
+        while True:
+            b = self.buf.lstrip()
+            if not b:
+                self.buf = ""
+                break
+            cut = self._cut(b, final)
+            if cut <= 0:
+                self.buf = b
+                break
+            piece, self.buf = b[:cut].strip(), b[cut:]
+            if piece:
+                out.append(piece)
+                self.k += 1
+                self.cap = min(self.limit, max(self.cap + 1, int(self.cap * RAMP_EFF)))
+        return out
+
+
+def plan_pieces(text, lang):
+    """Short first piece (audio starts early), then pieces that grow by RAMP_EFF up to the language limit."""
+    t = hi_numbers(text) if lang == "hi" else text
+    t = re.sub(r"\s+", " ", t).strip()
+    limit = char_limit(lang)
+    cap = min(FIRST_MAX_HI if lang == "hi" else FIRST_MAX_EN, limit)
+    pieces, rest, guard = [], t, 0
+    while rest and guard < 200:
+        guard += 1
+        piece, rest = take_piece(rest, cap)
+        if piece:
+            pieces.append(piece)
+        cap = min(limit, max(cap + 1, int(cap * RAMP_EFF)))
+    if len(pieces) >= 2 and len(pieces[-1]) < MIN_PIECE \
+            and len(pieces[-2]) + 1 + len(pieces[-1]) <= HARD_CHARS.get(lang, 250):
+        tail = pieces.pop()
+        pieces[-1] += " " + tail
+    return pieces or [t[:limit]]
+
+
+def trim_sil(a, sr, lead_ms=40, tail_ms=60):
+    """Drop XTTS lead/tail silence, leaving a short pad (each ms trimmed is a ms off every reply)."""
+    if a.size == 0:
+        return a
+    peak = float(np.max(np.abs(a)))
+    thr = max(0.003, 0.015 * peak)
+    idx = np.flatnonzero(np.abs(a) > thr)
+    if idx.size == 0:
+        return a
+    s = max(int(idx[0]) - int(sr * lead_ms / 1000), 0)
+    e = min(int(idx[-1]) + int(sr * tail_ms / 1000) + 1, a.size)
+    return a[s:e]
+
+
+def collapse_silence(a, sr, keep=SIL_KEEP, min_run=SIL_MIN_RUN):
+    """Collapse internal silence: any run of samples quieter than a small fraction of peak, lasting at least
+    min_run seconds, is cut down to `keep` seconds. Only true silence is removed -- speech is never touched,
+    so the halting texture Baba calls human survives. Returns (audio, seconds_removed)."""
+    if a.size == 0:
+        return a, 0.0
+    peak = float(np.max(np.abs(a))) or 1.0
+    quiet = np.abs(a) < 0.02 * peak
+    if not quiet.any():
+        return a, 0.0
+    keep_n = max(int(sr * keep), 1)
+    run_n = max(int(sr * min_run), 1)
+    out = []
+    i = 0
+    n = a.size
+    removed = 0
+    while i < n:
+        if quiet[i]:
+            j = i
+            while j < n and quiet[j]:
+                j += 1
+            run = j - i
+            if run >= run_n:
+                out.append(a[i:i + keep_n])
+                removed += run - keep_n
+            else:
+                out.append(a[i:j])
+            i = j
+        else:
+            j = i
+            while j < n and not quiet[j]:
+                j += 1
+            out.append(a[i:j])
+            i = j
+    return np.concatenate(out), removed / float(sr)
+
+
+def finish_audio(arr, piece, trim=True):
+    arr = np.asarray(arr, dtype=np.float32).squeeze()
+    if arr.ndim == 0 or arr.size == 0:
+        return arr
+    if trim and TRIM_SIL:
+        tail = 180 if piece.rstrip()[-1:] in _TERM else 50   # keep a natural pause after a full sentence
+        arr = trim_sil(arr, SR, 40, tail)
+    if TRIM_SIL:   # v36: then squeeze the internal padding the provider's phrasing leaves behind
+        arr, _cut_s = collapse_silence(arr, SR)
+    if OUT_SR and OUT_SR != SR:
+        arr = resample(arr, SR, OUT_SR)
+    return arr
+# ---------- 4. synthesis + precision self-benchmark ----------
+PREC = "fp32"
+TTS_LOCK = threading.Lock()   # v42: one XTTS inference at a time (phone turn, relay call and probe can overlap)
+
+
+def _prec_ctx():
+    return torch.autocast("cuda", dtype=torch.float16) if PREC == "autocast" else nullcontext()
+
+
+def synth_full(text, lang):
+    """One text piece -> one COMPLETE float32 waveform (ends in silence, never mid-word).
+    v42: serialised by TTS_LOCK; lock wait and pure GPU time are stored in _tl.tts for the caller's trace."""
+    t_q = time.time()
+    with TTS_LOCK:
+        t_g = time.time()
+        with _prec_ctx():
+            out = m.inference(text, lang, gpt_cond_latent=gpt_cond_latent,
+                              speaker_embedding=speaker_embedding, temperature=TEMPERATURE)
+        wav = out["wav"] if isinstance(out, dict) else out
+        if hasattr(wav, "float"):
+            wav = wav.float().cpu().numpy()
+        arr = np.asarray(wav, dtype=np.float32).squeeze()
+        t_e = time.time()
+    _tl.tts = {"lock_ms": int((t_g - t_q) * 1000), "gen_ms": int((t_e - t_g) * 1000)}
+    lat("tts_lock_wait_ms", _tl.tts["lock_ms"])
+    lat("tts_gen_ms", _tl.tts["gen_ms"])
+    return arr
+
+
+def synth_iter(text, lang):
+    if SYNTH_MODE == "full":
+        yield synth_full(text, lang)
+        return
+    with _prec_ctx():   # stream mode (experiments): slices end mid-word, see v28
+        for chunk in m.inference_stream(text, lang, gpt_cond_latent=gpt_cond_latent,
+                                        speaker_embedding=speaker_embedding, temperature=TEMPERATURE):
+            yield chunk.float().cpu().numpy().squeeze() if hasattr(chunk, "float") else np.asarray(chunk).squeeze()
+
+
+BENCH_TEXT = "नमस्ते, मैं आपकी कैसे मदद कर सकता हूँ? यह एक छोटी जाँच है।"
+
+
+def _bench(n=2):
+    """Run n synths (first one warms CUDA); return (ms, audio_s, sane) of the last one.
+    The last run uses a fixed RNG seed and is saved as ab_<precision>.wav so fp32/fp16 can be compared by ear."""
+    ms = dur = 0.0
+    ok = False
+    w = None
+    for i in range(n):
+        if i == n - 1:
+            torch.manual_seed(1234)
+        torch.cuda.synchronize()
+        t = time.time()
+        w = synth_full(BENCH_TEXT, "hi")
+        torch.cuda.synchronize()
+        ms = (time.time() - t) * 1000.0
+        dur = len(w) / SR
+        ok = bool(np.isfinite(w).all()) and float(np.abs(w).max()) > 0.01 and dur > 0.5
+    if AB_DUMP and w is not None:
+        try:
+            sf.write(f"{WORK}/ab_{PREC}.wav", w, SR)
+        except Exception:
+            pass
+    return ms, dur, ok
+
+
+def pick_precision():
+    """Time fp32, fp16-autocast and true fp16 on the same line; keep the fastest one that still produces
+    finite, sane-length audio. Anything that raises or looks wrong is reverted, so this can only help."""
+    global PREC, gpt_cond_latent, speaker_embedding
+    PREC = "fp32"
+    ms32, dur32, ok32 = _bench()
+    prog(f"precision fp32: {ms32:.0f} ms for {dur32:.2f} s audio (rtf {ms32 / 1000.0 / max(dur32, 1e-6):.2f})")
+    best = ("fp32", ms32, dur32)
+    if TTS_PRECISION == "fp32":
+        return best
+
+    forced = TTS_PRECISION in ("autocast", "half")   # forced modes only need to be sane, not faster
+
+    def good(ms, dur, ok):
+        sane = ok and abs(dur - dur32) / max(dur32, 1e-6) < 0.4
+        return sane and (forced or ms < best[1] * 0.9)
+
+    if TTS_PRECISION in ("auto", "autocast"):
+        try:
+            PREC = "autocast"
+            ms, dur, ok = _bench()
+            prog(f"precision autocast: {ms:.0f} ms for {dur:.2f} s audio ok={ok}")
+            if good(ms, dur, ok):
+                best = ("autocast", ms, dur)
+        except Exception as e:
+            prog(f"precision autocast FAIL {type(e).__name__}: {str(e)[:100]}")
+
+    if TTS_PRECISION in ("auto", "half"):
+        state = {k: v.detach().to("cpu", copy=True) for k, v in m.state_dict().items()}
+        gcl32, spk32 = gpt_cond_latent, speaker_embedding
+        keep = False
+        try:
+            m.half()
+            gpt_cond_latent, speaker_embedding = gcl32.half(), spk32.half()
+            PREC = "half"
+            ms, dur, ok = _bench()
+            prog(f"precision half: {ms:.0f} ms for {dur:.2f} s audio ok={ok}")
+            if good(ms, dur, ok):
+                best = ("half", ms, dur)
+                keep = True
+        except Exception as e:
+            prog(f"precision half FAIL {type(e).__name__}: {str(e)[:100]}")
+        if not keep:
+            m.float()
+            m.load_state_dict(state)
+            m.cuda()
+            m.eval()
+            gpt_cond_latent, speaker_embedding = gcl32, spk32
+        del state
+        torch.cuda.empty_cache()
+
+    PREC = best[0]
+    return best
+
+
+if WARM_UP:
+    _p, _ms_w, _dur = pick_precision()
+    _rtf = (_ms_w / 1000.0) / max(_dur, 1e-6)
+    RAMP_EFF = RAMP if RAMP > 0 else min(2.2, max(1.15, 0.85 / max(_rtf, 0.05)))
+    log_lat({"type": "warmup", "precision": PREC, "ms": int(_ms_w), "audio_s": round(_dur, 2),
+             "rtf": round(_rtf, 2), "ramp": round(RAMP_EFF, 2)})
+    prog(f"warmup ok precision={PREC} ms={int(_ms_w)} rtf={_rtf:.2f} ramp={RAMP_EFF:.2f}")
+else:
+    RAMP_EFF = RAMP if RAMP > 0 else 1.3
+# ---------- 4b. INSTANT ACKNOWLEDGEMENT (v43) ----------
+# First sound used to wait for STT + LLM first clause + XTTS (2.4-3.6 s on loopback, far worse when the provider
+# stalls). A short pre-synthesized "one moment" is written to the socket the instant STT finishes, so the caller
+# hears something at ~STT time while the real answer is being produced. Built once at boot, ~1 s of GPU.
+FILLERS = {}
+
+
+def build_fillers():
+    for lang_, txt in (("hi", "जी, एक मिनट।"), ("en", "Sure, one moment.")):
+        try:
+            a = finish_audio(synth_full(txt, lang_), txt, trim=True)
+            FILLERS[lang_] = np.clip(a * 32767.0, -32768, 32767).astype(np.int16).tobytes()
+        except Exception as e:
+            prog(f"FILLER {lang_} FAIL {type(e).__name__}: {str(e)[:80]}")
+    prog("FILLERS ready " + " ".join(f"{k}={len(v) / float((OUT_SR or SR) * 2):.2f}s" for k, v in FILLERS.items()))
+
+
+if FILLER_ON:
+    build_fillers()
+# ---------- 5. STT on GPU 1: the listening leg ----------
+# The laptop CPU transcribes at 5x-15x real time (measured), which makes a live loop impossible.
+# Whisper sits on the second T4 so it never competes with XTTS for memory or compute.
+whisper = None
+if STT_ON:
+    try:
+        import faster_whisper  # noqa
+    except Exception:
+        pip("faster-whisper")
+    try:
+        from faster_whisper import WhisperModel
+        _stt_gpu = int(STT_GPU) if STT_GPU != "" else (1 if N_GPU > 1 else 0)
+        t_stt = time.time()
+        whisper = None
+        for _mn in dict.fromkeys([STT_MODEL, "small"]):
+            try:
+                whisper = WhisperModel(_mn, device="cuda", device_index=_stt_gpu, compute_type="float16")
+                STT_MODEL = _mn
+                break
+            except Exception as _e:
+                prog(f"STT model {_mn} FAIL {type(_e).__name__}: {str(_e)[:100]}")
+        if whisper is None:
+            raise RuntimeError("no whisper model could be loaded")
+        try:   # warm: the first transcribe otherwise pays CUDA/cuDNN init on a live turn
+            list(whisper.transcribe(np.zeros(16000, dtype=np.float32), language="hi", beam_size=1,
+                                    without_timestamps=True)[0])
+        except Exception:
+            pass
+        _stt_ms = int((time.time() - t_stt) * 1000)
+        log_lat({"type": "stt_load", "model": STT_MODEL, "gpu": _stt_gpu, "ms": _stt_ms})
+        report(f"STT_READY {STT_MODEL} cuda:{_stt_gpu}/float16 load_ms={_stt_ms}")
+    except Exception as e:
+        whisper = None
+        report(f"STT_FAIL load {type(e).__name__}: {str(e)[:140]}")
+else:
+    report("STT_OFF")
+
+
+# ---------- 5b. BRAIN: the engine decides what to say ----------
+# HEAR audio -> Whisper (GPU 1) -> LLM (GPU 1, streamed) -> first clause goes to XTTS (GPU 0) while the LLM is still
+# writing the rest. Nothing here is scripted: the reply text comes from the model, turn by turn, with chat history.
+DEFAULT_PERSONA = (
+    "You are a warm, calm voice assistant on a live phone call, speaking aloud. "
+    "Answer in the language the caller used: simple, natural spoken Hindi written ONLY in Devanagari script "
+    "(never Roman letters, and write every number as words), or English. "
+    "Keep each reply to ONE short sentence, about 12 words at most, the way a person talks: "
+    "no lists, no markdown, no emojis, no stage directions, no second sentence. "
+    "If you did not catch what was said, politely ask them to repeat it. "
+    "You are an AI voice assistant; if anyone asks, say so plainly. "
+    "On health questions give only general, safe information; never diagnose, and never tell anyone to start, "
+    "stop or change a medicine or dose; for anything urgent or serious, tell them to contact their doctor or emergency services."
+)
+PERSONA = DEFAULT_PERSONA
+if PERSONA_FILE and os.path.exists(PERSONA_FILE):
+    try:
+        PERSONA = open(PERSONA_FILE, encoding="utf-8").read().strip() or DEFAULT_PERSONA
+    except Exception:
+        pass
+FALLBACK_HI = "माफ़ कीजिए, मैं समझ नहीं पाया। कृपया दोबारा कहिए।"
+FALLBACK_EN = "Sorry, I didn't catch that. Could you say it again?"
+HISTORY = []
+tok = None
+llm = None
+LLM_DEV = None
+AUTO_ENABLED = False
+
+
+def _hf_token():
+    t = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
+    if t:
+        return t
+    try:
+        from kaggle_secrets import UserSecretsClient
+        return UserSecretsClient().get_secret("HF_TOKEN")
+    except Exception:
+        return None
+
+
+def load_llm():
+    """v36: provider mode needs no local weights -- the whole point of moving off the 3B. Nothing to load."""
+    global tok, llm, LLM_DEV
+    if LLM_PROVIDER == "api":
+        tok = llm = None
+        LLM_DEV = "provider"
+        return
+    from transformers import AutoTokenizer, AutoModelForCausalLM
+    src = LLM_PATH or LLM_MODEL
+    gpu = int(LLM_GPU) if LLM_GPU != "" else (1 if N_GPU > 1 else 0)
+    ht = _hf_token()
+    tok = AutoTokenizer.from_pretrained(src, token=ht)
+    kw = dict(torch_dtype=torch.float16, device_map={"": gpu}, token=ht)
+    if LLM_4BIT:
+        try:
+            import bitsandbytes  # noqa
+        except Exception:
+            pip("bitsandbytes")
+        from transformers import BitsAndBytesConfig
+        kw["quantization_config"] = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",
+                                                       bnb_4bit_compute_dtype=torch.float16)
+    llm = AutoModelForCausalLM.from_pretrained(src, **kw).eval()
+    LLM_DEV = f"cuda:{gpu}"
+def llm_stream(messages, max_new, trace=None, stop=None, key_i=0):
+    """Yield text increments as the model writes them.
+
+    v36: two engines behind one signature so nothing downstream (SpeechChunker, speak, auto_reply) changed.
+      LLM_PROVIDER="api"   -> hosted OpenAI-compatible /chat/completions, stream=True, SSE "data:" lines.
+                              Runs on the seat (Baba: SEAT BRAIN), so the provider's first token costs one
+                              network round trip, not a laptop hop.
+      LLM_PROVIDER="local" -> the v33 transformers path, unchanged.
+    v42: `trace` (optional dict) receives absolute times llm_req / llm_headers / llm_first_tok, and the same
+    three intervals go to lat() as llm_headers_ms / llm_first_tok_ms. The response is always closed, even when
+    the caller abandons the generator (hang-up), so a dead call stops costing provider time.
+    """
+    t_req = time.time()
+    if trace is not None:
+        trace["llm_req"] = t_req
+    if LLM_PROVIDER == "api":
+        body = {"model": LLM_PATH or LLM_MODEL, "messages": messages, "max_tokens": max_new,
+                "temperature": LLM_TEMP, "top_p": 0.9, "stream": True,
+                # REASONING OFF (Baba's order). Measured on this model: with reasoning the reply arrives as
+                # English meta-text ("Here's a thinking process: 1. Analyze...") in 2435 ms across 83 reasoning
+                # chunks. With chat_template_kwargs.enable_thinking=false it answers straight in clean Hindi in
+                # 611 ms with ZERO reasoning chunks. `enable_thinking` as a top-level param is rejected (HTTP 400
+                # "Unsupported parameter"), so it has to go inside chat_template_kwargs.
+                "chat_template_kwargs": {"enable_thinking": False}}
+        hdrs = dict(HDRS)
+        hdrs["Content-Type"] = "application/json"
+        if LLM_API_KEYS:
+            hdrs["Authorization"] = "Bearer " + LLM_API_KEYS[key_i % len(LLM_API_KEYS)]
+        resp = _llm_session().post(LLM_BASE, data=json.dumps(body), headers=hdrs,
+                                   timeout=(LLM_CONNECT_TIMEOUT, LLM_READ_TIMEOUT), stream=True)
+        got = []
+        try:
+            resp.raise_for_status()
+            t_hd = time.time()
+            lat("llm_headers_ms", (t_hd - t_req) * 1000)
+            if trace is not None:
+                trace["llm_headers"] = t_hd
+            done = False
+            for rawline in resp.iter_lines():
+                if stop is not None and stop.is_set():
+                    break
+                if done or not rawline:
+                    continue   # after [DONE] keep draining so the keep-alive connection can be reused
+                line = rawline.decode("utf-8", "replace") if isinstance(rawline, (bytes, bytearray)) else str(rawline)
+                if not line.startswith("data:"):
+                    continue
+                data = line[5:].strip()
+                if data == "[DONE]":
+                    done = True
+                    continue
+                if not data:
+                    continue
+                try:
+                    j = json.loads(data)
+                except Exception:
+                    continue
+                for ch in (j.get("choices") or []):
+                    piece = (ch.get("delta") or {}).get("content")
+                    if piece:
+                        if not got:
+                            t_ft = time.time()
+                            lat("llm_first_tok_ms", (t_ft - t_req) * 1000)
+                            if trace is not None:
+                                trace["llm_first_tok"] = t_ft
+                        got.append(piece)
+                        yield piece
+        finally:
+            resp.close()
+        if not got:
+            raise RuntimeError("provider returned no content")
+        return
+
+    from transformers import TextIteratorStreamer
+    prompt = tok.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    inputs = tok(prompt, return_tensors="pt", add_special_tokens=False).to(LLM_DEV)
+    streamer = TextIteratorStreamer(tok, skip_prompt=True, skip_special_tokens=True, timeout=LLM_TIMEOUT)
+    err = {}
+
+    def _gen():
+        try:
+            with torch.inference_mode():
+                llm.generate(**inputs, max_new_tokens=max_new, do_sample=True, temperature=LLM_TEMP, top_p=0.9,
+                             repetition_penalty=1.05, streamer=streamer, pad_token_id=tok.eos_token_id)
+        except Exception as e:
+            err["e"] = e
+            streamer.on_finalized_text("", stream_end=True)   # unblock the reader
+
+    th = threading.Thread(target=_gen, daemon=True)
+    th.start()
+    first = True
+    for text in streamer:
+        if first and text:
+            first = False
+            t_ft = time.time()
+            lat("llm_first_tok_ms", (t_ft - t_req) * 1000)
+            if trace is not None:
+                trace["llm_headers"] = t_req
+                trace["llm_first_tok"] = t_ft
+        yield text
+    th.join(timeout=5)
+    if "e" in err:
+        raise err["e"]
+
+
+def llm_stream_hedged(messages, max_new, trace=None):
+    """v43: first-token deadline + hedge. Attempt 0 starts at once; if no token has arrived after LLM_FIRST_TOK_SEC
+    (or it errors) attempt 1 starts with the next key. The first attempt to produce a token wins and the other is
+    cancelled. Raises only if both fail or nothing arrives within LLM_HARD_FIRST_SEC. Closing this generator
+    (caller hung up) cancels both attempts."""
+    if LLM_PROVIDER != "api" or not LLM_HEDGE:
+        yield from llm_stream(messages, max_new, trace)
+        return
+    t0 = time.time()
+    q = queue.Queue()
+    stops = [threading.Event(), threading.Event()]
+    trs = [{}, {}]
+
+    def run(i):
+        try:
+            for piece in llm_stream(messages, max_new, trs[i], stop=stops[i], key_i=i):
+                q.put((i, "tok", piece))
+            q.put((i, "end", None))
+        except Exception as e:
+            q.put((i, "err", e))
+
+    def start(i):
+        threading.Thread(target=run, args=(i,), daemon=True).start()
+
+    start(0)
+    live, hedged, win = 1, False, None
+    try:
+        while True:
+            if win is None:
+                wait = (t0 + (LLM_HARD_FIRST_SEC if hedged else LLM_FIRST_TOK_SEC)) - time.time()
+                wait = max(0.01, wait)
+            else:
+                wait = None
+            try:
+                i, kind, val = q.get(timeout=wait)
+            except queue.Empty:
+                if not hedged:
+                    hedged = True
+                    live += 1
+                    start(1)
+                    lat("llm_hedges", 1)
+                    continue
+                raise RuntimeError("provider: no first token in %s s" % LLM_HARD_FIRST_SEC)
+            if kind == "tok":
+                if win is None:
+                    win = i
+                    stops[1 - i].set()
+                    if trace is not None:
+                        trace.update(trs[i])
+                        trace["llm_req"] = t0
+                if i == win:
+                    yield val
+            elif kind == "end":
+                if i == win:
+                    return
+            else:
+                if i == win:
+                    raise val
+                live -= 1
+                if win is None and live == 0:
+                    if hedged:
+                        raise val
+                    hedged = True
+                    live += 1
+                    start(1)
+                    lat("llm_hedges", 1)
+    finally:
+        for s_ in stops:
+            s_.set()
+
+
+_EMOJI = re.compile("[\U00010000-\U0010ffff☀-➿⬀-⯿️‍]")
+
+
+def clean_llm_text(s):
+    """Strip what a voice must not read aloud: emojis, markdown marks, line breaks."""
+    s = _EMOJI.sub("", s)
+    s = re.sub(r"[*_#`~>|]+", " ", s)
+    return s.replace("\n", " ")
+
+
+def build_messages(user_text, rlang):
+    hint = ("This turn, reply in English." if rlang == "en"
+            else "This turn, reply in simple spoken Hindi, Devanagari script only.")
+    sys_txt = PERSONA + "\n" + hint
+    hist = HISTORY[-2 * LLM_HISTORY_TURNS:] if LLM_HISTORY_TURNS > 0 else []
+    return [{"role": "system", "content": sys_txt}] + hist + [{"role": "user", "content": user_text}]
+
+
+if AUTO_MODE:
+    try:
+        t_llm = time.time()
+        load_llm()
+        if LLM_PROVIDER == "api":
+            AUTO_ENABLED = bool(LLM_BASE and LLM_API_KEYS)
+            # v42: open the provider connection now (DNS + TCP + TLS + a 4-token completion) so the first real
+            # turn does not pay for it. Failure here does not disable the brain; the first live turn retries.
+            try:
+                list(llm_stream_hedged([{"role": "user", "content": "नमस्ते"}], 4))
+            except Exception as e:
+                prog(f"BRAIN prewarm FAIL {type(e).__name__}: {str(e)[:100]}")
+            _llm_ms = int((time.time() - t_llm) * 1000)
+            log_lat({"type": "llm_load", "provider": LLM_BASE, "model": LLM_PATH or LLM_MODEL,
+                     "mode": "api", "ms": _llm_ms, "key_set": bool(LLM_API_KEY)})
+            report(json.dumps({"kind": "auto_state", "auto": AUTO_ENABLED, "provider": LLM_BASE,
+                               "model": LLM_PATH or LLM_MODEL, "load_ms": _llm_ms}, ensure_ascii=True))
+            prog(f"BRAIN ready {LLM_PATH or LLM_MODEL} via {LLM_BASE} load_ms={_llm_ms}")
+        else:
+            try:   # warm: first generate otherwise pays kernel init on a live turn
+                list(llm_stream([{"role": "user", "content": "नमस्ते"}], 6))
+            except Exception:
+                pass
+            AUTO_ENABLED = True
+            _llm_ms = int((time.time() - t_llm) * 1000)
+            log_lat({"type": "llm_load", "model": LLM_PATH or LLM_MODEL, "gpu": LLM_DEV, "ms": _llm_ms, "4bit": LLM_4BIT})
+            report(json.dumps({"kind": "auto_state", "auto": True, "model": LLM_PATH or LLM_MODEL, "load_ms": _llm_ms},
+                              ensure_ascii=True))
+            prog(f"BRAIN ready {LLM_PATH or LLM_MODEL} on {LLM_DEV} load_ms={_llm_ms}")
+    except Exception as e:
+        AUTO_ENABLED = False
+        report(json.dumps({"kind": "auto_state", "auto": False, "err": type(e).__name__ + ": " + str(e)[:140]},
+                          ensure_ascii=True))
+        prog(f"BRAIN load FAIL {type(e).__name__}: {str(e)[:120]} @{_where(e)} -- scripted LIVE_CALL still works")
+        torch.cuda.empty_cache()
+else:
+    report(json.dumps({"kind": "auto_state", "auto": False, "err": "AUTO_MODE=0"}, ensure_ascii=True))
+
+
+# ---------- 6. relay conversation: orders in (LIVE_CALL/HEAR/AUTO_*/LIVE_END), chunks out (LIVE_CHUNK/LIVE_DONE) ----------
+# LIVE-READ (v30): live=1 makes the relay serve each big row (HEAR carries a base64 WAV) ONCE per
+# (reader, body); small rows keep repeating. READER_ID is per boot, so two live seats never starve each other.
+READER_ID = "seat-" + str(int(time.time())) + "-" + str(os.getpid())
+
+
+def orders(limit=60):
+    global DOOR
+    if DOOR is None and gate() is None:
+        return []
+    try:
+        q = (f"/say?token={urllib.parse.quote(RELAY_TOKEN)}&body={urllib.parse.quote(SELF_BODY)}"
+             f"&limit={limit}&live=1&reader={urllib.parse.quote(READER_ID)}")
+        t_p = time.time()
+        r = json.loads(http_get(DOOR + q, 30).decode())
+        lat("relay_poll_ms", _ms(t_p))   # v42: one orders poll (hot period 0.35 s, so this is also the pickup floor)
+        return r.get("orders", [])
+    except Exception:
+        DOOR = None
+        return []
+
+
+def norm_lang(lang):
+    return "en" if (lang or "").lower().split("-")[0].split("_")[0] == "en" else "hi"
+
+
+def order_age_ms(at):
+    """Age of an order by the relay's own timestamp, when it is an epoch number (informational: includes clock skew)."""
+    try:
+        v = float(at)
+        if v > 1e12:
+            v /= 1000.0
+        if 1e9 < v < 4e9:
+            return int((time.time() - v) * 1000)
+    except Exception:
+        pass
+    return None
+
+
+def prep_pieces(piece, lang):
+    """One piece as XTTS should read it: Hindi numerals spelled out, re-split if that pushed it over the limit."""
+    p = hi_numbers(piece) if lang == "hi" else piece
+    p = re.sub(r"\s+", " ", p).strip()
+    limit = char_limit(lang)
+    out = []
+    while p:
+        a, p = take_piece(p, limit)
+        if a:
+            out.append(a)
+    return out
+def speak(cid, lang, pieces, text_len, age_ms=None, label="call"):
+    """Synthesize `pieces` (a list OR a lazy generator such as live LLM output) and ship each as a complete WAV.
+    Returns a dict with timings and the text actually spoken.
+    v42: each chunk record also carries post_ms (silence trim/collapse/resample) and enc_ms (WAV + base64)."""
+    t_call = time.time()
+    idx = 0
+    first_ready_ms = None
+    total_b = 0
+    synth_ms = 0
+    wait_ms = 0
+    npieces = 0
+    spoken = []
+    tag = "first:" + cid
+    out_sr = OUT_SR or SR
+    try:
+        it = iter(pieces)
+        while True:
+            t_wait = time.time()
+            try:
+                raw_piece = next(it)
+            except StopIteration:
+                break
+            wait_ms += int((time.time() - t_wait) * 1000)
+            for piece in prep_pieces(raw_piece, lang):
+                npieces += 1
+                spoken.append(piece)
+                print(f"{label} {cid}: piece {npieces} ({len(piece)} chars, prec {PREC}, ramp {RAMP_EFF:.2f})", flush=True)
+                t_piece = time.time()
+                for raw in synth_iter(piece, lang):
+                    gen_ms = int((time.time() - t_piece) * 1000)
+                    synth_ms += gen_ms
+                    t_pp = time.time()
+                    arr = finish_audio(raw, piece, trim=(SYNTH_MODE == "full"))
+                    post_ms = _ms(t_pp)
+                    t_en = time.time()
+                    buf = _wavbuf(arr, int(out_sr))
+                    b64 = base64.b64encode(buf).decode()
+                    enc_ms = _ms(t_en)
+                    total_b += len(buf)
+                    idx += 1
+                    if first_ready_ms is None:
+                        first_ready_ms = int((time.time() - t_call) * 1000)
+                    marks = [b64[i:i + CHUNK_B64] for i in range(0, len(b64), CHUNK_B64)]
+                    for k, mk in enumerate(marks):
+                        say_async(f"LIVE_CHUNK {cid} {idx:03d}-{k + 1:02d}/{len(marks)}:{mk}", OUT_BODY,
+                                  tag if (idx == 1 and k == 0) else None)
+                    audio_s = len(arr) / max(int(out_sr), 1)
+                    lat("relay_chunk_gen_ms", gen_ms)
+                    lat("relay_chunk_post_ms", post_ms)
+                    lat("relay_chunk_enc_ms", enc_ms)
+                    log_lat({"type": "chunk", "cid": cid, "chunk": idx, "lang": lang, "chars": len(piece),
+                             "audio_s": round(audio_s, 2), "gen_ms": gen_ms, "post_ms": post_ms, "enc_ms": enc_ms,
+                             "rtf": round(gen_ms / 1000.0 / max(audio_s, 1e-6), 2),
+                             "cum_ms": int((time.time() - t_call) * 1000), "first_ready_ms": first_ready_ms,
+                             "wav_b": len(buf), "parts": len(marks)})
+                    t_piece = time.time()
+    except Exception as e:
+        flush(10)
+        detail = (str(e) or repr(e))[:120]
+        where = _where(e)
+        prog(f"CALL FAIL {cid} {type(e).__name__}: {detail} @{where}")
+        log_lat({"type": "call_fail", "cid": cid, "err": detail, "where": where, "label": label})
+        say(f"LIVE_FAIL {cid} {type(e).__name__} @{where}")
+        return {"ok": False, "spoken": spoken, "first_sent_t": None, "first_ms": None}
+    t_fl = time.time()
+    flush()
+    flush_ms = int((time.time() - t_fl) * 1000)
+    sent = _sent.pop(tag, None)
+    first_ms = int((sent - t_call) * 1000) if sent else first_ready_ms
+    total_ms = int((time.time() - t_call) * 1000)
+    lat("relay_first_ready_ms", first_ready_ms)
+    lat("relay_first_sent_ms", first_ms)
+    lat("relay_flush_ms", flush_ms)
+    lat("relay_total_ms", total_ms)
+    log_lat({"type": "call", "label": label, "cid": cid, "lang": lang, "chars": text_len, "pieces": npieces,
+             "chunks": idx, "first_ready_ms": first_ready_ms, "first_ms": first_ms, "synth_ms": synth_ms,
+             "llm_wait_ms": wait_ms, "flush_ms": flush_ms, "total_ms": total_ms, "b64_b": total_b,
+             "order_age_ms": age_ms, "prec": PREC})
+    say(f"LIVE_DONE {cid} chunks={idx} first_ms={first_ms} total_ms={total_ms} - play on laptop, live call lane")
+    return {"ok": True, "first_ms": first_ms, "first_sent_t": sent, "spoken": spoken, "total_ms": total_ms,
+            "synth_ms": synth_ms, "wait_ms": wait_ms, "idx": idx}
+
+
+def do_call(cid, text, lang, age_ms=None):
+    """Scripted path: speak exactly the text the laptop sent."""
+    lang = norm_lang(lang)
+    try:
+        pieces = plan_pieces(text, lang)
+    except Exception:
+        pieces = [text[:char_limit(lang)]]
+    return speak(cid, lang, pieces, len(text), age_ms, "call")
+
+
+def auto_reply(cid, utext, rlang, t_hear0=None, stt_ms=None):
+    """Autonomous path: the LLM decides the reply; each clause is voiced as soon as it is written."""
+    t0 = time.time()
+    rcid = "a" + cid
+    chunker = SpeechChunker(rlang)
+    msgs = build_messages(utext, rlang)
+    marks = {}
+
+    def pieces():
+        for txt in llm_stream_hedged(msgs, LLM_MAX_NEW):
+            marks.setdefault("tok", time.time())
+            for p in chunker.feed(clean_llm_text(txt)):
+                marks.setdefault("piece", time.time())
+                yield p
+        for p in chunker.finish():
+            marks.setdefault("piece", time.time())
+            yield p
+
+    res = speak(rcid, rlang, pieces(), len(utext), label="auto")
+    reply = " ".join(res.get("spoken", [])).strip()
+    if res.get("ok") and not reply:
+        do_call(rcid, FALLBACK_EN if rlang == "en" else FALLBACK_HI, rlang)
+        reply = FALLBACK_EN if rlang == "en" else FALLBACK_HI
+    elif res.get("ok"):
+        HISTORY.extend([{"role": "user", "content": utext}, {"role": "assistant", "content": reply}])
+        if LLM_HISTORY_TURNS > 0:
+            del HISTORY[:-2 * LLM_HISTORY_TURNS]
+        else:
+            del HISTORY[:]
+    base = t_hear0 or t0
+    sent = res.get("first_sent_t")
+    e2e = int((sent - base) * 1000) if sent else None
+    llm_first_ms = int((marks["piece"] - t0) * 1000) if "piece" in marks else None
+    lat("auto_llm_first_piece_ms", llm_first_ms)
+    lat("auto_e2e_first_ms", e2e)
+    log_lat({"type": "auto", "cid": cid, "lang": rlang, "user_chars": len(utext), "reply_chars": len(reply),
+             "stt_ms": stt_ms, "llm_first_piece_ms": llm_first_ms, "first_ms": res.get("first_ms"),
+             "e2e_first_ms": e2e, "ok": res.get("ok")})
+    report(json.dumps({"cid": cid, "kind": "auto_reply", "reply": reply, "lang": rlang,
+                       "llm_first_piece_ms": llm_first_ms, "first_ms": res.get("first_ms"), "e2e_first_ms": e2e},
+                      ensure_ascii=True))   # no "text" key: the laptop must not mistake the reply for a transcript
+def stt_lang(lang):
+    """Whisper wants a real language code ('bn' is valid for whisper even though XTTS has no bn lane).
+    lang='auto' -> None -> let Whisper detect."""
+    s = (lang or "").strip().lower().split("-")[0].split("_")[0]
+    if s == "auto":
+        return None
+    return s if len(s) == 2 else LANGUAGE
+
+
+STT_COUNT = 0
+
+
+def wav_to_16k(raw):
+    """Decode a WAV we were posted into the 16 kHz float32 array faster-whisper wants.
+
+    The seat's PyAV predates what faster-whisper expects: its path/binary-IO branch calls
+    av.open(metadata_errors=...), which raises "TypeError: open() got an unexpected keyword
+    argument 'metadata_errors'" on every HEAR. Decoding here keeps the STT lane usable.
+    """
+    a, sr = sf.read(io.BytesIO(raw), dtype="float32", always_2d=False)
+    if getattr(a, "ndim", 1) > 1:
+        a = a.mean(axis=1)
+    return np.ascontiguousarray(resample(a, sr, 16000), dtype=np.float32)
+
+
+def do_hear(otxt):
+    """HEAR {"cid":..,"lang":..,"b64":<16000 Hz mono 16-bit wav>[,"auto":0]} -> transcribe on the T4 -> transcript
+    report on /hear -> (AUTO) the on-seat brain answers by itself and speaks via LIVE_CHUNK.
+    ensure_ascii keeps Devanagari intact."""
+    global STT_COUNT
+    t0 = time.time()
+    cid, slang = "h" + str(int(time.time())), LANGUAGE
+    try:
+        j = json.loads(otxt[len("HEAR"):].strip())
+        cid = str(j.get("cid") or cid)
+        slang = stt_lang(j.get("lang"))
+        raw = base64.b64decode(j.get("b64") or "")
+        if not raw:
+            report(json.dumps({"cid": cid, "text": "", "err": "empty_audio"}, ensure_ascii=True))
+            return
+        if KEEP_HEAR:
+            with open(f"{WORK}/hear_{cid}.wav", "wb") as fh:
+                fh.write(raw)
+        if whisper is None:
+            report(json.dumps({"cid": cid, "text": "", "err": "stt_unavailable"}, ensure_ascii=True))
+            return
+        t_dec = time.time()
+        a16 = wav_to_16k(raw)
+        dec_ms = _ms(t_dec)
+        t_tr = time.time()
+        segs, info = whisper.transcribe(a16, language=slang, beam_size=STT_BEAM,
+                                        vad_filter=False, without_timestamps=True,
+                                        condition_on_previous_text=False, temperature=0.0,
+                                      initial_prompt=(STT_PROMPT or None))
+        text = " ".join(s.text for s in segs).strip()
+        tr_ms = _ms(t_tr)
+        STT_COUNT += 1
+        ms = int((time.time() - t0) * 1000)
+        lat("stt_total_ms", ms)
+        lat("stt_decode_ms", dec_ms)
+        lat("stt_transcribe_ms", tr_ms)
+        log_lat({"type": "stt", "cid": cid, "lang": slang, "audio_s": round(len(raw) / 32000.0, 2),
+                 "ms": ms, "dec_ms": dec_ms, "transcribe_ms": tr_ms, "chars": len(text)})
+        want_auto = bool(AUTO_MODE and AUTO_ENABLED and j.get("auto", 1) not in (0, False, "0"))
+        report(json.dumps({"cid": cid, "text": text, "ms": ms, "lang": slang, "auto": want_auto}, ensure_ascii=True))
+        if want_auto and re.search(r"\w", text):
+            heard = slang or getattr(info, "language", None) or LANGUAGE
+            auto_reply(cid, text, "en" if str(heard).lower().startswith("en") else "hi", t0, ms)
+    except Exception as e:
+        report(json.dumps({"cid": cid, "text": "", "err": type(e).__name__ + ": " + str(e)[:100]},
+                          ensure_ascii=True))
+
+
+def bye(reason):
+    flush(10)
+    up = int(time.time() - T0)
+    log_lat({"type": "session", "reason": reason, "gpu_s": up, "calls": CALLS})
+    say(f"LIVE_BYE {reason} gpu_s={up} calls={CALLS}")
+    print(f"BYE {reason} gpu_s={up} calls={CALLS}", flush=True)
+    sys.exit(0)
+
+
+def _auto_state(**kw):
+    d = {"kind": "auto_state", "auto": bool(AUTO_ENABLED)}
+    d.update(kw)
+    report(json.dumps(d, ensure_ascii=True))
+
+
+def _brain_ready():
+    """v36: in provider mode there are no local weights, so `llm` is legitimately None. The old guard
+    (`if llm is None`) treated that as "not loaded" and AUTO_ASK answered with err=llm_not_loaded forever.
+    Provider mode is ready when LLM_BASE is set; local mode is ready when the weights are loaded."""
+    return bool(LLM_BASE and LLM_API_KEYS) if LLM_PROVIDER == "api" else llm is not None
+
+
+def handle_auto(otxt):
+    """AUTO_ON / AUTO_OFF / AUTO_RESET / AUTO_PERSONA <text> / AUTO_ASK {"cid":..,"text":..,"lang":..}"""
+    global AUTO_ENABLED, PERSONA
+    cmd, _, arg = otxt.partition(" ")
+    arg = arg.strip()
+    if cmd == "AUTO_ON":
+        if not _brain_ready():
+            _auto_state(err="llm_not_loaded")
+        else:
+            AUTO_ENABLED = True
+            _auto_state()
+    elif cmd == "AUTO_OFF":
+        AUTO_ENABLED = False
+        _auto_state()
+    elif cmd == "AUTO_RESET":
+        del HISTORY[:]
+        _auto_state(reset=True)
+    elif cmd == "AUTO_PERSONA":
+        if arg:
+            PERSONA = arg
+            del HISTORY[:]
+        _auto_state(persona_set=bool(arg))
+    elif cmd == "AUTO_ASK":   # text in, no microphone: lets you test the brain straight from the relay
+        try:
+            j = json.loads(arg)
+        except Exception:
+            j = {"text": arg}
+        text = str(j.get("text", "")).strip()
+        qcid = str(j.get("cid") or "q" + str(int(time.time())))
+        if not _brain_ready():
+            _auto_state(err="llm_not_loaded")
+        elif text:
+            auto_reply(qcid, text, norm_lang(j.get("lang", LANGUAGE)))
+# ---------- 7. DIRECT VOICE TUNNEL (v39, Baba 2026-10-02) ----------
+# Baba's call: a ONE-TO-ONE phone<->seat conversation does not need the relay at all. The kernel binds a
+# port, cloudflared exposes it from inside the kernel, and the phone POSTs mic audio straight to the seat and
+# gets audio back in ONE round trip. The relay stays for the 100 sons; only the voice lane leaves it.
+#
+# WHY (measured, not assumed): a POST to the relay cost ~1336 ms before a single byte moved, because every
+# arriving message rewrote a 70.3 MB order bank (LOCAL POST 1065-2109 ms vs LOCAL GET 2-4 ms on 127.0.0.1 --
+# not the tunnel, our own disk). Nothing on this path touches order-bank.json, so that cost is zero here.
+VOICE_TUNNEL = os.environ.get("VOICE_TUNNEL", "1") == "1"
+VOICE_PORT = int(os.environ.get("VOICE_PORT", "8765"))
+VOICE_URL = [None]          # filled once cloudflared prints its URL
+voice_turns = [0]
+voice_lock = threading.Lock()
+TRACES = collections.deque(maxlen=10)   # v42: the last 10 voice-turn traces, served at GET /lat
+PROBE_WAV = [None]                      # v42: a synthetic caller utterance (16 kHz mono), served at GET /probe_wav
+
+
+def _fetch_cloudflared():
+    """Kaggle has internet egress, so the tunnel binary comes straight from Cloudflare's release."""
+    exe = "/kaggle/working/cloudflared"
+    if os.path.exists(exe):
+        return exe
+    url = "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
+    try:
+        import urllib.request as _u
+        with _u.urlopen(url, timeout=120) as r, open(exe, "wb") as fh:
+            fh.write(r.read())
+        os.chmod(exe, 0o755)
+        return exe
+    except Exception as e:
+        prog(f"cloudflared download FAIL {type(e).__name__}: {str(e)[:90]}")
+        return None
+
+
+def _scan_url(path, secs=40):
+    """cloudflared prints its trycloudflare URL once the tunnel is up."""
+    import re as _re
+    end = time.time() + secs
+    pat = _re.compile(r"https://[a-z0-9-]+\.trycloudflare\.com")
+    while time.time() < end:
+        try:
+            with open(path, "r", errors="replace") as fh:
+                m = pat.search(fh.read())
+            if m:
+                return m.group(0)
+        except Exception:
+            pass
+        time.sleep(1)
+    return None
+
+
+# >>> VOICE_HANDLER
+class ClientGone(Exception):
+    """The caller hung up mid-reply."""
+
+
+class VoiceHandler(http.server.BaseHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+    # v42: the header line, each PCM chunk and the trailer are separate small writes; with Nagle on, a write
+    # that follows an un-ACKed one can sit up to ~40 ms (delayed ACK). Every ms before the first sound counts.
+    disable_nagle_algorithm = True
+
+    def log_message(self, *a):
+        pass
+
+    def _send_bytes(self, code, body, ctype):
+        try:
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+        except OSError:
+            self.close_connection = True
+
+    def _send(self, code, obj):
+        self._send_bytes(code, json.dumps(obj).encode(), "application/json")
+
+    def do_GET(self):
+        path = self.path.split("?")[0]
+        if path == "/health":
+            return self._send(200, {"ok": True, "voice_url": VOICE_URL[0], "auto": bool(AUTO_ENABLED),
+                                    "prec": PREC, "turns": voice_turns[0], "sr": int(OUT_SR or SR)})
+        if path == "/lat":   # v42: rolling per-hop stats + the last 10 full turn traces
+            return self._send(200, {"stats": lat_summary(), "recent_traces": list(TRACES)})
+        if path == "/probe_wav" and PROBE_WAV[0]:   # v42: lets a remote probe client fetch a real utterance
+            return self._send_bytes(200, PROBE_WAV[0], "audio/wav")
+        return self._send(404, {"error": "no route"})
+
+    def do_POST(self):
+        # v41: this entry point was accidentally deleted by an earlier edit (the 501 "Not Implemented" was
+        # exactly that -- BaseHTTPRequestHandler answers 501 when do_POST is absent). It dispatches to the
+        # streaming turn by default; VOICE_STREAM=0 restores the v39 blocking JSON reply for comparison.
+        if self.path.split("?")[0] != "/turn":
+            return self._send(404, {"error": "no route"})
+        if os.environ.get("VOICE_STREAM", "1") == "1":
+            return self._turn_stream()
+        try:
+            n = int(self.headers.get("Content-Length", "0"))
+            j = json.loads(self.rfile.read(n).decode())
+        except Exception as e:
+            return self._send(400, {"error": "bad body", "detail": str(e)[:80]})
+        with voice_lock:
+            voice_turns[0] += 1
+            cid = "v" + str(voice_turns[0])
+        try:
+            return self._send(200, voice_turn(j.get("b64") or "", j.get("cid") or cid,
+                                              j.get("lang") or LANGUAGE))
+        except Exception as e:
+            return self._send(500, {"error": type(e).__name__, "detail": str(e)[:120]})
+
+    # ---- STREAMING TURN (v40) ----
+    # v39 returned the WHOLE reply in one JSON body, so the phone heard nothing until the last byte landed:
+    # measured 7102 ms wall for a reply the seat had finished at 5261 ms -- first sound was WORSE than the
+    # relay lane (5870 ms) even though the kernel was 35% faster. The fix is to stop gathering: write a JSON
+    # header line, then raw PCM as each clause is synthesized, chunked, so the caller starts playing the
+    # moment the FIRST clause exists instead of the last.
+    #
+    # Wire format: <JSON header line>\n  <raw int16 PCM ...>  <JSON trailer line>\n   (all inside HTTP chunked).
+    # The PCM is in-band, so a client must treat only the FIRST line as the header and look for the trailer
+    # (it starts with {"end" or {"error") at the tail.
+    def _chunk(self, data):
+        """One chunked-encoding frame in ONE write. A dead socket raises ClientGone, never a raw BrokenPipe."""
+        if not data:
+            return
+        try:
+            self.wfile.write(b"%X\r\n" % len(data) + data + b"\r\n")
+            self.wfile.flush()
+        except OSError as e:   # BrokenPipeError / ConnectionResetError are OSError subclasses
+            self.close_connection = True
+            raise ClientGone() from e
+
+    def _finish_chunks(self):
+        try:
+            self.wfile.write(b"0\r\n\r\n")
+            self.wfile.flush()
+        except OSError:
+            self.close_connection = True
+
+    def _turn_stream(self):
+        t_in = time.time()
+        tr = {"t_in": t_in}
+        raw_body = None
+        try:
+            n = int(self.headers.get("Content-Length", "0"))
+            body = self.rfile.read(n)
+            if (self.headers.get("Content-Type", "") or "").lower().startswith("audio/"):
+                raw_body = body   # v43: raw WAV upload, no base64 (25% fewer bytes)
+                j = {"lang": self.headers.get("X-Lang") or LANGUAGE}
+            else:
+                j = json.loads(body.decode())
+        except Exception as e:
+            return self._send(400, {"error": "bad body", "detail": str(e)[:80]})
+        tr["body_bytes"] = n
+        tr["body_read_ms"] = _ms(t_in)          # remainder of the upload after the request headers arrived
+        with voice_lock:
+            voice_turns[0] += 1
+            cid = "v" + str(voice_turns[0])
+        t = time.time()
+        try:
+            raw = raw_body if raw_body is not None else base64.b64decode(j.get("b64") or "")
+        except Exception:
+            raw = b""
+        tr["b64_ms"] = _ms(t)
+        if not raw:
+            return self._send(400, {"error": "empty_audio"})
+        lang = norm_lang(j.get("lang") or LANGUAGE)
+        text, stt_ms = "", 0
+        if whisper is not None:
+            try:
+                t = time.time()
+                a16 = wav_to_16k(raw)
+                tr["wavdec_ms"] = _ms(t)
+            except Exception as e:
+                return self._send(400, {"error": "bad_wav", "detail": str(e)[:80]})
+            t = time.time()
+            segs, _i = whisper.transcribe(a16, language=stt_lang(lang), beam_size=STT_BEAM,
+                                          vad_filter=False, without_timestamps=True,
+                                          condition_on_previous_text=False, temperature=0.0,
+                                      initial_prompt=(STT_PROMPT or None))
+            text = " ".join(s.text for s in segs).strip()
+            stt_ms = _ms(t)
+        tr["stt_ms"] = stt_ms
+
+        out_sr = int(OUT_SR or SR)
+        piece_i, synth_ms, total_audio_s = 0, 0, 0.0
+        first_ready_ms, first_pcm_ms, gone, spoken = None, None, False, []
+        first_answer_ms = None
+        pieces = None
+        pcs = []
+        try:
+            self.send_response(200)
+            self.send_header("Content-Type", "application/octet-stream")
+            self.send_header("Transfer-Encoding", "chunked")
+            self.send_header("X-Voice-Cid", cid)
+            self.end_headers()
+            t_h = time.time()
+            self._chunk(json.dumps({"cid": cid, "lang": lang, "sr": out_sr,
+                                    "stt_ms": stt_ms, "heard": text}).encode() + b"\n")
+            tr["header_write_ms"] = _ms(t_h)
+            tr["header_sent_ms"] = _ms(t_in)
+            t_prev_end = time.time()
+            if not text:
+                fb = FALLBACK_HI if lang == "hi" else FALLBACK_EN
+                self._chunk(json.dumps({"end": True, "reply": fb,
+                                        "total_ms": _ms(t_in)}).encode() + b"\n")
+                self._finish_chunks()
+                return
+            fil = FILLERS.get(lang) if FILLER_ON else None
+            if fil:   # v43: instant acknowledgement while the LLM + first clause are still being made
+                t_f = time.time()
+                self._chunk(fil)
+                fa = len(fil) / float(out_sr * 2)
+                total_audio_s += fa
+                first_pcm_ms = _ms(t_in)
+                pcs.append({"k": 0, "filler": True, "chars": 0, "audio_s": round(fa, 2),
+                            "ready_ms": first_pcm_ms, "write_ms": _ms(t_f)})
+                t_prev_end = time.time()
+            pieces = stream_reply_pieces(text, lang, tr)
+            for piece in pieces:
+                t_y = time.time()
+                piece_i += 1
+                spoken.append(piece)
+                rec = {"k": piece_i, "chars": len(piece), "llm_wait_ms": int((t_y - t_prev_end) * 1000),
+                       "yield_ms": int((t_y - t_in) * 1000)}
+                tp = t_y
+                for arr in synth_iter(piece, lang):
+                    synth_ms += int((time.time() - tp) * 1000)
+                    tts = getattr(_tl, "tts", None) or {}
+                    rec["lock_ms"], rec["gen_ms"] = tts.get("lock_ms"), tts.get("gen_ms")
+                    t_pp = time.time()
+                    a = finish_audio(arr, piece, trim=(SYNTH_MODE == "full"))
+                    rec["post_ms"] = _ms(t_pp)
+                    if first_ready_ms is None:
+                        first_ready_ms = _ms(t_in)
+                    t_en = time.time()
+                    pcm = np.clip(a * 32767.0, -32768, 32767).astype(np.int16).tobytes()
+                    rec["enc_ms"] = _ms(t_en)
+                    audio_s = len(pcm) / float(out_sr * 2)
+                    total_audio_s += audio_s
+                    t_w = time.time()
+                    self._chunk(pcm)
+                    rec["write_ms"] = _ms(t_w)
+                    rec["audio_s"] = round(audio_s, 2)
+                    rec["rtf"] = round((rec["gen_ms"] or 0) / 1000.0 / max(audio_s, 1e-6), 2)
+                    rec["ready_ms"] = _ms(t_in)
+                    if first_answer_ms is None:
+                        first_answer_ms = rec["ready_ms"]   # first PCM of the REAL answer
+                    if first_pcm_ms is None:
+                        first_pcm_ms = rec["ready_ms"]   # first PCM byte handed to the socket
+                    tp = time.time()
+                pcs.append(rec)
+                t_prev_end = time.time()
+        except (ClientGone, OSError):
+            gone = True
+            self.close_connection = True
+        except Exception as e:
+            try:
+                self._chunk(json.dumps({"error": type(e).__name__,
+                                        "detail": str(e)[:120]}).encode() + b"\n")
+            except ClientGone:
+                gone = True
+        finally:
+            if pieces is not None:
+                pieces.close()   # stops the LLM stream so a dead call costs nothing more
+
+        total_ms = _ms(t_in)
+        trace = build_trace(tr, pcs, first_answer_ms if first_answer_ms is not None else first_pcm_ms, total_ms)
+        trace["first_pcm_ms"] = first_pcm_ms          # first byte of any audio (the filler, if on)
+        trace["first_answer_ms"] = first_answer_ms    # first byte of the real reply
+        lat("voice_first_answer_ms", first_answer_ms)
+        trace["cid"] = cid
+        TRACES.append(trace)
+        lat("voice_body_read_ms", tr.get("body_read_ms"))
+        lat("voice_stt_ms", stt_ms)
+        lat("voice_header_sent_ms", tr.get("header_sent_ms"))
+        lat("voice_llm_first_piece_ms", trace.get("llm_first_piece_ms"))
+        lat("voice_first_pcm_ms", first_pcm_ms)
+        lat("voice_total_ms", total_ms)
+        lat("voice_stall_ms", trace.get("stall_ms"))
+        if gone:
+            print(f"voice {cid}: caller hung up after {piece_i} piece(s), {total_ms} ms", flush=True)
+            log_lat({"type": "voice_stream_aborted", "cid": cid, "stt_ms": stt_ms,
+                     "first_ready_ms": first_ready_ms, "first_pcm_ms": first_pcm_ms,
+                     "pieces": piece_i, "total_ms": total_ms})
+            return   # a half-spoken turn does not go into HISTORY
+
+        reply = " ".join(spoken).strip()
+        if reply:
+            HISTORY.extend([{"role": "user", "content": text},
+                            {"role": "assistant", "content": reply}])
+            if LLM_HISTORY_TURNS > 0:
+                del HISTORY[:-2 * LLM_HISTORY_TURNS]
+        log_lat({"type": "voice_stream", "cid": cid, "stt_ms": stt_ms,
+                 "first_ready_ms": first_ready_ms, "first_pcm_ms": first_pcm_ms, "synth_ms": synth_ms,
+                 "pieces": piece_i, "audio_s": round(total_audio_s, 2), "total_ms": total_ms, "chars": len(reply),
+                 "stall_ms": trace.get("stall_ms"), "budget": trace.get("budget"),
+                 "unaccounted_ms": trace.get("unaccounted_ms")})
+        try:
+            self._chunk(json.dumps({"end": True, "reply": reply, "pieces": piece_i,
+                                    "first_ready_ms": first_ready_ms, "first_pcm_ms": first_pcm_ms,
+                                    "synth_ms": synth_ms, "audio_s": round(total_audio_s, 2),
+                                    "total_ms": total_ms, "trace": trace}).encode() + b"\n")
+            self._finish_chunks()
+        except ClientGone:
+            pass
+# <<< VOICE_HANDLER
+
+
+def start_voice_tunnel():
+    """Serve the voice lane on VOICE_PORT and publish it through our own cloudflared tunnel."""
+    if not VOICE_TUNNEL:
+        return None
+
+    class Server(socketserver.ThreadingMixIn, http.server.HTTPServer):
+        daemon_threads = True
+        allow_reuse_address = True
+
+    try:
+        srv = Server(("127.0.0.1", VOICE_PORT), VoiceHandler)
+    except Exception as e:
+        prog(f"VOICE server bind FAIL {type(e).__name__}: {str(e)[:90]}")
+        return None
+    threading.Thread(target=srv.serve_forever, daemon=True, name="voice-http").start()
+    prog(f"VOICE server on 127.0.0.1:{VOICE_PORT}")
+    try:   # v42: was `requests.get` -> NameError (the module is imported as _rq). No-proxy opener: this is loopback.
+        _op = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        _op.open(f"http://127.0.0.1:{VOICE_PORT}/health", timeout=10).read()
+        prog("VOICE server self-check OK")
+    except Exception as e:
+        prog(f"VOICE self-check FAIL {type(e).__name__}: {str(e)[:80]}")
+
+    exe = _fetch_cloudflared()
+    if not exe:
+        return None
+    logf = "/kaggle/working/cf-voice.log"
+    try:
+        with open(logf, "w") as fh:
+            subprocess.Popen([exe, "tunnel", "--url", f"http://127.0.0.1:{VOICE_PORT}",
+                              "--no-autoupdate", "--logfile", logf],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    except Exception as e:
+        prog(f"VOICE cloudflared spawn FAIL {type(e).__name__}: {str(e)[:90]}")
+        return None
+    url = _scan_url(logf, 45)
+    if url:
+        VOICE_URL[0] = url
+        prog(f"VOICE TUNNEL LIVE {url}")
+        say(f"VOICE_TUNNEL {url}")   # one relay post, so the phone can discover it once
+        log_lat({"type": "voice_tunnel", "url": url, "port": VOICE_PORT})
+    else:
+        prog("VOICE cloudflared gave no URL in 45 s")
+    return url
+
+
+def synth_reply_wav(text, lang):
+    """Synthesize a whole reply and return WAV bytes. Does NOT touch the relay -- this is the direct path."""
+    t0 = time.time()
+    parts = []
+    first_ready_ms = None
+    synth_ms = 0
+    npieces = 0
+    for piece in plan_pieces(text, lang):
+        npieces += 1
+        tp = time.time()
+        for raw in synth_iter(piece, lang):
+            synth_ms += int((time.time() - tp) * 1000)
+            arr = finish_audio(raw, piece, trim=(SYNTH_MODE == "full"))
+            if first_ready_ms is None:
+                first_ready_ms = int((time.time() - t0) * 1000)
+            parts.append(arr)
+    if not parts:
+        return b"", 0, None, 0, 0, 0.0
+    out_sr = OUT_SR or SR
+    joined = parts[0] if len(parts) == 1 else np.concatenate(parts)
+    return (_wavbuf(joined, int(out_sr)), int(out_sr), first_ready_ms, synth_ms,
+            npieces, len(joined) / float(out_sr))
+
+
+def llm_reply_text(user_text, rlang):
+    """The streamed brain, collected into one string (no relay involvement)."""
+    chunker = SpeechChunker(rlang)
+    msgs = build_messages(user_text, rlang)
+    out = []
+    for txt in llm_stream_hedged(msgs, LLM_MAX_NEW):
+        for p in chunker.feed(clean_llm_text(txt)):
+            out.append(p)
+    for p in chunker.finish():
+        out.append(p)
+    reply = " ".join(out).strip()
+    if reply:
+        HISTORY.extend([{"role": "user", "content": user_text}, {"role": "assistant", "content": reply}])
+        if LLM_HISTORY_TURNS > 0:
+            del HISTORY[:-2 * LLM_HISTORY_TURNS]
+    return reply
+
+
+def stream_reply_pieces(user_text, rlang, trace=None):
+    """Yield speakable clauses AS the model writes them, so synthesis starts on clause 1 while the rest is still
+    being generated. v40: this is what lets the phone hear the first clause instead of the whole reply.
+    v42: `trace` gets llm_req / llm_headers / llm_first_tok (from llm_stream) and llm_first_piece (here); closing
+    this generator closes the provider stream."""
+    chunker = SpeechChunker(rlang)
+    gen = llm_stream_hedged(build_messages(user_text, rlang), LLM_MAX_NEW, trace)
+    sent = 0   # v43: one sentence, not a monologue
+    try:
+        for txt in gen:
+            for p in chunker.feed(clean_llm_text(txt)):
+                if trace is not None and "llm_first_piece" not in trace:
+                    trace["llm_first_piece"] = time.time()
+                yield p
+                sent += 1
+                if p.rstrip()[-1:] in _TERM or sent >= LLM_MAX_PIECES:
+                    return
+        for p in chunker.finish():
+            if trace is not None and "llm_first_piece" not in trace:
+                trace["llm_first_piece"] = time.time()
+            yield p
+            sent += 1
+            if p.rstrip()[-1:] in _TERM or sent >= LLM_MAX_PIECES:
+                return
+    finally:
+        gen.close()
+
+
+def voice_turn(b64, cid, lang="hi"):
+    """Phone -> seat -> phone in ONE round trip: mic wav (b64) -> Whisper -> LLM -> XTTS -> reply wav (b64).
+    (Blocking v39 path, kept for VOICE_STREAM=0 comparisons.)"""
+    t_in = time.time()
+    raw = base64.b64decode(b64 or "")
+    if not raw:
+        return {"cid": cid, "error": "empty_audio"}
+    lang = norm_lang(lang)
+    if whisper is not None:
+        segs, _i = whisper.transcribe(wav_to_16k(raw), language=stt_lang(lang), beam_size=STT_BEAM,
+                                      vad_filter=False, without_timestamps=True,
+                                      condition_on_previous_text=False, temperature=0.0,
+                                      initial_prompt=(STT_PROMPT or None))
+        text = " ".join(s.text for s in segs).strip()
+    else:
+        text = ""
+    stt_ms = int((time.time() - t_in) * 1000)
+    info = {"stt_ms": stt_ms, "heard": text, "cid": cid, "lang": lang}
+    if not text:
+        info["reply"] = FALLBACK_HI if lang == "hi" else FALLBACK_EN
+        return info
+    t_llm = time.time()
+    reply = llm_reply_text(text, lang)
+    llm_ms = int((time.time() - t_llm) * 1000)
+    if not reply:
+        reply = FALLBACK_HI if lang == "hi" else FALLBACK_EN
+    wav, sr, first_ready, synth_ms, npieces, audio_s = synth_reply_wav(reply, lang)
+    info.update({"reply": reply, "llm_ms": llm_ms, "first_ready_ms": first_ready, "synth_ms": synth_ms,
+                 "pieces": npieces, "audio_s": round(audio_s, 2), "sr": sr,
+                 "total_ms": int((time.time() - t_in) * 1000)})
+    lat("voice_blocking_total_ms", info["total_ms"])
+    log_lat({"type": "voice_turn", "cid": cid, "stt_ms": stt_ms, "llm_ms": llm_ms,
+             "first_ready_ms": first_ready, "synth_ms": synth_ms, "pieces": npieces,
+             "audio_s": round(audio_s, 2), "total_ms": info["total_ms"], "chars": len(reply)})
+    return {"cid": cid, "lang": lang, "b64": base64.b64encode(wav).decode(), **info}
+
+
+# >>> PROBE_CLIENT  (v42: phone-style timed client; stdlib-only, also shipped as probe_voice_client.py)
+def _open(base_url, timeout=30):
+    """Open a connection step by step so DNS, TCP and TLS are timed separately.
+    Returns (http.client connection with the socket attached, dns_ms, tcp_ms, tls_ms)."""
+    import http.client
+    import ssl
+    u = urllib.parse.urlparse(base_url)
+    https = u.scheme == "https"
+    host = u.hostname
+    port = u.port or (443 if https else 80)
+    t = time.time()
+    socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)
+    dns = _ms(t)
+    t = time.time()
+    sock = socket.create_connection((host, port), timeout=timeout)
+    tcp = _ms(t)
+    tls = 0
+    if https:
+        t = time.time()
+        sock = ssl.create_default_context().wrap_socket(sock, server_hostname=host)
+        tls = _ms(t)
+    try:
+        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    except Exception:
+        pass
+    conn = (http.client.HTTPSConnection if https else http.client.HTTPConnection)(host, port, timeout=timeout)
+    conn.sock = sock
+    return conn, dns, tcp, tls
+
+
+def timed_health(base_url, n=5, timeout=20):
+    """GET /health n times over ONE keep-alive connection. fresh_connect_ms = DNS+TCP+TLS; warm_ms = pure round trips."""
+    out = {"url": base_url}
+    conn, dns, tcp, tls = _open(base_url, timeout)
+    out.update(dns_ms=dns, tcp_ms=tcp, tls_ms=tls, fresh_connect_ms=dns + tcp + tls)
+    rtts = []
+    try:
+        for _ in range(n):
+            t = time.time()
+            conn.request("GET", "/health")
+            resp = conn.getresponse()
+            resp.read()
+            rtts.append(_ms(t))
+    finally:
+        conn.close()
+    out["first_rtt_ms"] = rtts[0] if rtts else None
+    out["warm_ms"] = rtts[1:]
+    return out
+
+
+def timed_turn(base_url, wav_bytes, lang="hi", timeout=90):
+    """Phone-style streamed POST /turn. Every *_ms is measured on THIS machine's clock, from before DNS (t0).
+    The server's own view comes back in the trailer (`srv`), so outside_server_ms = client first PCM minus
+    server first PCM = connect + TLS + upload + tunnel + download, the part no kernel-side log can see."""
+    r = {"url": base_url, "ok": False}
+    t0 = time.time()
+    conn = None
+    try:
+        conn, r["dns_ms"], r["tcp_ms"], r["tls_ms"] = _open(base_url, timeout)
+        r["connect_ms"] = _ms(t0)
+        raw_mode = os.environ.get("PROBE_RAW", "1") == "1"   # v43: same upload the phone should use
+        body = wav_bytes if raw_mode else json.dumps({"b64": base64.b64encode(wav_bytes).decode(), "lang": lang}).encode()
+        r["req_kb"] = round(len(body) / 1024.0, 1)
+        t_s = time.time()
+        conn.putrequest("POST", "/turn")
+        conn.putheader("Content-Type", "audio/wav" if raw_mode else "application/json")
+        conn.putheader("X-Lang", lang)
+        conn.putheader("Content-Length", str(len(body)))
+        conn.endheaders(body)
+        t_sent = time.time()
+        r["send_ms"] = int((t_sent - t_s) * 1000)
+        resp = conn.getresponse()
+        r["status"] = resp.status
+        r["response_headers_ms"] = _ms(t0)                       # includes upload + server STT (headers go out after STT)
+        r["server_wait_ms"] = int((time.time() - t_sent) * 1000)  # request fully sent -> response headers
+        arrivals = []
+        buf = bytearray()
+        while True:
+            d = resp.read1(65536)
+            if not d:
+                break
+            arrivals.append((time.time(), len(d)))
+            buf += d
+        data = bytes(buf)
+        if resp.status != 200:
+            r["error_body"] = data[:300].decode("utf-8", "replace")
+            return r
+        nl = data.find(b"\n")
+        hdr = {}
+        try:
+            hdr = json.loads(data[:nl].decode()) if nl >= 0 else {}
+        except Exception:
+            pass
+        sr = int(hdr.get("sr") or 16000)
+        lo = nl + 1
+        cands = [i for i in (data.rfind(b'{"end"'), data.rfind(b'{"error"')) if i >= lo]
+        hi = min(cands) if cands else len(data)
+        r["end_missing"] = data.rfind(b'{"end"') < lo
+        off = 0
+        aud, hdr_t, first_t, last_t = [], None, None, None
+        for t, n_ in arrivals:
+            a, b = off, off + n_
+            off = b
+            if hdr_t is None and b > nl >= 0:
+                hdr_t = t
+            ov = max(0, min(b, hi) - max(a, lo))
+            if ov > 0:
+                if first_t is None:
+                    first_t = t
+                last_t = t
+                aud.append((t - t0, ov / float(sr * 2)))
+        gaps, stall = playback_stalls(aud)
+        r["hdr_line_ms"] = int((hdr_t - t0) * 1000) if hdr_t else None
+        r["first_pcm_ms"] = int((first_t - t0) * 1000) if first_t else None
+        r["last_pcm_ms"] = int((last_t - t0) * 1000) if last_t else None
+        r["end_ms"] = int((arrivals[-1][0] - t0) * 1000) if arrivals else None
+        r["audio_s"] = round(sum(a for _, a in aud), 2)
+        r["stall_ms"] = int(stall * 1000)
+        r["reads"] = len(arrivals)
+        r["heard"] = hdr.get("heard")
+        r["sr"] = sr
+        end_j = {}
+        try:
+            end_j = json.loads(data[hi:].split(b"\n", 1)[0].decode()) if hi < len(data) else {}
+        except Exception:
+            pass
+        r["reply"] = end_j.get("reply")
+        r["srv"] = end_j
+        st = (end_j.get("trace") or {}) if isinstance(end_j, dict) else {}
+        if r["first_pcm_ms"] is not None and st.get("first_pcm_ms") is not None:
+            r["outside_server_ms"] = r["first_pcm_ms"] - st["first_pcm_ms"]
+        r["ok"] = bool(first_t)
+    except Exception as e:
+        r["error"] = type(e).__name__ + ": " + str(e)[:140]
+    finally:
+        if conn is not None:
+            try:
+                conn.close()
+            except Exception:
+                pass
+    r["wall_ms"] = _ms(t0)
+    return r
+# <<< PROBE_CLIENT
+
+
+# ---------- 8. LATENCY PROBE (v42) ----------
+# Times every hop, three ways:
+#   components : relay GET/POST, Whisper, LLM (headers -> first token -> first clause), XTTS at several piece
+#                sizes, silence-trim / WAV / base64 cost.
+#   loopback   : a full phone-style /turn against 127.0.0.1 = the seat's own work with the network removed.
+#   tunnel     : the same turn through our own trycloudflare URL, from inside Kaggle (adds Cloudflare's edge).
+# The caller utterance is synthesized by XTTS itself, so the probe needs no recorded file.
+# NOT measured here: the phone's own radio and the phone->Cloudflare leg. Run probe_voice_client.py FROM THE
+# PHONE'S NETWORK (laptop or Termux) for that; its outside_server_ms is exactly that missing number.
+PROBE_Q_HI = "डॉक्टर साहब की टाइमिंग क्या है?"
+PROBE_TTS_TEXT = ("नमस्ते, आपका स्वागत है। डॉक्टर साहब सुबह दस बजे से दोपहर एक बजे तक और शाम को पाँच बजे से आठ बजे तक "
+                  "मिलते हैं। कृपया अपना नाम और फ़ोन नंबर बताइए, मैं आपका समय लिख लेता हूँ।")
+
+
+def ensure_probe_wav():
+    if PROBE_WAV[0]:
+        return PROBE_WAV[0]
+    arr = synth_full(PROBE_Q_HI, "hi")
+    arr = resample(np.asarray(arr, dtype=np.float32).squeeze(), SR, 16000)
+    PROBE_WAV[0] = _wavbuf(arr, 16000)
+    return PROBE_WAV[0]
+
+
+def _med(xs):
+    xs = [x for x in (xs or []) if isinstance(x, (int, float))]
+    return int(statistics.median(xs)) if xs else None
+
+
+def _p_relay():
+    out = {}
+    t = time.time()
+    d = gate()
+    out["gate_ms"] = _ms(t)
+    out["door"] = d
+    if not d:
+        out["error"] = "no relay door reachable"
+        return out
+    tok_q = urllib.parse.quote(RELAY_TOKEN)
+    hs, ps, ss = [], [], []
+    for _ in range(3):
+        t = time.time()
+        http_get(DOOR + "/health?token=" + tok_q, 20)
+        hs.append(_ms(t))
+    probe_reader = "probe-" + str(int(time.time()))   # NOT the seat's READER_ID: must not consume live HEAR rows
+    for _ in range(3):
+        t = time.time()
+        http_get(DOOR + f"/say?token={tok_q}&body={urllib.parse.quote(SELF_BODY)}&limit=5&live=1"
+                        f"&reader={probe_reader}", 30)
+        ps.append(_ms(t))
+    for i in range(2):
+        t = time.time()
+        _post("/say", OUT_BODY, f"LIVE PROBE ping {i + 1}")
+        ss.append(_ms(t))
+    out.update(health_get_ms=hs, poll_get_ms=ps, say_post_ms=ss)
+    return out
+
+
+def _p_stt(wav):
+    if whisper is None:
+        return {"error": "whisper unavailable"}
+    t = time.time()
+    a = wav_to_16k(wav)
+    dec = _ms(t)
+    runs, text = [], ""
+    for _ in range(3):
+        t = time.time()
+        segs, _i = whisper.transcribe(a, language="hi", beam_size=STT_BEAM, vad_filter=False,
+                                      without_timestamps=True, condition_on_previous_text=False, temperature=0.0,
+                                      initial_prompt=(STT_PROMPT or None))
+        text = " ".join(s.text for s in segs).strip()
+        runs.append(_ms(t))
+    return {"audio_s": round(len(a) / 16000.0, 2), "wavdec_ms": dec, "ms": runs, "heard": text}
+
+
+def _p_llm():
+    if not _brain_ready():
+        return {"error": "brain not ready"}
+    runs = []
+    for _ in range(3):
+        tr = {}
+        t = time.time()
+        try:
+            ps = list(stream_reply_pieces(PROBE_Q_HI, "hi", tr))
+        except Exception as e:
+            runs.append({"error": type(e).__name__ + ": " + str(e)[:100], "total_ms": _ms(t)})
+            continue
+        total = _ms(t)
+
+        def d(k):
+            return int((tr[k] - tr["llm_req"]) * 1000) if (k in tr and "llm_req" in tr) else None
+        runs.append({"headers_ms": d("llm_headers"), "first_tok_ms": d("llm_first_tok"),
+                     "first_piece_ms": d("llm_first_piece"), "total_ms": total, "pieces": len(ps),
+                     "chars": sum(len(p) for p in ps), "first_piece": ps[0] if ps else ""})
+    return runs
+
+
+def _p_tts():
+    out = []
+    out_sr = int(OUT_SR or SR)
+    for cap, reps in ((FIRST_MAX_HI, 3), (60, 1), (100, 1), (char_limit("hi"), 1)):
+        piece, _rest = take_piece(PROBE_TTS_TEXT, cap)
+        gens, walls, raw = [], [], None
+        for _ in range(reps):
+            t = time.time()
+            raw = synth_full(piece, "hi")
+            walls.append(_ms(t))
+            gens.append((getattr(_tl, "tts", None) or {}).get("gen_ms"))
+        t = time.time()
+        arr = finish_audio(raw, piece, trim=True)
+        post = _ms(t)
+        t = time.time()
+        buf = _wavbuf(arr, out_sr)
+        enc = _ms(t)
+        t = time.time()
+        base64.b64encode(buf)
+        b64ms = _ms(t)
+        raw_s = len(raw) / float(SR)
+        out.append({"cap": cap, "chars": len(piece), "wall_ms": walls, "gen_ms": gens,
+                    "raw_audio_s": round(raw_s, 2), "audio_s": round(len(arr) / float(out_sr), 2),
+                    "rtf": round(_med(walls) / 1000.0 / max(raw_s, 1e-6), 2), "post_ms": post,
+                    "wav_enc_ms": enc, "b64_ms": b64ms, "wav_kb": round(len(buf) / 1024.0, 1)})
+    return out
+
+
+def _p_loopback():
+    wav = ensure_probe_wav()
+    base = f"http://127.0.0.1:{VOICE_PORT}"
+    return {"health": timed_health(base, 5), "turns": [timed_turn(base, wav, "hi") for _ in range(max(1, PROBE_TURNS))]}
+
+
+def _p_tunnel():
+    url = VOICE_URL[0]
+    if not url:
+        return {"error": "no tunnel url"}
+    wav = ensure_probe_wav()
+    return {"url": url, "health": timed_health(url, 5),
+            "turns": [timed_turn(url, wav, "hi") for _ in range(max(1, PROBE_TURNS - 1))]}
+
+
+def probe_lines(rep):
+    """Human-readable summary of a probe report (also printed to the kernel log)."""
+    L = []
+    r = rep.get("relay")
+    if isinstance(r, dict) and "error" not in r:
+        L.append(f"relay      gate {r.get('gate_ms')} ms | health GET {r.get('health_get_ms')} | "
+                 f"live poll GET {r.get('poll_get_ms')} | /say POST {r.get('say_post_ms')}")
+    elif r:
+        L.append(f"relay      {r}")
+    s = rep.get("stt")
+    if isinstance(s, dict) and "error" not in s:
+        L.append(f"stt        {s.get('audio_s')} s audio | wav decode {s.get('wavdec_ms')} ms | transcribe {s.get('ms')} ms | heard: {s.get('heard')!r}")
+    elif s:
+        L.append(f"stt        {s}")
+    q = rep.get("llm")
+    if isinstance(q, list):
+        for i, x in enumerate(q, 1):
+            if "error" in x:
+                L.append(f"llm run {i}  ERROR {x['error']} after {x.get('total_ms')} ms")
+                continue
+            L.append(f"llm run {i}  headers {x['headers_ms']} | first token {x['first_tok_ms']} | first clause {x['first_piece_ms']} | "
+                     f"all {x['total_ms']} ms | {x['pieces']} piece(s), {x['chars']} chars")
+    elif q:
+        L.append(f"llm        {q}")
+    t = rep.get("tts")
+    if isinstance(t, list):
+        for x in t:
+            L.append(f"tts {x['cap']:>3}ch  piece {x['chars']:>3} chars -> {x['raw_audio_s']} s raw / {x['audio_s']} s after trim | "
+                     f"gen {x['gen_ms']} ms (rtf {x['rtf']}) | trim {x['post_ms']} + wav {x['wav_enc_ms']} + b64 {x['b64_ms']} ms | {x['wav_kb']} KB")
+    elif t:
+        L.append(f"tts        {t}")
+    for name in ("loopback", "tunnel"):
+        blk = rep.get(name)
+        if not isinstance(blk, dict):
+            continue
+        if "error" in blk:
+            L.append(f"{name:<10} {blk['error']}")
+            continue
+        h = blk.get("health") or {}
+        L.append(f"{name:<10} health: fresh connect {h.get('fresh_connect_ms')} ms (dns {h.get('dns_ms')} tcp {h.get('tcp_ms')} tls {h.get('tls_ms')}) | warm RTT {h.get('warm_ms')}")
+        for i, tn in enumerate(blk.get("turns") or [], 1):
+            if not tn.get("ok"):
+                L.append(f"{name:<10} turn {i} FAILED {tn.get('error') or tn.get('error_body')}")
+                continue
+            st = (tn.get("srv") or {}).get("trace") or {}
+            L.append(f"{name:<10} turn {i}: first sound {tn.get('first_pcm_ms')} ms | server says {st.get('first_pcm_ms')} ms | answer starts {st.get('first_answer_ms')} ms | "
+                     f"outside server {tn.get('outside_server_ms')} ms | connect {tn.get('connect_ms')} | upload {tn.get('send_ms')} ms for {tn.get('req_kb')} KB | "
+                     f"stalls {tn.get('stall_ms')} ms | total {tn.get('end_ms')} ms | audio {tn.get('audio_s')} s")
+            if st.get("budget"):
+                L.append("             first-sound budget: " + " + ".join(f"{k} {v}" for k, v in st["budget"]) +
+                         f" + unaccounted {st.get('unaccounted_ms')} = {st.get('first_pcm_ms')} ms")
+    return L
+
+
+def probe_compact(rep):
+    """A handful of numbers for the relay report and the log."""
+    c = {"tag": rep.get("tag"), "prec": rep.get("prec")}
+    try:
+        r = rep.get("relay") or {}
+        c.update(relay_health=_med(r.get("health_get_ms")), relay_poll=_med(r.get("poll_get_ms")), relay_say=_med(r.get("say_post_ms")))
+        s = rep.get("stt") or {}
+        c["stt"] = _med(s.get("ms")) if isinstance(s, dict) else None
+        q = rep.get("llm")
+        if isinstance(q, list):
+            c["llm_errors"] = sum(1 for x in q if "error" in x)
+            q = [x for x in q if "error" not in x]
+            c.update(llm_headers=_med([x["headers_ms"] for x in q]), llm_first_tok=_med([x["first_tok_ms"] for x in q]),
+                     llm_first_piece=_med([x["first_piece_ms"] for x in q]))
+        t = rep.get("tts")
+        if isinstance(t, list) and t:
+            c.update(tts_first_piece_chars=t[0]["chars"], tts_first_piece_gen=_med(t[0]["gen_ms"]), tts_rtf=t[0]["rtf"])
+        for name in ("loopback", "tunnel"):
+            blk = rep.get(name) or {}
+            turns = [x for x in (blk.get("turns") or []) if x.get("ok")]
+            if turns:
+                c[name + "_first_pcm"] = _med([x["first_pcm_ms"] for x in turns])
+                c[name + "_outside_server"] = _med([x.get("outside_server_ms") for x in turns])
+                c[name + "_stall"] = _med([x["stall_ms"] for x in turns])
+            h = blk.get("health") or {}
+            if h:
+                c[name + "_warm_rtt"] = _med(h.get("warm_ms"))
+                c[name + "_connect"] = h.get("fresh_connect_ms")
+    except Exception as e:
+        c["compact_err"] = type(e).__name__ + ": " + str(e)[:80]
+    return c
+
+
+def run_probe(tag="boot"):
+    """Run every stage, never raising. Writes /kaggle/working/probe_report.json, logs, and reports one summary line."""
+    t_all = time.time()
+    saved_hist = list(HISTORY)       # loopback turns would otherwise leak into a real caller's history
+    rep = {"tag": tag, "prec": PREC, "stage_ms": {}}
+    prog(f"PROBE start tag={tag}")
+
+    def stage(name, fn, *a):
+        t = time.time()
+        try:
+            rep[name] = fn(*a)
+        except Exception as e:
+            rep[name] = {"error": type(e).__name__ + ": " + str(e)[:140], "where": _where(e)}
+        rep["stage_ms"][name] = _ms(t)
+
+    stage("wav", lambda: {"bytes": len(ensure_probe_wav())})
+    wav = PROBE_WAV[0]
+    stage("relay", _p_relay)
+    if wav:
+        stage("stt", _p_stt, wav)
+    stage("llm", _p_llm)
+    stage("tts", _p_tts)
+    if VOICE_TUNNEL:
+        stage("loopback", _p_loopback)
+        if PROBE_TUNNEL:
+            stage("tunnel", _p_tunnel)
+    HISTORY[:] = saved_hist
+    rep["probe_total_ms"] = _ms(t_all)
+    rep["lat_stats"] = lat_summary()
+    try:
+        with open(WORK + "/probe_report.json", "w", encoding="utf-8") as fh:
+            json.dump(rep, fh, ensure_ascii=False, indent=1)
+    except Exception as e:
+        print("probe_report write FAIL", e, flush=True)
+    for line in probe_lines(rep):
+        print("PROBE " + line, flush=True)
+    comp = probe_compact(rep)
+    log_lat({"type": "probe", **comp})
+    report(json.dumps({"kind": "probe", **comp}, ensure_ascii=True))
+    prog(f"PROBE done tag={tag} in {rep['probe_total_ms']} ms -> probe_report.json | " +
+         " ".join(f"{k}={v}" for k, v in comp.items() if k not in ("tag", "prec") and v is not None)[:600])
+    if tag == "boot":
+        with _lat_lock:
+            LAT_STATS.clear()   # live stats should describe real calls, not the probe
+    return rep
+
+
+start_voice_tunnel()
+if PROBE_ON_BOOT:
+    try:
+        run_probe("boot")
+    except Exception as e:
+        prog(f"PROBE crashed {type(e).__name__}: {str(e)[:120]} @{_where(e)}")
+
+T0 = time.time()
+last_job = T0
+last_beat = T0
+last_lat_sum = T0
+hot_until = T0 + HOT_WINDOW_SEC
+CALLS = 0
+seen = set()
+baseline = True   # first poll silences history: never re-synthesize orders from earlier sessions
+beats = 0
+print(f"WARM body={SELF_BODY} poll={POLL_SEC}s hot={POLL_HOT_SEC}s", flush=True)
+prog(f"WARM body={SELF_BODY} poll={POLL_SEC}s hot={POLL_HOT_SEC}s idle_kill={IDLE_KILL_MIN}m cap={HARD_CAP_MIN}m lang={LANGUAGE} "
+     f"ref={os.path.basename(ref)} prec={PREC} ramp={RAMP_EFF:.2f} auto={AUTO_ENABLED}")
+print("WARM", flush=True)
+
+while True:
+    t_poll = time.time()
+    if beats % 100 == 0:
+        print(f"POLL loop iteration {beats + 1}", flush=True)
+    if t_poll - T0 > HARD_CAP_MIN * 60:
+        bye("HARD_CAP")
+    for o in orders():
+        otxt = o.get("text", "") or ""
+        key = (str(o.get("at", "")), hash(otxt))   # hash, not the text: HEAR rows are ~400 KB
+        if key in seen:
+            continue
+        seen.add(key)
+        if baseline:
+            continue
+        age = order_age_ms(o.get("at"))
+        if otxt.startswith("HEAR"):
+            hot_until = time.time() + HOT_WINDOW_SEC
+            do_hear(otxt)
+            last_job = time.time()
+            continue
+        if otxt.startswith("AUTO_"):
+            hot_until = time.time() + HOT_WINDOW_SEC
+            handle_auto(otxt)
+            last_job = time.time()
+            continue
+        if otxt.startswith("PROBE"):   # v42: re-run the whole latency probe on demand
+            hot_until = time.time() + HOT_WINDOW_SEC
+            try:
+                run_probe("order")
+            except Exception as e:
+                prog(f"PROBE crashed {type(e).__name__}: {str(e)[:120]} @{_where(e)}")
+            last_job = time.time()
+            continue
+        if otxt.startswith("LIVE_END"):
+            bye("RELAY_END")
+        if not otxt.startswith("LIVE_CALL"):
+            continue
+        hot_until = time.time() + HOT_WINDOW_SEC
+        payload = otxt[len("LIVE_CALL"):].strip()
+        cid = f"c{int(time.time())}"
+        ctext, lang = "", LANGUAGE
+        try:
+            j = json.loads(payload)
+            cid = str(j.get("cid") or cid)
+            ctext = str(j.get("text", "")).strip()
+            lang = j.get("lang", LANGUAGE)
+        except Exception:
+            ctext = payload
+        if not ctext:
+            say(f"LIVE_REJECT {cid} empty text")
+            continue
+        CALLS += 1
+        last_job = time.time()
+        print(f"CALL {cid} len={len(ctext)} lang={norm_lang(lang)}", flush=True)   # print only: a relay post here delayed every reply
+        do_call(cid, ctext, lang, age)
+        last_job = time.time()
+        hot_until = time.time() + HOT_WINDOW_SEC
+    if baseline:
+        baseline = False
+        prog(f"BASELINE done: {len(seen)} historical orders silenced")
+    if time.time() - last_job >= IDLE_KILL_MIN * 60:
+        bye("IDLE_KILL")
+    beats += 1
+    if time.time() - last_beat >= HEARTBEAT_SEC:
+        last_beat = time.time()
+        beat = f"LIVE_BEAT up={int(time.time() - T0)}s idle={int(time.time() - last_job)}s gpu_s={int(time.time() - T0)} polls={beats}"
+        print(beat, flush=True)
+        say_async(beat)
+    if time.time() - last_lat_sum >= LAT_SUMMARY_SEC:   # v42: rolling per-hop stats into the latency log
+        last_lat_sum = time.time()
+        _sm = lat_summary()
+        if _sm:
+            log_lat({"type": "lat_summary", "stats": _sm})
+    period = POLL_HOT_SEC if time.time() < hot_until else POLL_SEC
+    time.sleep(max(0.0, period - (time.time() - t_poll)))
+# v13 Baba run: Hindi digit spelling (num2words has no hi), hi limit 140, KILO_LANG env, failure location in relay msgs
+# v14: STT on the T4 (faster-whisper). New order HEAR {cid,lang,b64} -> HEARD {cid,text,ms} report.
+# v24: first poll silences history (baseline flag).
+# v25: do_hear decodes WAVs itself (seat PyAV older than faster-whisper expects).
+# v28: SYNTH_MODE=full -- each text piece synthesized COMPLETE; inference_stream slices ended mid-word.
+# v29: SELF_BODY default LIVE-VOX1 so a stale seat from an earlier version is silent by construction.
+# v30: orders() polls with live=1 + per-boot READER_ID (57x smaller steady-state read).
+# v31: LATENCY PASS. (1) adaptive polling: 0.35 s while a conversation is live (was a fixed 2 s = ~1 s average
+#      pickup lag). (2) persistent keep-alive HTTP sessions instead of a new TLS connection per request.
+#      (3) uploads run on background threads: synthesis no longer blocks on ~12 sequential 50 KB POSTs, and the
+#      synchronous "CALL" progress post that delayed every reply is now print-only. (4) short first piece + piece
+#      sizes that ramp with the measured synth speed, so first audio waits for ~3 s of speech, not ~9 s, and the
+#      next piece is ready before the previous one finishes playing. (5) startup self-benchmark picks the fastest
+#      of fp32 / fp16-autocast / fp16 that still sounds sane, reverting on any failure. (6) lead/tail silence
+#      trimmed per piece. (7) Whisper moved to GPU 1 and warmed up; HEAR no longer writes a WAV to disk and
+#      skips timestamps/fallback re-decodes. (8) per-call log now splits first_ready_ms / first_ms (first part
+#      actually posted) / synth_ms / flush_ms / order_age_ms so the next bottleneck is visible.
+# v32: BRAIN. The engine now decides what to say: HEAR -> Whisper -> on-seat LLM (GPU 1, streamed) -> first clause to
+#      XTTS (GPU 0) while the LLM is still writing the rest. Scripted LIVE_CALL still works unchanged. New orders:
+#      AUTO_ON / AUTO_OFF / AUTO_RESET / AUTO_PERSONA <text> / AUTO_ASK {"text":..}. Transcript reports carry "auto":true
+#      so the laptop knows not to send its own reply; the spoken text comes back as {"kind":"auto_reply","reply":..}.
+#      TTS precision A/B: ab_fp32.wav / ab_autocast.wav / ab_half.wav (same line, same seed) are saved to /kaggle/working;
+#      TTS_PRECISION=half|autocast forces a mode (kept whenever the audio is sane), =fp32 pins full precision.
+# v36: provider brain (nemotron via NVIDIA API), internal-silence collapse, 16 kHz output, 90 KB chunks.
+# v39: direct voice tunnel (cloudflared inside the kernel), IDLE_KILL 120 min / HARD_CAP 175 min.
+# v40: streaming /turn (header line, then PCM per clause), FIRST_MAX_HI 26.
+# v41: restored do_POST (its deletion was the 501 "Not Implemented").
+# v42: (1) ClientGone: a hang-up mid-reply is one log line + a voice_stream_aborted record, the LLM stream is
+#      closed, aborted turns stay out of HISTORY. (2) self-check no longer references an undefined `requests`.
+#      (3) LATENCY PROBE: lat()/lat_summary() rolling stats, per-turn trace (body read, b64, wav decode, STT,
+#      header write, LLM headers / first token / first clause, TTS lock wait, GPU gen, trim, PCM encode, socket
+#      write, per-piece playback gap) returned in the /turn trailer and logged; GET /lat, GET /probe_wav;
+#      boot probe + `PROBE` relay order -> probe_report.json; probe_voice_client.py measures from the caller's side.
+#      (4) shared provider HTTP session + connection pre-warm (was: a new TLS connection per phone turn).
+#      (5) TCP_NODELAY on the voice socket. (6) TTS_LOCK so overlapping turns cannot race XTTS.
+# v43: (1) provider tail latency: 4 s connect / 8 s read timeouts, hedged 2nd request after 2.5 s without a token,
+#      retry on error, both cancelled on hang-up. (2) one-sentence cap + 20-char first clause. (3) instant
+#      acknowledgement pre-synthesized at boot; trace now reports first_pcm_ms (filler) AND first_answer_ms.
+#      (4) Whisper large-v3-turbo with clinic prompt, falls back to small. (5) /turn accepts audio/wav bodies.
+#      (6) API key from env / Kaggle Secret LLM_API_KEY (+ optional LLM_API_KEYS). (7) probe fixes.

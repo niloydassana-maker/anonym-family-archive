@@ -1,0 +1,35 @@
+{
+  "created": "2026-10-03 09:25:44",
+  "reason": "Baba is doing a Kaggle factory reset; Kaggle artefacts must survive on this laptop.",
+  "voice_files": [
+    {
+      "name": "ElevenLabs_2026-10-02T21_11_48_Raju - Clear, Natural and Warm_pvc_s50_m2.mp3",
+      "bytes": 146923,
+      "sha256": "827666929E1D215883B6B1F901716227321E302C88A496FA8A5AC92D0569955C",
+      "verified": true
+    },
+    {
+      "name": "clinic_reference_fast.wav",
+      "bytes": 240078,
+      "sha256": "E60261FA08D543ABCD72452535BAFF22FA5279137E03A873BFE07771DA968856",
+      "verified": true
+    },
+    {
+      "name": "clinic_reference_faster.wav",
+      "bytes": 390034,
+      "sha256": "2DAF691B406291EACB17DF78A017975F60284A16DCCB894D5D9E09D1DA047A17",
+      "verified": true
+    },
+    {
+      "name": "reference_clean.wav",
+      "bytes": 476552,
+      "sha256": "9C28F6F261041D9D6799E58707AA7CD2D0BF2F7AA83907B8CFAE8957E220381F",
+      "verified": true
+    }
+  ],
+  "kaggle_dataset": "isearchxsolve/clinic-reference-voice",
+  "kaggle_kernel": "isearchxsolve/kilo-voice-live",
+  "tools_rescued": 15,
+  "audio_rescued": 10,
+  "restore_hint": "re-create dataset isearchxsolve/clinic-reference-voice from voice/ + a fresh datasets-metadata.json, then kaggle kernels push in kernels/"
+}
