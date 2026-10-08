@@ -1,0 +1,7 @@
+HREF={'result': 'about:blank', 'method': 'debugger'}
+BODY_CHARS=36
+
+QUESTIONS (lines ending in ?):
+
+SIGNAL LINES:
+{'result': '', 'method': 'debugger'}

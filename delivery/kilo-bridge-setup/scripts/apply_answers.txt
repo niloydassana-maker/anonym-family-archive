@@ -6,3 +6,6 @@
 # "How many years of hands-on experience do you have in GenAI/LLM?"
 # grounded in career/EARNING-MAP.md: "Since 2024 I've gone fully agentic" -> 2 years.
 genai|2
+3rd party payroll|Yes
+aws cloud|9
+aiml|9

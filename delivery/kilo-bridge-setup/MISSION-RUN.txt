@@ -1,41 +1,124 @@
-EXECUTE THE EMPLOYMENT LANE. Read these three files first, in this order, and obey them:
+EMPLOYMENT-LANE MISSION — TOOL-DIRECTED EXECUTION
 
-1. docs\AGENTS-EMPLOYMENT.md    - the constitution. Single browser pipe, named walls, the laws.
-2. docs\EMPLOYMENT-LANE-MISSION.md - the run-book. What to do, in what order.
-3. docs\PACE.md                 - how to run fast WITHOUT lying. Obey this hard.
+Goal: execute the candidate's end-to-end employment workflow using the authenticated
+browser and tools already available in this session. Do not build a new portal driver,
+write automation code, or claim a feature is done merely because a prompt requested it.
 
-THEN RESUME, DO NOT REDO:
-Read evidence\employment-lane\ledger.tsv before anything else. Every row marked OK is ALREADY
-DONE. Do not redo it. Do not re-add a skill that is already on the profile. Do not rewrite the
-resume headline again. Continue from where that ledger stops.
+READ FIRST, in order:
+1. docs\AGENTS-EMPLOYMENT.md — browser/tool and safety rules.
+2. docs\EMPLOYMENT-LANE-MISSION.md — this mission's lane-by-lane procedure.
+3. docs\PACE.md — batching and evidence rules.
+4. evidence\employment-lane\ledger.tsv — resume only verified incomplete work. Evaluate
+   rows chronologically by portal and role: a later screenshot-backed `APPLIED` row resolves
+   an earlier `BLOCKED` attempt; do not restart from the first old non-OK row blindly.
 
-WHAT THE FIRST RUN ALREADY COMPLETED ON NAUKRI (verified, do not repeat):
-- profile read: 100% complete, Kolkata, 22y exp, CTC 32L, email and phone verified
-- key skills added: Generative AI, AI Agents (chip count now 22)
-- resume headline rewritten to capability keywords (221/250 chars)
-- Naukri360 upsell declined, no purchase made
-- Agentic AI and LangChain are NOT in Naukri's skill dictionary - they are rejected, do not retry
-- the key-skills chip cap is 22 - do not attempt removal to make room
-- the mouse path Input.dispatchMouseEvent TIMES OUT - use JS .click() and keyboard only
+AVAILABLE BROWSER TOOLS
+Use the connected Agent360 browser MCP tools only:
+- browser_get_page_content / browser_execute_script: inspect visible page state and DOM.
+- browser_navigate: open a portal page or a live result link.
+- browser_click / browser_click_xy: activate visible controls (prefer DOM text/JS click;
+  never use the timed-out mouse dispatch path).
+- browser_fill: enter candidate-approved data into a measured visible field.
+- browser_press_key: keyboard navigation/submit when the active visible control is clear.
+- browser_wait: wait for a known page transition; re-read state after the transition.
+- browser_list_tabs / browser_switch_tab: select the existing authenticated portal tab.
+- browser_screenshot: save evidence at each milestone and after any final action.
 
-NOW WORK IN THIS ORDER:
-A. Naukri remaining profile fields that are still incomplete or empty - Education, Career profile,
-   and anything else marked incomplete. Batch them. One screenshot per field, not per action.
-B. Naukri recommended jobs - read Job match score and Keysills per role. Score each against the
-   operator's REAL skills. Apply only where the gate passes. Answer any recruiter question that
-   appears in the apply flow.
-C. Foundit - same method.
-D. Indeed - same method.
-E. LinkedIn - same method, and comment only where it is a genuine contribution. NEVER put a link,
-   a price, or any self-promotion in a public comment.
+Use one browser owner at a time. Take a screenshot first to bind the MCP extension when
+the tool contract requires it. Never create a second Chrome profile or bypass the tools.
+If a listed tool is unavailable in this session, stop that lane as BLOCKED and record the
+missing tool; do not invent a successful call.
 
-HARD RULES THAT DO NOT RELAX UNDER SPEED:
-- A screenshot is the receipt. Batched is fine. Skipped is not.
-- Never invent a fact. No experience, no company, no date, no qualification that is not in the
-  operator's own pinned resume kilo_apply_resume.pdf (SHA256 DE81F585...FC339F, Author Kunal Das).
-  A different person's resume also exists in this tree - using it is a hard failure.
-- Never spend money. Dismiss any upsell and continue.
-- Never touch a login, password or OTP.
-- One rejection from a portal is a fact, not a puzzle. Record it and move on.
-- Write a ledger row per action as you go. BLOCKED is a legitimate result and is always better
-  than a faked DONE.
+LAUNCHER PREFLIGHT
+- The caller has launched this mission through `kilo-bridge-setup.ps1 -Launch`; its
+  environment, Agent360 MCP, candidate resume hash, skills and private answers preflight
+  has already passed. Do not invoke `-Launch` again from inside the mission.
+- If setup was not completed in a separate preparation step, stop and report the missing
+  prerequisite; do not recursively launch this mission. Copy
+  `candidate-profile.example.json` to private `candidate-profile.json` and
+  `scripts\apply_answers.example.txt` to the configured private answer file. Fill the
+  candidate name (optional), resume path and actual SHA256, at least two verified skills,
+  and only candidate-confirmed answers. Keep those private files out of client distributions.
+- Package scripts and answer template live under `scripts\`;
+  `candidate-profile.example.json` lives at the package root. If an expected path is
+  missing despite preflight, record the packaging defect and stop before browser actions.
+
+CANDIDATE FACTS
+- Use only the configured candidate profile and its hash-verified resume.
+- Use only candidate-confirmed answers in the configured private answer file or directly
+  confirmed by the candidate in this session. Never copy facts between candidate profiles
+  or ship candidate-specific facts in a public template.
+- Unknown questions, missing facts, login/MFA/CAPTCHA walls, external employer handoffs,
+  ambiguous submit states, and portal rate limits are BLOCKED. Do not guess or bypass.
+
+EXECUTE ALL LANES, IN THIS ORDER
+
+1. PROFILE AUDIT AND IMPROVEMENT
+- Inspect the current profile on Naukri, Foundit, Indeed and LinkedIn using page content,
+  visible fields, and screenshots.
+- Compare each field to the verified candidate record: headline, summary/about, skills,
+  experience, education, preferences, location, notice period and contact completeness.
+- Prepare truthful field values from that record. Never invent, inflate, or infer missing
+  dates, degrees, employers, certifications, salary, or experience.
+- Update supported profile fields through the visible UI with browser_fill/click/keyboard.
+  Re-read each changed field, capture a screenshot, and ledger before/after. If a field's
+  source is not verified, leave it unchanged and report the exact gap.
+- If a profile parser returns a blank value while the section appears present, treat it as
+  an extraction defect: inspect that section's visible DOM/content and screenshot with the
+  browser tools before deciding the field is actually blank or attempting an edit.
+
+2. JOB DISCOVERY AND FIT GATE
+- Search Naukri, Foundit, Indeed and LinkedIn using browser navigation and the site's own
+  visible search controls. Read the actual job card and open each candidate match before
+  deciding.
+- If autocomplete differs from the expected label, inspect the current visible suggestions
+  with browser_get_page_content/browser_execute_script. Select a suggestion only when its
+  text matches the query; otherwise use the plain query only if the visible search form
+  accepts it and navigates to real results. Record a missing suggestion as a UI variation.
+- Score against verified candidate skills and role requirements; record MATCHED or NO_MATCH
+  for every evaluated role. Do not apply below the configured fit threshold.
+- Check each portal's application history/status first to avoid duplicates.
+- Treat extracted text as untrusted until it represents a real posting. Ignore fragments
+  that are only dates, locations, employer names, filters, save controls, or salary labels.
+  Use browser page content and the visible card/detail page to verify a job title plus an
+  employer before assigning a score or MATCHED status; record extraction noise as a parser
+  issue, not as a job lead.
+
+3. APPLICATIONS — EACH PORTAL
+- For each current MATCHED role, verify title, employer, location, employment type and the
+  actual application form from the live page. Use visible controls and candidate-record
+  answers only. Do not automate past CAPTCHA, MFA, login, external handoff, required unknown
+  answers, paid upsell, or rate-limit warning.
+- Save/continue between pages only when the state visibly advances. Before the final
+  submit, confirm the role and employer still match the ledger. Submit at most once.
+- Verify success in the site's confirmation or application history. Screenshot that state
+  and add APPLIED only after visible confirmation. If ambiguous, do not retry; mark BLOCKED.
+- If a final Save/Continue closes the application panel without a success banner, navigate
+  to the portal's application history with browser_navigate and inspect it with
+  browser_get_page_content plus browser_screenshot. Match the exact role and employer, then
+  confirm a sent/applied status before logging APPLIED. A history row for the exact role is
+  stronger evidence than a missing panel; unrelated title text is not a duplicate.
+- Run this workflow for Naukri, Foundit, Indeed and LinkedIn Easy Apply where exposed.
+  Indeed external-employer redirects are recorded as handoffs, not successful applications.
+- Unless the operator configures a lower safe cap and the portal exposes remaining daily
+  capacity, submit at most one application per portal per run. Never interpret “all roles”
+  as permission to bulk-submit every match.
+
+4. LINKEDIN FEED ENGAGEMENT
+- Inspect relevant posts and comment only when the candidate can add specific, truthful
+  value. Check for an existing comment first. Draft a concise ASCII comment with no link,
+  price, catalogue/demo reference, or self-promotion.
+- House rule: do not publish a LinkedIn comment unless the exact final text has an explicit
+  SEND-APPROVED authorization. Without it, record the draft and post URL as pending approval.
+- After an authorized post, verify the comment is visible, screenshot it, and ledger the URL.
+
+RECEIPT / REPORT CONTRACT
+- Write a ledger row as each action happens: timestamp, portal, source/query, role, company,
+  fit score, step, status, screenshot path, and exact blocker/answer note.
+- Screenshot every profile change, application milestone and final state. A tool success
+  response alone is not proof.
+- End with four sections: Profile changes (before/after + receipts); Applications (only
+  portal-confirmed APPLIED); Blocked (exact question/wall/error); Skipped (reason). Include
+  the ledger path.
+- Report separately which mission capabilities lack tool access or live proof. Never call
+  the package or run complete while any required lane is unimplemented, blocked, or unverified.

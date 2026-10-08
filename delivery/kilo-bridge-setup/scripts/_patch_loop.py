@@ -1,0 +1,96 @@
+"""_patch_loop.py - replace the single-answer branch with a conversational loop:
+read question -> answer from record -> verify fill -> Save -> next question.
+Never invent an answer; never final-submit past an unanswered gate.
+Marker-scanned, count==1 enforced."""
+from pathlib import Path
+P = Path(__file__).resolve().parent / "lane_apply.py"
+s = P.read_text(encoding="utf-8")
+
+old = (
+    '        q = panel_q or _find_question(txt_after)\n'
+    '        if q:\n'
+    '            log("   RECRUITER QUESTION FOUND: " + q[:160])\n'
+    '            ans = _answer_from_record(q)\n'
+    '            if ans:\n'
+    '                log("   answer (from record): " + ans)\n'
+    '                # WRITE, then READ BACK. 2026-10-07: the old version wrote the\n'
+    '                # wrong element and still reported \'filled\' - the field stayed\n'
+    '                # EMPTY, so APPLIED_STEP was a false claim. Verify, or BLOCK.\n'
+    '                elem, actual = _fill_question(js, ans)\n'
+    '                log("   fill elem=" + str(elem) + " readback=" + str(actual)[:25])\n'
+    '                time.sleep(1)\n'
+    '                p2 = shot("apply-03-question-answered-" + time.strftime("%H%M%S"))\n'
+    '                if elem and elem != "nofield" and str(actual).strip() == str(ans).strip():\n'
+    '                    ledger("naukri", after[:70], title[:70], "-", "-",\n'
+    '                           "recruiter question answered", "APPLIED_STEP",\n'
+    '                           str(p2) if p2 else "none",\n'
+    '                           "Q=" + q[:110] + " || A=" + ans[:110])\n'
+    '                    log("ANSWERED (read-back verified) - ledger written."\n'
+    '                        " No force-submit past a gate.")\n'
+    '                    return 0\n'
+    '                log("   !! fill did NOT land (elem=" + str(elem) + " readback="\n'
+    '                    + str(actual)[:30] + ") - BLOCKED (not a fake APPLIED_STEP)")\n'
+    '                ledger("naukri", after[:70], title[:70], "-", "-",\n'
+    '                       "recruiter question", "BLOCKED", str(p2) if p2 else "none",\n'
+    '                       "FILL FAILED elem=" + str(elem) + " readback=" + str(actual)[:40])\n'
+    '                return 4\n'
+    '            log("   !! not answerable from record -> BLOCKED (never invent)")\n'
+    '            ledger("naukri", after[:70], title[:70], "-", "-",\n'
+    '                   "recruiter question", "BLOCKED", str(p) if p else "none",\n'
+    '                   "UNANSWERABLE Q=" + q[:150])\n'
+    '            return 4\n'
+)
+new = (
+    '        # CONVERSATIONAL RECRUITER PANEL (2026-10-07): after Apply, the panel\n'
+    '        # asks questions one at a time; the typed answer is SENT with Save and the\n'
+    '        # next question appears. Loop: read question -> answer from record ->\n'
+    '        # READ BACK -> Save -> next. Never invent; never final-submit past a gate.\n'
+    '        seen = set()\n'
+    '        final = None\n'
+    '        _rounds = 0\n'
+    '        while _rounds < 5:\n'
+    '            _rounds += 1\n'
+    '            rq = _q_from_panel(js) or _find_question(body())\n'
+    '            if not rq:\n'
+    '                break\n'
+    '            if rq in seen:\n'
+    '                break                       # answered; a final submit is next\n'
+    '            ran = _answer_from_record(rq)\n'
+    '            if not ran:\n'
+    '                log("   !! not answerable from record -> BLOCKED: " + rq[:120])\n'
+    '                pf = shot("apply-05-blocked-" + time.strftime("%H%M%S"))\n'
+    '                ledger("naukri", after[:70], title[:70], "-", "-",\n'
+    '                       "recruiter question", "BLOCKED", str(pf) if pf else "none",\n'
+    '                       "UNANSWERABLE Q=" + rq[:150])\n'
+    '                return 4\n'
+    '            seen.add(rq)\n'
+    '            log("   ANSWERING: " + rq[:110] + " -> " + ran)\n'
+    '            elem, actual = _fill_question(js, ran)\n'
+    '            if not (elem and elem != "nofield"\n'
+    '                    and str(actual).strip() == str(ran).strip()):\n'
+    '                log("   !! fill did NOT land (elem=" + str(elem) + " readback="\n'
+    '                    + str(actual)[:30] + ") - BLOCKED")\n'
+    '                pf = shot("apply-05-fillfail-" + time.strftime("%H%M%S"))\n'
+    '                ledger("naukri", after[:70], title[:70], "-", "-",\n'
+    '                       "recruiter question", "BLOCKED", str(pf) if pf else "none",\n'
+    '                       "FILL FAILED elem=" + str(elem) + " readback=" + str(actual)[:40])\n'
+    '                return 4\n'
+    '            sv = _save(js)\n'
+    '            log("   save -> " + str(sv))\n'
+    '            final = shot("apply-06-answered-" + str(_rounds) + "-"\n'
+    '                         + time.strftime("%H%M%S"))\n'
+    '            time.sleep(3)\n'
+    '        if seen:\n'
+    '            ledger("naukri", after[:70], title[:70], "-", "-",\n'
+    '                   "recruiter questions answered", "APPLIED_STEP",\n'
+    '                   str(final) if final else "none",\n'
+    '                   "answered " + str(len(seen)) + " gate(s); no force-submit")\n'
+    '            log("ANSWERED " + str(len(seen)) + " gate(s), read-back verified.")\n'
+    '            return 0\n'
+)
+
+n = s.count(old)
+if n != 1:
+    raise SystemExit("marker count != 1 (got %d) - aborting" % n)
+P.write_text(s.replace(old, new, 1), encoding="utf-8")
+print("patch loop ok; lines:", len(P.read_text(encoding='utf-8').splitlines()))

@@ -1,0 +1,102 @@
+﻿        tag = "apply-03-after-apply-" + time.strftime("%Y%m%d%H%M%S")
+        p = shot(tag)
+        log("   shot -> " + (str(p) if p else "FAILED"))
+
+        if not moved:
+            log("   !! apply did not open a flow - BLOCKED (honest, not a fake DONE)")
+            ledger("naukri", after[:70], title[:70], "-", "-",
+                   "open apply flow", "BLOCKED", str(p) if p else "none",
+                   "select=" + str(sel) + " apply=" + str(ap))
+            return 3
+
+        q = _find_question(txt_after)
+        if q:
+            log("   RECRUITER QUESTION FOUND: " + q[:160])
+            ans = _answer_from_record(q)
+            if ans:
+                log("   answer (from record): " + ans)
+                _fill_question(js, ans)
+                time.sleep(3)
+                p2 = shot("apply-03-question-answered-" + time.strftime("%H%M%S"))
+                ledger("naukri", after[:70], title[:70], "-", "-",
+                       "recruiter question answered", "APPLIED_STEP",
+                       str(p2) if p2 else "none",
+                       "Q=" + q[:110] + " || A=" + ans[:110])
+                log("ANSWERED - screenshot + ledger written. No force-submit past a gate.")
+                return 0
+            log("   !! not answerable from record -> BLOCKED (never invent)")
+            ledger("naukri", after[:70], title[:70], "-", "-",
+                   "recruiter question", "BLOCKED", str(p) if p else "none",
+                   "UNANSWERABLE Q=" + q[:150])
+            return 4
+
+        log("   apply context reached (no recruiter question yet)")
+        ledger("naukri", after[:70], title[:70], "-", "-",
+               "apply flow opened", "APPLIED", str(p) if p else "none",
+               "url=" + after[:120])
+        log("DONE - apply flow open with screenshot.")
+        return 0
+    finally:
+        try:
+            c.close()
+            log("client closed cleanly")
+        except Exception as e:
+            log("close warning: " + str(e))
+
+
+def _find_question(body_text):
+    m = QUESTION_RE.search(body_text or "")
+    if m:
+        return (m.group(0) or "").strip()
+    for ln in (body_text or "").splitlines():
+        s = ln.strip()
+        if 15 <= len(s) <= 200 and s.endswith("?"):
+            return s
+    return None
+
+
+def _answer_from_record(question):
+    rec = HERE / "apply_answers.txt"
+    if not rec.exists():
+        return None
+    qlow = question.lower()
+    for line in rec.read_text(encoding="utf-8", errors="replace").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "|" not in line:
+            continue
+        key, _, ans = line.partition("|")
+        if key.strip().lower() and key.strip().lower() in qlow:
+            return ans.strip()
+    return None
+
+
+def _fill_question(js, answer):
+    esc = json.dumps(answer)
+    FILL_JS = ("(function(){var ans=" + esc + ";"
+               "var f=document.querySelector('textarea')||"
+               "document.querySelector('input[type=text]');"
+               "if(!f)return 'nofield';f.focus();"
+               "var s=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value');"
+               "var t=Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype,'value');"
+               "var d=(f.tagName==='TEXTAREA'?t:s);"
+               "if(d&&d.set){d.set.call(f,ans);}else{f.value=ans;}"
+               "f.dispatchEvent(new Event('input',{bubbles:true}));"
+               "f.dispatchEvent(new Event('change',{bubbles:true}));"
+               "return 'filled';})()")
+    return js(FILL_JS)
+
+
+def _top_matched_title():
+    try:
+        rows = LEDGER.read_text(encoding="utf-8", errors="replace").splitlines()
+    except Exception:
+        return None
+    for ln in reversed(rows):
+        parts = ln.split("\t")
+        if len(parts) >= 8 and parts[7].strip() == "MATCHED":
+            return parts[3].strip() or None
+    return None
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

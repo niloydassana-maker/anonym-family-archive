@@ -1,0 +1,5 @@
+﻿SUPERSEDE rows appended: 2
+exit=0
+compile_exit=0
+2026-10-07	naukri	https://www.naukri.com/mnjuser/recommendedjobs	GenAI Architect | Generative AI | LLM | RAG | Agentic AI	-	-	SUPERSEDE: widget logged as recruiter question	CORRECTED	scripts/lane_apply.py	The 00:11 and 00:36 BLOCKED rows logged 'Are these jobs relevant for you?' - that is the SPAN.feed-title list alignment widget, NOT the apply gate. Real question = 'How many years of hands-on experience do you have in GenAI/LLM?' (_find_question now reads ONLY DIV.chatbot_MessageContainer).
+2026-10-07	naukri	https://www.naukri.com/mnjuser/recommendedjobs	GenAI Architect | Generative AI | LLM | RAG | Agentic AI	-	-	SUPERSEDE: 'apply flow opened' mislabeled as APPLIED	CORRECTED	scripts/lane_apply.py	Row 00:42 (apply-03-after-apply-20261007004258) declared APPLIED although the recruiter gate was NOT answered (panel showed 'How many years ...?'). The flow OPENED (true) but nothing was submitted. Verdict = BLOCKED (gate open, question unanswerable: no apply_answers.txt). No honest APPLIED row exists yet.

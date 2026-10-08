@@ -19,7 +19,7 @@ JOBS_URL = "https://www.naukri.com/mnjuser/recommendedjobs"
 # The operator's REAL skills - IDENTICAL to lane_foundit.py so scores are comparable
 # across portals. From the pinned resume + live profile headline. Never invent one.
 # (kilo_apply_resume.pdf, SHA256 DE81F585...FC339F)
-SKILLS = [
+DEFAULT_SKILLS = [
     "ai agents", "agentic", "langchain", "rag", "vector", "generative ai",
     "genai", "llm", "prompt", "python", "java", "spring", "node", "nodejs",
     "aws", "cloud", "api", "microservice", "webrtc", "upi", "npci", "payments",
@@ -28,6 +28,7 @@ SKILLS = [
     "solution architect", "principal", "staff engineer", "engineering manager",
     "distributed", "scalable", "devops", "ci/cd", "git",
 ]
+SKILLS = T.candidate_skills() or DEFAULT_SKILLS
 
 
 def main():

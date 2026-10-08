@@ -1,0 +1,19 @@
+﻿len=934
+LANE_APPLY start :: title = GenAI Architect | Generative AI | LLM | RAG | Agentic AI
+A1 navigate -> https://www.naukri.com/mnjuser/recommendedjobs
+A2 card index = 0
+A3 select card checkbox
+   select -> checked
+   apply-button state = {"found":true,"disabled":false,"label":"Apply 1 Job"}
+   shot -> D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-02-selected-20261007004825.png
+A4 click Apply
+   apply -> clicked-apply
+A5 wait for apply flow / recruiter panel
+A5 after url=https://www.naukri.com/mnjuser/recommendedjobs
+   left_list=False in_flow=True body_chars=30474
+   shot -> D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-03-after-apply-20261007004828.png
+   RECRUITER QUESTION FOUND: How many years of hands-on experience do you have in GenAI/LLM?
+   !! not answerable from record -> BLOCKED (never invent)
+  LEDGER + BLOCKED :: recruiter question
+client closed cleanly
+

@@ -23,7 +23,7 @@ DEFAULT_QUERY = "artificial intelligence"
 
 # The operator's REAL skills - IDENTICAL to lane_jobs.py so scores are comparable
 # across portals. From the pinned resume + live profile headline. Never invent one.
-SKILLS = [
+DEFAULT_SKILLS = [
     "ai agents", "agentic", "langchain", "rag", "vector", "generative ai",
     "genai", "llm", "prompt", "python", "java", "spring", "node", "nodejs",
     "aws", "cloud", "api", "microservice", "webrtc", "upi", "npci", "payments",
@@ -32,21 +32,44 @@ SKILLS = [
     "solution architect", "principal", "staff engineer", "engineering manager",
     "distributed", "scalable", "devops", "ci/cd", "git",
 ]
+SKILLS = T.candidate_skills() or DEFAULT_SKILLS
 
 
 def main(argv):
     query = " ".join(argv[1:]).strip() or DEFAULT_QUERY
-    search_url = FOUNDIT_HOME + "search/?query=" + query.replace(" ", "%20")
+    search_url = FOUNDIT_HOME
     lane = T.Lane("foundit", "search: " + query)
     lane.log("LANE_FOUNDIT start :: query = " + query)
     with T.session(lane) as c:
         lane.log("C1 navigate -> " + search_url)
         c.call_tool("browser_navigate", {"url": search_url})
-        time.sleep(12)
+        time.sleep(8)
+
+        # Search through the live page control. The former /search/?query= path
+        # now returns a 404; the authenticated home exposes this measured field.
+        field = c._js("JSON.stringify(Array.from(document.querySelectorAll('input')).map(e=>({id:e.id,placeholder:e.placeholder,visible:!!(e.offsetWidth||e.offsetHeight)})))")
+        if "heroSectionDesktop-skillsAutoComplete--input" not in str(field):
+            lane.row(search_url[:70], "-", "-", "-", "find search control", T.BLOCKED,
+                     "none", "measured job search input not present: " + str(field)[:150])
+            return 2
+        fill = c.fill("#heroSectionDesktop-skillsAutoComplete--input", query)
+        lane.log("C2 fill search control -> " + str(fill)[:180])
+        if "artificial intelligence" in query.lower():
+            suggestion = c.find_and_click("Artificial Intelligence in Skill")
+            lane.log("C2a select visible suggestion -> " + str(suggestion)[:180])
+        submitted = c.find_and_click("Search")
+        lane.log("C2b click visible Search -> " + str(submitted)[:180])
+        time.sleep(10)
 
         page = T.read_page(c)
         lane.log("   url   = " + page["url"][:110])
         lane.log("   chars = %d" % len(page["body"]))
+
+        if "/home/user" in page["url"]:
+            p = lane.shot(c, "50-foundit-search-not-submitted-%s" % time.strftime("%Y%m%d-%H%M%S"))
+            lane.row(page["url"][:70], "-", "-", "-", "submit search", T.BLOCKED,
+                     str(p) if p else "none", "Search control did not navigate to a results page")
+            return 2
 
         # A wall is declared only when the page is SHORT and carries a login marker
         # (a logged-OUT Foundit search still returns cards - length alone is a lie).
@@ -62,6 +85,7 @@ def main(argv):
                      "(none)", "body chars=%d" % len(page["body"]))
             return 2
 
+        search_url = page["url"]
         p = lane.shot(c, "50-foundit-search-%s" % time.strftime("%Y%m%d-%H%M%S"))
         lane.log("   shot -> " + (str(p) if p else "FAILED"))
 

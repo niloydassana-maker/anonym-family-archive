@@ -1,0 +1,750 @@
+Jobs
+2
+Companies
+Services
+1
+Search jobs here
+15
+2
+Recommended jobs for you
+You can select upto 5 jobs to applyApply 1 Job
+Applies (62)
+Profile (6)
+Preferences (23)
+You might like (6)
+
+GenAI Architect | Generative AI | LLM | RAG | Agentic AI
+
+Connect iO
+Posted by Connectio It
+11-20 Yrs35-50 Lacs PABengaluru, Pune, Noida
+The ideal candidate should have strong experience in RAG, Agentic AI, LLM orchestration, cloud AI platforms, vector databases, LLMOps, and AI security / governance Must Have: . 10+ years overall IT experience Good to Have: . AWS Bedrock / Google V...GenAIAWS BedrockLLMRAGGenAI ArchitectAzure AI SearchLLMOpsLangChain1 Day Ago
+Save
+Hide
+
+G5 G6 IT Manager Supply Chain Engineering
+
+Client of Sampoorna Consultants Pvt. Ltd
+Posted by Sampoorna Consultants
+15-20 YrsNot disclosedChennai
+G5/G6 - IT Manager Supply Chain Engineering - J50638Role & responsibilities IT Manager Supply Chain Engineering to provide strong people leadership, delivery management, and execution oversight across Supply Chain SDS teams.This role will be respo...JavaSupply ChainobservabilitySupply chain managementManagementSupplyEngineering1 Day Ago
+Save
+Hide
+Promoted companies
+Providence Global Center
+3.7
+265 Reviews
+B2BForeign MNCWork-Life BalanceHighly Rated by WomenIT Services & Consulting
+Why Join Us:
+
+Transform healthcare with purpose and innovation.
+
+Follow
+View Jobs
+Einfochips
+3.5
+674 Reviews
+B2BDesignProductIndian MNCIT Services & Consulting
+Why Join Us:
+
+Be you. Grow, explore, and evolve freely.
+
+Follow
+View Jobs
+Xoriant
+3.9
+2.4K+ Reviews
+B2BServiceForeign MNCSoftware ProductIT Services & Consulting
+Why Join Us:
+
+Innovate, grow, and build what’s next with Xoriant.
+
+Follow
+View Jobs
+Egen
+4.1
+108 Reviews
+B2BSaaSServiceForeign MNCIT Services & Consulting
+Why Join Us:
+
+Create impact with data and insight.
+
+Follow
+View Jobs
+Persistent
+3.6
+5.6K+ Reviews
+Indian MNCSoftware ProductFortune India 500Emerging TechnologiesIT Services & Consulting
+Why Join Us:
+
+Join us & be a part of history.
+
+Follow
+View Jobs
+EPAM Systems
+3.7
+2.3K+ Reviews
+TOPForeign MNCHighly Rated by WomenIT Services & Consulting
+Why Join Us:
+
+If you're looking to Flip the Script, you've come to the right place.
+
+Follow
+View Jobs
+DTCC
+3.8
+123 Reviews
+B2BPrivateForeign MNCFinancial Services
+Why Join Us:
+
+At DTCC, every career finds purpose.
+
+Follow
+View Jobs
+Rockwell Automation
+3.8
+934 Reviews
+B2BPrivateAutomobileForeign MNCIndustrial Automation
+Why Join Us:
+
+Join Collins Aerospace and help redefine the future.
+
+Follow
+View Jobs
+Medline Industries India Private Limited
+3.8
+425 Reviews
+B2BPrivateManufacturingMedical Devices & Equipment
+Why Join Us:
+
+We're committed to creating a workplace where you can thrive professionally and personally.
+
+Follow
+View Jobs
+Warner Bros. Discovery
+3.8
+209 Reviews
+CorporateFilm / Music / Entertainment
+Why Join Us:
+
+Celebrating diversity and every voice.
+
+Follow
+View Jobs
+
+Senior AI Architect
+
+Tech Mahindra
+3.3
+47052 Reviews
+15-24 Yrs35-45 Lacs PAPune, Chennai, Hyderabad
+Position - Senior Enterprise AI Architect GenAI, Agentic AI & Enterprise ApplicationsLocation : Pune / Bangalore / Hyderabad / Chennai (Hybrid / Work from Office as per project requirement)Experience : 15–25 YearsAbout the RoleWe are looking for a...Enterprise ArchitectureAgentic AIGenAIAi StrategyBusiness TransformationPlatform IntegrationArtificial IntelligenceSenior1 Day Ago
+Save
+Hide
+
+Enterprise Multi-Solution Architect
+
+Cognizant
+3.7
+66141 Reviews
+15-21 YrsNot disclosedHybrid - Bengaluru, Chennai
+Required Experience . 15+ years of enterprise technology experience, including significant experience as a Multi-Solution Architect, Enterprise Architect, Consulting Architect or Chief ArchitectDemonstrated ability to work across multiple technolo...Enterprise ArchitectureDigital Experience PlatformMarTechPersonalizationGenrative AiArtificial IntelligenceCMSCommerce1 Day Ago
+Save
+Hide
+
+Core Gen AI / Generative AI Architect- Healthcare
+
+PwC
+3.3
+14140 Reviews
+15-24 YrsNot disclosedHybrid - Kolkata, Bengaluru, Hyderabad
+Role & responsibilities Setting strategic direction for generative AI architecture across client engagements and identifying opportunities to scale solutions- Leading design of Gen AI platforms, reference architectures, and cognitive automation pa...Agentic AiGen AIHealthcareLife SciencesClinicalScienceArtificial IntelligenceGen1 Day Ago
+Save
+Hide
+Are these jobs relevant for you?
+Yes
+No
+
+Architect/Lead AI Engineer (Agentic AI)
+
+Intersoft Data Labs
+3.5
+259 Reviews
+11-19 YrsNot disclosedRemote
+Java : Strong experience for building enterprise-grade backend services and integrating AI into legacy systemsExperience: Typically 3+ years in software or AI Architect, with at least 2 year dedicated to agentic systemsAgentic AiArtificial IntelligenceClaudeLLMPythonLanggraphLangChainAiml4 Days Ago
+Save
+Hide
+
+Gen AI - Technical Architect
+
+Aspire Systems
+3.7
+1141 Reviews
+10-20 YrsNot disclosedHybrid - Bengaluru, Chennai
+Aspire has been consistently recognized among Indias 100 Best Companies to Work For for 12 consecutive years by the Great Place to Work InstituteCandidate information collected through this recruitment process will be used solely for hiring purpos...Generative AITechnical ArchitectureAgentic AiGen AIAi SolutionsRAGLLMArtificial Intelligence1 Day Ago
+Save
+Hide
+
+Solution Architect AI Native SDLC Platform
+
+Vericence
+2.9
+2 Reviews
+18-26 Yrs50-60 Lacs PARemote
+Required Qualifications Strong cloud architecture background, preferably AWSPreferred Hands-on architecture experience with Generative AI and agentic systems in production or advanced pilotExperience leading solutioning across multiple concurrent ...Enterprise ArchitectureAgentic AiSolution ArchitectingCloud MigrationDevOpsNeo4jLarge Language ModelRetrieval Augmented Generation3 Days Ago
+Save
+Hide
+
+Databricks Solution & AI Architect
+
+CGI
+4.0
+5901 Reviews
+12-22 YrsNot disclosedHybrid - Bengaluru, Chennai
+Job Title : Databricks Solution & AI ArchitectJob location : Bangalore / ChennaiJob requirement : Fulltime / PermanentExperience : 14+ years of experienceWork Mode : HybridLooking for a senior Databricks architect with deep expertise in Lakehouse ...LakehouseDatabricks at production scaleData EngineerDatabricksDatabricks Solution ArchitectSolution ArchitectingAzure CloudAI7 Days Ago
+Save
+Hide
+
+Senior Manager AI/ML Engineering
+
+Optum
+4.0
+8727 Reviews
+15-20 YrsNot disclosedHybrid - Bengaluru
+Required Qualifications: . Masters degree in Computer Science, Engineering, Mathematics, Statistics, or a related disciplineDemonstrated experience leading and managing AI / ML teams and projects from ideation to delivery and evaluation Hands-on e...Agentic AiAimlLLMMachine LearningPythonTensorflowgenerative aiArtificial IntelligencePrefers women+31 Day Ago
+Save
+Hide
+
+Artificial Intelligence Architect_PAN India_October
+
+RiDiK
+2.9
+6 Reviews
+15-24 Yrs30-45 Lacs PAHybrid - Pune, Hyderabad, Gurugram
+Genrative AiMLNatural Language ProcessingAI ArchitectArtificial IntelligenceMachine LearningPythonSQLMicrosoft Azure 4. AI architect- BangaloreArchitectureArtificial IntelligenceAgentic AiJavaAI ArchitectLLMIntelligence7 Days Ago
+Save
+Hide
+
+Principal AI Platform & Knowledge Architect
+
+Covalense Digital
+3.3
+123 Reviews
+10-18 YrsNot disclosedBengaluru
+About the RoleWe are seeking a Principal AI Platform & Knowledge Architect to lead the evolution of our next-generation enterprise Agentic AI platform. This role will be responsible for defining the architecture, technical direction, and implement...Enterprise Architecturegenerative aiLLMAgentic AiPrompt EngineeringSovereign AICloudPlatform Architecture1 Day Ago
+Save
+Hide
+
+GEN AI Architect
+
+Iris Software
+3.8
+2103 Reviews
+13-18 YrsNot disclosedPune, Noida, Gurugram
+Required SkillsExperience designing enterprise AI use cases such as copilots, knowledge assistants, intelligent search, summarization, and workflow automationHands-on experience with vector databases: Pinecone, FAISS, Weaviate, Chroma, Milvus, Azu...generative aiPythonAgentic AiLangchainLanggraphRetrieval Augmented GenerationArtificial IntelligenceGen5 Days Ago
+Save
+Hide
+
+AI Architect/ Tech Lead
+
+Zensar
+3.5
+3259 Reviews
+10-18 YrsNot disclosedHybrid - Bengaluru, Pune, Hyderabad
+. 10+ years of software architecture experience, with at least 3 years building production grade LLM applicationsBachelors or higher degree in Computer Science, Engineering, or a related fieldExperience authoring architecture RFCs and establishing...LangGraphPrompt EngineeringAI/MLAI ArchitectLLMTech LeadGenAI DevelopmentRAG4 Days Ago
+Save
+Hide
+
+Director
+
+Qentelli
+4.0
+445 Reviews
+17-25 YrsNot disclosedHybrid - Hyderabad
+Strong background in Agile delivery leadership (ARTs, Scrum of Scrums, SAFe preferred) AWS Cloud : ECS, Lambda, S3 (hands-on or strong architectural leadership required) Partner with product, business, and operations teams to align technology outc...Gen AIProgram ManagerDirectorAWS.NET CoreArtificial IntelligenceGen.Net2 Days Ago
+Save
+Hide
+
+Principal Technology Architect
+
+Infosys
+3.5
+52783 Reviews
+15-20 YrsNot disclosedBengaluru
+Product Operating Model experience. Certifications (Preferred). TOGAF. Azure Solutions Architect Expert. Azure AI Engineer Associate. AWS Solutions Architect Professional. Educational RequirementMSc, MTech, Bachelor of Engineering, BE, BSc, BTechE...AiEnterprise ArchitectureAzureCapital MarketsArchitectureBankingDevsecopsAnthropic6 Days Ago
+Save
+Hide
+
+Senior Artificial Intelligence Engineer
+
+Apidel Technologies
+Posted by Apidel Technologies
+10-20 Yrs27.5-42.5 Lacs PARemote
+Required Qualifications . Technical Skills This role is ideal for engineers with foundational experience in Data Engineering, AI / Generative AI, Cloud Technologies, and Software Development who are looking to grow their expertise in enterprise-sc...Azure DatabricksPysparkGenieAzure AIAzure Machine LearningUnity CatalogAzure AI FoundryPython5 Days Ago
+Save
+Hide
+
+Senior Delivery Manager - Gen AI
+
+Epam Systems
+3.7
+2305 Reviews
+18-20 YrsNot disclosedBengaluru, Chennai, Hyderabad
+16-18 years of experience in software development. Background in development with AI-driven transformation initiatives. Capability to define and track delivery metrics. Showcase of people management. Strong EngX experience Experience in Wealth Man...CDTransformationComplianceArchitectureGithubClean CodeRiskCi/Cd1 Day Ago
+Save
+Hide
+
+Programme Manager
+
+National e-Governance Division
+3.6
+71 Reviews
+15-20 YrsNot disclosedNew Delhi
+CertificationPMP, PRINCE2 or an equivalent programme management certification. . Contract management SLAs, deliverable acceptance, payment certification Minimum 15 years of experience after qualification, including at least 7 years managing large ...Software Engineeringhe Farmer AppCCE-AgriKRPH and the WhatsApp bot.YES-TECHAIDECLAPWINDS2 Days Ago
+Save
+Hide
+
+Application Service Delivery Manager
+
+Codincity Digital Technologies
+4.8
+110 Reviews
+13-18 YrsNot disclosedRemote
+Codincity is hiring for Application Service Delivery Manager. Interested candidates, please share your resume to my email id : abhishek.p@codincity.com Resource RequirementPosition Title: Application Service Delivery Manager• Function / Department...service deliveryInsurance Domaincore javaApplication DevelopmentApplicationDelivery managementCoreDNS5 Days Ago
+Save
+Hide
+
+Principal Gen AI Architect
+
+Persistent
+3.6
+5562 Reviews
+12-18 YrsNot disclosedPune
+About Position:We are seeking an experienced GenAI Solution Architect to lead the design, architecture, and governance of enterprise-scale Generative AI platforms and solutions. The ideal candidate will be responsible for defining AI architecture ...RAG ArchitectureGenerative AI ArchitectureCloudGenArchitectureArtificial Intelligence7 Days Ago
+Save
+Hide
+
+Senior Engineering Manager
+
+MADTECH.AI
+3.1
+44 Reviews
+15-24 YrsNot disclosedHybrid - Bengaluru, Mysuru
+Required Qualifications . Bachelors or Masters degree in Computer Science, Engineering, or a related field14+ years in software engineering, including enterprise B2B SaaS, with 5+ years in engineering management or technical leadership (experience...Data EngineeringEngineering ManagementProduct EngineeringTechnical ManagementTechnical LeadershipCode ReviewDelivery ManagementSoftware Development7 Days Ago
+Save
+Hide
+
+Delivery Manager
+
+Movate Technologies
+3.1
+2932 Reviews
+13-20 YrsNot disclosedBengaluru, Chennai
+Key competencies: Proven product engineering ownership Hands-on Data/AI delivery transformation experience Strong client-facing executive communication skills PE/Financial delivery leadership Experience leading offshore engineering organizations (...Artificial IntelligenceDataBfsiDelivery ManagementIntelligenceManagementDelivery4 Days Ago
+Save
+Hide
+
+PRINCIPAL ARCHITECT - Java
+
+Happiest Minds Technologies
+3.4
+1609 Reviews
+16-20 YrsNot disclosedBengaluru
+Experience integrating OpenAI, Azure OpenAI, Gemini, Claude or equivalent LLM APIs . RAG architecture and vector databases. Experience integrating AI capabilities into Java / full-stack applicationsResponsive UIDesign PatternsKafkaHTMLSpring BootMicroservicesAngularTypeScript5 Days Ago
+Save
+Hide
+
+Senior Engineer II, Software Development - Insight
+
+Netgear Research India
+3.1
+6 Reviews
+11-19 YrsNot disclosedBengaluru, Chennai
+Position OverviewWe are seeking a Senior Full Stack Engineer to lead the development of our cloud-based Network Management System (NMS) platform. This role involves building sophisticated web applications and mobile interfaces that enable enterpri...JavaNMSSpring BootReact.jsAngularMicroservicesBootSpring2 Days Ago
+Save
+Hide
+
+Hiring For- Solution Architect - Pune(Immediate Joiner)
+
+TOP MNC
+Posted by Converse Placement Services
+12-22 YrsNot disclosedPune
+Hiring Designation: Solution Architect Skills- Solution Architect( Presales and RFP Experienced) / (Digital transformation programs) Exp : 12+ Yrs Job Location : Pune To Apply Call:8209510381 Share resume @ : sharafat@conversejob.com Thanks,Solution ArchitectHLDsolution architectureDigital transformationTOGAFAzure Solution ArchitectPresalesRFP3 Days Ago
+Save
+Hide
+
+DevOps Architect Engineer
+
+Kochasoft
+4.2
+8 Reviews
+12-20 YrsNot disclosedHybrid - Bengaluru, Pune, Chennai
+At least one required: Azure Solutions Architect Expert (AZ-305), Google Cloud Professional Cloud Architect, or AWS Certified Solutions Architect ProfessionalAsset: CKA / CKAD, Terraform Associate, AZ-400, FinOps Certified Practitioner, CKS or CCS...DevOpsSRECi/CdDevsecopsHelmKubernetesContinuous IntegrationCd6 Days Ago
+Save
+Hide
+
+Java Architect
+
+Tata Consultancy Services
+3.2
+122909 Reviews
+10-18 YrsNot disclosedBengaluru, Pune, Chennai
+Bachelors / Masters degree in Computer Science or related fieldTOGAF, Azure Architect, AWS Architect, or AI certifications preferredLocation - Pune / Bangalore (as per customer requirement) Azure (Preferred) or AWSPreferred Skills Domain Preferenc...JavaGen AIJava ArchitectureSpring BootMicroservicesAzuregenerative aiCi/Cd5 Days Ago
+Save
+Hide
+
+AI Architect
+
+Illumifin
+3.2
+179 Reviews
+15-20 Yrs30-45 Lacs PAHybrid - Bengaluru, Pune, Hyderabad
+AI Architect / Principal AI Architect . We are looking for a highly hands-on AI Architect who can architect, code, and implement enterprise-scale AI solutions from scratch to production.The ideal candidate should combine deep AI engineering expert...Artificial IntelligenceOrchestrationGenrative AiLangchainVector DBAzure OpenAI ServiceRAGLan graph5 Days Ago
+Save
+Hide
+
+Lead Consultant - GenAI - Agentic AI - Content & Marketing Solutions
+
+VDartDigital
+2.8
+28 Reviews
+10-20 YrsNot disclosedBengaluru
+Employment : Full Time with VDart Digital Experience leading cross-functional technology initiatives and managing vendors and development partnersRequired Qualifications Preferred Qualifications Experience delivering GenAI solutions using LLMs, RA...Agentic AI frameworksgenerative aiRetrieval Augmented GenerationConsultingSolution marketingContentFrameworkGeneration1 Day Ago
+Save
+Hide
+
+Product / Platform Architect
+
+Softility Tech
+3.9
+18 Reviews
+10-20 YrsNot disclosedHybrid - Hyderabad
+Experience evolving an existing platform, not only designing greenfield systemsPreferred Mandatory technical skills and experience 10+ years building production software, including significant distributed-systems experience SRE, DevOps, observabil...ContainerDevOpsSREAPIKubernetesAgenticAi TechniquesPlatform Architecture5 Days Ago
+Save
+Hide
+
+Sr AI Developer
+
+Abacus Service
+Posted by Abacus Service
+7-18 YrsNot disclosedBengaluru
+Notice Period: Immediate to Short Notice Period preferred. Total 8+ years of experience, Build agents / components that reason, plan and actMinimum 8+ years of overall experienceResume should have 90 95% alignment with the JDMaximum 1 job change i...AI DeveloperData BricksPythonCI CD PipelineLangchainLanggraphSnowflakeReAct patterns1 Day Ago
+Save
+Hide
+
+Associate Director - AI Adoption and Governance - Gurgaon/Bangalore
+
+Acuity Analytics
+3.0
+1624 Reviews
+10-20 YrsNot disclosedBengaluru, Gurugram
+. Post-Graduation in any stream (technology background preferred) Preferred candidate profile Minimum 10 years of experience in Product Management including requirement assessment, solution building and implementationAI AdoptionGovernanceClient Managementprogram governanceclient workflowglobal marketDigital Transformationchange management7 Days Ago
+Save
+Hide
+
+Fullstack Engineer
+
+Bounteous
+3.1
+1100 Reviews
+10-20 YrsNot disclosedHybrid - Bengaluru, Chennai, Gurugram
+Deep Java proficiency including Spring Boot, Spring Security, Spring Cloud, Hibernate / JPA, and microservices design patternsStrong cloud platform experience across AWS or Azure including Docker, Kubernetes, and CI / CD pipeline managementJavagenerative aiMicroservicesLarge Language ModelReact.jsReduxSpring BootSpring Cloud5 Days Ago
+Save
+Hide
+
+AI governance SME
+
+Capgemini
+3.6
+58126 Reviews
+14-19 Yrs30-45 Lacs PAHybrid - Bengaluru, Pune, Hyderabad
+Requirements8+ years in risk, compliance, audit or data governance, with 2+ years focused on AI/ML •Working knowledge of EU AI Act, GDPR, NIST AI RMF and ISO/IEC 42001 •Enough technical fluency to challenge model evaluation and monitoring claims c...claudeComplianceauditRiskAI governanceSMEGovernanceAuditing1 Day Ago
+Save
+Hide
+
+Python Backend Engineer
+
+Tata Consultancy Services(TCS)
+Posted by Black And White Business Solutions
+12-20 Yrs35-45 Lacs PABengaluru, Chennai, Hyderabad
+Qualification: Any graduatePREFERRED LOCATION Relevant Experience : 12+ yearsEXPERIENCEAgentic Aigenerative aiFast APIRAGPythonbackend engineerAWSBackend3 Days Ago
+Save
+Hide
+
+Principal Backend Engineer
+
+UST
+3.7
+6211 Reviews
+10-20 YrsNot disclosedBengaluru
+AI-assisted code must meet the same standards for correctness, resilience, testability, security, observability, modularity, and maintainability as manually written code. . We value a collaborative, merit-driven engineering cultureExperience build...JavaSoftware EngineeringKafkaSpring BootAPIDistribution Systemcontainers & orchestrationEvent Driven Architecture1 Day Ago
+Save
+Hide
+
+.NET Azure Architect
+
+Insight Global
+10-20 YrsNot disclosedHybrid - Bengaluru, Chennai, Hyderabad
+Required Skills & Experience10+ years of software engineering experience with deep expertise in C#, .NET, and enterprise application developmentStrong Azure architecture experience beyond application deployment, including designing cloud-native so...Azure CloudDDD.NETMicroservicesMicrosoft AzureArchitectureCloud4 Days Ago
+Save
+Hide
+
+Solution Architect
+
+Learningmate Solutions
+2.8
+565 Reviews
+15-22 Yrs35-50 Lacs PAHybrid - Mumbai
+Role : Solution Architect / Senior Solution ArchitectRole PurposeThe Solution Architect is responsible for designing and driving the end-to-end technical solution for complex business problems and ensuring that the solution remains technically via...Enterprise ArchitectureSolution ArchitectingTechnical ArchitectureEnterpriseArchitectureArchitectingTechnical1 Day Ago
+Save
+Hide
+
+Hiring For Application Security-Sr Architect-Bangalore Location in IT
+
+IT MNC
+3.4
+1609 Reviews
+12-22 YrsNot disclosedBengaluru, Bangalore Rural
+The ideal candidate should be capable of independently driving customer discussions, supporting strategic initiatives, reviewing technical deliverables, mentoring teams, managing escalations, and contributing towards overall practice growth and ma...Offensive Security StrategyWeb Application SecurityOWASPOSCPApplication Security PracticeSource CodeProposalVAPT1 Day Ago
+Save
+Hide
+
+Project Manager/Tech Lead Design (Defense Technology) Noida
+
+A Good Manufacturing Company(Defense War System for AIR Force/Navy Defense,)
+Posted by The Placer Noida
+13-20 Yrs30-35 Lacs PANoida
+of Airborne or ground defense store design, development, qualification, integration & certificationDesignProcess DesignDefense ElectronicsProcess EngineeringTechnologyElectronicsProjectDefense2 Days Ago
+Save
+Hide
+
+Java Architect
+
+Evoke HR solution
+Posted by Evoke HR
+12-20 Yrs25-37.5 Lacs PAMumbai
+We are looking for an experienced Java Architect with strong hands-on expertise in Java, Spring Boot, and Microservices, along with mandatory experience in the Banking domain Good to HaveJava Architecturebanking domainJavaSpring BootMicroservicesDNSArchitectureSpring4 Days Ago
+Save
+Hide
+
+Excellent Opportunity For AI Project Manager
+
+Nous Infosystems
+3.4
+464 Reviews
+12-22 YrsNot disclosedHybrid - Bengaluru
+The ideal candidate should have strong project management experience along with a good understanding of AI / ML concepts, GenAI, LLMs, MLOps, cloud platforms, data pipelines, and AI development lifecycle (AI-DLC)Manage multiple AI initiatives / pr...Project ManagementAgileAimlArtificial IntelligenceManagementProject6 Days Ago
+Save
+Hide
+
+Senior Technical Project Manager
+
+WebMD
+3.5
+149 Reviews
+10-18 YrsNot disclosedRemote
+Role: Senior Technical Project ManagerWorking Hours: 5 PM to 2 AMPosition Requirement:BS/BA degree required, preferably in computer science or technical disciplines6+ years of project/program management experience in platform, infrastructure, data...Technical Project ManagementData EngineeringData InfrastructureBI/AnalyticsData LakeTableauData WarehousingData Analytics5 Days Ago
+Save
+Hide
+
+Director Sales - (Industrial Automation/ Product Engineering)
+
+Agiliad
+3.3
+245 Reviews
+15-22 YrsNot disclosedBengaluru, Pune
+Bachelors degree in Engineering (BE / BTech Electronics, Electrical, Computer Science, Biomedical, or related fields) MBA from a reputed institute (preferred) Required Skills & Qualifications15-18 years of proven sales experience in IT Services / ...SalesSales StrategyBusiness DevelopmentB2BLead GenerationSales ForecastingSolution SellingEnterprise Sales1 Day Ago
+Save
+Hide
+
+Head Technologies -15+Years- Chennai
+
+Crescendo Global Leadership Hiring India
+Posted by Crescendo Global Leadership Hiring India
+15-21 YrsNot disclosedChennai
+Proven experience managing multi-skilled development and maintenance teamsStrong experience in project management and application development, preferably within complex or regulated environmentsFinancial institution experience is required banking ...Project ManagementProduction SupportApplication Development & IT DeliveryStakeholder ManagementApp DevelopmentIncident ManagementApplication developmentIT Delivery1 Day Ago
+Save
+Hide
+
+Senior Technical Architect - Banking and Automation
+
+Genpact
+3.6
+46452 Reviews
+15-24 Yrs40-60 Lacs PABengaluru, Chennai, Hyderabad
+Senior Technical Architect Banking & Intelligent AutomationLocation: [Bangalore / Hybrid] About the RoleWe are seeking a highly accomplished Senior Technical Architect with 15+ years of progressive experience in banking technology, agentic AI solu...IntegrationAgentic AiEnterprise ArchitectTOGAFCloudUiPathRPACrewai6 Days Ago
+Save
+Hide
+
+Gen AI Data Scientist
+
+HR India Solutions
+Posted by HR India Solutions
+10-20 YrsNot disclosedBengaluru, Delhi / NCR, Gurugram
+Qualifications: Bachelors in Technology / Masters in Data Science/ Masters in Mathematics/ Masters in Physics/ Statistics or any other quantitative field. Certifications: GCP/ AWS Certified Machine Learning/ Gen AI Engineer/ Modeller . Relevant Wo...Gen AIMachine LearningPythonModel DevelopmentArtificial IntelligenceDataMachineGen6 Days Ago
+Save
+Hide
+
+Urgent Opening For AI Architect- Noida
+
+Vensure
+3.6
+207 Reviews
+10-20 Yrs35 Lacs-1 Cr PANoida
+Experience with LLMs, Agentic AI, RAG, Fine-tuning, and AI EvaluationHands-on experience with Microsoft AI Foundry and Azure AI ServicesExperience in PEO, HCM, Payroll, Benefits, or Compliance domainsArchitectAI ArchitectRAGLLMArchitectureArtificial Intelligence5 Days Ago
+Save
+Hide
+
+Digital Transformation Specialist - ( Solar Domain )
+
+TIE-UPS
+15-20 YrsNot disclosedBengaluru, Chennai, Hyderabad
+Lead the strategy, design, implementation & optimization of Renewables Engineering & Design Automation solutions. role is responsible for driving digital transformation, improving operational efficiency & ensuring seamless integration of automatio...AutomationRPADigital TransformationSolar EnergyAimlProcess AutomationEnergy ManagementIndustrial Automation3 Days Ago
+Save
+Hide
+
+Principal AI Architect - Bangalore
+
+Dappverse Computing Chennai
+17-27 YrsNot disclosedBengaluru
+Principal AI Architect Job DescriptionExperience: 16+ YearsRole: Principal AI Architect / Principal GenAI ArchitectLocation: Bengaluru Role SummaryWe are looking for a Principal AI Architect to lead the architecture, design and implementation of e...principal architectAIEnterprise ArchitectureGenAIarchitectingSolution ArchitectingAgenticRAG6 Days Ago
+Save
+Hide
+
+Solutions Architect
+
+F5
+3.2
+170 Reviews
+15-20 YrsNot disclosedBengaluru, Mumbai
+Role Overview We are seeking a highly skilled and experienced Principal Solution Engineer with deep expertise in F5 Inc. technologies and a forward-thinking understanding of emerging technologies like AI and containerization to join our dynamic te...AiAutomationAzureArchitectureAi InfrastructureCloud ServicesApplication ArchitecturesDns6 Days Ago
+Save
+Hide
+
+Principal Software Engineer (.Net, React & Agentic AI)
+
+Dealersocket
+2.9
+189 Reviews
+12-18 YrsNot disclosedBengaluru
+Solera is a global leader in data and software services that strives to transform every touchpoint of the vehicle lifecycle into a connected digital experienceBachelor s degree in computer science, Engineering, or a related field (or equivalent ex...System DesignArchitecturereactAgentic AI.NET CoreC#Design PatternsLLM6 Days Ago
+Save
+Hide
+
+Java Technical Delivery Manager
+
+Conduent
+3.4
+3576 Reviews
+14-24 YrsNot disclosedHybrid - Hyderabad
+Role SummaryThe Senior Manager Application Development / IT Delivery is responsible for leading end-to-end software delivery, managing multiple development teams, and ensuring successful execution of large-scale IT programs. This role combines tec...JavaTechnical Delivery ManagerSpring BootJ2EEDelivery managementBootTechnical DeliveryTechnicalJust Now
+Save
+Hide
+
+Chief Information Officer (CIO) | Chemical Manufacturing
+
+Metal Recycling
+Posted by Wikilabs India
+17-25 YrsNot disclosedGreater Noida
+Strong experience in chemical / process manufacturing industry (preferred)Candidate Profile . 18 25 years of experience in IT leadership roles, with at least 5+ years as a CIO / Head of ITExperience in managing multi-location / multi-plant IT envi...CIOPlant AutomationTechnology StrategySAP ImplementationIT StrategyEnterprise ArchitecturePlant DigitizationDigital Transformation2 Days Ago
+Save
+Hide
+
+Deputy Vice President
+
+Skyleaf Consultants
+Posted by Skyleaf Consultants
+10-18 Yrs25-40 Lacs PABengaluru, Mumbai (All Areas), Pune
+DEPUTY Vice President WHOLESALE LENDING. Qualification: MBA (Finance) / CA from a premier instituteExperience: 10+ years of relevant experienceExperience with a leading Bank or NBFC Hands-on experience in Financial Analysis & Financial ModellingClient AcquisitionSalesBusiness DevelopmentNew Business AcquisitionNew businessBusiness AcquisitionClientAcquisition7 Days Ago
+Save
+Hide
+
+Technical Lead-Full Stack Angular, Java, SQL Tech Lead
+
+PHIEDGE HR TECH PVT LTD
+Posted by Phiedge Talent Enhancers
+10-20 Yrs15-30 Lacs PAPune
+Full Stack Angular, Java, SQL Tech Lead HRMS Software CompanyJob Title: Tech Lead – PhiEDGE HR Tech Pvt Ltd Location: Pune Experience: 10+ years Reports to: Head of Engineering & SoftwareAbout the RoleWe're looking for a hands-on Technical Lead to...JavascriptSpring BootNode.jsAngularSQLGraphQLKafkaReact.js7 Days Ago
+Save
+Hide
+
+Institutional{Non Financial Risk}- Digital Payments, Online Banking
+
+Think People Solutions
+Posted by Think People Solutions
+10-20 YrsNot disclosedHybrid - Bengaluru
+Some of the roles that align to this role may have a component of their roles with a compliance element. . Banking is changing and were changing with it, giving our people great opportunities to try new things, learn and growProject management exp...online bankingdigitalOperational RisknfrNon Financial RiskOperationsPaymentsInstitutional4 Days Ago
+Save
+Hide
+
+Senior Technical Architect
+
+Iris Software
+3.8
+2103 Reviews
+19-20 YrsNot disclosedNoida
+Experience with encryption, secrets management, security baselines and compliance controls. . Hands-on Terraform experience, including reusable modules, state management and infrastructure lifecycle management. Experience with CI / CD tools such a...Access ManagementAutomationAzureArchitectureCloud ArchitectureAiCloud Cost ManagementCloud Networking1 Day Ago
+Save
+Hide
+
+Manager Software Engineering - Azure Integration
+
+Caterpillar Inc
+4.1
+1844 Reviews
+15-20 YrsNot disclosedChennai
+Bachelors degree in Computer Science, Engineering, Information Technology, or a related field (or equivalent experience). . 15+ years of software engineering experience, including 5+ years in engineering leadership or people management roles. Expe...Product managementAutomationChange managementEnterprise applicationsmicrosoftRisk managementInformation technologySDLC7 Days Ago
+Save
+Hide
+
+Java Technical Architect
+
+RITWIK IT SERVICES PRIVATE LIMITED
+4.1
+3 Reviews
+10-18 YrsNot disclosedBengaluru
+Senior Technical Engineer (Architect) Location: Dubai, UAEWork Mode: 100% Onsite 5 Days Work From OfficeEmployment Type: Full-TimeExperience: 10+ YearsRelevant Architect Experience: 5+ Years – MandatoryNotice Period: Immediate to 30 Days / Serving...JavaAngular JSArchitectKafkaPythonJavaScriptAngularArchitecture6 Days Ago
+Save
+Hide
+
+Technical Architect AI Java
+
+Cotiviti
+3.4
+795 Reviews
+12-18 YrsNot disclosedHybrid - Hyderabad
+Hands-on experience with LLM architecture, prompt engineering, and agent frameworks such as LangChain and LangGraphArchitect and lead the design of complex systems using design patterns and best practices, with Behaviour- and Test-driven developme...Java ArchitectureArtificial IntelligenceTechnical ArchitectureJavaLangchainLanggraphSpring BootRetrieval Augmented Generation7 Days Ago
+Save
+Hide
+Add preferences to get matching jobs
+Preferred job role
+Technical ArchitectChief Technology Officer
+Preferred work location
+RemotePuneNoidaMumbaiKolkataHyderabad/SecunderabadDelhi / NCRChennaiBangalore/Bengaluru
+Preferred salary
+₹ 25,00,000
+
+IEIL has taken all reasonable steps to ensure that information on this site is authentic. Applicants are advised to research bonafides of advertisers independently. IEIL shall not have any responsibility in this regard. We also recommend that you visit Security Guidelines and Terms and Conditions for more comprehensive information on this aspect.
+
+Connect with us
+About us
+Careers
+Employer home
+Sitemap
+Credits
+Help center
+Summons/Notices
+Grievances
+Report issue
+Privacy policy
+Terms & conditions
+Fraud alert
+Trust & safety
+Apply on the go
+Get real-time job updates on our App
+All trademarks are the property of their respective owners
+All rights reserved Â© 2026 Info Edge (India) Ltd.
+Our businesses
+Hi KUNAL DAS, thank you for showing interest. Kindly answer all the recruiter's questions to successfully apply for the job.
+How many years of hands-on experience do you have in GenAI/LLM?
+Save

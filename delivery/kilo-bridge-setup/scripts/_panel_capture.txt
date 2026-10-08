@@ -1,0 +1,11 @@
+﻿report:
+{
+  "idx": 0,
+  "sel": "checked",
+  "apply": "clicked"
+}
+
+run:
+panel probe done
+
+body_len=32781

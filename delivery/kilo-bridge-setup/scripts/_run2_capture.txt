@@ -1,0 +1,2 @@
+﻿LANE_APPLY start :: title = GenAI Architect | Generative AI | LLM | RAG | Agentic AI
+A1 navigate -> https://www.naukri.com/mnjuser/recommendedjobs

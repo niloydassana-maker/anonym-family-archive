@@ -1,0 +1,25 @@
+﻿run3.log len=902
+LANE_APPLY start :: title = GenAI Architect | Generative AI | LLM | RAG | Agentic AI
+BROWSER-TOKEN DROP pid 20768 (dead pid)
+A1 navigate -> https://www.naukri.com/mnjuser/recommendedjobs
+A2 card index = 0
+A3 select card checkbox
+   select -> checked
+   apply-button state = {"found":true,"disabled":false,"label":"Apply 1 Job"}
+   shot -> D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-02-selected-20261007003520.png
+A4 click Apply
+   apply -> clicked-apply
+A5 after url=https://www.naukri.com/mnjuser/recommendedjobs
+   left_list=False in_flow=True body_chars=32070
+   shot -> D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-03-after-apply-20261007003625.png
+   RECRUITER QUESTION FOUND: Are these jobs relevant for you?
+   !! not answerable from record -> BLOCKED (never invent)
+  LEDGER + BLOCKED :: recruiter question
+client closed cleanly
+
+
+Length
+------
+     0
+
+

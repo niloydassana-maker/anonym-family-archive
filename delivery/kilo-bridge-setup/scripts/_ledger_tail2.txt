@@ -1,0 +1,16 @@
+﻿2026-10-06	naukri	kilo-bridge-setup.ps1 -Launch	GenAI Architect	Connect iO	10	agent reached live recommended-jobs + apply intent	DRIVING	evidence/employment-lane/opencode-employment-out.txt	Profile17 PID17896; nav tab 826635872; agent360 v1.30.0; mission proc 21264
+2026-10-07	naukri	https://www.naukri.com/mnjuser/recommendedjobs	GenAI Architect | Generative AI | LLM | RAG | Agentic AI	-	-	recruiter question	BLOCKED	D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-02-after-click-20261007-001143.png	UNANSWERABLE Q=Are these jobs relevant for you?
+2026-10-07	naukri	https://www.naukri.com/mnjuser/recommendedjobs	GenAI Architect | Generative AI | LLM | RAG | Agentic AI	-	-	recruiter question	BLOCKED	D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-03-after-apply-20261007003625.png	UNANSWERABLE Q=Are these jobs relevant for you?
+2026-10-07	naukri	https://www.naukri.com/mnjuser/recommendedjobs	GenAI Architect | Generative AI | LLM | RAG | Agentic AI	-	-	apply flow opened	APPLIED	D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-03-after-apply-20261007004258.png	url=https://www.naukri.com/mnjuser/recommendedjobs
+2026-10-07	naukri	https://www.naukri.com/mnjuser/recommendedjobs	GenAI Architect | Generative AI | LLM | RAG | Agentic AI	-	-	recruiter question	BLOCKED	D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-03-after-apply-20261007004828.png	UNANSWERABLE Q=How many years of hands-on experience do you have in GenAI/LLM?
+72
+
+Name                                    LastWriteTime        
+----                                    -------------        
+apply-02-selected-20261007003520.png    10/7/2026 12:35:29 AM
+apply-03-after-apply-20261007003625.png 10/7/2026 12:36:47 AM
+apply-03-after-apply-20261007004258.png 10/7/2026 12:42:59 AM
+apply-02-selected-20261007004825.png    10/7/2026 12:48:25 AM
+apply-03-after-apply-20261007004828.png 10/7/2026 12:48:31 AM
+
+

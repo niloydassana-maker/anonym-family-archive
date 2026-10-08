@@ -1,0 +1,16 @@
+﻿
+LineNumber Line                                                                                         
+---------- ----                                                                                         
+        52 APPLY_MARKERS = [                                                                            
+       139         # SELECT-THEN-APPLY: click styled .tuple-check-box in the card -> header button      
+       142         CHECK_JS = ("(function(){var want=" + esc + ";"                                      
+       145                     "var cb=arts[i].querySelector('.tuple-check-box');"                      
+       150         sel = js(CHECK_JS)                                                                   
+       154         APPLY_STATE_JS = ("(function(){var b=document.querySelector('.multi-apply-button')||"
+       160         ast = str(js(APPLY_STATE_JS) or "")                                                  
+       172         APPLY_JS = ("(function(){var b=document.querySelector('.multi-apply-button')||"      
+       178         ap = js(APPLY_JS)                                                                    
+       187         FLOW_SIGNALS = ["answer all the recruiter", "recruiter's question",                  
+       191         in_flow = any(s in low for s in FLOW_SIGNALS)                                        
+
+

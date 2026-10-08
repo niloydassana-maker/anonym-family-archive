@@ -1,0 +1,5 @@
+# Per-candidate private data: keep only the example templates in Git.
+candidate-profile.json
+candidate-answers.txt
+candidate-resume.pdf
+*.candidate.pdf

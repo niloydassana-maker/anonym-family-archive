@@ -1,0 +1,41 @@
+﻿
+
+def _find_question(body_text):
+    """Return the question the APPLY FLOW is actually gating on.
+
+    MEASURED 2026-10-07: after a select-then-apply the page carries TWO question
+    shapes - a list-page alignment widget ("Are these jobs relevant for you?",
+    the 'Applies (62) / Profile / Preferences' chips) AND the real SaaS recruiter
+    panel ("How many years of hands-on experience do you have in GenAI/LLM?").
+    The widget is NOT a blocker; treat only the recruiter question as one.
+    """
+    widget = re.compile(r"relevant for you", re.I)
+    recruiter = re.compile(r"recruiter|experience|ctc|notice period|hand", re.I)
+    candidates = []
+    for ln in (body_text or "").splitlines():
+        s = ln.strip()
+        if 15 <= len(s) <= 200 and s.endswith("?") and not widget.search(s):
+            candidates.append(s)
+    for s in candidates:                     # prefer a recruiter-shaped question
+        if recruiter.search(s):
+            return s
+    m = QUESTION_RE.search(body_text or "")  # else the first non-widget question
+    if m and not widget.search(m.group(0) or ""):
+        return (m.group(0) or "").strip()
+    return candidates[0] if candidates else None
+
+
+
+def _answer_from_record(question):
+    rec = HERE / "apply_answers.txt"
+
+LineNumber Line                                                                                 
+---------- ----                                                                                 
+       131         # NO onclick, NO React nav (element.click + event dispatch both did nothing).
+       234 def _find_question(body_text):                                                       
+       238     shapes - a list-page alignment widget ("Are these jobs relevant for you?",       
+       243     widget = re.compile(r"relevant for you", re.I)                                   
+       285                "f.dispatchEvent(new Event('input',{bubbles:true}));"                 
+       286                "f.dispatchEvent(new Event('change',{bubbles:true}));"                
+
+

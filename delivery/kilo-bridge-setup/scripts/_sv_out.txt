@@ -1,0 +1,5 @@
+URL: about:blank
+BEFORE: NO PANEL
+SAVE: {"saved":"nopanel"}
+AFTER: NO PANEL
+SUCCESS: 

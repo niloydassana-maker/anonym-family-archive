@@ -1,0 +1,6 @@
+{
+  "resume_path": "candidate-resume.pdf",
+  "resume_sha256": "REPLACE_WITH_UPPERCASE_SHA256",
+  "answers_file": "candidate-answers.txt",
+  "skills": []
+}

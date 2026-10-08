@@ -1,0 +1,56 @@
+﻿
+Name                                         Length LastWriteTime        
+----                                         ------ -------------        
+01-naukri-profile-initial.png                128044 10/6/2026 5:22:16 PM 
+02-keyskills-editor-open.png                 111543 10/6/2026 5:23:33 PM 
+03-keyskills-typeahead.png                   112247 10/6/2026 5:24:35 PM 
+04-state-after-save-attempt.png               99042 10/6/2026 5:31:59 PM 
+05-pro-upsell-dismissed.png                  117233 10/6/2026 5:33:15 PM 
+window-restore.log                              206 10/6/2026 5:36:02 PM 
+06-skills-modal-closed.png                    78506 10/6/2026 5:37:13 PM 
+07-profile-after-skills.png                   87516 10/6/2026 5:37:25 PM 
+08-headline-saved.png                         65108 10/6/2026 5:38:55 PM 
+09-headline-confirmed.png                     43477 10/6/2026 5:39:22 PM 
+10-headline-final.png                         88864 10/6/2026 5:39:33 PM 
+20-lane-prove-20261006.png                   282901 10/6/2026 5:54:16 PM 
+RCA-TOKEN-HANG-20261006.md                     6812 10/6/2026 10:29:44 PM
+crush-super120-out.txt                        26886 10/6/2026 10:33:20 PM
+crush-super120-run.log                          413 10/6/2026 10:33:20 PM
+ARCHITECTURE-FINDING-20261006.md               5123 10/6/2026 10:45:18 PM
+30-naukri-profile-resume-20261006-224751.png 110999 10/6/2026 10:47:51 PM
+lane_resume-run.log                             851 10/6/2026 10:47:52 PM
+40-naukri-recommended-20261006-225111.png    115036 10/6/2026 10:51:12 PM
+_probe_jobs_dom.log                            1918 10/6/2026 10:53:59 PM
+40-naukri-recommended-20261006-225527.png    114988 10/6/2026 10:55:27 PM
+40-naukri-recommended-20261006-225641.png    115051 10/6/2026 10:56:41 PM
+40-naukri-recommended-20261006-230111.png    101362 10/6/2026 11:01:11 PM
+lane_jobs-run.log                              4730 10/6/2026 11:01:12 PM
+OPENCODE-MISSION-PROMPT.txt                    2907 10/6/2026 11:22:53 PM
+OPENCODE-AGENT360-WIRING-20261006.md           4134 10/6/2026 11:22:53 PM
+STANDALONE-SETUP-E2E-20261006.md               4340 10/6/2026 11:47:03 PM
+setup-live-proof.err.txt                        109 10/6/2026 11:49:24 PM
+setup-live-proof.txt                             74 10/6/2026 11:49:29 PM
+bind-screenshot.png                            5121 10/6/2026 11:53:12 PM
+apply-01-naukri-genai-architect-before.png   147036 10/6/2026 11:54:36 PM
+LAUNCH-DRIVE-RECEIPT-20261006.md               3252 10/6/2026 11:55:25 PM
+bind-screenshot2.png                           5506 10/6/2026 11:56:12 PM
+lane_apply-run.log.err.txt                        0 10/7/2026 12:11:08 AM
+FIX-ALL-ISSUES-20261007.md                     3504 10/7/2026 12:11:10 AM
+apply-02-after-click-20261007-001143.png     149579 10/7/2026 12:11:46 AM
+ledger.tsv                                    18775 10/7/2026 12:11:46 AM
+lane_apply-run.log                              665 10/7/2026 12:11:46 AM
+_probe_card.log                                  51 10/7/2026 12:12:44 AM
+_probe_card2.log                                107 10/7/2026 12:15:46 AM
+_probe_direct.log.err                             0 10/7/2026 12:16:44 AM
+_probe_direct.log                               928 10/7/2026 12:17:20 AM
+_probe_react.log                                340 10/7/2026 12:18:17 AM
+_probe_cb.log                                   161 10/7/2026 12:19:13 AM
+opencode-employment-out.txt                   79466 10/7/2026 12:20:05 AM
+opencode-employment-run.log                     473 10/7/2026 12:20:06 AM
+apply-select-state.png                       150063 10/7/2026 12:20:37 AM
+_probe_sel.log                                  542 10/7/2026 12:20:37 AM
+select-01-checked.png                        147672 10/7/2026 12:21:53 AM
+select-02-after-apply.png                    147760 10/7/2026 12:22:01 AM
+_probe_apply.log                                217 10/7/2026 12:22:01 AM
+
+

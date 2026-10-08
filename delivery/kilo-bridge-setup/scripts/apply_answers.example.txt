@@ -1,0 +1,3 @@
+# Copy to the private file configured by candidate-profile.json.
+# Add only answers that the candidate has verified from their own record.
+# Format: question-key|answer

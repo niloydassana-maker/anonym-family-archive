@@ -1,0 +1,30 @@
+﻿        # VERIFY: URL left the list OR a real apply-flow signal. Do NOT use
+        # 'years of experience' - it appears in job descriptions (false positive).
+        FLOW_SIGNALS = ["answer all the recruiter", "recruiter's question",
+                        "apply for this job", "submit application",
+                        "additional questions", "application submitted"]
+        left_list = (after != JOBS_URL and "recommendedjobs" not in after)
+        in_flow = any(s in low for s in FLOW_SIGNALS)
+        moved = left_list or in_flow
+        log("A5 after url=" + after[:110])
+        log("   left_list=" + str(left_list) + " in_flow=" + str(in_flow)
+            + " body_chars=" + str(len(txt_after)))
+        tag = "apply-03-after-apply-" + time.strftime("%Y%m%d%H%M%S")
+        p = shot(tag)
+        log("   shot -> " + (str(p) if p else "FAILED"))
+
+        if not moved:
+            log("   !! apply did not open a flow - BLOCKED (honest, not a fake DONE)")
+            ledger("naukri", after[:70], title[:70], "-", "-",
+                   "open apply flow", "BLOCKED", str(p) if p else "none",
+                   "select=" + str(sel) + " apply=" + str(ap))
+            return 3
+
+        q = _find_question(txt_after)
+        if q:
+            log("   RECRUITER QUESTION FOUND: " + q[:160])
+            ans = _answer_from_record(q)
+            if ans:
+                log("   answer (from record): " + ans)
+                _fill_question(js, ans)
+                time.sleep(3)

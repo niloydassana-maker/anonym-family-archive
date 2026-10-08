@@ -1,0 +1,10 @@
+﻿
+LineNumber Line                                       
+---------- ----                                       
+        52 APPLY_MARKERS = [                          
+        59 QUESTION_RE = re.compile(                  
+       207         q = _find_question(txt_after)      
+       242 def _find_question(body_text):             
+       243     m = QUESTION_RE.search(body_text or "")
+
+

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "nvidia/nvidia/nemotron-3-ultra-550b-a55b",
+  "small_model": "opencode/gemini-3.6-flash",
+  "mcp": {
+    "browser-mcp": {
+      "type": "local",
+      "command": [
+        "C:\\Users\\Admin\\AppData\\Local\\hermes\\node\\node.exe",
+        "C:\\Users\\Admin\\AppData\\Local\\hermes\\node\\node_modules\\@agent360\\browser-mcp\\index.js"
+      ],
+      "enabled": true
+    },
+    "chrome-devtools": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ],
+      "enabled": false
+    }
+  },
+  "provider": {
+    "nvidia": {
+      "options": {
+        "apiKey": "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",
+        "baseURL": "https://integrate.api.nvidia.com/v1"
+      },
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "NVIDIA NIM Free Endpoints",
+      "models": {
+        "nvidia/nemotron-3-ultra-550b-a55b": {
+          "name": "NIM Nemotron 3 Ultra 550B",
+          "attachment": false,
+          "tool_call": true,
+          "reasoning": false,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 8192
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+﻿=== opencode version ===
+1.18.34
+
+=== opencode path ===
+C:\Users\Admin\AppData\Local\hermes\node\opencode.ps1
+
+=== opencode procs ===
+
+   Id ProcessName StartTime           
+   -- ----------- ---------           
+ 9608 node        10/6/2026 9:28:56 PM
+10964 node                            
+11192 node        10/6/2026 7:37:54 PM
+16176 node        10/6/2026 9:29:28 PM
+17728 node                            
+17836 node        10/6/2026 9:01:17 PM
+19264 opencode    10/6/2026 9:28:44 PM
+
+
+

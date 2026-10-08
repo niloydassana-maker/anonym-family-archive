@@ -1,0 +1,2 @@
+﻿LIVE_CHECK written
+exit=0

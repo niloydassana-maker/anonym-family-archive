@@ -1,0 +1,13 @@
+﻿=== agent360 pkg ===
+C:\Users\Admin\AppData\Local\hermes\node\node_modules\@agent360\browser-mcp\index.js EXISTS size=79234
+=== other opencode configs ===
+D:\anonym\opencode.json
+D:\anonym\clean-export\kilo-bridge-setup\opencode.json.example
+D:\anonym\delivery\kilo-bridge-setup\opencode.json.example
+node_modules
+.gitignore
+opencode.jsonc
+package-lock.json
+package.json
+service.json
+tui.json

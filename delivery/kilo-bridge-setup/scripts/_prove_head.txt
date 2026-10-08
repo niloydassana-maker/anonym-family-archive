@@ -1,0 +1,40 @@
+﻿"""prove_lane.py - the live proof the setup script's verdict depends on.
+
+IT PROVES FOUR THINGS, ON THE REAL CHROME, IN ONE SESSION:
+    1. Agent 360 binds at all (a screenshot forces the bind)
+    2. Naukri   is reachable and the operator's session is LIVE (not a login wall)
+    3. Foundit  is reachable
+    4. Indeed   is reachable
+plus it records whether the employment lane's real signals are visible
+(profile score, recruiter-question surface).
+
+WHY IT EXISTS: the setup script must never print GREEN because a config file was
+written. A config proves nothing. This drives the browser and looks.
+
+VERDICT: prints "LANE-VERDICT: GREEN" only if Agent360 answered AND at least three
+portals answered. Everything else is RED, and says exactly what to fix.
+"""
+import io
+import json
+import sys
+import time
+from pathlib import Path
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent))
+OUT = HERE.parent / "evidence" / "L1"
+
+PORTALS = [
+    ("Naukri",  "https://www.naukri.com/mnjuser/homepage"),
+    ("Foundit", "https://www.foundit.in/"),
+    ("Indeed",  "https://in.indeed.com/"),
+    ("LinkedIn","https://www.linkedin.com/feed/"),
+]
+
+
+def main():
+    c = None
+    try:
+        import agent360_client as A

@@ -1,0 +1,126 @@
+﻿    c = A.Agent360Client()
+    try:
+        c.start()
+
+        def txt(name, args=None):
+            r = c.call_tool(name, args or {}) or {}
+            if r.get("isError"):
+                return {"error": True, "raw": r}
+            for b in r.get("content", []):
+                if b.get("type") == "text":
+                    t = b.get("text", "")
+                    try:
+                        return json.loads(t)
+                    except Exception:
+                        return t
+            return ""
+
+        def js(expr):
+            r = txt("browser_execute_script", {"code": expr})
+            return r.get("result") if isinstance(r, dict) else r
+
+        def body():
+            return str(js("document.body.innerText") or "")
+
+        def href():
+            return str(js("location.href") or "")
+
+        def shot(tag):
+            r = c.call_tool("browser_screenshot", {"format": "png"}) or {}
+            for b in r.get("content", []):
+                if b.get("type") == "image":
+                    p = EVID / (tag + ".png")
+                    p.write_bytes(base64.b64decode(b["data"]))
+                    return p
+            return None
+
+        log("A1 navigate -> " + JOBS_URL)
+        txt("browser_navigate", {"url": JOBS_URL})
+        time.sleep(10)
+
+        esc = json.dumps(title)
+        FIND_JS = ("(function(){var want=" + esc + ";"
+                   "var arts=Array.from(document.querySelectorAll('article'));"
+                   "for(var i=0;i<arts.length;i++){var h=arts[i].innerText||'';"
+                   "if(h.indexOf(want)===0||h.indexOf(want)>-1){return i;}}"
+                   "return -1;})()")
+        idx = js(FIND_JS)
+        log("A2 card index = " + str(idx))
+        if idx is None or int(idx) < 0:
+            log("   !! card not found - BLOCKED (not a fake attempt)")
+            ledger("naukri", JOBS_URL[:70], title[:70], "-", "-",
+                   "locate job card", "BLOCKED", "none", "card not found by exact title")
+            shot("apply-blocked-no-card")
+            return 2
+
+        # PROVEN MECHANISM (measured 2026-10-07): recommended-jobs cards have NO <a>,
+        # NO onclick, NO React nav (element.click + event dispatch both did nothing).
+        # SELECT-THEN-APPLY: click styled .tuple-check-box in the card -> header button
+        # turns "Apply N Job" (enabled) -> click it -> apply flow.
+        # Receipt: select-01-checked.png shows checked box + blue "Apply 1 Job".
+        CHECK_JS = ("(function(){var want=" + esc + ";"
+                    "var arts=Array.from(document.querySelectorAll('article'));"
+                    "for(var i=0;i<arts.length;i++){if(arts[i].innerText.indexOf(want)>-1){"
+                    "var cb=arts[i].querySelector('.tuple-check-box');"
+                    "if(cb){cb.click();return 'checked';}return 'no-checkbox';}}"
+                    "return 'nocard';})()")
+        before = href()
+        log("A3 select card checkbox")
+        sel = js(CHECK_JS)
+        log("   select -> " + str(sel))
+        time.sleep(2)
+
+        APPLY_STATE_JS = ("(function(){var b=document.querySelector('.multi-apply-button')||"
+                          "Array.from(document.querySelectorAll('button')).find(function(x){"
+                          "return /^apply/i.test((x.innerText||'').trim());});"
+                          "if(!b)return JSON.stringify({found:false});"
+                          "return JSON.stringify({found:true,disabled:!!b.disabled,"
+                          "label:(b.innerText||'').trim()});})()")
+        ast = str(js(APPLY_STATE_JS) or "")
+        log("   apply-button state = " + ast)
+        p1 = shot("apply-02-selected-" + time.strftime("%Y%m%d%H%M%S"))
+        log("   shot -> " + (str(p1) if p1 else "FAILED"))
+
+        if sel != "checked":
+            log("   !! could not select card - BLOCKED")
+            ledger("naukri", JOBS_URL[:70], title[:70], "-", "-",
+                   "select job card", "BLOCKED", str(p1) if p1 else "none",
+                   "select=" + str(sel))
+            return 3
+
+        APPLY_JS = ("(function(){var b=document.querySelector('.multi-apply-button')||"
+                    "Array.from(document.querySelectorAll('button')).find(function(x){"
+                    "return /^apply/i.test((x.innerText||'').trim());});"
+                    "if(!b)return 'nobtn'; if(b.disabled)return 'disabled';"
+                    "b.click(); return 'clicked-apply';})()")
+        log("A4 click Apply")
+        ap = js(APPLY_JS)
+        log("   apply -> " + str(ap))
+        time.sleep(7)
+
+        after = href()
+        txt_after = body()
+        low = txt_after.lower()
+        # VERIFY: URL left the list OR a real apply-flow signal. Do NOT use
+        # 'years of experience' - it appears in job descriptions (false positive).
+        FLOW_SIGNALS = ["answer all the recruiter", "recruiter's question",
+                        "apply for this job", "submit application",
+                        "additional questions", "application submitted"]
+        left_list = (after != JOBS_URL and "recommendedjobs" not in after)
+        in_flow = any(s in low for s in FLOW_SIGNALS)
+        moved = left_list or in_flow
+        log("A5 after url=" + after[:110])
+        log("   left_list=" + str(left_list) + " in_flow=" + str(in_flow)
+            + " body_chars=" + str(len(txt_after)))
+        tag = "apply-03-after-apply-" + time.strftime("%Y%m%d%H%M%S")
+        p = shot(tag)
+        log("   shot -> " + (str(p) if p else "FAILED"))
+
+        if not moved:
+            log("   !! apply did not open a flow - BLOCKED (honest, not a fake DONE)")
+            ledger("naukri", after[:70], title[:70], "-", "-",
+                   "open apply flow", "BLOCKED", str(p) if p else "none",
+                   "select=" + str(sel) + " apply=" + str(ap))
+            return 3
+
+        q = _find_question(txt_after)

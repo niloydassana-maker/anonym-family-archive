@@ -3,6 +3,7 @@ import json
 import time
 import os
 import sys
+import shutil
 import ctypes
 import atexit
 import queue
@@ -300,8 +301,21 @@ class Agent360Client:
         if self._gate_ticket is None and self._browser_token is None:
             self._browser_token = _acquire_browser_token()
             atexit.register(self.close)
-        cmd = [r'C:\Users\Admin\AppData\Local\hermes\node\node.exe',
-               r'C:\Users\Admin\AppData\Local\hermes\node\node_modules\@agent360\browser-mcp\index.js']
+        node = os.environ.get('KILO_AGENT360_NODE') or r'C:\Users\Admin\AppData\Local\hermes\node\node.exe'
+        if not os.path.isfile(node):
+            node = shutil.which('node') or node
+        mcp = os.environ.get('KILO_AGENT360_MCP_ENTRYPOINT') or r'C:\Users\Admin\AppData\Local\hermes\node\node_modules\@agent360\browser-mcp\index.js'
+        if not os.path.isfile(mcp):
+            candidates = [
+                os.path.join(os.environ.get('APPDATA', ''), 'npm', 'node_modules', '@agent360', 'browser-mcp', 'index.js'),
+                os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.runtime', 'node_modules', '@agent360', 'browser-mcp', 'index.js'),
+            ]
+            mcp = next((p for p in candidates if os.path.isfile(p)), mcp)
+        if not os.path.isfile(node):
+            raise FileNotFoundError('Node.js not found; install Node.js or set KILO_AGENT360_NODE')
+        if not os.path.isfile(mcp):
+            raise FileNotFoundError('Agent360 browser-mcp not found; install it or set KILO_AGENT360_MCP_ENTRYPOINT')
+        cmd = [node, mcp]
         try:
             self.proc = subprocess.Popen(
                 cmd,

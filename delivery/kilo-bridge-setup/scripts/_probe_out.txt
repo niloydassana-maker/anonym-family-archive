@@ -1,0 +1,3 @@
+PIPE started OK
+TABS: {"tabs": [], "session": "Claude 1", "color": "blue"}
+PIPE closed

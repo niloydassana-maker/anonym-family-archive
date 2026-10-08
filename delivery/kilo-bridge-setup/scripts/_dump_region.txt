@@ -1,0 +1,42 @@
+﻿                   "select=" + str(sel))
+            return 3
+
+        APPLY_JS = ("(function(){var b=document.querySelector('.multi-apply-button')||"
+                    "Array.from(document.querySelectorAll('button')).find(function(x){"
+                    "return /^apply/i.test((x.innerText||'').trim());});"
+                    "if(!b)return 'nobtn'; if(b.disabled)return 'disabled';"
+                    "b.click(); return 'clicked-apply';})()")
+        log("A4 click Apply")
+        ap = js(APPLY_JS)
+        log("   apply -> " + str(ap))
+        time.sleep(7)
+
+        after = href()
+        txt_after = body()
+        low = txt_after.lower()
+        # VERIFY: URL left the list OR a real apply-flow signal. Do NOT use
+        # 'years of experience' - it appears in job descriptions (false positive).
+        FLOW_SIGNALS = ["answer all the recruiter", "recruiter's question",
+                        "apply for this job", "submit application",
+                        "additional questions", "application submitted"]
+        left_list = (after != JOBS_URL and "recommendedjobs" not in after)
+        in_flow = any(s in low for s in FLOW_SIGNALS)
+        moved = left_list or in_flow
+        log("A5 after url=" + after[:110])
+        log("   left_list=" + str(left_list) + " in_flow=" + str(in_flow)
+            + " body_chars=" + str(len(txt_after)))
+        tag = "apply-03-after-apply-" + time.strftime("%Y%m%d%H%M%S")
+        p = shot(tag)
+        log("   shot -> " + (str(p) if p else "FAILED"))
+
+LineNumber Line                           
+---------- ----                           
+       169         log("A4 click Apply")  
+       170         ap = js(APPLY_JS)      
+       172         time.sleep(7)          
+       174         after = href()         
+       175         txt_after = body()     
+       176         low = txt_after.lower()
+
+
+

@@ -1,0 +1,10 @@
+[90mT[39m  MCP Servers
+[90m|[39m
+[34m•[39m  ✓ browser-mcp [90mconnected
+[90m|[39m      [90mC:\Users\Admin\AppData\Local\hermes\node\node.exe C:\Users\Admin\AppData\Local\hermes\node\node_modules\@agent360\browser-mcp\index.js
+[90m|[39m
+[34m•[39m  ○ chrome-devtools [90mdisabled
+[90m|[39m      [90mnpx -y chrome-devtools-mcp@latest
+[90m|[39m
+[90m—[39m  2 server(s)
+

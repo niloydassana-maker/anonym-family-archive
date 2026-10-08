@@ -1,0 +1,4 @@
+URL: about:blank
+PANEL_TEXT: NO PANEL
+INPUTS: []
+PANEL_HTML: NO PANEL

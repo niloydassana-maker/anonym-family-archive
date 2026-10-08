@@ -1,0 +1,70 @@
+﻿
+Name               Length LastWriteTime        
+----               ------ -------------        
+__pycache__               10/6/2026 11:00:45 PM
+agent360_client.py 22474  10/6/2026 10:26:19 PM
+install-task.ps1   659    9/24/2026 11:23:38 PM
+lane_jobs.py       7466   10/6/2026 11:00:19 PM
+lane_resume.py     6397   10/6/2026 10:47:00 PM
+prove_lane.py      5942   10/6/2026 7:16:43 PM 
+self-loop.ps1      2106   9/24/2026 11:23:15 PM
+_probe_jobs_dom.py 2625   10/6/2026 10:53:22 PM
+
+
+
+Name                            Length LastWriteTime        
+----                            ------ -------------        
+docs                                   10/6/2026 5:44:01 PM 
+evidence                               10/6/2026 5:21:40 PM 
+scripts                                10/6/2026 11:01:11 PM
+tools                                  10/6/2026 5:35:48 PM 
+_quarantine-20261006                   10/6/2026 11:03:02 PM
+AGENTS.md                       356249 10/6/2026 1:42:44 AM 
+bench-nvidia-vision.json        2396   10/6/2026 8:36:21 PM 
+bench-nvidia-vision.py          2547   10/6/2026 8:24:23 PM 
+DRIVERS-20261006.md             7173   10/6/2026 11:02:25 PM
+kilo-bridge-setup.ps1           10321  10/6/2026 9:56:08 PM 
+launch-bench.ps1                237    10/6/2026 8:22:28 PM 
+launch-crush-employment.ps1     427    10/6/2026 8:13:15 PM 
+launch-crush-super120.ps1       4226   10/6/2026 10:30:58 PM
+launch-crush-ultra550.ps1       297    10/6/2026 9:37:44 PM 
+MISSION-RUN.txt                 2532   10/6/2026 5:48:12 PM 
+opencode.json.example           336    9/24/2026 3:27:12 PM 
+ping-ultra550.ps1               262    10/6/2026 9:38:41 PM 
+probe-fallback.ps1              1462   10/6/2026 9:40:00 PM 
+probe-nvidia2.ps1               2122   10/6/2026 9:40:48 PM 
+rca-micro.ps1                   362    10/6/2026 10:01:36 PM
+README.md                       3168   9/24/2026 11:24:38 PM
+run-prove.ps1                   108    10/6/2026 9:46:18 PM 
+_check_ledger.ps1               666    10/6/2026 11:01:51 PM
+_check_tabs.py                  959    10/6/2026 6:14:52 PM 
+_drive_state.ps1                851    10/6/2026 10:42:19 PM
+_drive_tests.ps1                1445   10/6/2026 10:36:07 PM
+_drive_tests2.ps1               1267   10/6/2026 10:38:18 PM
+_drive_test_groq-oss120b.log    680    10/6/2026 10:36:22 PM
+_drive_test_nv-deepseek41.log   110    10/6/2026 10:38:31 PM
+_drive_test_nv-llama32-11b.log  3784   10/6/2026 10:38:17 PM
+_drive_test_nv-super120-low.log 341    10/6/2026 10:38:21 PM
+_final_verify.ps1               2052   10/6/2026 10:58:03 PM
+_fix_verify.log                 860    10/6/2026 10:26:46 PM
+_fix_verify.py                  2299   10/6/2026 10:26:35 PM
+_monitor.ps1                    1277   10/6/2026 10:32:21 PM
+_multiturn_test.log             42619  10/6/2026 10:38:11 PM
+_now.py                         483    10/6/2026 6:13:50 PM 
+_probe_lane.log                 529    10/6/2026 10:19:20 PM
+_probe_lane_steps.log           794    10/6/2026 10:27:44 PM
+_remove_test.log                525    10/6/2026 10:22:56 PM
+_restore.py                     825    10/6/2026 6:16:20 PM 
+_run_lane_jobs.ps1              454    10/6/2026 10:49:40 PM
+_run_lane_probe.ps1             792    10/6/2026 10:15:53 PM
+_run_lane_resume.ps1            460    10/6/2026 10:47:17 PM
+_run_probe_dom.ps1              455    10/6/2026 10:52:26 PM
+_snap_profile.py                1673   10/6/2026 5:26:59 PM 
+_stall_check.ps1                1140   10/6/2026 10:43:29 PM
+_token_micro.log                332    10/6/2026 10:22:02 PM
+_token_owner.ps1                635    10/6/2026 10:20:15 PM
+_verify_token_rca.ps1           1187   10/6/2026 10:21:00 PM
+_who_pids.ps1                   658    10/6/2026 10:14:57 PM
+_wrapup.ps1                     2689   10/6/2026 11:02:44 PM
+
+

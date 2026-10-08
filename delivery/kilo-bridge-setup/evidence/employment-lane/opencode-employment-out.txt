@@ -1,0 +1,1600 @@
+﻿[0m
+> build ┬╖ nvidia/nemotron-3-ultra-550b-a55b
+[0m
+[0mΓåÆ [0mRead MISSION-RUN.txt
+[0mΓåÆ [0mRead docs/AGENTS-EMPLOYMENT.md
+[0mΓåÆ [0mRead docs/EMPLOYMENT-LANE-MISSION.md
+[0mΓåÆ [0mRead docs/PACE.md
+[0mΓåÆ [0mRead evidence/employment-lane/ledger.tsv
+Now I have the full picture. The ledger shows the first run completed profile work (100% complete, skills added, headline rewritten) and scored 25+ job cards as MATCHED/NO_MATCH. The first NON-OK rows are the expected failures (Agentic AI, LangChain not in dictionary, chip cap at 22). 
+
+**The money step is next: apply to a MATCHED job.** Let me launch Profile 17 and start applying.
+[0m
+[0m$ [0mpython D:\anonym\delivery\kilo-bridge-setup\war-log\launch_profile17.py "https://www.naukri.com/mnjuser/recommendedjobs"
+C:\Users\Admin\AppData\Local\Programs\Python\Python311\python.exe: can't open file 'D:\\anonym\\delivery\\kilo-bridge-setup\\war-log\\launch_profile17.py': [Errno 2] No such file or directory
+[0m
+[0m$ [0mdir D:\anonym\war-log\launch_profile17.py
+Directory: D:\anonym\war-log
+System.Management.Automation.RemoteException
+System.Management.Automation.RemoteException
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----         9/28/2026  10:45 AM            510 launch_profile17.py
+[0m
+[0m$ [0mpython D:\anonym\war-log\launch_profile17.py "https://www.naukri.com/mnjuser/recommendedjobs"
+Launched Profile 17 (PID 17896) with URL: https://www.naukri.com/mnjuser/recommendedjobs
+[0m
+[0m$ [0mpython -c "
+import asyncio, sys
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+async def test():
+    c = Agent360Client()
+    await c.start()
+    tabs = await c.call_tool('browser_list_tabs', {})
+    print('TABS:', tabs)
+    content = await c.call_tool('browser_get_page_content', {'format': 'text', 'max_chars': 5000})
+    print('CONTENT:', content[:2000])
+    await c.close()
+asyncio.run(test())
+"
+Traceback (most recent call last):
+  File "<string>", line 13, in <module>
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python311\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Admin\AppData\Local\Programs\Python\Python311\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "<string>", line 7, in test
+TypeError: object dict can't be used in 'await' expression
+[0m
+[0mΓåÆ [0mRead D:/anonym/war-log/agent360_client.py
+[0m
+[0m$ [0mpython -c "
+import asyncio, sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+init = c.start()
+print('INIT:', json.dumps(init, default=str))
+time.sleep(2)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+INIT: {"result": {"protocolVersion": "2024-11-05", "capabilities": {"tools": {}}, "serverInfo": {"name": "agent360-browser", "version": "1.30.0"}, "instructions": "You control the user's real Chrome browser via this MCP server. Each session gets its own color-coded Chrome Tab Group.\n\n## Key behaviors\n- **Always use browser_ask_user** when you need credentials, 2FA codes, CAPTCHA help, or any user input. Never guess passwords or tokens.\n- **ALWAYS close tabs when done** with browser_close_tab after completing each task. Don't leave tabs open - close them immediately after extracting the data you need. Use browser_list_tabs to find and close all session tabs when a task is complete.\n- **Check existing tabs first** with browser_list_tabs before navigating - reuse tabs instead of opening duplicates.\n- **One task per tab** - navigate to a URL, do your work, then close or move on.\n- **Tell the user what you're doing** in the browser. \"I'm navigating to Stripe to find the API key\" not just silently calling tools.\n\n## Tab management\n- navigate creates tabs in your session's tab group (visible in Chrome as colored groups)\n- list_tabs only shows YOUR session's tabs - other Claude sessions have their own\n- switch_tab lets you jump between your tabs\n- close_tab cleans up when you're done\n\n## Authentication flows\n1. Navigate to login page\n2. Use browser_ask_user with fields for email/password\n3. Fill credentials with browser_fill\n4. Click submit with browser_click\n5. If 2FA required, use browser_ask_user again: \"Please enter the 2FA code shown in your authenticator app\"\n6. After success, extract what you need with browser_get_page_content\n\n## Screenshots\n- browser_screenshot captures YOUR session's tab, without pulling it in front of the user\n- It does NOT activate the tab first. That was removed deliberately: the user sits in the\n  same window, and yanking their tab away on every screenshot is worse than the alternative\n- The picture always comes from the debugger for YOUR tab. There is no fallback that photographs\n  whichever tab happens to be visible, so if the debugger cannot produce a frame the call fails.\n  If the whole window is covered, it may be raised briefly as a last resort\n\n## Text-based selectors (preferred for dynamic sites)\n- browser_click(\"text=Get started\") - clicks any element containing \"Get started\"\n- browser_click(\"button:text(Submit)\") - clicks a button containing \"Submit\"\n- browser_fill(\"text=Email\", \"user@example.com\") - fills input near \"Email\" label\n- browser_wait(\"text=Success\") - waits for text to appear\n- These work on ALL sites including Google Cloud, Stripe, Slack (CSP-strict)\n\n## Keyboard\n- browser_press_key(\"Enter\") - submit forms\n- browser_press_key(\"Tab\") - navigate between fields\n- browser_press_key(\"Escape\") - close dialogs\n- browser_press_key(\"ArrowDown\") - navigate dropdowns\n- browser_press_key(\"a\", ctrl=true) - select all\n\n## CAPTCHA handling\nUse browser_solve_captcha to detect and solve CAPTCHAs automatically:\n1. Call browser_solve_captcha() - detects CAPTCHA type on page\n2. If reCAPTCHA v2 checkbox found \u2192 call browser_solve_captcha(action=\"click_checkbox\") - auto-clicks; often passes when signed into Google\n3. If image challenge appears \u2192 call browser_screenshot, analyze the grid visually, then call browser_solve_captcha(action=\"click_grid\", cells=[2,5,7]) with the correct cell indices\n4. If all else fails \u2192 call browser_solve_captcha(action=\"ask_human\") to show overlay to user\n5. After solving, retry the action that was blocked\n\nFor image grid challenges: cells are 0-indexed, left-to-right, top-to-bottom. A 3x3 grid has cells 0-8. A 4x4 grid has cells 0-15.\n\n## OAuth popups\n- OAuth popups (Google, Microsoft, GitHub, Slack, HubSpot) are automatically intercepted and added to your session's tab group\n- Use browser_get_new_tab to access them, or they'll become your active tab automatically\n\n## Shadow DOM (Shopify, Salesforce, etc.)\n- CSS selectors automatically search inside shadow DOM\n- If a standard selector fails, the extension recursively searches shadow roots\n- Text-based selectors (\"text=Submit\") also traverse shadow DOM\n\n## Hard inputs - use the specialised tools first\n- **Date inputs** \u2192 use browser_set_date (NOT browser_fill). Handles native date inputs, masked text inputs (MM/DD/YYYY etc.), AND calendar pickers (MUI, react-datepicker, AntD, Lexical/Meta). 3-path fallback with read-back verification.\n- **Autocomplete / combobox** (Languages on Meta Ads, country selects, async dropdowns) \u2192 use browser_set_combobox (NOT browser_select_option). Types partial query, waits for filtered listbox, clicks option. Supports multi-value chips.\n- **Drag-drop file zones without visible file input** \u2192 use browser_drop_file (NOT browser_upload_file). Finds hidden input in subtree/parent.\n- **Annoying popups blocking the flow** (cookie banners, \"Don't show again\", Advantage+ tooltips, draft-confirm prompts) \u2192 call browser_dismiss_overlays before each major step. It only clicks safe close affordances by default; preserves forms with editable text fields.\n\n## When things fail\n- Element not found \u2192 try text-based selector instead of CSS\n- Screenshot fails \u2192 debugger fallback is automatic\n- Click doesn't work on SPA \u2192 debugger mouse events are used automatically\n- A click, hover or key press answers \"CDP did not respond within \u2026 ms\" \u2192 the tab is in the background, and Chrome does not deliver mouse or key input to a tab that is not active. Call browser_switch_tab to that tab, then try again (browser_click on a CSS selector already falls back to a script click)\n- An answer with maybe_landed: true means the action was sent but its effect could not be confirmed. Check the page first (browser_get_page_content or browser_screenshot) and do not repeat it blindly: a second click can submit twice. landed: false means the page showed no visible reaction to the click. landed: null with unknown: true means something on the page changed when the mouse went down, but not from the click itself - it may be a ripple effect, and it may be a menu that opens on mousedown. Read the page before clicking again: a second click closes a menu that is already open. landed: null with unverified: true means the mouse button was sent but the page could not be read afterwards - same rule: read the page before repeating. browser_scroll uses uvist with its own meaning - there it means the scroll was sent but the movement could not be seen, and the answer carries ok:true, a note and the measured position\n- Since 1.29.2 the tools that send mouse, keyboard or file input measure whether the page actually received it. An error of key-not-delivered, hover-not-delivered, double-click-not-delivered, right-click-not-delivered, field-is-empty, search-text-not-delivered or file-not-attached is a measurement, not a guess: nothing reached the page. Almost always the tab is in the background - call browser_switch_tab to it and repeat the one action. browser_upload_file and browser_drop_file also report vedhaeftet (the file names actually on the field) and differs: true when the field took fewer files than you sent.\n- browser_fill with differs: true means the field shows something other than what you typed; read faktisk. unchanged: true means the field showed the same before and after, either because the value was already there in the page's own format or because the page refused it. Check faktisk before moving on\n- CAPTCHA blocks page \u2192 use browser_ask_user, let human solve it\n- browser_fill seemingly succeeds but value reverts \u2192 switch to browser_set_date or browser_set_combobox (most reverts are React-controlled validators)\n- **If the thing being asked for is not in a web page at all** - a desktop application, an OS-level dialog, the native file picker, a menu bar - then no browser tool can reach it, and neither can this one. Say so plainly. If you also have desktop-level tools available in this session (for example an OS automation MCP server such as computer-mcp), that is the right tool for that step; hand it over instead of retrying here. Do not claim this applies to an ordinary page problem: a background tab, a React-controlled field or a CAPTCHA are all solved by the tools above\n\n## Extension updates\nThe server updates through npm: clients configured with @agent360/browser-mcp@latest get the newest version when a session starts. When that version carries newer extension files, the server copies them into ~/.browser-mcp/extension and tells the connected extension to reload itself. Chrome Web Store installs update through the store.\nIf browser_provide_feedback reports that the extension is older than this server, or that more than one Browser MCP extension is connected, ask the user:\n\"Please go to chrome://extensions, find 'Agent360 Browser MCP', and click the reload icon (\ud83d\udd04). If two Browser MCP extensions are listed, turn one of them off.\"\nYou cannot navigate to chrome:// pages - the user must do this manually.\n\n## When Browser MCP itself is the obstacle - call browser_provide_feedback\nBefore you tell the user \"browser-mcp can't do X\", or give up on a tool that errored, timed out, or did something other than what it promised: call **browser_provide_feedback** with what_happened. Do it yourself, without asking. It checks the install first - the extension against this server, whether more than one Browser MCP extension is connected at once, and (only when BROWSER_MCP_CHECK_NPM=1) this server against the latest on npm - because those explain most \"it's broken\" moments, and none of them are visible to you otherwise. Read the verdict:\n- **outdated** or **disconnected** \u2192 relay fix_steps to the user, then retry the action. An outdated install explains most failures, so try the fix first - but if the behaviour still looks wrong after that, report it anyway. A release window is not a reason to stay silent about a real bug.\n- **conflict** \u2192 more than one extension is loaded; tabs and sessions will keep behaving randomly until the user disables the extras at chrome://extensions. Say so plainly.\n- **current** \u2192 the install is fine, so this is a genuine gap. Offer the returned submit_url as a clickable link.\n- **unknown** \u2192 nothing local looks wrong, but the npm comparison was skipped (it is opt-in via BROWSER_MCP_CHECK_NPM=1). Treat it like **current**.\nCall it once per distinct obstacle, not once per retry.\n\n## Sharing wishes / use-cases / bugs\nBrowser MCP is community-shaped. Whenever the user (a) says \"I wish browser-mcp could\u2026\" or expresses a missing feature, (b) hits something broken or unexpected that looks like a bug in browser-mcp itself, or (c) describes something cool they built with it - call **browser_about** with the matching intent (\"wish\" / \"use_case\" / \"bug\") and a short title + body, then offer the returned submit_url to the user as a clickable link. Don't ask permission, just draft + offer the link. This is the user's path to contribute back, and they usually don't know it exists."}, "jsonrpc": "2.0", "id": 1}
+TABS: []
+[0m
+Empty tabs - extension unbound. Taking screenshot to force bind per ┬º3.2.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+init = c.start()
+time.sleep(2)
+# Screenshot forces bind per ┬º3.2
+shot = c.call_tool('browser_screenshot', {'path': r'D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\bind-screenshot.png'})
+print('SCREENSHOT:', json.dumps(shot, default=str))
+time.sleep(1)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+SCREENSHOT: {"content": [{"type": "text", "text": "Screenshot successfully saved to: D:\\anonym\\delivery\\kilo-bridge-setup\\evidence\\employment-lane\\bind-screenshot.png"}, {"type": "image", "data": "iVBORw0KGgoAAAANSUhEUgAABkAAAAKrCAIAAAAmotaiAAABK2lDQ1BfAAB4nJWQu0oDURCGP0PAO0S0sLDYSmzUJOaCYGPiGixNFBIVZLPZBDGJy2ZFa2vBF7Cw8wVsLHwHQbCy8BHEwtp/s8gGJEVmGOb75wznnBmILSKLJ6HT9b1yqWBUa0fG+Cdj8r5Zds9luKnr5z3sfVtldJtsOD1b+Uvhe3pcVzbEC62QrwOuh3wb8JXv+uKHgL2DclH8JF5pDXB9gG3XC/o/xFud9qUd/ZsZp3tYUa4qlihxIW/RxmGdCuecYYmK5MmyI89TkNrFJMW2ck46y4aUKTbJqGdTJ0mprM5MqWKwz/DJk2lI38HEflTzM/CSgDknqi3fQ+IUnm+iWrRj1/KsfimuiDWb8P0IszWYf4Wp47/FDpnV+DerwR5dbNZEaf09Re4XLi5JPkJS9tYAABAASURBVHic7NhBDQAwCAAxssy/ZbBxj1ZG/+4OAAAAAFS9AQAAAIAwgQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAIABygQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAABEv922AAACc0lEQVQAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQdAAAA//+RNcywAAAABklEQVQDADC/CFbCmlQrAAAAAElFTkSuQmCC", "mimeType": "image/png"}]}
+TABS: [{"id": 826635868, "url": "about:blank", "title": "about:blank", "active": true}]
+CONTENT (first 3000): Error: Cannot access contents of url "about:blank". Extension manifest must request permission to access this host.
+[0m
+Tab is on about:blank. Need to navigate to Naukri recommended jobs.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+init = c.start()
+time.sleep(2)
+nav = c.navigate('https://www.naukri.com/mnjuser/recommendedjobs')
+print('NAV:', json.dumps(nav, default=str))
+time.sleep(5)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+NAV: {"content": [{"type": "text", "text": "{\n  \"title\": \"Recommended Jobs | Mynaukri\",\n  \"url\": \"https://www.naukri.com/mnjuser/recommendedjobs\",\n  \"tab_id\": 826635872,\n  \"session\": \"Claude 1\"\n}"}]}
+TABS: [{"id": 826635872, "url": "https://www.naukri.com/mnjuser/recommendedjobs", "title": "Recommended Jobs | Mynaukri", "active": true}]
+CONTENT (first 3000): {
+  "content": "Jobs\n2\nCompanies\nServices\n1\nSearch jobs here\n15\n2\nRecommended jobs for you\nYou can select upto 5 jobs to applyApply\nApplies (62)\nProfile (6)\nPreferences (23)\nYou might like (5)\n\nGenAI Architect | Generative AI | LLM | RAG | Agentic AI\n\nConnect iO\nPosted by Connectio It\n11-20 Yrs35-50 Lacs PABengaluru, Pune, Noida\nThe ideal candidate should have strong experience in RAG, Agentic AI, LLM orchestration, cloud AI platforms, vector databases, LLMOps, and AI security / governance Must Have: . 10+ years overall IT experience Good to Have: . AWS Bedrock / Google V...GenAIAWS BedrockLLMRAGGenAI ArchitectAzure AI SearchLLMOpsLangChain1 Day Ago\nSave\nHide\n\nG5 G6 IT Manager Supply Chain Engineering\n\nClient of Sampoorna Consultants Pvt. Ltd\nPosted by Sampoorna Consultants\n15-20 YrsNot disclosedChennai\nG5/G6 - IT Manager Supply Chain Engineering - J50638Role & responsibilities IT Manager Supply Chain Engineering to provide strong people leadership, delivery management, and execution oversight across Supply Chain SDS teams.This role will be respo...JavaSupply ChainobservabilitySupply chain managementManagementSupplyEngineering1 Day Ago\nSave\nHide\nWe∩┐╜re urgently hiring\nMancer Consulting Services\nSolution Architect\n15-23 Yrs\nHybrid - Delhi / NCR\nSolution Architect\nCapital Market\nTrade\nWealth Management\nPrivate Banking\nEquity\nTrade Finance\nDerivatives\nMatching jobs promoted by companies\n\nCore Gen AI / Generative AI Architect- Healthcare\n\nPwC\n3.3\n14140 Reviews\n15-24 YrsNot disclosedHybrid - Kolkata, Bengaluru, Hyderabad\nRole & responsibilities Setting strategic direction for generative AI architecture across client engagements and identifying opportunities to scale solutions- Leading design of Gen AI platforms, reference architectures, and cognitive automation pa...Agentic AiGen AIHealthcareLife SciencesClinicalScienceArtificial IntelligenceGen1 Day Ago\nSave\nHide\n\nSenior AI Architect\n\nTech Mahindra\n3.3\n47050 Reviews\n15-24 Yrs35-45 Lacs PAPune, Chennai, Hyderabad\nPosition - Senior Enterprise AI Architect GenAI, Agentic AI & Enterprise ApplicationsLocation : Pune / Bangalore / Hyderabad / Chennai (Hybrid / Work from Office as per project requirement)Experience : 15∩┐╜25 YearsAbout the RoleWe are looking for a...Enterprise ArchitectureAgentic AIGenAIAi StrategyBusiness TransformationPlatform IntegrationArtificial IntelligenceSenior1 Day Ago\nSave\nHide\n\nEnterprise Multi-Solution Architect\n\nCognizant\n3.7\n66139 Reviews\n15-21 YrsNot disclosedHybrid - Bengaluru, Chennai\nRequired Experience . 15+ years of enterprise technology experience, including significant experience as a Multi-Solution Architect, Enterprise Architect, Consulting Architect or Chief ArchitectDemonstrated ability to work across multiple technolo...Enterprise ArchitectureDigital Experience PlatformMarTechPersonalizationGenrative AiArtificial IntelligenceCMSCommerce1 Day Ago\nSave\nHide\nAre these jobs relevant for you?\nYes
+[0m
+On Naukri recommended jobs page. Highest match is "GenAI Architect" at Connectio It (score 10). Taking screenshot receipt, then clicking to apply.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+# Screenshot before applying
+shot = c.call_tool('browser_screenshot', {'path': r'D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-01-naukri-genai-architect-before.png'})
+print('SCREENSHOT:', json.dumps(shot, default=str))
+time.sleep(1)
+# Click on the GenAI Architect job - use text selector
+click = c.click('text=GenAI Architect | Generative AI | LLM | RAG | Agentic AI')
+print('CLICK:', json.dumps(click, default=str))
+time.sleep(3)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+...output truncated...
+System.Management.Automation.RemoteException
+Full output saved to: C:\Users\Admin\.local\share\opencode\tool-output\tool_11275dd95001gpGGPlkRYbhvOo
+System.Management.Automation.RemoteException
+System.Management.Automation.RemoteException
+CLICK: {"content": [{"type": "text", "text": "{\n  \"method\": \"debugger\",\n  \"tag\": \"P\",\n  \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AI\",\n  \"fallbackFired\": false,\n  \"landed\": true,\n  \"ok\": true\n}"}]}
+TABS: [{"id": 826635872, "url": "https://www.naukri.com/mnjuser/recommendedjobs", "title": "Recommended Jobs | Mynaukri", "active": false}]
+CONTENT (first 3000): {
+  "content": "Jobs\n2\nCompanies\nServices\n1\nSearch jobs here\n15\n2\nRecommended jobs for you\nYou can select upto 5 jobs to applyApply\nApplies (62)\nProfile (6)\nPreferences (23)\nYou might like (5)\n\nGenAI Architect | Generative AI | LLM | RAG | Agentic AI\n\nConnect iO\nPosted by Connectio It\n11-20 Yrs35-50 Lacs PABengaluru, Pune, Noida\nThe ideal candidate should have strong experience in RAG, Agentic AI, LLM orchestration, cloud AI platforms, vector databases, LLMOps, and AI security / governance Must Have: . 10+ years overall IT experience Good to Have: . AWS Bedrock / Google V...GenAIAWS BedrockLLMRAGGenAI ArchitectAzure AI SearchLLMOpsLangChain1 Day Ago\nSave\nHide\n\nG5 G6 IT Manager Supply Chain Engineering\n\nClient of Sampoorna Consultants Pvt. Ltd\nPosted by Sampoorna Consultants\n15-20 YrsNot disclosedChennai\nG5/G6 - IT Manager Supply Chain Engineering - J50638Role & responsibilities IT Manager Supply Chain Engineering to provide strong people leadership, delivery management, and execution oversight across Supply Chain SDS teams.This role will be respo...JavaSupply ChainobservabilitySupply chain managementManagementSupplyEngineering1 Day Ago\nSave\nHide\nWe∩┐╜re urgently hiring\nMancer Consulting Services\nSolution Architect\n15-23 Yrs\nHybrid - Delhi / NCR\nSolution Architect\nCapital Market\nTrade\nWealth Management\nPrivate Banking\nEquity\nTrade Finance\nDerivatives\nMatching jobs promoted by companies\n\nCore Gen AI / Generative AI Architect- Healthcare\n\nPwC\n3.3\n14140 Reviews\n15-24 YrsNot disclosedHybrid - Kolkata, Bengaluru, Hyderabad\nRole & responsibilities Setting strategic direction for generative AI architecture across client engagements and identifying opportunities to scale solutions- Leading design of Gen AI platforms, reference architectures, and cognitive automation pa...Agentic AiGen AIHealthcareLife SciencesClinicalScienceArtificial IntelligenceGen1 Day Ago\nSave\nHide\n\nSenior AI Architect\n\nTech Mahindra\n3.3\n47050 Reviews\n15-24 Yrs35-45 Lacs PAPune, Chennai, Hyderabad\nPosition - Senior Enterprise AI Architect GenAI, Agentic AI & Enterprise ApplicationsLocation : Pune / Bangalore / Hyderabad / Chennai (Hybrid / Work from Office as per project requirement)Experience : 15∩┐╜25 YearsAbout the RoleWe are looking for a...Enterprise ArchitectureAgentic AIGenAIAi StrategyBusiness TransformationPlatform IntegrationArtificial IntelligenceSenior1 Day Ago\nSave\nHide\n\nEnterprise Multi-Solution Architect\n\nCognizant\n3.7\n66139 Reviews\n15-21 YrsNot disclosedHybrid - Bengaluru, Chennai\nRequired Experience . 15+ years of enterprise technology experience, including significant experience as a Multi-Solution Architect, Enterprise Architect, Consulting Architect or Chief ArchitectDemonstrated ability to work across multiple technolo...Enterprise ArchitectureDigital Experience PlatformMarTechPersonalizationGenrative AiArtificial IntelligenceCMSCommerce1 Day Ago\nSave\nHide\nAre these jobs relevant for you?\nYes
+[0m
+Click landed but page didn't navigate. Checking for new tab or trying different approach.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+# Try clicking with more specific selector or check if job card has a link
+# Let's try clicking on 'Apply' button for that job
+click = c.click('text=Apply')
+print('CLICK APPLY:', json.dumps(click, default=str))
+time.sleep(3)
+tabs = c.list_tabs()
+print('TABS after:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+TABS: []
+CLICK APPLY: {"content": [{"type": "text", "text": "{\n  \"ok\": false,\n  \"error\": \"Element not found: text=Apply\"\n}"}]}
+TABS after: [{"id": 826635879, "url": "about:blank", "title": "about:blank", "active": true}]
+CONTENT (first 3000): Error: Cannot access contents of url "about:blank". Extension manifest must request permission to access this host.
+[0m
+Extension unbound again. Re-binding with screenshot, then finding the correct Apply button for the GenAI Architect job.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+shot = c.call_tool('browser_screenshot', {'path': r'D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\bind-screenshot2.png'})
+print('SCREENSHOT:', json.dumps(shot, default=str))
+time.sleep(1)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 5000):', content[:5000])
+c.close()
+"
+SCREENSHOT: {"content": [{"type": "text", "text": "Screenshot successfully saved to: D:\\anonym\\delivery\\kilo-bridge-setup\\evidence\\employment-lane\\bind-screenshot2.png"}, {"type": "image", "data": "iVBORw0KGgoAAAANSUhEUgAABkAAAALjCAIAAADFqV6jAAABK2lDQ1BfAAB4nJWQu0oDURCGP0PAO0S0sLDYSmzUJOaCYGPiGixNFBIVZLPZBDGJy2ZFa2vBF7Cw8wVsLHwHQbCy8BHEwtp/s8gGJEVmGOb75wznnBmILSKLJ6HT9b1yqWBUa0fG+Cdj8r5Zds9luKnr5z3sfVtldJtsOD1b+Uvhe3pcVzbEC62QrwOuh3wb8JXv+uKHgL2DclH8JF5pDXB9gG3XC/o/xFud9qUd/ZsZp3tYUa4qlihxIW/RxmGdCuecYYmK5MmyI89TkNrFJMW2ck46y4aUKTbJqGdTJ0mprM5MqWKwz/DJk2lI38HEflTzM/CSgDknqi3fQ+IUnm+iWrRj1/KsfimuiDWb8P0IszWYf4Wp47/FDpnV+DerwR5dbNZEaf09Re4XLi5JPkJS9tYAABAASURBVHic7NhBDQAwCAAxssy/ZbBxj1ZG/+4OAAAAAFS9AQAAAIAwgQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAIABygQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAABEv922AAAD9ElEQVQAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkCSwAAAAA0gQWAAAAAGkCCwAAAIA0gQUAAABAmsACAAAAIE1gAQAAAJAmsAAAAABIE1gAAAAApAksAAAAANIEFgAAAABpAgsAAACANIEFAAAAQJrAAgAAACBNYAEAAACQJrAAAAAASBNYAAAAAKQJLAAAAADSBBYAAAAAaQILAAAAgDSBBQAAAECawAIAAAAgTWABAAAAkCawAAAAAEgTWAAAAACkHQAAAP//3mK5bgAAAAZJREFUAwCkyQjGUMulfgAAAABJRU5ErkJggg==", "mimeType": "image/png"}]}
+TABS: [{"id": 826635883, "url": "about:blank", "title": "about:blank", "active": false}]
+CONTENT (first 5000): Error: Cannot access contents of url "about:blank". Extension manifest must request permission to access this host.
+[0m
+Lost the tab. Navigating back to Naukri recommended jobs.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+nav = c.navigate('https://www.naukri.com/mnjuser/recommendedjobs')
+print('NAV:', json.dumps(nav, default=str))
+time.sleep(5)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 5000):', content[:5000])
+c.close()
+"
+NAV: {"content": [{"type": "text", "text": "{\n  \"title\": \"Recommended Jobs | Mynaukri\",\n  \"url\": \"https://www.naukri.com/mnjuser/recommendedjobs\",\n  \"tab_id\": 826635883,\n  \"session\": \"Claude 1\"\n}"}]}
+TABS: [{"id": 826635883, "url": "https://www.naukri.com/mnjuser/recommendedjobs", "title": "Recommended Jobs | Mynaukri", "active": true}]
+CONTENT (first 5000): {
+  "content": "Jobs\n2\nCompanies\nServices\n1\nSearch jobs here\n15\n2\nRecommended jobs for you\nYou can select upto 5 jobs to applyApply\nApplies (62)\nProfile (6)\nPreferences (23)\nYou might like (5)\n\nGenAI Architect | Generative AI | LLM | RAG | Agentic AI\n\nConnect iO\nPosted by Connectio It\n11-20 Yrs35-50 Lacs PABengaluru, Pune, Noida\nThe ideal candidate should have strong experience in RAG, Agentic AI, LLM orchestration, cloud AI platforms, vector databases, LLMOps, and AI security / governance Must Have: . 10+ years overall IT experience Good to Have: . AWS Bedrock / Google V...GenAIAWS BedrockLLMRAGGenAI ArchitectAzure AI SearchLLMOpsLangChain1 Day Ago\nSave\nHide\n\nG5 G6 IT Manager Supply Chain Engineering\n\nClient of Sampoorna Consultants Pvt. Ltd\nPosted by Sampoorna Consultants\n15-20 YrsNot disclosedChennai\nG5/G6 - IT Manager Supply Chain Engineering - J50638Role & responsibilities IT Manager Supply Chain Engineering to provide strong people leadership, delivery management, and execution oversight across Supply Chain SDS teams.This role will be respo...JavaSupply ChainobservabilitySupply chain managementManagementSupplyEngineering1 Day Ago\nSave\nHide\nWe∩┐╜re urgently hiring\niSpace Software Solutions Indi...\n3.5\n119 Reviews\nArchitect\n12-22 Yrs\nHybrid - Hyderabad\nEntertainment\nAI\nLLM\nArchitect\nMedia\nRAG\nArchitecture\nArtificial Intelligence\nMatching jobs promoted by companies\n\nCore Gen AI / Generative AI Architect- Healthcare\n\nPwC\n3.3\n14140 Reviews\n15-24 YrsNot disclosedHybrid - Kolkata, Bengaluru, Hyderabad\nRole & responsibilities Setting strategic direction for generative AI architecture across client engagements and identifying opportunities to scale solutions- Leading design of Gen AI platforms, reference architectures, and cognitive automation pa...Agentic AiGen AIHealthcareLife SciencesClinicalScienceArtificial IntelligenceGen1 Day Ago\nSave\nHide\n\nSenior AI Architect\n\nTech Mahindra\n3.3\n47050 Reviews\n15-24 Yrs35-45 Lacs PAPune, Chennai, Hyderabad\nPosition - Senior Enterprise AI Architect GenAI, Agentic AI & Enterprise ApplicationsLocation : Pune / Bangalore / Hyderabad / Chennai (Hybrid / Work from Office as per project requirement)Experience : 15∩┐╜25 YearsAbout the RoleWe are looking for a...Enterprise ArchitectureAgentic AIGenAIAi StrategyBusiness TransformationPlatform IntegrationArtificial IntelligenceSenior1 Day Ago\nSave\nHide\n\nEnterprise Multi-Solution Architect\n\nCognizant\n3.7\n66139 Reviews\n15-21 YrsNot disclosedHybrid - Bengaluru, Chennai\nRequired Experience . 15+ years of enterprise technology experience, including significant experience as a Multi-Solution Architect, Enterprise Architect, Consulting Architect or Chief ArchitectDemonstrated ability to work across multiple technolo...Enterprise ArchitectureDigital Experience PlatformMarTechPersonalizationGenrative AiArtificial IntelligenceCMSCommerce1 Day Ago\nSave\nHide\nAre these jobs relevant for you?\nYes\nNo\n\nArchitect/Lead AI Engineer (Agentic AI)\n\nIntersoft Data Labs\n3.5\n259 Reviews\n11-19 YrsNot disclosedRemote\nJava : Strong experience for building enterprise-grade backend services and integrating AI into legacy systemsExperience: Typically 3+ years in software or AI Architect, with at least 2 year dedicated to agentic systemsAgentic AiArtificial IntelligenceClaudeLLMPythonLanggraphLangChainAiml4 Days Ago\nSave\nHide\n\nSolution Architect AI Native SDLC Platform\n\nVericence\n2.9\n2 Reviews\n18-26 Yrs50-60 Lacs PARemote\nRequired Qualifications Strong cloud architecture background, preferably AWSPreferred Hands-on architecture experience with Generative AI and agentic systems in production or advanced pilotExperience leading solutioning across multiple concurrent ...Enterprise ArchitectureAgentic AiSolution ArchitectingCloud MigrationDevOpsNeo4jLarge Language ModelRetrieval Augmented Generation3 Days Ago\nSave\nHide\n\nDatabricks Solution & AI Architect\n\nCGI\n4.0\n5901 Reviews\n12-22 YrsNot disclosedHybrid - Bengaluru, Chennai\nJob Title : Databricks Solution & AI ArchitectJob location : Bangalore / ChennaiJob requirement : Fulltime / PermanentExperience : 14+ years of experienceWork Mode : HybridLooking for a senior Databricks architect with deep expertise in Lakehouse ...LakehouseDatabricks at production scaleData EngineerDatabricksDatabricks Solution ArchitectSolution ArchitectingAzure CloudAI7 Days Ago\nSave\nHide\n\nSenior Manager AI/ML Engineering\n\nOptum\n4.0\n8726 Reviews\n15-20 YrsNot disclosedHybrid - Bengaluru\nRequired Qualifications: . Masters degree in Computer Science, Engineering, Mathematics, Statistics, or a related disciplineDemonstrated experience leading and managing AI / ML teams and projects from ideation to delivery and evaluation Hands-on e...Agentic AiAimlLLMMachine LearningPythonTensorflowgenerative aiArtificial IntelligencePrefers women+31 Day Ago\nSave\nHide\n\nArtificial Intelligence Architect_PAN India_October\n\nRiDiK\n2.9\n6 Reviews\n
+[0m
+Back on the page. Now clicking the GenAI Architect job card using JS click on the link.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+# Use execute_script to find and click the link for GenAI Architect job
+js = r\"\"\"
+(() => {
+  const links = Array.from(document.querySelectorAll('a'));
+  for (const link of links) {
+    if (link.href && link.href.includes('/job-apply') && link.textContent.includes('GenAI Architect')) {
+      link.click();
+      return {clicked: true, href: link.href};
+    }
+  }
+  // Fallback: find any link containing the title text
+  for (const link of links) {
+    if (link.textContent.includes('GenAI Architect') && link.href) {
+      link.click();
+      return {clicked: true, href: link.href, fallback: true};
+    }
+  }
+  return {clicked: false, links: links.map(l => ({href: l.href, text: l.textContent.slice(0,80)}))};
+})()
+\"\"\"
+result = c.execute_script(js)
+print('JS RESULT:', json.dumps(result, default=str))
+time.sleep(3)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+At line:11 char:3
++ (() => {
++   ~
+An expression was expected after '('.
+At line:14 char:19
++     if (link.href && link.href.includes('/job-apply') && link.textCon ...
++                   ~~
+The token '&&' is not a valid statement separator in this version.
+At line:14 char:55
++     if (link.href && link.href.includes('/job-apply') && link.textCon ...
++                                                       ~~
+The token '&&' is not a valid statement separator in this version.
+At line:15 char:18
++       link.click();
++                  ~
+An expression was expected after '('.
+At line:21 char:54
++     if (link.textContent.includes('GenAI Architect') && link.href) {
++                                                      ~~
+The token '&&' is not a valid statement separator in this version.
+At line:22 char:18
++       link.click();
++                  ~
+An expression was expected after '('.
+At line:27 char:3
++ })()
++   ~
+Unexpected token '(' in expression or statement.
+At line:27 char:4
++ })()
++    ~
+An expression was expected after '('.
+At line:11 char:3
++ (() => {
++   ~
+The assignment expression is not valid. The input to an assignment operator must be an object that is able to accept 
+assignments, such as a variable or a property.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : ExpectedExpression
+[0m
+The execute_script needs an EXPRESSION form per ┬º3.1. Fixing the JS syntax.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+# Use execute_script with EXPRESSION form (IIFE returning value)
+js = '(() => { const links = Array.from(document.querySelectorAll(\"a\")); for (const link of links) { if (link.href && link.href.includes(\"/job-apply\") && link.textContent.includes(\"GenAI Architect\")) { link.click(); return {clicked: true, href: link.href}; } } for (const link of links) { if (link.textContent.includes(\"GenAI Architect\") && link.href) { link.click(); return {clicked: true, href: link.href, fallback: true}; } } return {clicked: false, count: links.length}; })()'
+result = c.execute_script(js)
+print('JS RESULT:', json.dumps(result, default=str))
+time.sleep(3)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+File "<string>", line 10
+    js = '(() => { const links = Array.from(document.querySelectorAll(" a\));
+         ^
+SyntaxError: unterminated string literal (detected at line 10)
+[0m
+Escaping issue. Writing JS to a file first.
+[0mΓåÉ [0mWrite click_job.js
+Wrote file successfully.
+[0m
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+with open(r'D:\anonym\delivery\kilo-bridge-setup\click_job.js', 'r') as f:
+    js = f.read()
+result = c.execute_script(js)
+print('JS RESULT:', json.dumps(result, default=str))
+time.sleep(3)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+JS RESULT: {"content": [{"type": "text", "text": "{\n  \"result\": {\n    \"clicked\": false,\n    \"count\": 0\n  },\n  \"method\": \"debugger\"\n}"}]}
+TABS: [{"id": 826635887, "url": "about:blank", "title": "about:blank", "active": false}]
+CONTENT (first 3000): Error: Cannot access contents of url "about:blank". Extension manifest must request permission to access this host.
+[0m
+JS found 0 links - page may not be fully rendered. Tab went to about:blank. Re-navigating and checking page structure.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+nav = c.navigate('https://www.naukri.com/mnjuser/recommendedjobs')
+print('NAV:', json.dumps(nav, default=str))
+time.sleep(5)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 5000):', content[:5000])
+c.close()
+"
+NAV: {"content": [{"type": "text", "text": "{\n  \"title\": \"Recommended Jobs | Mynaukri\",\n  \"url\": \"https://www.naukri.com/mnjuser/recommendedjobs\",\n  \"tab_id\": 826635891,\n  \"session\": \"Claude 1\"\n}"}]}
+TABS: [{"id": 826635891, "url": "https://www.naukri.com/mnjuser/recommendedjobs", "title": "Recommended Jobs | Mynaukri", "active": false}]
+CONTENT (first 5000): {
+  "content": "Jobs\n2\nCompanies\nServices\n1\nSearch jobs here\n15\n2\nRecommended jobs for you\nYou can select upto 5 jobs to applyApply\nApplies (62)\nProfile (6)\nPreferences (23)\nYou might like (5)\n\nGenAI Architect | Generative AI | LLM | RAG | Agentic AI\n\nConnect iO\nPosted by Connectio It\n11-20 Yrs35-50 Lacs PABengaluru, Pune, Noida\nThe ideal candidate should have strong experience in RAG, Agentic AI, LLM orchestration, cloud AI platforms, vector databases, LLMOps, and AI security / governance Must Have: . 10+ years overall IT experience Good to Have: . AWS Bedrock / Google V...GenAIAWS BedrockLLMRAGGenAI ArchitectAzure AI SearchLLMOpsLangChain1 Day Ago\nSave\nHide\n\nG5 G6 IT Manager Supply Chain Engineering\n\nClient of Sampoorna Consultants Pvt. Ltd\nPosted by Sampoorna Consultants\n15-20 YrsNot disclosedChennai\nG5/G6 - IT Manager Supply Chain Engineering - J50638Role & responsibilities IT Manager Supply Chain Engineering to provide strong people leadership, delivery management, and execution oversight across Supply Chain SDS teams.This role will be respo...JavaSupply ChainobservabilitySupply chain managementManagementSupplyEngineering1 Day Ago\nSave\nHide\nWe∩┐╜re urgently hiring\niSpace Software Solutions Indi...\n3.5\n119 Reviews\nArchitect\n12-22 Yrs\nHybrid - Hyderabad\nEntertainment\nAI\nLLM\nArchitect\nMedia\nRAG\nArchitecture\nArtificial Intelligence\nMatching jobs promoted by companies\n\nCore Gen AI / Generative AI Architect- Healthcare\n\nPwC\n3.3\n14140 Reviews\n15-24 YrsNot disclosedHybrid - Kolkata, Bengaluru, Hyderabad\nRole & responsibilities Setting strategic direction for generative AI architecture across client engagements and identifying opportunities to scale solutions- Leading design of Gen AI platforms, reference architectures, and cognitive automation pa...Agentic AiGen AIHealthcareLife SciencesClinicalScienceArtificial IntelligenceGen1 Day Ago\nSave\nHide\n\nSenior AI Architect\n\nTech Mahindra\n3.3\n47050 Reviews\n15-24 Yrs35-45 Lacs PAPune, Chennai, Hyderabad\nPosition - Senior Enterprise AI Architect GenAI, Agentic AI & Enterprise ApplicationsLocation : Pune / Bangalore / Hyderabad / Chennai (Hybrid / Work from Office as per project requirement)Experience : 15∩┐╜25 YearsAbout the RoleWe are looking for a...Enterprise ArchitectureAgentic AIGenAIAi StrategyBusiness TransformationPlatform IntegrationArtificial IntelligenceSenior1 Day Ago\nSave\nHide\n\nEnterprise Multi-Solution Architect\n\nCognizant\n3.7\n66139 Reviews\n15-21 YrsNot disclosedHybrid - Bengaluru, Chennai\nRequired Experience . 15+ years of enterprise technology experience, including significant experience as a Multi-Solution Architect, Enterprise Architect, Consulting Architect or Chief ArchitectDemonstrated ability to work across multiple technolo...Enterprise ArchitectureDigital Experience PlatformMarTechPersonalizationGenrative AiArtificial IntelligenceCMSCommerce1 Day Ago\nSave\nHide\nAre these jobs relevant for you?\nYes\nNo\n\nArchitect/Lead AI Engineer (Agentic AI)\n\nIntersoft Data Labs\n3.5\n259 Reviews\n11-19 YrsNot disclosedRemote\nJava : Strong experience for building enterprise-grade backend services and integrating AI into legacy systemsExperience: Typically 3+ years in software or AI Architect, with at least 2 year dedicated to agentic systemsAgentic AiArtificial IntelligenceClaudeLLMPythonLanggraphLangChainAiml4 Days Ago\nSave\nHide\n\nSolution Architect AI Native SDLC Platform\n\nVericence\n2.9\n2 Reviews\n18-26 Yrs50-60 Lacs PARemote\nRequired Qualifications Strong cloud architecture background, preferably AWSPreferred Hands-on architecture experience with Generative AI and agentic systems in production or advanced pilotExperience leading solutioning across multiple concurrent ...Enterprise ArchitectureAgentic AiSolution ArchitectingCloud MigrationDevOpsNeo4jLarge Language ModelRetrieval Augmented Generation3 Days Ago\nSave\nHide\n\nDatabricks Solution & AI Architect\n\nCGI\n4.0\n5901 Reviews\n12-22 YrsNot disclosedHybrid - Bengaluru, Chennai\nJob Title : Databricks Solution & AI ArchitectJob location : Bangalore / ChennaiJob requirement : Fulltime / PermanentExperience : 14+ years of experienceWork Mode : HybridLooking for a senior Databricks architect with deep expertise in Lakehouse ...LakehouseDatabricks at production scaleData EngineerDatabricksDatabricks Solution ArchitectSolution ArchitectingAzure CloudAI7 Days Ago\nSave\nHide\n\nSenior Manager AI/ML Engineering\n\nOptum\n4.0\n8726 Reviews\n15-20 YrsNot disclosedHybrid - Bengaluru\nRequired Qualifications: . Masters degree in Computer Science, Engineering, Mathematics, Statistics, or a related disciplineDemonstrated experience leading and managing AI / ML teams and projects from ideation to delivery and evaluation Hands-on e...Agentic AiAimlLLMMachine LearningPythonTensorflowgenerative aiArtificial IntelligencePrefers women+31 Day Ago\nSave\nHide\n\nArtificial Intelligence Architect_PAN India_October\n\nRiDiK\n2.9\n6 Reviews\n
+[0m
+Page loaded. Now checking DOM structure for the GenAI Architect job card to find the clickable element.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+# Find clickable elements for GenAI Architect job
+js = '(() => { const els = Array.from(document.querySelectorAll(\"*\")); const matches = els.filter(el => el.textContent && el.textContent.includes(\"GenAI Architect\") && el.textContent.includes(\"Generative AI\")); return matches.map(m => ({tag: m.tagName, class: m.className, id: m.id, onclick: m.onclick ? true : false, href: m.href, role: m.getAttribute(\"role\"), tabindex: m.tabIndex, text: m.textContent.slice(0,120)})); })()'
+result = c.execute_script(js)
+print('JS RESULT:', json.dumps(result, default=str))
+time.sleep(1)
+c.close()
+"
+File "<string>", line 10
+    js = '(() => { const els = Array.from(document.querySelectorAll(" *\));
+         ^
+SyntaxError: unterminated string literal (detected at line 10)
+[0m
+[0mΓåÉ [0mWrite find_job.js
+Wrote file successfully.
+[0m
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+with open(r'D:\anonym\delivery\kilo-bridge-setup\find_job.js', 'r') as f:
+    js = f.read()
+result = c.execute_script(js)
+print('JS RESULT:', json.dumps(result, default=str))
+time.sleep(1)
+c.close()
+"
+JS RESULT: {"content": [{"type": "text", "text": "{\n  \"result\": [\n    {\n      \"class\": \"\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"HTML\",\n      \"text\": \"\\n  \\n  \\n  \\n\\n  \\n\\n  \\n\\n  \\n  \\n\\n  Recommended Jobs | Mynaukri\\n\\n  \\n  \\n  \\n  \\n  \\n    @font-face {\\n      font-family: Roboto;\\n    \"\n    },\n    {\n      \"class\": \"\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"BODY\",\n      \"text\": \"\\n  Jobs2Recommended jobsNVites9 NewApplication status17 UpdatesSaved jobsCompaniesExplore categoriesUnicornMNCStartupPro\"\n    },\n    {\n      \"class\": \"\",\n      \"id\": \"root\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"DIV\",\n      \"text\": \"Jobs2Recommended jobsNVites9 NewApplication status17 UpdatesSaved jobsCompaniesExplore categoriesUnicornMNCStartupProduc\"\n    },\n    {\n      \"class\": \"recommended-jobs-page\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"DIV\",\n      \"text\": \"Recommended jobs for youYou can select upto 5 jobs to applyApplyApplies (62)Profile (6)Preferences (23)You might like (5\"\n    },\n    {\n      \"class\": \"reco-container \",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"DIV\",\n      \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AIConnect iOPosted by Connectio It11-20 Yrs35-50 Lacs PABengaluru,\"\n    },\n    {\n      \"class\": \"left-sec\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"DIV\",\n      \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AIConnect iOPosted by Connectio It11-20 Yrs35-50 Lacs PABengaluru,\"\n    },\n    {\n      \"class\": \"sim-jobs\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"DIV\",\n      \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AIConnect iOPosted by Connectio It11-20 Yrs35-50 Lacs PABengaluru,\"\n    },\n    {\n      \"class\": \"list\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"DIV\",\n      \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AIConnect iOPosted by Connectio It11-20 Yrs35-50 Lacs PABengaluru,\"\n    },\n    {\n      \"class\": \"jobTuple bgWhite z-depth-1 \",\n      \"id\": \"\",\n      \"onclick\": true,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"ARTICLE\",\n      \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AIConnect iOPosted by Connectio It11-20 Yrs35-50 Lacs PABengaluru,\"\n    },\n    {\n      \"class\": \"dspIB span-right\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"DIV\",\n      \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AIConnect iOPosted by Connectio It11-20 Yrs35-50 Lacs PABengaluru,\"\n    },\n    {\n      \"class\": \"jobTupleHeader\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"DIV\",\n      \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AIConnect iOPosted by Connectio It11-20 Yrs35-50 Lacs PABengaluru,\"\n    },\n    {\n      \"class\": \"info dspIB\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"DIV\",\n      \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AIConnect iOPosted by Connectio It11-20 Yrs35-50 Lacs PABengaluru,\"\n    },\n    {\n      \"class\": \"title ellipsis typ-16Bold\",\n      \"id\": \"\",\n      \"onclick\": false,\n      \"role\": null,\n      \"tabindex\": -1,\n      \"tag\": \"P\",\n      \"text\": \"GenAI Architect | Generative AI | LLM | RAG | Agentic AI\"\n    }\n  ],\n  \"method\": \"scripting-main\"\n}"}]}
+[0m
+Found it! The job card is an `<ARTICLE class="jobTuple bgWhite z-depth-1">` with `onclick: true`. Clicking that.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+# Click the article element with the job card class
+click = c.click('article.jobTuple.bgWhite.z-depth-1')
+print('CLICK:', json.dumps(click, default=str))
+time.sleep(3)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    content = c.get_content()
+    print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+CLICK: {"content": [{"type": "text", "text": "Error: Cannot access \"about:blank\" at origin \"null\". Extension must have permission to access the frame's origin, and matchAboutBlank must be true."}], "isError": true}
+TABS: [{"id": 826635895, "url": "about:blank", "title": "about:blank", "active": false}]
+CONTENT (first 3000): Error: Cannot access contents of url "about:blank". Extension manifest must request permission to access this host.
+[0m
+Click caused navigation to about:blank. Checking for new tab.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+for tab in tabs:
+    if tab.get('url') != 'about:blank':
+        c.switch_tab(tab['id'])
+        time.sleep(2)
+        content = c.get_content()
+        print('CONTENT tab', tab['id'], ':', content[:3000])
+        break
+c.close()
+"
+TABS: []
+[0m
+Session lost. Re-navigating and trying keyboard navigation to the job card.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+nav = c.navigate('https://www.naukri.com/mnjuser/recommendedjobs')
+print('NAV:', json.dumps(nav, default=str))
+time.sleep(5)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    # Try to find and click using text-based selector on the title
+    click = c.click('text=GenAI Architect | Generative AI | LLM | RAG | Agentic AI')
+    print('CLICK:', json.dumps(click, default=str))
+    time.sleep(3)
+    tabs = c.list_tabs()
+    print('TABS after:', json.dumps(tabs, default=str))
+    if tabs:
+        content = c.get_content()
+        print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+NAV: {"content": [{"type": "text", "text": "{\n  \"title\": \"Recommended Jobs | Mynaukri\",\n  \"url\": \"https://www.naukri.com/mnjuser/recommendedjobs\",\n  \"tab_id\": 826635899,\n  \"session\": \"Claude 1\"\n}"}]}
+TABS: [{"id": 826635899, "url": "https://www.naukri.com/mnjuser/recommendedjobs", "title": "Recommended Jobs | Mynaukri", "active": false}]
+CLICK: {"content": [{"type": "text", "text": "{\n  \"ok\": false,\n  \"method\": \"scripting-fallback\",\n  \"tag\": \"P\",\n  \"landed\": false,\n  \"maybe_landed\": true,\n  \"error\": \"CDP did not respond within 1500 ms: Input.dispatchMouseEvent (the tab is probably in the background - Chrome does not deliver mouse or keyboard input to a tab that is not active; call browser_switch_tab and try again)\",\n  \"note\": \"The tab was in the background, so mouse events did not arrive. A script click was sent, but the click itself produced no visible effect: either the page requires a real click, or the click worked without a visible change. Check the page, and call browser_switch_tab and click again only if nothing happened.\"\n}"}]}
+TABS after: [{"id": 826635899, "url": "https://www.naukri.com/mnjuser/recommendedjobs", "title": "Recommended Jobs | Mynaukri", "active": false}]
+CONTENT (first 3000): {
+  "content": "Jobs\n2\nCompanies\nServices\n1\nSearch jobs here\n15\n2\nRecommended jobs for you\nYou can select upto 5 jobs to applyApply\nApplies (62)\nProfile (6)\nPreferences (23)\nYou might like (6)\n\nGenAI Architect | Generative AI | LLM | RAG | Agentic AI\n\nConnect iO\nPosted by Connectio It\n11-20 Yrs35-50 Lacs PABengaluru, Pune, Noida\nThe ideal candidate should have strong experience in RAG, Agentic AI, LLM orchestration, cloud AI platforms, vector databases, LLMOps, and AI security / governance Must Have: . 10+ years overall IT experience Good to Have: . AWS Bedrock / Google V...GenAIAWS BedrockLLMRAGGenAI ArchitectAzure AI SearchLLMOpsLangChain1 Day Ago\nSave\nHide\n\nG5 G6 IT Manager Supply Chain Engineering\n\nClient of Sampoorna Consultants Pvt. Ltd\nPosted by Sampoorna Consultants\n15-20 YrsNot disclosedChennai\nG5/G6 - IT Manager Supply Chain Engineering - J50638Role & responsibilities IT Manager Supply Chain Engineering to provide strong people leadership, delivery management, and execution oversight across Supply Chain SDS teams.This role will be respo...JavaSupply ChainobservabilitySupply chain managementManagementSupplyEngineering1 Day Ago\nSave\nHide\n\nSenior AI Architect\n\nTech Mahindra\n3.3\n47051 Reviews\n15-24 Yrs35-45 Lacs PAPune, Chennai, Hyderabad\nPosition - Senior Enterprise AI Architect GenAI, Agentic AI & Enterprise ApplicationsLocation : Pune / Bangalore / Hyderabad / Chennai (Hybrid / Work from Office as per project requirement)Experience : 15∩┐╜25 YearsAbout the RoleWe are looking for a...Enterprise ArchitectureAgentic AIGenAIAi StrategyBusiness TransformationPlatform IntegrationArtificial IntelligenceSenior1 Day Ago\nSave\nHide\n\nEnterprise Multi-Solution Architect\n\nCognizant\n3.7\n66140 Reviews\n15-21 YrsNot disclosedHybrid - Bengaluru, Chennai\nRequired Experience . 15+ years of enterprise technology experience, including significant experience as a Multi-Solution Architect, Enterprise Architect, Consulting Architect or Chief ArchitectDemonstrated ability to work across multiple technolo...Enterprise ArchitectureDigital Experience PlatformMarTechPersonalizationGenrative AiArtificial IntelligenceCMSCommerce1 Day Ago\nSave\nHide\n\nCore Gen AI / Generative AI Architect- Healthcare\n\nPwC\n3.3\n14140 Reviews\n15-24 YrsNot disclosedHybrid - Kolkata, Bengaluru, Hyderabad\nRole & responsibilities Setting strategic direction for generative AI architecture across client engagements and identifying opportunities to scale solutions- Leading design of Gen AI platforms, reference architectures, and cognitive automation pa...Agentic AiGen AIHealthcareLife SciencesClinicalScienceArtificial IntelligenceGen1 Day Ago\nSave\nHide\nAre these jobs relevant for you?\nYes\nNo\n\nArchitect/Lead AI Engineer (Agentic AI)\n\nIntersoft Data Labs\n3.5\n259 Reviews\n11-19 YrsNot disclosedRemote\nJava : Strong experience for building enterprise-grade backend services and integrating AI into legacy systemsExperience: Typically 3+ y
+[0m
+Tab is in background. Need to switch_tab first per the error message.
+[0m$ [0mpython -c "
+import sys, json, time
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+System.Management.Automation.RemoteException
+c = Agent360Client()
+c.start()
+time.sleep(1)
+tabs = c.list_tabs()
+print('TABS:', json.dumps(tabs, default=str))
+if tabs:
+    # Switch to the tab first
+    switched = c.switch_tab(tabs[0]['id'])
+    print('SWITCHED:', json.dumps(switched, default=str))
+    time.sleep(2)
+    # Now click
+    click = c.click('text=GenAI Architect | Generative AI | LLM | RAG | Agentic AI')
+    print('CLICK:', json.dumps(click, default=str))
+    time.sleep(3)
+    tabs = c.list_tabs()
+    print('TABS after:', json.dumps(tabs, default=str))
+    if tabs:
+        content = c.get_content()
+        print('CONTENT (first 3000):', content[:3000])
+c.close()
+"
+TABS: []
+[0m
+Extension unbound again. Re-binding with screenshot.
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/mnjuser/recommendedjobs"}
+[0mΓÜÖ [0mbrowser-mcp_browser_click {"selector":"text=GenAI Architect | Generative AI | LLM | RAG | Agentic AI"}
+[0mΓÜÖ [0mbrowser-mcp_browser_switch_tab {"tab_id":826635911}
+[0mΓÜÖ [0mbrowser-mcp_browser_click {"selector":"text=GenAI Architect | Generative AI | LLM | RAG | Agentic AI"}
+Mouse path times out per ┬º3.1/┬ºPACE.md. Using JS click via execute_script.
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const els = Array.from(document.querySelectorAll(\"*\")); const match = els.find(el => el.textContent && el.textContent.includes(\"GenAI Architect\") && el.textContent.includes(\"Generative AI\") && el.tagName === \"ARTICLE\"); if (match) { match.click(); return {clicked: true, class: match.className}; } return {clicked: false}; })()"}
+JS click worked. Checking page content.
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+Page didn't navigate. The article onclick may not trigger navigation. Finding the link inside the job card.
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const article = Array.from(document.querySelectorAll(\"article.jobTuple\")).find(el => el.textContent.includes(\"GenAI Architect\")); if (!article) return {found: false}; const link = article.querySelector(\"a[href*='job-apply'], a[href*='/job-detail']\"); if (link) { link.click(); return {found: true, href: link.href, clicked: true}; } const allLinks = article.querySelectorAll(\"a\"); return {found: true, linkCount: allLinks.length, links: Array.from(allLinks).map(l => ({href: l.href, text: l.textContent.slice(0,80)}))}; })()"}
+No links inside article. The onclick handler handles navigation. Trying keyboard activation.
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const article = Array.from(document.querySelectorAll(\"article.jobTuple\")).find(el => el.textContent.includes(\"GenAI Architect\")); if (!article) return {found: false}; console.log(\"onclick attr:\", article.onclick); console.log(\"dataset:\", article.dataset); article.focus(); return {found: true, onclick: article.onclick ? article.onclick.toString().slice(0,200) : null, dataset: article.dataset}; })()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_press_key {"key":"Enter"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+Still not navigating. Let me check for job ID/data attributes to construct the detail URL.
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const article = Array.from(document.querySelectorAll(\"article.jobTuple\")).find(el => el.textContent.includes(\"GenAI Architect\")); if (!article) return {found: false}; const attrs = {}; for (const attr of article.attributes) { attrs[attr.name] = attr.value; } return {found: true, attrs, outerHTML: article.outerHTML.slice(0,2000)}; })()"}
+Found `data-job-id="051026007395"`. Navigating directly to job detail page.
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/job-detail/051026007395"}
+404. Trying different URL pattern.
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/job-listings/GenAI-Architect-Generative-AI-LLM-RAG-Agentic-AI-Connect-iO-051026007395"}
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/mnjuser/job-apply/051026007395"}
+Redirected to login. Session may have expired. Let me check the job card for an Apply button.
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/mnjuser/recommendedjobs"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const article = Array.from(document.querySelectorAll(\"article.jobTuple\")).find(el => el.textContent.includes(\"GenAI Architect\")); if (!article) return {found: false}; const buttons = article.querySelectorAll(\"button, a\"); return {found: true, buttons: Array.from(buttons).map(b => ({tag: b.tagName, class: b.className, text: b.textContent.trim().slice(0,80), href: b.href, onclick: b.onclick ? true : false}))}; })()"}
+No buttons inside. Trying click on the title element specifically.
+[0mΓÜÖ [0mbrowser-mcp_browser_click {"selector":"p.title.ellipsis.typ-16Bold"}
+[0mΓÜÖ [0mbrowser-mcp_browser_switch_tab {"tab_id":826635911}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const title = document.querySelector(\"p.title.ellipsis.typ-16Bold\"); if (title && title.textContent.includes(\"GenAI Architect\")) { title.click(); return {clicked: true, text: title.textContent}; } return {clicked: false}; })()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"max_chars":5000,"format":"text"}
+Click on title didn't navigate. Checking for checkbox + bulk apply pattern.
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const article = Array.from(document.querySelectorAll(\"article.jobTuple\")).find(el => el.textContent.includes(\"GenAI Architect\")); if (!article) return {found: false}; const checkbox = article.querySelector(\"input[type=checkbox], i.naukicon-ot-checkbox\"); const saveBtn = article.querySelector(\"button, .saveJobContainer\"); return {found: true, checkbox: checkbox ? {tag: checkbox.tagName, class: checkbox.className, type: checkbox.type} : null, saveBtn: saveBtn ? {tag: saveBtn.tagName, class: saveBtn.className, text: saveBtn.textContent} : null}; })()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const btns = Array.from(document.querySelectorAll(\"button, a, [role=button]\")); const applyBtns = btns.filter(b => b.textContent && (b.textContent.includes(\"Apply\") || b.textContent.includes(\"apply\"))); return applyBtns.map(b => ({tag: b.tagName, class: b.className, text: b.textContent.trim().slice(0,100), href: b.href, id: b.id})); })()"}
+Found the bulk Apply button. Clicking checkbox on GenAI Architect job, then the Apply button.
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const article = Array.from(document.querySelectorAll(\"article.jobTuple\")).find(el => el.textContent.includes(\"GenAI Architect\")); if (!article) return {found: false}; const checkbox = article.querySelector(\"i.naukicon-ot-checkbox\"); if (checkbox) { checkbox.click(); return {checkboxClicked: true}; } return {checkboxClicked: false}; })()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const btn = document.querySelector(\"button.multi-apply-button\"); if (btn) { btn.click(); return {clicked: true, text: btn.textContent}; } return {clicked: false}; })()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"max_chars":5000,"format":"text"}
+Button text changed to "Apply 1 Job" but no navigation. Checking for modal/dialog.
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const modals = document.querySelectorAll(\"[role=dialog], .modal, .overlay, [class*=modal], [class*=overlay], [class*=dialog]\"); return Array.from(modals).map(m => ({class: m.className, visible: m.offsetWidth > 0 && m.offsetHeight > 0, text: m.textContent.slice(0,200)})); })()"}
+[91m[1mError: [0m{"message":"Service temporarily overloaded","type":"service_unavailable","code":503}
+[0m
+> build ┬╖ nvidia/nemotron-3-ultra-550b-a55b
+[0m
+[0mΓåÆ [0mRead MISSION-RUN.txt
+[0mΓåÆ [0mRead docs/AGENTS-EMPLOYMENT.md
+[0mΓåÆ [0mRead docs/EMPLOYMENT-LANE-MISSION.md
+[0mΓåÆ [0mRead docs/PACE.md
+[0mΓåÆ [0mRead evidence/employment-lane/ledger.tsv
+Now I have the full context. The ledger shows profile work is complete (100%), but the apply flow for MATCHED jobs hasn't been fully completed with verification. The first NON-OK is that we have many MATCHED jobs but no verified APPLIED with confirmation in application history.
+
+Let me start by launching Profile 17 and proving the lane.
+[0m
+[0m$ [0mpython D:\anonym\war-log\launch_profile17.py "https://www.naukri.com/mnjuser/recommendedjobs"
+Launched Profile 17 (PID 14700) with URL: https://www.naukri.com/mnjuser/recommendedjobs
+[0m
+[0m$ [0mpython D:\anonym\war-log\test_agent360_live.py
+C:\Users\Admin\AppData\Local\Programs\Python\Python311\python.exe: can't open file 'D:\\anonym\\war-log\\test_agent360_live.py': [Errno 2] No such file or directory
+[0m
+[0mΓ£▒ [0mGlob "**/test_agent360*.py"[90m in D:/anonym ┬╖ 2 matches[0m
+[0m
+[0m$ [0mpython D:\anonym\test_agent360_simple.py
+File "D:\anonym\test_agent360_simple.py", line 13
+    from war-log.agent360_client import Agent360Client
+            ^
+SyntaxError: invalid syntax
+[0m
+[0m$ [0mpython D:\anonym\war-log\agent360_client.py
+(no output)
+[0m
+[0mΓÜÖ [0mbrowser-mcp_browser_list_tabs Unknown
+[0mΓÜÖ [0mbrowser-mcp_browser_screenshot {"path":"D:\\anonym\\delivery\\kilo-bridge-setup\\evidence\\employment-lane\\lane-prove-20261007.png"}
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/mnjuser/recommendedjobs"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":10000}
+[0mΓÜÖ [0mbrowser-mcp_browser_click {"selector":"text=GenAI Architect | Generative AI | LLM | RAG | Agentic AI"}
+[0mΓÜÖ [0mbrowser-mcp_browser_switch_tab {"tab_id":826636168}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => {\n  const links = Array.from(document.querySelectorAll('a'));\n  const target = links.find(a => a.textContent.includes('GenAI Architect') && a.textContent.includes('Connect iO'));\n  if (target) {\n    target.click();\n    return 'clicked: ' + target.href;\n  }\n  return 'not found';\n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"selector":"button","format":"text"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"selector":"body","format":"text","max_chars":15000}
+[0mΓÜÖ [0mbrowser-mcp_browser_click {"selector":"text=Save"}
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/mnjuser/recommendedjobs"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => {\n  const allText = document.body.innerText;\n  const lines = allText.split('\\n');\n  let idx = -1;\n  for (let i = 0; i < lines.length; i++) {\n    if (lines[i].includes('GenAI Architect') && lines[i].includes('Connect iO')) {\n      idx = i;\n      break;\n    }\n  }\n  if (idx === -1) return 'job not found';\n  // Look around for Apply button\n  const context = lines.slice(Math.max(0, idx-5), idx+15).join('\\n');\n  return context;\n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => {\n  const allText = document.body.innerText;\n  const matches = allText.match(/GenAI Architect.*?Connect/);\n  return matches ? matches[0] : 'no match';\n})()"}
+[91m[1mError: [0mToo Many Requests: {"status":429,"title":"Too Many Requests"}
+[0m
+> build ┬╖ nvidia/nemotron-3-ultra-550b-a55b
+[0m
+[0mΓåÆ [0mRead MISSION-RUN.txt
+[0mΓåÆ [0mRead docs/AGENTS-EMPLOYMENT.md
+[0mΓåÆ [0mRead docs/EMPLOYMENT-LANE-MISSION.md
+[0mΓåÆ [0mRead docs/PACE.md
+[0mΓåÆ [0mRead evidence/employment-lane/ledger.tsv
+Now I have the full picture. Let me check the current browser state and find the first MATCHED job that needs to be applied to. Based on the ledger, rows 81-92 show many MATCHED jobs that were only read/gated but not applied to. The GenAI Architect (score 10) and Architect/Lead AI Engineer (score 7) are strong matches.
+
+Let me start by launching Profile 17 and verifying the session.
+[0m
+[0m$ [0mpython D:\anonym\delivery\kilo-bridge-setup\war-log\launch_profile17.py "https://www.naukri.com/mnjuser/recommendedjobs"
+C:\Users\Admin\AppData\Local\Programs\Python\Python311\python.exe: can't open file 'D:\\anonym\\delivery\\kilo-bridge-setup\\war-log\\launch_profile17.py': [Errno 2] No such file or directory
+[0m
+[0mΓ£▒ [0mGlob "**/launch_profile17.py"[90m 0 matches[0m
+[0mΓ£▒ [0mGlob "**/*launch*profile*.py"[90m 0 matches[0m
+[0mΓ£▒ [0mGlob "**/*launch*.py"[90m 0 matches[0m
+[0m
+[0m$ [0mls D:\anonym\war-log\*.py
+...output truncated...
+System.Management.Automation.RemoteException
+Full output saved to: C:\Users\Admin\.local\share\opencode\tool-output\tool_1146c87a8001H5KlazprBq86F3
+System.Management.Automation.RemoteException
+-a----         9/22/2026   6:04 AM            825 process_mission.py                                                   
+-a----         9/18/2026  10:03 AM           8620 process_requests.py                                                  
+-a----         9/30/2026   2:24 PM           7817 publish_all_remaining_slots_for_real.py                              
+-a----         9/30/2026   2:16 PM           8017 publish_and_verify_real_url.py                                       
+-a----         9/30/2026  12:37 PM           8469 publish_ases_post.py                                                 
+-a----         9/30/2026   9:13 AM          15245 publish_ikon_masterstroke.py                                         
+-a----         9/30/2026   2:20 PM           8027 publish_pristine_with_urn_check.py                                   
+-a----         9/30/2026   4:44 PM          10194 publish_profile17_slot.py                                            
+-a----         9/30/2026   1:45 PM           8227 publish_scheduled_posts.py                                           
+-a----         9/30/2026   4:50 PM          10078 publish_slot_perfect.py                                              
+-a----         9/30/2026   4:06 PM          11048 publish_surgical_wound_post.py                                       
+-a----         9/30/2026   3:22 AM           7132 publish_v1_now.py                                                    
+-a----         9/30/2026   3:39 AM           7705 publish_v3_e2e.py                                                    
+-a----         9/30/2026   3:19 AM          10606 publish_vertical_complete.py                                         
+-a----         10/3/2026   6:29 PM           2686 pull_and_play.py                                                     
+-a----         10/3/2026   3:16 PM           2688 pull_say_and_play.py                                                 
+-a----         9/30/2026   3:15 PM           4647 purge_broken_empty_posts.py                                          
+-a----         9/30/2026   1:54 PM           7821 purge_drafts_and_post.py                                             
+-a----         9/14/2026   4:17 AM            569 push_builders.py                                                     
+-a----         10/1/2026  12:45 PM            737 query_verified.py                                                    
+-a----         10/6/2026  10:47 AM           2201 race_test.py                                                         
+-a----         10/6/2026   2:00 PM           5603 rca_fix_mmk.py                                                       
+-a----         10/6/2026   1:57 PM           8720 rca_funnel_audit.py                                                  
+-a----         9/28/2026  11:08 PM           3729 readback_probe.py                                                    
+-a----         9/26/2026   4:25 PM            604 read_accenture_email.py                                              
+-a----         9/29/2026   3:20 AM           3592 read_session_db.py                                                   
+-a----         9/18/2026   9:17 AM            416 read_settings.py                                                     
+-a----         9/30/2026   9:24 AM           2529 read_top_requests.py                                                 
+-a----         9/25/2026   3:11 PM           2861 rebuild_all_7lanes_mp4.py                                            
+-a----         10/6/2026   1:55 PM          13551 rebuild_catalogue.py                                                 
+-a----         9/21/2026   6:17 PM            569 recon1.py                                                            
+-a----         9/21/2026   6:18 PM            676 recon2.py                                                            
+-a----         9/21/2026   6:18 PM            693 recon3.py                                                            
+-a----         9/21/2026   6:19 PM            659 recon4.py                                                            
+-a----         9/21/2026   6:20 PM            791 recon5.py                                                            
+-a----         9/24/2026   9:06 PM          10900 record_action_cut_video.py                                           
+-a----         9/25/2026  12:11 PM           7569 record_live_e2e_mission.py                                           
+-a----         9/25/2026   6:00 PM           9056 record_master_headless_motion.py                                     
+-a----         9/24/2026   8:34 PM           7586 record_mission_video.py                                              
+-a----         9/24/2026   9:28 PM          14405 record_satisfying_e2e_mission.py                                     
+-a----         9/29/2026   1:24 AM           3035 recount_loc.py                                                       
+-a----         9/29/2026   5:55 PM           1895 recover_crowdfund.py                                                 
+-a----         9/29/2026   3:21 AM           2366 recover_orders.py                                                    
+-a----         10/1/2026   4:29 PM            900 relay_say.py                                                         
+-a----         10/6/2026   2:09 PM           3089 repair_ledger_mmk.py                                                 
+-a----         10/1/2026   3:55 AM           4655 reply_watch_imap.py                                                  
+-a----         9/30/2026   1:38 PM           8704 republish_ases_perfect.py                                            
+-a----         9/30/2026   2:53 PM            679 reset_browser_tab.py                                                 
+-a----         9/26/2026   3:47 AM            912 restore_chrome.py                                                    
+-a----         10/6/2026   3:07 PM           4975 restore_gate_and_exempt_emergency.py                                 
+-a----         10/3/2026   1:44 PM           3777 run_attended_turn.py                                                 
+-a----         9/25/2026   3:02 PM          11080 run_live_e2e_demo.py                                                 
+-a----         9/24/2026   4:50 PM           8772 run_phase0_mprog.py                                                  
+-a----         9/24/2026   4:53 PM          11606 run_phase1_recon.py                                                  
+-a----         9/26/2026   4:20 AM          14425 run_phase2_bulletproof.py                                            
+-a----         9/26/2026   4:26 AM          15657 run_phase2_cdp.py                                                    
+-a----         9/26/2026   4:16 AM          14526 run_phase2_final.py                                                  
+-a----         9/24/2026   5:10 PM          10878 run_phase2_proceed.py                                                
+-a----         9/26/2026   4:29 AM          11570 run_phase2_pyauto.py                                                 
+-a----         9/26/2026   4:07 AM          11589 run_phase2_seeker_dms.py                                             
+-a----         9/26/2026   4:13 AM          14314 run_phase2_seeker_dms_fixed.py                                       
+-a----         9/26/2026   4:24 AM          15995 run_phase2_v2.py                                                     
+-a----         9/25/2026   5:14 PM          10316 run_single_tab_headless_mission.py                                   
+-a----         10/1/2026   4:54 PM            725 run_target.py                                                        
+-a----         9/22/2026   7:17 PM           6167 run_triage_pass.py                                                   
+-a----         10/6/2026   4:47 PM           7841 sales_drive_v2_engine.py                                             
+-a----         9/29/2026   2:38 AM           2095 sanitize_measurement.py                                              
+-a----         9/30/2026   3:39 PM           4209 scan_and_delete_by_urn.py                                            
+-a----         9/26/2026   4:42 PM            815 scan_fast_wifi.py                                                    
+-a----         9/26/2026   6:01 AM           2630 scan_more_connections.py                                             
+-a----         9/26/2026   4:41 PM            975 scan_nokia_ports.py                                                  
+-a----         9/21/2026   5:36 PM           2068 scratch_triage.py                                                    
+-a----         9/26/2026   5:55 AM           2965 scroll_and_scan_threads.py                                           
+-a----         10/7/2026   7:44 AM            817 search_open_to_work.py                                               
+-a----         9/30/2026   9:36 AM            583 search_phone_leads.py                                                
+-a----         9/18/2026   9:19 AM            277 search_protocol.py                                                   
+-a----         10/7/2026   7:42 AM           1119 search_seekers.py                                                    
+-a----         9/26/2026   4:24 PM            956 search_wasim_gmail.py                                                
+-a----         10/6/2026   4:47 PM           3419 seeker_dm_499.py                                                     
+-a----         9/15/2026   8:54 AM           2393 send-prasun.py                                                       
+-a----         9/15/2026   8:56 AM           3586 send-prasun2.py                                                      
+-a----         9/15/2026   9:00 AM           3450 send-prasun3.py                                                      
+-a----         9/15/2026  10:52 AM           2005 send-prasun4.py                                                      
+-a----         9/30/2026   7:38 AM           5245 send_active_inmail.py                                                
+-a----         10/1/2026   1:17 PM           2345 send_adstacks.py                                                     
+-a----         9/28/2026  11:26 PM           4289 send_arjun.py                                                        
+-a----         9/28/2026  11:31 PM           3690 send_arjun2.py                                                       
+-a----         9/28/2026  10:54 AM           3669 send_arjun_dm.py                                                     
+-a----         9/30/2026   3:09 AM           4748 send_arjun_email_20260930.py                                         
+-a----         10/7/2026   7:48 AM           4569 send_connect_notes.py                                                
+-a----         9/26/2026   4:48 AM           6632 send_dm1_aditya_verified.py                                          
+-a----         9/26/2026   6:10 AM           7204 send_dm_shivani.py                                                   
+-a----         9/30/2026   8:25 AM           2522 send_full_jp.py                                                      
+-a----         9/30/2026   7:39 AM           5841 send_inmail_direct.py                                                
+-a----         9/30/2026   8:36 AM           4785 send_jp_retraction.py                                                
+-a----         9/30/2026   9:13 AM          12111 send_karan_scope2_20260930.py                                        
+-a----         9/30/2026   3:14 AM           8759 send_karan_scope_20260930.py                                         
+-a----         9/24/2026   7:03 PM           7690 send_mainak_click_bog.py                                             
+-a----         9/24/2026   7:06 PM           8757 send_mainak_complete.py                                              
+-a----         9/24/2026   6:46 PM           8229 send_mainak_final.py                                                 
+-a----         9/24/2026   6:41 PM           8056 send_mainak_inbox.py                                                 
+-a----         9/24/2026   6:39 PM           7925 send_mainak_now.py                                                   
+-a----         9/24/2026   6:54 PM           7570 send_mainak_perfect.py                                               
+-a----         9/24/2026   6:58 PM           8624 send_mainak_poll.py                                                  
+-a----         9/24/2026   5:30 PM           9803 send_mprog_and_mainak.py                                             
+-a----         9/24/2026   5:53 PM           7574 send_mprog_clean.py                                                  
+-a----         9/24/2026   5:51 PM           7218 send_mprog_direct.py                                                 
+-a----         9/24/2026   5:49 PM           7531 send_now.py                                                          
+-a----         9/14/2026  10:28 AM           2966 send_prasun.py                                                       
+-a----         9/25/2026   5:44 PM            898 send_praveen_proposal.py                                             
+-a----         10/1/2026  11:17 PM          13882 send_proposals.py                                                    
+-a----         9/28/2026   3:51 PM           5511 send_rank12_simple.py                                                
+-a----         9/28/2026   3:44 PM           6922 send_rank12_today.py                                                 
+-a----         9/26/2026   5:30 AM          11930 send_services_leads_continuous.py                                    
+-a----         9/28/2026   4:54 PM           5319 send_today_robust.py                                                 
+-a----         9/29/2026   6:08 AM          13367 service-desk.py                                                      
+-a----         9/28/2026   1:20 PM           2852 show-session-todos.py                                                
+-a----         9/30/2026   9:25 AM          12023 showcase_app_decoded.py                                              
+-a----         9/30/2026   9:26 AM          28862 showcase_app_upgraded.py                                             
+-a----         9/14/2026   4:19 AM            317 show_builders.py                                                     
+-a----         9/25/2026  10:30 AM           2056 show_chrome_prasun.py                                                
+-a----         10/1/2026   9:28 PM            511 show_requests.py                                                     
+-a----         9/21/2026   2:06 PM           1546 site-stats.py                                                        
+-a----         9/29/2026   3:55 AM           1110 smtp_login_probe.py                                                  
+-a----         9/29/2026   8:07 AM           2373 smtp_loop.py                                                         
+-a----         9/29/2026   3:57 AM            994 smtp_queue_check.py                                                  
+-a----         9/29/2026   3:42 AM           1073 smtp_read.py                                                         
+-a----         9/29/2026   3:43 AM           1598 smtp_read2.py                                                        
+-a----         9/29/2026   1:45 PM          26108 smtp_send.py                                                         
+-a----         9/29/2026   3:31 AM           6167 smtp_setup.py                                                        
+-a----         9/29/2026   3:34 AM           4705 smtp_setup3.py                                                       
+-a----         9/29/2026   3:46 AM           5360 smtp_setup4.py                                                       
+-a----         9/29/2026   3:48 AM           5283 smtp_setup5.py                                                       
+-a----         9/29/2026  12:06 AM           1598 smtp_setup_probe.py                                                  
+-a----         10/6/2026   7:27 PM          10949 sos_watch.py                                                         
+-a----         9/26/2026   4:20 PM          11610 standing_sales_monitor.py                                            
+-a----         10/6/2026   2:14 PM           3825 stt_cpu_bench.py                                                     
+-a----         9/25/2026   5:54 PM           4326 submit_aliakbar_proposal.py                                          
+-a----         9/30/2026   7:18 AM           5243 submit_avinash_proposal.py                                           
+-a----         9/30/2026   3:10 AM           8458 submit_comment_proper.py                                             
+-a----         9/30/2026   7:11 AM           4754 submit_manish_proposal.py                                            
+-a----         9/26/2026   3:57 AM           2990 submit_open_dialog.py                                                
+-a----         9/25/2026   5:45 PM           4900 submit_praveen_proposal_e2e.py                                       
+-a----         9/30/2026   7:12 AM           5182 submit_radhika_proposal.py                                           
+-a----         9/30/2026   7:25 AM           5898 submit_sailakshmi_proposal.py                                        
+-a----         9/30/2026   9:31 AM           5568 submit_yasaswa_exact.py                                              
+-a----         9/30/2026   1:36 PM          11374 surgical_ases_fix_and_clean_all.py                                   
+-a----         9/30/2026   1:32 PM           7552 surgical_fix_both_posts.py                                           
+-a----         10/1/2026   1:10 AM          20399 surgical_poster_with_magic_tagging.py                                
+-a----         9/30/2026   1:53 PM           7925 surgical_publish_perfect_final.py                                    
+-a----         9/15/2026   2:50 AM           1196 swarup-ask.py                                                        
+-a----         9/15/2026   3:02 AM           1718 swarup-full.py                                                       
+-a----         9/15/2026   3:00 AM           1796 swarup-phone.py                                                      
+-a----         9/25/2026  10:27 PM           2432 sweep_live_now.py                                                    
+-a----         9/30/2026   7:05 AM           3773 sweep_other_lanes.py                                                 
+-a----         9/27/2026   6:17 PM           1647 sweep_step1_details.py                                               
+-a----         9/27/2026   6:21 PM           1071 sweep_step1_dom.py                                                   
+-a----         9/27/2026   6:06 PM           2319 sweep_step1_driver.py                                                
+-a----         9/14/2026   9:59 AM            596 sync_v8.py                                                           
+-a----         9/30/2026   8:46 AM          14169 tag_autocomplete.py                                                  
+-a----         9/30/2026   8:44 AM           2954 tag_debug.py                                                         
+-a----         9/30/2026   8:51 AM          10252 tag_fix.py                                                           
+-a----         9/30/2026   8:55 AM          16021 tag_fix_v2.py                                                        
+-a----         9/26/2026   4:39 AM           1925 take_screen.py                                                       
+-a----         9/21/2026   1:35 PM           1674 test-events.py                                                       
+-a----         9/21/2026   1:37 PM           1678 test-events2.py                                                      
+-a----         9/21/2026   1:40 PM           2024 test-mission.py                                                      
+-a----         9/21/2026   1:36 PM           1138 test-one.py                                                          
+-a----         9/21/2026   1:42 PM           1530 test-raw.py                                                          
+-a----         9/21/2026   1:32 PM            800 test-stream.py                                                       
+-a----         10/6/2026  10:54 AM           1045 think_direct.py                                                      
+-a----         10/6/2026  10:51 AM           1318 think_test.py                                                        
+-a----         10/6/2026  10:53 AM            956 think_test2.py                                                       
+-a----         9/19/2026   7:12 PM           9800 thread-weaver-v3.py                                                  
+-a----         9/29/2026   8:59 AM          10478 thread-weaver.py                                                     
+-a----         9/26/2026  11:35 PM           4120 tick-triage-prep.py                                                  
+-a----         9/28/2026  11:38 PM          11615 tick-triage.py                                                       
+-a----         9/28/2026  10:06 AM           2379 tick_fresh_inbound.py                                                
+-a----         9/28/2026  10:42 AM           1965 tick_probe_threads.py                                                
+-a----         9/28/2026  11:44 AM           2246 tick_read_thread.py                                                  
+-a----         9/28/2026  11:01 AM           6358 tick_send.py                                                         
+-a----         9/26/2026   3:52 AM           2608 trigger_file_upload_now.py                                           
+-a----         9/26/2026   3:45 AM           1537 try_drive_file_input.py                                              
+-a----         9/12/2026   7:22 PM            794 tune-diag-maker.py                                                   
+-a----         9/30/2026  11:36 PM           7069 uipw.py                                                              
+-a----         9/30/2026  10:21 PM           1171 ui_click.py                                                          
+-a----         9/30/2026  10:19 PM            972 ui_focus.py                                                          
+-a----         9/30/2026  10:35 PM            862 ui_geom.py                                                           
+-a----         9/30/2026  10:30 PM           1643 ui_geturl.py                                                         
+-a----         9/30/2026  10:17 PM           1703 ui_nav.py                                                            
+-a----         9/30/2026  10:20 PM           2283 ui_paste.py                                                          
+-a----         9/30/2026  10:34 PM           1245 ui_scroll.py                                                         
+-a----         9/30/2026  10:17 PM            231 ui_shot.py                                                           
+-a----         9/27/2026   6:08 AM            534 unit_proof.py                                                        
+-a----         9/26/2026   3:53 AM           2242 upload_file_exact.py                                                 
+-a----         9/26/2026   3:24 AM           1402 upload_to_drive.py                                                   
+-a----         9/26/2026   3:50 AM           3017 upload_v2_e2e_gui.py                                                 
+-a----         9/26/2026   3:46 AM           4051 upload_v2_step1.py                                                   
+-a----         9/26/2026   3:51 AM           3043 upload_v2_to_drive_clean.py                                          
+-a----         9/29/2026   2:20 AM           3282 vendor_audit.py                                                      
+-a----         9/28/2026   3:27 PM           1057 verify_arjun.py                                                      
+-a----         9/28/2026  12:54 PM           4730 verify_arjun_readback.py                                             
+-a----         9/25/2026   5:47 PM            783 verify_praveen_disappeared.py                                        
+-a----         9/26/2026   4:38 AM           3476 verify_thread_click.py                                               
+-a----         10/6/2026   2:21 AM           5988 voice_agent_global_outreach.py                                       
+-a----         9/14/2026  12:18 AM            654 wa-didi-fiber-send.py                                                
+-a----         9/26/2026   3:57 AM           3508 wait_and_get_share_link.py                                           
+-a----         9/23/2026   4:56 AM           4252 watchdog-all.py                                                      
+-a----         9/24/2026   1:32 AM            752 watchdog-nanny.py                                                    
+-a----         9/17/2026  11:42 PM           4781 watcher_manager.py                                                   
+-a----         10/6/2026   7:27 PM           8254 wa_biz_watch.py                                                      
+-a----         10/6/2026   3:08 PM           6559 wa_direct_send.py                                                    
+-a----         10/5/2026  11:33 PM           5120 wa_final3_fire.py                                                    
+-a----         10/6/2026   1:15 AM           5539 wa_fresh2b_fire.py                                                   
+-a----         10/6/2026   1:13 AM           4533 wa_fresh2_fire.py                                                    
+-a----         10/1/2026   5:23 PM          13734 wa_hunt_queue.py                                                     
+-a----         10/1/2026   7:36 PM           8416 wa_iqoo_read.py                                                      
+-a----         10/5/2026  11:43 PM           4834 wa_lane1_final2.py                                                   
+-a----         10/5/2026  11:49 PM           5396 wa_lethal_go.py                                                      
+-a----         10/6/2026   1:49 AM           3568 wa_manifold_reply.py                                                 
+-a----         10/1/2026   4:53 AM           4709 wa_presence_probe.py                                                 
+-a----         10/1/2026   4:58 AM           8435 wa_publish_hunt.py                                                   
+-a----         10/2/2026  12:29 PM           2212 wa_read_chatlist.py                                                  
+-a----         10/6/2026   3:42 PM           3393 wa_read_thread.py                                                    
+-a----         10/7/2026   3:35 AM           5407 wa_reengage_sugar.py                                                 
+-a----         10/6/2026   1:00 AM           1145 wa_reverify2.py                                                      
+-a----         10/5/2026  10:51 PM           6866 wa_sme_fire_b1.py                                                    
+-a----         10/5/2026  11:03 PM           5804 wa_sme_fire_rest.py                                                  
+-a----         10/5/2026  10:55 PM           4976 wa_sme_retry_b1.py                                                   
+-a----         10/5/2026  10:50 PM            947 wa_sme_verify_b1.py                                                  
+-a----         10/1/2026   4:57 PM           3825 wa_stage.py                                                          
+-a----         10/6/2026   3:07 PM          14806 wa_strike_phone.py                                                   
+-a----         10/5/2026  10:43 PM           2141 wa_sugar2_confirm.py                                                 
+-a----         10/1/2026   7:43 PM           6157 wa_sugardoctor_fire.py                                               
+-a----         10/5/2026  10:42 PM           5404 wa_sugardoctor_fire_v2.py                                            
+-a----         10/6/2026   1:57 AM           4511 wa_sugar_apology.py                                                  
+-a----         10/6/2026  12:56 AM           1322 wa_verify6.py                                                        
+-a----         9/24/2026   1:04 AM           4964 xtts-monitor.py                                                      
+-a----         10/1/2026   6:48 AM           5194 zz_part2.py                                                          
+-a----         10/1/2026   4:57 AM            607 _allowed_test.py                                                     
+-a----         9/29/2026   5:23 AM           1784 _analyze_match.py                                                    
+-a----         9/29/2026   8:22 AM           4463 _append44.py                                                         
+-a----         9/29/2026   9:08 AM           4071 _append446.py                                                        
+-a----         9/29/2026   1:12 PM           2130 _append45.py                                                         
+-a----         10/5/2026  11:21 PM            193 _clip_adstacks.py                                                    
+-a----         10/1/2026   2:48 AM            849 _closeall_tabs.py                                                    
+-a----         10/6/2026  11:34 AM           3935 _credit_and_who.py                                                   
+-a----         10/6/2026  11:34 AM           3065 _credit_only.py                                                      
+-a----         10/6/2026  11:35 AM           3887 _credit_sql.py                                                       
+-a----         10/1/2026   3:56 PM          17761 _curv2_164725176.py                                                  
+-a----         10/1/2026   6:27 AM           1014 _dbgprof.py                                                          
+-a----         9/29/2026   5:14 AM           1194 _debug_catalog.py                                                    
+-a----         10/1/2026   1:46 AM            682 _debug_parse.py                                                      
+-a----         10/1/2026   6:29 AM           2431 _deepscroll.py                                                       
+-a----         10/1/2026   4:59 PM            528 _demo_restart_whoami.py                                              
+-a----         10/1/2026   1:17 AM            706 _diag_mcp.py                                                         
+-a----         9/30/2026  11:53 PM            813 _enum_chrome.py                                                      
+-a----         9/30/2026  11:48 PM            529 _enum_win.py                                                         
+-a----         9/30/2026  10:58 PM            279 _fgq.py                                                              
+-a----         10/1/2026   4:55 PM           1645 _find_post_urn.py                                                    
+-a----         10/1/2026   5:22 AM           1882 _fix_demo_links.py                                                   
+-a----         10/6/2026  11:53 AM           1132 _force_attach.py                                                     
+-a----         10/6/2026  11:44 AM           2154 _gate_add_guesthouse.py                                              
+-a----         10/6/2026  11:43 AM           2860 _gate_check.py                                                       
+-a----         10/1/2026   4:58 AM           1609 _hunt_progress.py                                                    
+-a----         10/6/2026  11:40 AM           4000 _hunt_state.py                                                       
+-a----         10/1/2026   3:57 AM           4007 _imap_bodies.py                                                      
+-a----         10/6/2026  12:54 PM           3303 _job_api_probe.py                                                    
+-a----         10/1/2026   6:00 PM            443 _kalvium_probe.py                                                    
+-a----         10/6/2026  11:27 AM           2955 _lethal_ctx.py                                                       
+-a----         10/6/2026  11:28 AM           3675 _lethal_live.py                                                      
+-a----         10/6/2026  12:14 PM           2176 _li_drafts.py                                                        
+-a----         10/6/2026  11:39 AM           3577 _li_money_read.py                                                    
+-a----         10/6/2026  12:09 PM           2911 _li_posts.py                                                         
+-a----         10/6/2026  12:11 PM           3003 _li_posts2.py                                                        
+-a----         10/6/2026  12:12 PM           2259 _li_posts3.py                                                        
+-a----         10/6/2026  11:54 AM           2401 _li_read2.py                                                         
+-a----         10/6/2026  12:21 PM           3737 _li_wounded.py                                                       
+-a----         10/1/2026   6:34 AM           2655 _longpress.py                                                        
+-a----         10/1/2026   5:33 AM           2209 _mark_slots_published.py                                             
+-a----         10/6/2026   4:54 PM            835 _naukri_agent.py                                                     
+-a----         10/6/2026   5:06 PM           1583 _naukri_card.py                                                      
+-a----         10/6/2026   5:06 PM           1562 _naukri_dom.py                                                       
+-a----         10/6/2026   5:04 PM           1429 _naukri_fetch.py                                                     
+-a----         10/6/2026   4:53 PM           1146 _naukri_links.py                                                     
+-a----         10/6/2026   4:54 PM           1136 _naukri_links2.py                                                    
+-a----         10/6/2026   5:07 PM           2244 _naukri_onepass.py                                                   
+-a----         10/6/2026   5:05 PM           1158 _naukri_realinks.py                                                  
+-a----         10/6/2026   4:53 PM            974 _naukri_recs.py                                                      
+-a----         10/6/2026   5:05 PM           1225 _naukri_recs2.py                                                     
+-a----         10/6/2026   5:04 PM            836 _naukri_results.py                                                   
+-a----         10/6/2026   4:51 PM           1309 _naukri_state.py                                                     
+-a----         10/6/2026   4:51 PM           1279 _naukri_tabs.py                                                      
+-a----         10/6/2026   4:52 PM           1847 _naukri_tabs2.py                                                     
+-a----         10/1/2026   6:26 AM           2564 _nav2.py                                                             
+-a----         10/6/2026   1:59 PM           2871 _never_contacted.py                                                  
+-a----         10/1/2026   5:36 AM           4261 _nk_comment_probe.py                                                 
+-a----         10/1/2026   5:37 AM           5904 _nk_comment_type_test.py                                             
+-a----         10/1/2026   5:39 AM           6583 _nk_comment_type_test2.py                                            
+-a----         10/1/2026   5:25 AM           2044 _nk_kill_dialog.py                                                   
+-a----         10/1/2026   5:17 AM           1229 _nk_nodes.py                                                         
+-a----         10/1/2026   5:19 AM           1521 _nk_parse.py                                                         
+-a----         10/1/2026   5:21 AM           4860 _nk_prefill_test2.py                                                 
+-a----         10/1/2026   5:23 AM           4516 _nk_prefill_test4.py                                                 
+-a----         10/1/2026   5:19 AM           4072 _nk_send_test.py                                                     
+-a----         10/6/2026  12:17 PM           3164 _open2work_settings.py                                               
+-a----         10/1/2026   6:30 AM           2829 _openpost.py                                                         
+-a----         10/1/2026   2:35 AM           1484 _p2.py                                                               
+-a----         10/1/2026   4:21 PM            495 _parse_inbox.py                                                      
+-a----         10/1/2026   7:45 PM           1709 _patch_sub.py                                                        
+-a----         10/1/2026   7:50 PM           1618 _patch_sub2.py                                                       
+-a----         10/1/2026   3:56 PM          17761 _pc_441822463.py                                                     
+-a----         10/1/2026   6:30 AM            921 _postfull.py                                                         
+-a----         10/6/2026  12:13 PM           3585 _post_audit.py                                                       
+-a----         10/1/2026   4:29 AM           2077 _preflight.py                                                        
+-a----         9/29/2026   1:46 PM           1156 _preview_ideab.py                                                    
+-a----         9/29/2026   5:34 AM           1315 _preview_personal.py                                                 
+-a----         10/1/2026   4:24 PM            878 _probe_deal38.py                                                     
+-a----         10/6/2026  12:37 PM           3812 _probe_feed_dom.py                                                   
+-a----         10/6/2026   1:21 PM           3112 _probe_harvest2.py                                                   
+-a----         10/1/2026   3:55 PM           1564 _probe_mention2.py                                                   
+-a----         10/1/2026   6:23 PM            244 _probe_msg_btn.py                                                    
+-a----         10/6/2026  12:16 PM           2346 _probe_open2work.py                                                  
+-a----         10/1/2026   6:27 AM           1805 _proffull.py                                                         
+-a----         10/1/2026   4:15 AM           3521 _prov.py                                                             
+-a----         9/28/2026   2:12 AM           1182 _ps_peek_crushdb.py                                                  
+-a----         9/28/2026   2:29 AM           1956 _ps_peek_msgs.py                                                     
+-a----         9/30/2026  11:54 PM           1750 _pwshot.py                                                           
+-a----         10/6/2026  11:54 AM           2498 _read_aveek.py                                                       
+-a----         10/1/2026   4:25 PM           1023 _recon_yasaswa.py                                                    
+-a----         10/1/2026   4:56 AM            760 _robots_check.py                                                     
+-a----         9/26/2026  11:32 PM           2249 _scan_001_040.py                                                     
+-a----         9/26/2026  11:35 PM           1651 _scan_counts_fix.py                                                  
+-a----         10/1/2026   5:00 PM           4916 _screen_read.py                                                      
+-a----         10/1/2026   6:27 AM           2322 _scrollposts.py                                                      
+-a----         10/6/2026  12:07 PM           2701 _search_probe.py                                                     
+-a----         10/1/2026   4:04 AM            569 _shot.py                                                             
+-a----         10/1/2026   4:33 PM           1488 _state_probe.py                                                      
+-a----         10/1/2026   2:36 AM           1333 _t7_newtab.py                                                        
+-a----         10/6/2026  11:49 AM            782 _tabs.py                                                             
+-a----         10/1/2026   1:19 AM            683 _tab_probe.py                                                        
+-a----         10/1/2026   6:29 AM           3574 _tapallposts.py                                                      
+-a----         10/1/2026   4:52 AM           1779 _test_publish_hunt.py                                                
+-a----         10/6/2026   2:31 PM           3782 _test_watcher_fix.py                                                 
+-a----         10/1/2026   6:31 AM           1811 _thread.py                                                           
+-a----         10/3/2026   8:22 PM            757 _tl_debug.py                                                         
+-a----         10/3/2026   8:26 PM            674 _tl_debug2.py                                                        
+-a----         10/3/2026   8:27 PM            701 _tl_debug3.py                                                        
+-a----         10/3/2026   8:29 PM           1418 _tl_extract_proper.py                                                
+-a----         10/3/2026   8:15 PM           1562 _tl_imgs.py                                                          
+-a----         10/3/2026   8:34 PM            535 _tl_ocr_simple.py                                                    
+-a----         10/3/2026   8:14 PM           2905 _tl_read.py                                                          
+-a----         10/6/2026  11:41 AM           2525 _top_leads_live.py                                                   
+-a----         10/1/2026   4:33 PM           4586 _tp_mention_probe.py                                                 
+-a----         10/6/2026   4:50 PM            412 _try_browser.py                                                      
+-a----         10/6/2026   4:50 PM           1246 _try_naukri.py                                                       
+-a----         10/1/2026   4:40 AM           1983 _ui_parse.py                                                         
+-a----         10/6/2026  12:06 PM           5007 _voice_worldwide.py                                                  
+-a----         10/1/2026   3:04 AM           2293 _wa2.py                                                              
+-a----         10/1/2026   4:34 AM           3827 _wa_body_audit.py                                                    
+-a----         10/1/2026   1:43 AM           2702 _wa_bridge_probe.py                                                  
+-a----         10/1/2026   2:16 PM           2094 _wa_can_fire.py                                                      
+-a----         10/6/2026  11:32 AM           2842 _wa_chatlist_rows.py                                                 
+-a----         10/1/2026   2:13 PM           1468 _wa_clear_draft.py                                                   
+-a----         10/1/2026   1:33 AM           1441 _wa_clear_selftest.py                                                
+-a----         10/1/2026   3:33 PM            902 _wa_db_probe.py                                                      
+-a----         10/1/2026   4:02 PM           1108 _wa_declared_probe.py                                                
+-a----         10/1/2026   4:13 PM          28331 _wa_dna_gate.py                                                      
+-a----         10/1/2026   1:14 AM           3201 _wa_dom_debug.py                                                     
+-a----         10/1/2026   1:15 AM           3047 _wa_dom_debug2.py                                                    
+-a----         10/1/2026   1:57 PM            876 _wa_dump_nodes.py                                                    
+-a----         10/6/2026  11:40 AM           3254 _wa_extract.py                                                       
+-a----         10/1/2026  12:58 AM           1037 _wa_ext_state.py                                                     
+-a----         10/1/2026   2:40 AM           7442 _wa_fast.py                                                          
+-a----         10/1/2026   1:17 AM           4302 _wa_final_check.py                                                   
+-a----         10/1/2026   2:17 PM            747 _wa_full_msgs.py                                                     
+-a----         10/1/2026   7:31 PM            467 _wa_hdr.py                                                           
+-a----         10/1/2026   1:56 AM           2340 _wa_helper_test.py                                                   
+-a----         10/6/2026  11:33 AM           1411 _wa_ids.py                                                           
+-a----         10/1/2026   7:40 PM           1472 _wa_lead.py                                                          
+-a----         10/1/2026   2:10 PM            898 _wa_ledger_adstacks.py                                               
+-a----         10/1/2026  12:34 AM            988 _wa_list_probe.py                                                    
+-a----         10/1/2026  12:49 AM           1200 _wa_login_probe.py                                                   
+-a----         10/1/2026   2:54 AM           2351 _wa_one.py                                                           
+-a----         10/1/2026   3:03 AM           4013 _wa_openread.py                                                      
+-a----         10/1/2026   3:39 AM            668 _wa_parse.py                                                         
+-a----         10/1/2026   3:39 AM            937 _wa_parse2.py                                                        
+-a----         10/1/2026   3:40 AM           1070 _wa_parse3.py                                                        
+-a----         10/1/2026   2:13 PM           2857 _wa_pipeline_state.py                                                
+-a----         10/1/2026   1:05 AM           1188 _wa_porte_probe.py                                                   
+-a----         10/1/2026   2:01 PM           3082 _wa_probe.py                                                         
+-a----         10/1/2026   2:39 AM           2140 _wa_probe6.py                                                        
+-a----         10/1/2026   2:41 AM           2542 _wa_probe7.py                                                        
+-a----         10/1/2026   7:43 PM            430 _wa_prof.py                                                          
+-a----         10/1/2026   2:11 PM            666 _wa_queue_drop_painlane.py                                           
+-a----         10/1/2026   2:38 AM            805 _wa_raw.py                                                           
+-a----         10/1/2026   1:07 AM           1975 _wa_raw_probe.py                                                     
+-a----         10/1/2026   1:09 AM           2641 _wa_raw_probe2.py                                                    
+-a----         10/1/2026  12:34 AM           2151 _wa_ready_1001.py                                                    
+-a----         10/6/2026  11:31 AM           2829 _wa_read_thread.py                                                   
+-a----         10/1/2026   5:03 PM           2234 _wa_scrub_dead_demo.py                                               
+-a----         10/1/2026   3:19 AM           1034 _wa_self.py                                                          
+-a----         10/1/2026   2:20 AM           6021 _wa_selftest_send.py                                                 
+-a----         10/1/2026   3:33 PM           2963 _wa_self_read.py                                                     
+-a----         10/1/2026   2:54 AM           5015 _wa_send2.py                                                         
+-a----         10/1/2026   2:03 AM           5837 _wa_send_final.py                                                    
+-a----         10/1/2026   3:58 AM            685 _wa_state_probe.py                                                   
+-a----         10/1/2026   2:18 PM           1733 _wa_supply.py                                                        
+-a----         10/1/2026  12:39 AM           2987 _wa_targets_1001.py                                                  
+-a----         10/1/2026   1:56 PM           3015 _wa_test_prefill.py                                                  
+-a----         10/6/2026  11:38 AM           2709 _wa_thread2.py                                                       
+-a----         10/6/2026  11:36 AM           2355 _wa_thread_struct.py                                                 
+-a----         10/1/2026   4:44 AM           3393 _wa_to_mail.py                                                       
+-a----         10/1/2026   3:20 PM           2036 _wa_transcribe.py                                                    
+-a----         10/1/2026   4:11 PM           1546 _wa_unverified_probe.py                                              
+-a----         10/1/2026   2:51 AM           4062 _wa_verify.py                                                        
+-a----         10/1/2026   1:16 AM           3044 _wa_wait_ready.py                                                    
+-a----         10/1/2026  12:59 AM           1092 _wa_wake_probe.py                                                    
+-a----         10/1/2026   3:15 PM           1107 _wa_xml_text.py                                                      
+-a----         10/6/2026  11:36 AM           3438 _who_is_62894.py                                                     
+-a----         10/1/2026   4:48 AM           1670 _wire_announce.py                                                    
+-a----         10/6/2026  12:03 PM           5552 _worldwide_buyers.py                                                 
+-a----         10/6/2026  12:04 PM           4739 _worldwide_buyers2.py
+[0m
+[0m$ [0mls D:\anonym\delivery\kilo-bridge-setup\scripts\agent360_client.py
+Directory: D:\anonym\delivery\kilo-bridge-setup\scripts
+System.Management.Automation.RemoteException
+System.Management.Automation.RemoteException
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+-a----         10/7/2026   2:37 AM          29016 agent360_client.py
+[0m
+[0m$ [0mls D:\anonym\delivery\kilo-bridge-setup\scripts\
+Directory: D:\anonym\delivery\kilo-bridge-setup\scripts
+System.Management.Automation.RemoteException
+System.Management.Automation.RemoteException
+Mode                 LastWriteTime         Length Name                                                                 
+----                 -------------         ------ ----                                                                 
+d-----         10/7/2026   2:34 AM                _backup-20261007                                                     
+d-----         10/7/2026   2:54 AM                __pycache__                                                          
+-a----         10/7/2026   2:37 AM          29016 agent360_client.py                                                   
+-a----         10/7/2026   1:01 AM            450 apply_answers.txt                                                    
+-a----         9/24/2026  11:23 PM            659 install-task.ps1                                                     
+-a----         10/7/2026   2:42 AM           9572 lane_apply.py                                                        
+-a----         10/7/2026   2:36 AM           4691 lane_foundit.py                                                      
+-a----         10/7/2026   2:36 AM           3877 lane_jobs.py                                                         
+-a----         10/7/2026   2:36 AM           4323 lane_resume.py                                                       
+-a----         10/7/2026   2:43 AM          14185 lane_tools.py                                                        
+-a----         10/6/2026   7:16 PM           5942 prove_lane.py                                                        
+-a----         9/24/2026  11:23 PM           2106 self-loop.ps1                                                        
+-a----         10/7/2026  12:38 AM             26 _answers_exists.txt                                                  
+-a----         10/7/2026   1:29 AM           3156 _apply_save.py                                                       
+-a----         10/7/2026  12:37 AM            520 _apply_shots.txt                                                     
+-a----         10/7/2026  12:38 AM           1901 _body_probe.py                                                       
+-a----         10/7/2026  12:39 AM             36 _body_probe.txt                                                      
+-a----         10/7/2026  12:39 AM            156 _body_probe_q.txt                                                    
+-a----         10/7/2026  12:39 AM             28 _body_probe_run.txt                                                  
+-a----         10/7/2026   1:33 AM              0 _bp_err.txt                                                          
+-a----         10/7/2026   1:34 AM           2787 _bp_out.txt                                                          
+-a----         10/7/2026   1:32 AM           3462 _btn_probe.py                                                        
+-a----         10/7/2026  12:28 AM             53 _cleanup_out.txt                                                     
+-a----         10/7/2026  12:28 AM           1705 _cleanup_verify.txt                                                  
+-a----         10/7/2026  12:29 AM           1286 _cleanup_verify2.txt                                                 
+-a----         10/7/2026   1:10 AM              0 _diag_err.txt                                                        
+-a----         10/7/2026   1:13 AM            820 _diag_out.txt                                                        
+-a----         10/7/2026   1:10 AM           2158 _diag_page.py                                                        
+-a----         10/7/2026   1:14 AM              0 _dom_err.txt                                                         
+-a----         10/7/2026   1:15 AM            260 _dom_out.txt                                                         
+-a----         10/7/2026   1:13 AM           2718 _dom_probe.py                                                        
+-a----         10/7/2026  12:30 AM            224 _drivers.txt                                                         
+-a----         10/7/2026  12:27 AM           5987 _dump_82_207.txt                                                     
+-a----         10/7/2026  12:37 AM           1522 _dump_fq.txt                                                         
+-a----         10/7/2026  12:41 AM           2090 _dump_fq2.txt                                                        
+-a----         10/7/2026  12:46 AM           1904 _dump_region.txt                                                     
+-a----         10/7/2026  12:28 AM           4081 _dump_tail.txt                                                       
+-a----         10/7/2026  12:30 AM           3984 _evid.txt                                                            
+-a----         10/7/2026  12:40 AM             66 _findq_out.txt                                                       
+-a----         10/7/2026  12:30 AM             82 _flag.txt                                                            
+-a----         10/7/2026  12:47 AM             62 _flow_out.txt                                                        
+-a----         10/7/2026  12:47 AM           2397 _flow_verify.txt                                                     
+-a----         10/7/2026   1:31 AM              0 _la_err.txt                                                          
+-a----         10/7/2026   1:32 AM            962 _la_out.txt                                                          
+-a----         10/7/2026  12:49 AM           1804 _ledger_supersede.py                                                 
+-a----         10/7/2026  12:31 AM           3730 _ledger_tail.txt                                                     
+-a----         10/7/2026  12:49 AM           1971 _ledger_tail2.txt                                                    
+-a----         10/7/2026  12:32 AM           1684 _live_check.py                                                       
+-a----         10/7/2026  12:32 AM            355 _live_check.txt                                                      
+-a----         10/7/2026  12:32 AM             31 _live_check_run.txt                                                  
+-a----         10/6/2026   6:13 PM            483 _now.py                                                              
+-a----         10/7/2026  12:45 AM          32781 _panel_body.txt                                                      
+-a----         10/7/2026  12:45 AM            118 _panel_capture.txt                                                   
+-a----         10/7/2026  12:45 AM            841 _panel_dump_raw.txt                                                  
+-a----         10/7/2026  12:44 AM             22 _panel_pid.txt                                                       
+-a----         10/7/2026  12:44 AM           3641 _panel_probe.py                                                      
+-a----         10/7/2026  12:44 AM              0 _panel_probe_err.txt                                                 
+-a----         10/7/2026  12:45 AM             18 _panel_probe_run.txt                                                 
+-a----         10/7/2026  12:45 AM             60 _panel_report.txt                                                    
+-a----         10/7/2026  12:25 AM           4512 _patch_apply.py                                                      
+-a----         10/7/2026   1:16 AM           1632 _patch_cards.py                                                      
+-a----         10/7/2026  12:28 AM           1132 _patch_cleanup.py                                                    
+-a----         10/7/2026   1:26 AM           3044 _patch_fill_a.py                                                     
+-a----         10/7/2026   1:26 AM           3668 _patch_fill_b.py                                                     
+-a----         10/7/2026  12:39 AM           2315 _patch_findq.py                                                      
+-a----         10/7/2026  12:46 AM           4936 _patch_flow.py                                                       
+-a----         10/7/2026   1:19 AM           4644 _patch_flow2.py                                                      
+-a----         10/7/2026   1:30 AM           5714 _patch_loop.py                                                       
+-a----         10/7/2026   1:34 AM           2649 _patch_loop2.py                                                      
+-a----         10/7/2026   1:34 AM           2331 _patch_save2.py                                                      
+-a----         10/7/2026   1:30 AM           1582 _patch_save_helper.py                                                
+-a----         10/7/2026   1:23 AM              0 _pin_err.txt                                                         
+-a----         10/7/2026   1:24 AM             74 _pin_out.txt                                                         
+-a----         10/7/2026  12:29 AM           1927 _pre_chrome.txt                                                      
+-a----         10/7/2026  12:29 AM             52 _pre_gate.txt                                                        
+-a----         10/7/2026  12:30 AM            278 _pre_node.txt                                                        
+-a----         10/7/2026  12:29 AM             72 _pre_relay.txt                                                       
+-a----         10/7/2026  12:21 AM           2559 _probe_apply.py                                                      
+-a----         10/7/2026  12:12 AM           1283 _probe_card.py                                                       
+-a----         10/7/2026  12:15 AM           1488 _probe_card2.py                                                      
+-a----         10/7/2026  12:18 AM           1721 _probe_cb.py                                                         
+-a----         10/7/2026  12:16 AM           1373 _probe_direct.py                                                     
+-a----         10/7/2026   1:07 AM              0 _probe_err.txt                                                       
+-a----         10/7/2026   1:23 AM           2174 _probe_input.py                                                      
+-a----         10/6/2026  10:53 PM           2625 _probe_jobs_dom.py                                                   
+-a----         10/7/2026   1:07 AM             90 _probe_out.txt                                                       
+-a----         10/7/2026   1:05 AM           1162 _probe_pipe.py                                                       
+-a----         10/7/2026  12:17 AM           2187 _probe_react.py                                                      
+-a----         10/7/2026  12:20 AM           2010 _probe_sel.py                                                        
+-a----         10/7/2026  12:31 AM            126 _profile17.txt                                                       
+-a----         10/7/2026  12:31 AM           1361 _prove_head.txt                                                      
+-a----         10/7/2026  12:34 AM            152 _run2_capture.txt                                                    
+-a----         10/7/2026  12:35 AM            785 _run3_capture.txt                                                    
+-a----         10/7/2026  12:37 AM            955 _run3_capture2.txt                                                   
+-a----         10/7/2026  12:34 AM             22 _run3_pid.txt                                                        
+-a----         10/7/2026  12:42 AM            308 _run4_capture.txt                                                    
+-a----         10/7/2026  12:43 AM            745 _run4_capture2.txt                                                   
+-a----         10/7/2026  12:40 AM             22 _run4_pid.txt                                                        
+-a----         10/7/2026  12:48 AM            948 _run5_c1.txt                                                         
+-a----         10/7/2026  12:47 AM             22 _run5_pid.txt                                                        
+-a----         10/6/2026  11:44 PM           1035 _semantic_diff.py                                                    
+-a----         10/7/2026  12:51 AM           1073 _sup_out.txt                                                         
+-a----         10/7/2026   1:29 AM              0 _sv_err.txt                                                          
+-a----         10/7/2026   1:29 AM             91 _sv_out.txt                                                          
+-a----         10/7/2026   2:43 AM           4591 _test_lane_tools.py                                                  
+-a----         10/7/2026  12:28 AM             11 _verify_compile.txt                                                  
+-a----         10/7/2026  12:27 AM              8 _verify_lines.txt                                                    
+-a----         10/7/2026  12:28 AM           1387 _verify_tokens.txt                                                   
+-a----         10/7/2026  12:28 AM            401 _verify_usage.txt                                                    
+-a----         10/6/2026  11:36 PM           2702 _wire_opencode.py
+[0m
+[0mΓåÆ [0mRead scripts/prove_lane.py
+[0mΓåÆ [0mRead scripts/lane_tools.py
+[0mΓåÆ [0mRead scripts/lane_apply.py
+[0mΓåÆ [0mRead scripts/apply_answers.txt
+Now I have the full picture. Let me start by proving the lane is live, then find a MATCHED job to apply to.
+[0m
+[0m$ [0mcd D:\anonym\delivery\kilo-bridge-setup\scripts && python prove_lane.py
+At line:1 char:49
++ cd D:\anonym\delivery\kilo-bridge-setup\scripts && python prove_lane. ...
++                                                 ~~
+The token '&&' is not a valid statement separator in this version.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : InvalidEndOfLine
+[0m
+[0m
+> build ┬╖ nvidia/nemotron-3-ultra-550b-a55b
+[0m
+[0mΓåÆ [0mRead MISSION-RUN.txt
+[0mΓåÆ [0mRead docs/AGENTS-EMPLOYMENT.md
+[0mΓåÆ [0mRead docs/EMPLOYMENT-LANE-MISSION.md
+[0mΓåÆ [0mRead docs/PACE.md
+[0mΓåÆ [0mRead evidence/employment-lane/ledger.tsv
+[0m
+> build ┬╖ nvidia/nemotron-3-ultra-550b-a55b
+[0m
+[0mΓåÆ [0mRead MISSION-RUN.txt
+[0mΓåÆ [0mRead docs/AGENTS-EMPLOYMENT.md
+[0mΓåÆ [0mRead docs/EMPLOYMENT-LANE-MISSION.md
+[0mΓåÆ [0mRead docs/PACE.md
+[0mΓåÆ [0mRead evidence/employment-lane/ledger.tsv
+I've read all the required files. Now let me report the first NON-OK ledger row and begin the session.
+
+**First NON-OK ledger row found:** Row 75 (2026-10-07) ΓÇö `locate job card` for "GenAI Architect | Generative AI | LLM | RAG | Agentic AI" ΓÇö **BLOCKED** with note "card not found by exact title". Subsequent rows 77-80 show recruiter questions were answered (GenAI/LLM experience = 2 years) but the application was never force-submitted ("no force-submit", "saved; no force-submit").
+
+Now starting the session protocol per AGENTS-EMPLOYMENT.md ┬º1.
+[0m
+[0m$ [0mpython war-log/launch_profile17.py "https://www.naukri.com/mnjuser/recommendedjobs"
+Launched Profile 17 (PID 21688) with URL: https://www.naukri.com/mnjuser/recommendedjobs
+[0m
+[0mΓåÆ [0mRead D:/anonym/war-log/chrome_launch.log
+Profile 17 launched and authenticated as `isearch.xsolve@gmail.com` (RefreshTokenIsAvailable confirmed). Now proving Agent 360 MCP.
+[0m
+[0m$ [0mpython scripts/prove_lane.py
+C:\Users\Admin\AppData\Local\Programs\Python\Python311\python.exe: can't open file 'D:\\anonym\\scripts\\prove_lane.py': [Errno 2] No such file or directory
+[0m
+[0mΓ£▒ [0mGlob "**/prove_lane.py"[90m 2 matches[0m
+[0m
+> build ┬╖ nvidia/nemotron-3-ultra-550b-a55b
+[0m
+[0mΓåÆ [0mRead MISSION-RUN.txt
+[0mΓåÆ [0mRead docs/AGENTS-EMPLOYMENT.md
+[0mΓåÆ [0mRead docs/EMPLOYMENT-LANE-MISSION.md
+[0mΓåÆ [0mRead docs/PACE.md
+[0mΓåÆ [0mRead evidence/employment-lane/ledger.tsv
+I've read all the required files. Now let me analyze the ledger and find the first NON-OK row, then begin the actual work.
+[0m
+[0m$ [0mpython D:\anonym\war-log\launch_profile17.py "https://www.naukri.com/mnjuser/profile"
+Launched Profile 17 (PID 21980) with URL: https://www.naukri.com/mnjuser/profile
+[0m
+[0m$ [0mpython D:\anonym\war-log\agent360_client.py --list-tabs
+(no output)
+[0m
+[0m$ [0mpython -c "
+import sys
+sys.path.insert(0, r'D:\anonym\war-log')
+from agent360_client import Agent360Client
+client = Agent360Client()
+client.start()
+tabs = client.call_tool('browser_list_tabs', {})
+print('Tabs:', tabs)
+client.close()
+"
+Tabs: {'content': [{'type': 'text', 'text': '{\n  "tabs": [],\n  "session": "Claude 1",\n  "color": "blue"\n}'}]}
+[0m
+[0mΓÜÖ [0mbrowser-mcp_browser_screenshot {"path":"D:\\anonym\\delivery\\kilo-bridge-setup\\evidence\\employment-lane\\profile-check-01.png"}
+[0mΓÜÖ [0mbrowser-mcp_browser_list_tabs Unknown
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/mnjuser/profile"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"selector":"text=Profile","timeout":10000}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"max_chars":5000,"format":"text"}
+[0mΓÜÖ [0mbrowser-mcp_browser_screenshot {"path":"D:\\anonym\\delivery\\kilo-bridge-setup\\evidence\\employment-lane\\profile-education-check.png"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"document.querySelectorAll('a, button').forEach(el => { if(el.textContent.includes('Education') || el.textContent.includes('education')) console.log(el.textContent, el.href); })"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const items = []; document.querySelectorAll('*').forEach(el => { const txt = el.textContent.trim(); if(txt.includes('Education') && txt.length < 100) items.push(txt); }); return items.join(' | '); })()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_click {"selector":"text=EducationAdd"}
+[0mΓÜÖ [0mbrowser-mcp_browser_switch_tab {"tab_id":826636253}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const els = Array.from(document.querySelectorAll('*')).filter(el => el.textContent.trim() === 'EducationAdd'); if(els.length) { els[0].click(); return 'clicked EducationAdd'; } return 'not found'; })()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"timeout":5000,"selector":"text=Education"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const items = []; document.querySelectorAll('input, select, textarea, [contenteditable=\"true\"]').forEach(el => { const label = el.closest('label')?.textContent || el.getAttribute('placeholder') || el.getAttribute('aria-label') || el.name || el.id; if(label && (label.toLowerCase().includes('education') || label.toLowerCase().includes('degree') || label.toLowerCase().includes('university') || label.toLowerCase().includes('college') || label.toLowerCase().includes('institute') || label.toLowerCase().includes('qualification'))) items.push({tag: el.tagName, label: label.trim(), value: el.value}); }); return items; })()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { const items = []; document.querySelectorAll('button, a, [role=\"button\"]').forEach(el => { const txt = el.textContent.trim(); if(txt.toLowerCase().includes('education') || txt.toLowerCase().includes('add education')) items.push(txt); }); return items; })()"}
+Let me check the operator's resume for education details:
+[0m
+[0m$ [0mcd D:\anonym && python -c "
+import fitz
+doc = fitz.open(r'D:\anonym\kilo_apply_resume.pdf')
+for page in doc:
+    print(page.get_text())
+"
+At line:1 char:14
++ cd D:\anonym && python -c "
++              ~~
+The token '&&' is not a valid statement separator in this version.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : InvalidEndOfLine
+[0m
+[0m$ [0mcd D:\anonym; python -c "
+import fitz
+doc = fitz.open(r'D:\anonym\kilo_apply_resume.pdf')
+for page in doc:
+    print(page.get_text())
+"
+warning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+KUNAL DAS
+Technology Leader  |  AI & GenAI Architect  |  22+ Years
+ isearch.xsolve@gmail.com  ∩┐╜  Kolkata, India  ∩┐╜  Open to Relocation / Remote  ∩┐╜  Immediate Joiner
+G AVAILABLE NOW
+EXECUTIVE SUMMARY
+Results-driven Technology Leader with 22+ years of end-to-end delivery across fintech, logistics, healthcare, and enterprise BI. Deep
+hands-on expertise in Generative AI, Agentic AI, and LLM-based product engineering ∩┐╜ having designed and deployed production
+AI systems using ChatGPT, Claude, Mistral, LLaMA, LangChain, RAG pipelines, Vector Databases, and AI Agents that replace
+manual workflows and unlock new revenue streams. Equally comfortable as a hands-on architect and engineering leader ∩┐╜ having
+built and mentored teams of 30+, shaped cloud-native microservices architectures on AWS, and driven 40% performance gains in
+production systems. Immediate joiner. Open to remote, hybrid, or on-site roles globally.
+I AI VALUE I BRING TO YOUR ORGANIZATION
+I Architect and ship production-grade GenAI & Agentic AI systems ∩┐╜ not just prototypes.
+I Build RAG pipelines, LLM orchestration layers (LangChain), and multi-agent frameworks that automate complex business
+workflows.
+I Translate AI capabilities into measurable business outcomes: reduced ops costs, faster time-to-insight, and new product
+features.
+I Bridge the gap between C-suite AI strategy and engineering execution ∩┐╜ having done both as Technical Head and
+Architect.
+I Embed AI into existing Java/cloud stacks without rip-and-replace ∩┐╜ incremental, low-risk transformation.
+CORE COMPETENCIES
+AI / GenAI / Agentic AI
+ChatGPT ∩┐╜ Claude ∩┐╜ Mistral ∩┐╜ LLaMA
+LangChain ∩┐╜ RAG ∩┐╜ Vector DB
+AI Agents ∩┐╜ BERT ∩┐╜ NLP/NLG
+TensorFlow ∩┐╜ Gensim
+Cloud & Big Data
+AWS (EC2 / S3 / Lambda)
+Hadoop ∩┐╜ Spark ∩┐╜ MongoDB
+SQL/NoSQL ∩┐╜ Real-time Processing
+Data Engineering
+Architecture & Backend
+Java EE ∩┐╜ Spring Boot ∩┐╜ Node.js
+Microservices ∩┐╜ Cloud-Native
+REST APIs ∩┐╜ WebRTC ∩┐╜ WebSocket
+Python
+DevOps & CI/CD
+Docker ∩┐╜ Jenkins ∩┐╜ Maven ∩┐╜ Git
+Agile / Scrum
+Leadership & Strategy
+Team Leadership (30+)
+Tech Roadmapping ∩┐╜ Budget Control
+Stakeholder Mgmt ∩┐╜ Mentorship
+Domains
+FinTech ∩┐╜ Logistics ∩┐╜ Healthcare
+Enterprise BI ∩┐╜ BPM ∩┐╜ CRM ∩┐╜ ITIL
+PROFESSIONAL EXPERIENCE
+Technical Head MyFastx (On-demand Logistics Platform) Oct 2023 ∩┐╜ Feb 2026
+Led end-to-end product engineering for an on-demand logistics platform ∩┐╜ mobile apps, web, and backend.
+I Directed a 10-member team to ship consumer and partner apps on a Node.js backend, cutting time-to-market by 40%.
+I Architected real-time WebSocket + WebRTC communication layer, improving dispatch speed by 15% and elevating customer
+experience.
+I Built intelligent admin dashboards with operational analytics, eliminating 50% of manual reporting overhead.
+I Actively explored and evaluated LLM-based dispatch optimisation and AI-assisted support use-cases for next product phase.
+Stack: Node.js ∩┐╜ WebRTC ∩┐╜ WebSocket ∩┐╜ AWS ∩┐╜ React Native
+Top Skills: Node.js, WebRTC, Microservices Architecture, Engineering Management, Real-time Systems
+Consultant Architect & R&D Lead Keross Research & Development Sep 2017 ∩┐╜ Feb 2026
+Strategic AI architecture and R&D consulting for global enterprise clients ∩┐╜ Atkins-Global, SNC-Lavalin, Faithful & Gould ∩┐╜ across BI,
+BPM, and CRM domains.
+I Designed and shipped IKONV6 ∩┐╜ a GenAI-enhanced project management and analytics platform with Java microservices backend
+and Node.js frontend.
+CONTACT BY EMAIL ONLY
+System.Management.Automation.RemoteException
+I Built a fully autonomous ITIL operations solution powered by LLMs, dramatically reducing human intervention in incident and
+change management.
+I Delivered AI Agent-driven POCs featuring voice-enabled Personal Assistants interacting with enterprise microservices ∩┐╜ boosting
+efficiency by 30%.
+I Led and mentored 30+ developers, embedding Agile, test automation, CI/CD, and GenAI-first engineering practices across the
+team.
+I Actively deployed LangChain, RAG pipelines, Vector Databases, and multi-agent architectures in production-grade R&D
+deliverables.
+Stack: Java ∩┐╜ Spring Boot ∩┐╜ Node.js ∩┐╜ ChatGPT ∩┐╜ Claude ∩┐╜ Mistral ∩┐╜ LangChain ∩┐╜ RAG ∩┐╜ Vector DB ∩┐╜ AI Agents ∩┐╜ AWS
+Top Skills: Generative AI (GenAI), Agentic AI, LangChain, Retrieval-Augmented Generation (RAG), Large Language Models (LLMs)
+Technical Architect Glocal Healthcare Jul 2016 ∩┐╜ Apr 2017
+Architected Litmus DX ∩┐╜ an innovative telemedicine and healthcare e-commerce platform supporting real-time doctor-patient
+consultations.
+I Designed a WebRTC-based video consultation system, expanding healthcare access for thousands of patients nationwide.
+I Built scalable JMS/ActiveMQ messaging and Spring MVC appointment workflows for high-volume concurrent usage.
+I Introduced CI/CD standards, achieving a 25% drop in software defects and faster, more reliable releases.
+I Delivered a robust, scalable architecture that significantly improved platform uptime and patient experience.
+Stack: Java EE ∩┐╜ Spring MVC ∩┐╜ WebRTC ∩┐╜ ActiveMQ ∩┐╜ JMS ∩┐╜ CI/CD ∩┐╜ Linux
+Top Skills: Solution Architecture, WebRTC, Java EE, Spring MVC, Microservices
+Technical Consultant ∩┐╜ UPI Pioneer RS Software (under NPCI mandate) Feb 2016 ∩┐╜ Jul 2016
+#  PIONEER: Early Developer of UPI ∩┐╜ India's Digital Payment Revolution
+In 2016, Kunal was among the earliest engineers to build production-grade UPI infrastructure in India ∩┐╜ including its security layer. He
+implemented end-to-end cryptographic protection using RSA public/private key pairs, digital signatures, and AES encryption, meeting
+NPCI and RBI standards. He also engineered payment gateways connecting IDBI Bank and Axis Bank, and standardised onboarding
+APIs that set the pattern for nationwide UPI adoption.
+UPI today processes over 13 billion transactions per month, powers 40%+ of India's digital GDP, and has become a global benchmark
+adopted by Singapore, UAE, France, and beyond. Kunal's early-stage contribution to this foundational infrastructure represents rare,
+verifiable ground-floor participation in one of the world's most successful fintech platforms.
+Engineered secure, high-volume Unified Payments Interface (UPI) solutions connecting major Indian banks including IDBI and Axis
+Bank under the NPCI mandate ∩┐╜ at the very genesis of India's digital payments revolution.
+I Built secure Java 8 / Spring MVC payment gateways handling high-frequency financial transactions at scale for IDBI and Axis
+Bank.
+I Engineered the security layer of UPI ∩┐╜ implemented end-to-end transaction security using asymmetric encryption (RSA
+public/private key pairs), digital signatures, and symmetric encryption algorithms to protect payment data at rest and in transit,
+meeting NPCI and RBI cryptographic standards.
+I Standardised bank onboarding APIs under NPCI standards, cutting integration time by 30% and accelerating UPI ecosystem
+expansion.
+I Enhanced Linux-based deployment strategies, maximising uptime and transaction throughput for mission-critical payment flows.
+I Delivered production-grade fintech infrastructure fully aligned with RBI compliance standards.
+Stack: Java 8 ∩┐╜ Spring MVC ∩┐╜ REST APIs ∩┐╜ Linux ∩┐╜ UPI ∩┐╜ RSA ∩┐╜ AES ∩┐╜ PKI ∩┐╜ Digital Signatures ∩┐╜ NPCI ∩┐╜ IDBI ∩┐╜ Axis Bank
+Top Skills: Java 8, Spring MVC, UPI / Payment Gateway, Cryptography (RSA/AES/PKI), Security Engineering, RBI Compliance
+Senior Tech Lead ∩┐╜ NLP & Predictive Analytics Agrud Aug 2014 ∩┐╜ Feb 2016
+Built NLP-powered financial intelligence and predictive analytics tools ∩┐╜ a direct precursor to modern GenAI applications.
+I Led R&D team delivering Agrud Financial Portfolio ∩┐╜ automated structured narrative generation for stock analytics using
+OpenNLP and Stanford NLP.
+I Used AI-driven NLP pipelines for automated financial commentary, achieving a 50% increase in content production capacity.
+I Leveraged AWS + Hadoop to cut big data processing from hours to minutes.
+I Pioneered automated content generation at scale, laying the foundation for LLM-style applications years ahead of the
+mainstream.
+System.Management.Automation.RemoteException
+Stack: Java ∩┐╜ OpenNLP ∩┐╜ Stanford NLP ∩┐╜ AWS ∩┐╜ Hadoop ∩┐╜ Apache Spark ∩┐╜ Spring
+Top Skills: Natural Language Processing (NLP), Machine Learning, AWS, Apache Hadoop, R&D; Leadership
+EARLIER ROLES
+Role & Company
+Period
+Key Contribution
+Tech Lead ∩┐╜ Keross R&D
+Jan 2011 ∩┐╜ Apr 2014
+ITIL infrastructure management; Java/Flex + MongoDB/Solr big
+data stack; 10∩┐╜ performance gain via intelligent caching.
+Founder & Developer ∩┐╜ XSOLVE
+Oct 2006 ∩┐╜ Dec 2010
+Founded payroll product ∩┐╜ formula-based salary engine,
+dynamic reporting, JMX licensing, full product lifecycle.
+Senior Software Engineer ∩┐╜ Tavant Technolo...
+Feb 2004 ∩┐╜ Sep 2006
+Introduced Hibernate ORM to enterprise Java. 'Best Innovator of
+the Quarter' (May 2006). Built foreclosure, bankruptcy &
+EDUCATION & CERTIFICATIONS
+B.Tech. ∩┐╜ Electrical Engineering
+National Institute of Technology, Silchar (NIT Silchar) Formerly REC | 2003
+Certifications
+I Java Professional Level 2 ∩┐╜ 90/100
+I Spring Framework Level 1 ∩┐╜ 80/100
+I Hibernate Level 1 ∩┐╜ 70/100
+AWARDS & RECOGNITION
+# Best Innovator of the Quarter ∩┐╜ Quarterly Excellence Award Program, Tavant Technologies (May 2006). Recognised for
+introducing Hibernate into enterprise production systems.
+# On the Spot Award ∩┐╜ Tavant Technologies (May 2006), for exceptional contribution to the FCBK Project via Hibernate integration.
+# Institute Topper ∩┐╜ Digital Signal Processing, NIT Silchar (2003). Highest marks in DSP under Prof. Saurav Chakravorty.
+∩┐╜Under Kunal∩┐╜s leadership as Technical Head, our technology team successfully implemented a new cloud-native architecture that
+improved system performance by 40% and reduced operational costs by 20%. His expertise in aligning technology with business
+objectives was instrumental in achieving these results.∩┐╜
+∩┐╜ Rajesh Kumar, CEO, MyFastx
+[0m
+Now I have the education details from the resume: **B.Tech. Electrical Engineering, National Institute of Technology, Silchar (NIT Silchar), 2003**
+
+Let me find and click the Education "Add" button:
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const btns = Array.from(document.querySelectorAll('button, a, [role=\"button\"]'));\n  const eduBtn = btns.find(el => el.textContent.trim() === 'Education' || \n    el.textContent.trim().toLowerCase().includes('add education') ||\n    (el.getAttribute('href') && el.getAttribute('href').includes('education')));\n  if(eduBtn) { \n    eduBtn.click(); \n    return 'clicked: ' + eduBtn.textContent.trim(); \n  }\n  return 'not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"selector":"text=Add Education","timeout":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+I can see the Education section is populated with **B.Tech / B.E. Electrical - Indian Institute of Information Technology (IIIT), Nagpur - 1999-2003** - but the resume says **B.Tech. Electrical Engineering, National Institute of Technology, Silchar (NIT Silchar), 2003**. This is incorrect - I need to edit it to match the resume.
+
+Let me find the edit button for this education entry:
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const btns = Array.from(document.querySelectorAll('button, a, [role=\"button\"]'));\n  const editBtn = btns.find(el => {\n    const txt = el.textContent.trim();\n    return txt === 'editOneTheme' || txt === 'Edit' || \n      (el.getAttribute('aria-label') && el.getAttribute('aria-label').includes('edit'));\n  });\n  if(editBtn) { \n    editBtn.click(); \n    return 'clicked edit: ' + editBtn.textContent.trim(); \n  }\n  return 'edit not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"selector":"text=B.Tech","timeout":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+Let me find the specific edit button for the education entry:
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const items = []; \n  document.querySelectorAll('*').forEach(el => { \n    const txt = el.textContent.trim(); \n    if(txt.includes('editOneTheme') && txt.length < 50) { \n      items.push({tag: el.tagName, text: txt, html: el.outerHTML.slice(0,200)}); \n    } \n  }); \n  return items; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const btn = document.querySelector('[aria-label=\"Edit education: B.Tech / B.E.\"]');\n  if(btn) { btn.click(); return 'clicked education edit'; }\n  return 'not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"selector":"text=Degree","timeout":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const items = []; \n  document.querySelectorAll('input, select, textarea').forEach(el => { \n    const label = el.closest('label')?.textContent || el.getAttribute('placeholder') || el.getAttribute('aria-label') || el.name || el.id || el.getAttribute('data-testid') || '';\n    if(label && label.length < 100) items.push({tag: el.tagName, type: el.type, label: label.trim(), value: el.value, name: el.name}); \n  }); \n  return items; \n})()"}
+Now I can see the education form fields. The university/institute is wrong - it shows "Indian Institute of Information Technology (IIIT), Nagpur" but the resume says "National Institute of Technology, Silchar (NIT Silchar)". Let me fix this:
+[0mΓÜÖ [0mbrowser-mcp_browser_fill {"selector":"text=Select university/institute","value":"National Institute of Technology, Silchar"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const input = document.querySelector('input[value=\"Indian Institute of Information Technology (IIIT), Nagpur\"]');\n  if(input) { \n    input.value = \"National Institute of Technology, Silchar\"; \n    input.dispatchEvent(new Event('input', {bubbles: true}));\n    input.dispatchEvent(new Event('change', {bubbles: true}));\n    return 'filled university: ' + input.value; \n  }\n  return 'not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const btns = Array.from(document.querySelectorAll('button, [role=\"button\"]'));\n  const saveBtn = btns.find(el => {\n    const txt = el.textContent.trim();\n    return txt === 'Save' || txt === 'Update' || txt === 'Submit' || \n      txt.includes('Save') || txt.includes('Update');\n  });\n  if(saveBtn) { \n    saveBtn.click(); \n    return 'clicked save: ' + saveBtn.textContent.trim(); \n  }\n  return 'save button not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const btns = Array.from(document.querySelectorAll('button, [role=\"button\"], a'));\n  const saveBtn = btns.find(el => {\n    const txt = el.textContent.trim();\n    return txt === 'Save' && !txt.includes('photo') && !txt.includes('Photo');\n  });\n  if(saveBtn) { \n    saveBtn.click(); \n    return 'clicked save: ' + saveBtn.textContent.trim(); \n  }\n  return 'save button not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"selector":"text=National Institute of Technology","timeout":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+The save didn't persist. Let me check if the modal is still open and try again:
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const items = []; \n  document.querySelectorAll('input[value=\"National Institute of Technology, Silchar\"]').forEach(el => { \n    items.push({found: true, value: el.value}); \n  }); \n  if(items.length === 0) {\n    document.querySelectorAll('input').forEach(el => { \n      if(el.value && el.value.includes('Silchar')) items.push({found: true, value: el.value}); \n    });\n  }\n  return items.length ? items : 'not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const btns = Array.from(document.querySelectorAll('button, [role=\"button\"], a'));\n  const saveBtn = btns.find(el => {\n    const txt = el.textContent.trim();\n    return (txt === 'Save' || txt === 'Update') && \n      !txt.toLowerCase().includes('photo') && \n      !txt.toLowerCase().includes('picture');\n  });\n  if(saveBtn) { \n    saveBtn.click(); \n    return 'clicked: ' + saveBtn.textContent.trim(); \n  }\n  return 'no save button'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"selector":"text=National Institute of Technology","timeout":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+The form field is an autocomplete (suggestor). Let me try selecting from the dropdown properly:
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const input = document.querySelector('input[value=\"Indian Institute of Information Technology (IIIT), Nagpur\"]');\n  if(input) { \n    input.value = \"National Institute of Technology\";\n    input.dispatchEvent(new Event('input', {bubbles: true}));\n    input.focus();\n    return 'typed in suggestor'; \n  }\n  return 'not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const input = document.querySelector('input[name=\"suggestor\"]');\n  if(input) { \n    input.value = \"National Institute of Technology, Silchar\";\n    input.dispatchEvent(new Event('input', {bubbles: true}));\n    input.dispatchEvent(new Event('change', {bubbles: true}));\n    input.focus();\n    return 'filled suggestor: ' + input.value; \n  }\n  return 'not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const btns = Array.from(document.querySelectorAll('button, [role=\"button\"], a'));\n  const saveBtn = btns.find(el => {\n    const txt = el.textContent.trim();\n    return (txt === 'Save' || txt === 'Update') && \n      !txt.toLowerCase().includes('photo') && \n      !txt.toLowerCase().includes('picture');\n  });\n  if(saveBtn) { \n    saveBtn.click(); \n    return 'clicked: ' + saveBtn.textContent.trim(); \n  }\n  return 'no save button'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"timeout":5000,"selector":"text=National Institute of Technology"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+The modal save isn't working. Let me try closing the modal and checking if the profile shows the education correctly, or if there's a specific education form save:
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const btns = Array.from(document.querySelectorAll('button, [role=\"button\"], a, span'));\n  const closeBtn = btns.find(el => {\n    const txt = el.textContent.trim();\n    return txt === 'Cancel' || txt === 'Close' || txt === '├ù' || txt === 'x';\n  });\n  if(closeBtn) { \n    closeBtn.click(); \n    return 'clicked close: ' + closeBtn.textContent.trim(); \n  }\n  return 'no close button'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"selector":"text=Education","timeout":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+The modal changes don't persist. Let me try navigating to the clean profile page and then attempt the education edit again:
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/mnjuser/profile"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"selector":"text=Education","timeout":10000}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"max_chars":5000,"format":"text"}
+The Education section seems collapsed. Let me check for it more carefully:
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const items = []; \n  document.querySelectorAll('*').forEach(el => { \n    const txt = el.textContent.trim(); \n    if(txt.toLowerCase().includes('education') && txt.length < 200) items.push(txt); \n  }); \n  return items; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const els = Array.from(document.querySelectorAll('*')).filter(el => el.textContent.trim() === 'EducationAdd');\n  if(els.length) { \n    els[0].click(); \n    return 'clicked EducationAdd'; \n  }\n  return 'not found'; \n})()"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"selector":"text=B.Tech","timeout":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text","max_chars":5000}
+[0mΓÜÖ [0mbrowser-mcp_browser_execute_script {"code":"(() => { \n  const fullText = document.body.innerText;\n  const idx = fullText.indexOf('Education');\n  if(idx >= 0) {\n    return fullText.substring(idx, idx + 500);\n  }\n  return 'Education not found in body text';\n})()"}
+The Education section is not in the first 5000 chars. Let me search for it specifically:
+[0m
+> build ┬╖ nvidia/nemotron-3-ultra-550b-a55b
+[0m
+[0mΓåÆ [0mRead MISSION-RUN.txt
+[0mΓåÆ [0mRead docs/AGENTS-EMPLOYMENT.md
+[0mΓåÆ [0mRead docs/EMPLOYMENT-LANE-MISSION.md
+[0mΓåÆ [0mRead docs/PACE.md
+[0mΓåÆ [0mRead evidence/employment-lane/ledger.tsv
+[0m
+[0m$ [0mvenv\Scripts\python.exe war-log\launch_profile17.py "https://www.naukri.com/mnjuser/profile"
+Launched Profile 17 (PID 23064) with URL: https://www.naukri.com/mnjuser/profile
+[0m
+[0m
+> build ┬╖ nvidia/nemotron-3-ultra-550b-a55b
+[0m
+[0mΓåÆ [0mRead MISSION-RUN.txt
+[0mΓåÆ [0mRead docs/AGENTS-EMPLOYMENT.md
+[0mΓåÆ [0mRead docs/EMPLOYMENT-LANE-MISSION.md
+[0mΓåÆ [0mRead docs/PACE.md
+[0mΓåÆ [0mRead evidence/employment-lane/ledger.tsv
+[0mΓåÆ [0mRead evidence/employment-lane/OPENCODE-MISSION-PROMPT.txt
+[0m
+[0m$ [0mvenv\Scripts\python.exe war-log\launch_profile17.py "https://www.naukri.com/mnjuser/profile"
+Launched Profile 17 (PID 17976) with URL: https://www.naukri.com/mnjuser/profile
+[0m
+[0mΓÜÖ [0mbrowser-mcp_browser_screenshot {"path":"D:\\anonym\\delivery\\kilo-bridge-setup\\evidence\\employment-lane\\naukri-profile-check-20261007.png"}
+[0mΓ£ù [0mbrowser-mcp_browser_get_page_content {"format":"text"} failed
+[91m[1mError: [0mCannot access contents of url "about:blank". Extension manifest must request permission to access this host.
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"timeout":15000,"selector":"text=Profile"}
+[0mΓÜÖ [0mbrowser-mcp_browser_list_tabs Unknown
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/mnjuser/profile"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"timeout":15000,"selector":"text=Profile"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text"}
+Now I can see the profile. The Education section shows "Add" button (empty), Career profile shows "editOneTheme" (may need content), Profile summary shows "editOneTheme", and Accomplishments shows "editOneTheme". Let me check these fields.
+[0mΓÜÖ [0mbrowser-mcp_browser_click {"selector":"text=Education"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"timeout":10000,"selector":"text=Education"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text"}
+The Education section already has B.Tech from NIT Silchar (1999-2003). Let me check Career profile, Profile summary, and Accomplishments.
+[0mΓÜÖ [0mbrowser-mcp_browser_click {"selector":"text=Career profile"}
+[0mΓÜÖ [0mbrowser-mcp_browser_switch_tab {"tab_id":826636319}
+[0mΓÜÖ [0mbrowser-mcp_browser_click {"selector":"text=Career profile"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"timeout":10000,"selector":"text=Career profile"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text"}
+The profile shows 100% complete. Education has B.Tech from NIT Silchar, Career profile has detailed preferences, Profile summary has content, Accomplishments has certifications. The ledger shows profile work done (rows 1-12), then job matching (rows 14-65), then apply attempts (rows 69-92).
+
+The last successful apply flow was for "GenAI Architect" (rows 76-80) where recruiter question "How many years of hands-on experience do you have in GenAI/LLM?" was answered "2". 
+
+Now I need to continue with **B. Naukri recommended jobs** - apply to more MATCHED roles that haven't been applied to yet. Let me navigate to recommended jobs and find a high-score match.
+[0mΓÜÖ [0mbrowser-mcp_browser_navigate {"url":"https://www.naukri.com/mnjuser/recommendedjobs"}
+[0mΓÜÖ [0mbrowser-mcp_browser_wait {"timeout":15000,"selector":"text=Job match"}
+[0mΓÜÖ [0mbrowser-mcp_browser_get_page_content {"format":"text"}
+[0m
+> build ┬╖ nvidia/nemotron-3-ultra-550b-a55b
+[0m
+[0mΓåÆ [0mRead MISSION-RUN.txt
+[0mΓåÆ [0mRead docs/AGENTS-EMPLOYMENT.md
+[0mΓåÆ [0mRead docs/EMPLOYMENT-LANE-MISSION.md
+[0mΓåÆ [0mRead docs/PACE.md
+[0mΓåÆ [0mRead evidence/employment-lane/ledger.tsv
+[0mΓåÆ [0mRead evidence/employment-lane/OPENCODE-MISSION-PROMPT.txt
+[0m
+[0m$ [0mvenv\Scripts\python.exe war-log\launch_profile17.py "https://www.naukri.com/mnjuser/profile"
+Launched Profile 17 (PID 14860) with URL: https://www.naukri.com/mnjuser/profile
+[0m
+[0m$ [0mGet-Content D:\anonym\delivery\kilo-bridge-setup\war-log\chrome_launch.log -Tail 20
+Get-Content : Cannot find path 'D:\anonym\delivery\kilo-bridge-setup\war-log\chrome_launch.log' because it does not 
+exist.
+At line:1 char:1
++ Get-Content D:\anonym\delivery\kilo-bridge-setup\war-log\chrome_launc ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (D:\anonym\deliv...rome_launch.log:String) [Get-Content], ItemNotFoundEx 
+   ception
+[0m$ [0mGet-Content D:\anonym\war-log\chrome_launch.log -Tail 20
+[5304:2036:0925/102317.921:VERBOSE1:components\signin\internal\identity_manager\mutable_profile_oauth2_token_service_delegate.cc:461] MutablePO2TS::RefreshTokenIsAvailable
+[5304:8520:0925/102317.937:VERBOSE1:components\sync\engine\syncer.cc:277] Committing from types Bookmarks, Preferences, Passwords, Autofill Wallet Credential, Autofill Wallet, Autofill Wallet Metadata, Autofill Wallet Offer, Autofill Wallet Usage, Themes, Extensions, Search Engines, Sessions, Extension settings, History Delete Directives, Device Info, Priority Preferences, Reading List, User Events, User Consents, Send Tab To Self, Security Events, Web Apps, Sharing Message, History, Contact Info, Saved Tab Group, WebAuthn Credentials, Incoming Password Sharing Invitations, Outgoing Password Sharing Invitations, Autofill Valuable, Account Setting, Autofill Valuable Metadata, Skill, Encryption Keys
+[5304:2036:0925/102318.188:VERBOSE1:components\signin\internal\identity_manager\mutable_profile_oauth2_token_service_delegate.cc:461] MutablePO2TS::RefreshTokenIsAvailable
+[5304:2036:0925/102318.218:VERBOSE1:chrome\browser\enterprise\data_protection\data_protection_navigation_observer.cc:229] enterprise.data_protection: same document navigation: 1
+[5304:2036:0925/102318.218:VERBOSE1:chrome\browser\enterprise\data_protection\data_protection_navigation_observer.cc:231] enterprise.data_protection: URL to scan: https://www.linkedin.com/feed/foryou/
+[5304:2036:0925/102318.222:VERBOSE1:chrome\browser\ui\views\omnibox\omnibox_popup_closer.cc:64] Closing omnibox popup with reason: kRevertAll
+[5304:15984:0925/102318.323:VERBOSE1:components\sync\engine\net\http_bridge.cc:369] HttpBridge received response code: 200
+[5304:2036:0925/102318.332:VERBOSE1:components\signin\internal\identity_manager\mutable_profile_oauth2_token_service_delegate.cc:461] MutablePO2TS::RefreshTokenIsAvailable
+[5304:8520:0925/102318.551:VERBOSE1:components\sync\engine\syncer.cc:174] Downloading types Bookmarks, Preferences, Passwords, Autofill Wallet Credential, Autofill Wallet, Autofill Wallet Metadata, Autofill Wallet Offer, Autofill Wallet Usage, Themes, Extensions, Search Engines, Sessions, Extension settings, History Delete Directives, Device Info, Priority Preferences, Reading List, User Events, User Consents, Send Tab To Self, Security Events, Web Apps, Sharing Message, History, Contact Info, Saved Tab Group, WebAuthn Credentials, Incoming Password Sharing Invitations, Outgoing Password Sharing Invitations, Autofill Valuable, Account Setting, Autofill Valuable Metadata, Skill, Encryption Keys
+[5304:15984:0925/102318.882:VERBOSE1:components\sync\engine\net\http_bridge.cc:369] HttpBridge received response code: 200
+[5304:8520:0925/102318.897:VERBOSE1:components\sync\engine\syncer.cc:277] Committing from types Bookmarks, Preferences, Passwords, Autofill Wallet Credential, Autofill Wallet, Autofill Wallet Metadata, Autofill Wallet Offer, Autofill Wallet Usage, Themes, Extensions, Search Engines, Sessions, Extension settings, History Delete Directives, Device Info, Priority Preferences, Reading List, User Events, User Consents, Send Tab To Self, Security Events, Web Apps, Sharing Message, History, Contact Info, Saved Tab Group, WebAuthn Credentials, Incoming Password Sharing Invitations, Outgoing Password Sharing Invitations, Autofill Valuable, Account Setting, Autofill Valuable Metadata, Skill, Encryption Keys
+[5304:2036:0925/102319.005:VERBOSE1:components\signin\internal\identity_manager\mutable_profile_oauth2_token_service_delegate.cc:461] MutablePO2TS::RefreshTokenIsAvailable
+[5304:15984:0925/102319.099:VERBOSE1:content\browser\loader\file_url_loader_factory.cc:476] FileURLLoader::Start: file:///C:/Users/Admin/AppData/Local/Google/Chrome/User%20Data/Profile%2017/Extensions/bhhhlbepdkbapadjdnnojkbgioiodbic/2.38.0_0/inpage.js
+[5304:15984:0925/102319.134:VERBOSE1:content\browser\loader\file_url_loader_factory.cc:476] FileURLLoader::Start: file:///C:/Users/Admin/AppData/Local/Google/Chrome/User%20Data/Profile%2017/Extensions/eppiocemhmnlbhjplcgkofciiegomcon/5.14.4_0/libs/extend-native-history-api.js
+[5304:14444:0925/102319.135:VERBOSE1:content\browser\loader\file_url_loader_factory.cc:476] FileURLLoader::Start: file:///C:/Users/Admin/AppData/Local/Google/Chrome/User%20Data/Profile%2017/Extensions/eppiocemhmnlbhjplcgkofciiegomcon/5.14.4_0/libs/requests.js
+[5304:15984:0925/102319.268:VERBOSE1:components\sync\engine\net\http_bridge.cc:369] HttpBridge received response code: 200
+[5304:2036:0925/102319.268:VERBOSE1:components\signin\internal\identity_manager\mutable_profile_oauth2_token_service_delegate.cc:461] MutablePO2TS::RefreshTokenIsAvailable
+[5304:8520:0925/102319.490:VERBOSE1:content\browser\loader\file_url_loader_factory.cc:476] FileURLLoader::Start: file:///C:/Users/Admin/AppData/Local/Google/Chrome/User%20Data/Profile%2017/Extensions/bhhhlbepdkbapadjdnnojkbgioiodbic/2.38.0_0/inpage.js
+[5304:15984:0925/102319.520:VERBOSE1:content\browser\loader\file_url_loader_factory.cc:476] FileURLLoader::Start: file:///C:/Users/Admin/AppData/Local/Google/Chrome/User%20Data/Profile%2017/Extensions/eppiocemhmnlbhjplcgkofciiegomcon/5.14.4_0/libs/extend-native-history-api.js
+[5304:14444:0925/102319.522:VERBOSE1:content\browser\loader\file_url_loader_factory.cc:476] FileURLLoader::Start: file:///C:/Users/Admin/AppData/Local/Google/Chrome/User%20Data/Profile%2017/Extensions/eppiocemhmnlbhjplcgkofciiegomcon/5.14.4_0/libs/requests.js
+[0m
+[0mΓÜÖ [0mbrowser-mcp_browser_list_tabs Unknown
+[0mΓÜÖ [0mbrowser-mcp_browser_screenshot {"path":"D:\\anonym\\delivery\\kilo-bridge-setup\\evidence\\employment-lane\\00-bind-check.png"}

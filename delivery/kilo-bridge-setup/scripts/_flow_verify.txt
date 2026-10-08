@@ -1,0 +1,44 @@
+﻿=== A5 poll block ===
+                    "if(!b)return 'nobtn'; if(b.disabled)return 'disabled';"
+                    "b.click(); return 'clicked-apply';})()")
+        log("A4 click Apply")
+        ap = js(APPLY_JS)
+        log("   apply -> " + str(ap))
+        # A4->A5: the recruiter panel opens ASYNC (measured 2026-10-07: a fixed
+        # 7 s read at 30,471 chars missed the question; 8 s showed it at 32,013).
+        # POLL instead of sleeping; read the question from the recruiter panel node
+        # (.chatbot_MessageContainer), NOT the list alignment widget
+        # ("Are these jobs relevant for you?" is a SPAN.feed-title on the page).
+        log("A5 wait for apply flow / recruiter panel")
+        panel_q = None
+        txt_after = ""
+        for _ in range(10):                       # up to ~20 s
+            txt_after = body()
+            low = txt_after.lower()
+            panel_q = _q_from_panel(js)
+            if panel_q or ("answer all the recruiter" in low) \
+                    or ("apply for this job" in low):
+                break
+            time.sleep(2)
+        after = href()
+        low = txt_after.lower()
+        # VERIFY: URL left the list OR a real apply-flow signal. Do NOT use
+        # 'years of experience' - it appears in job descriptions (false positive).
+        FLOW_SIGNALS = ["answer all the recruiter", "recruiter's question",
+                        "apply for this job", "submit application",
+                        "additional questions", "application submitted"]
+        left_list = (after != JOBS_URL and "recommendedjobs" not in after)
+        in_flow = any(s in low for s in FLOW_SIGNALS)
+=== panel_q usage ===
+
+LineNumber Line                                                           
+---------- ----                                                           
+       102         def shot(tag):                                         
+       103             for _attempt in range(3):                          
+       180         panel_q = None                                         
+       185             panel_q = _q_from_panel(js)                        
+       186             if panel_q or ("answer all the recruiter" in low) \
+       214         q = panel_q or _find_question(txt_after)               
+       249 def _q_from_panel(js):                                         
+
+

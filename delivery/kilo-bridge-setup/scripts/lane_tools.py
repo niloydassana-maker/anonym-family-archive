@@ -28,8 +28,10 @@ out; BLOCKED beats a faked DONE.
 from __future__ import annotations
 
 import base64
+import hashlib
 import io
 import json
+import os
 import sys
 import time
 from contextlib import contextmanager
@@ -42,6 +44,51 @@ except Exception:
     pass
 
 HERE = Path(__file__).resolve().parent
+
+
+def candidate_config():
+    """Load a private per-operator profile without shipping personal facts."""
+    configured = os.environ.get("KILO_CANDIDATE_CONFIG")
+    path = Path(configured) if configured else HERE.parent / "candidate-profile.json"
+    if not path.is_absolute():
+        path = HERE.parent / path
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def candidate_skills():
+    value = candidate_config().get("skills")
+    if isinstance(value, list):
+        return [str(x).strip().lower() for x in value if str(x).strip()]
+    return []
+
+
+def candidate_answers_path():
+    cfg = candidate_config()
+    value = cfg.get("answers_file", "scripts/apply_answers.txt")
+    path = Path(value)
+    if not path.is_absolute():
+        path = HERE.parent / path
+    return path
+
+
+def verify_candidate_resume():
+    cfg = candidate_config()
+    value = cfg.get("resume_path")
+    expected = str(cfg.get("resume_sha256", "")).upper()
+    if not value or not expected:
+        return False, "candidate config requires resume_path and resume_sha256"
+    path = Path(value)
+    if not path.is_absolute():
+        path = HERE.parent / path
+    if not path.is_file():
+        return False, "candidate resume missing: %s" % path
+    actual = hashlib.sha256(path.read_bytes()).hexdigest().upper()
+    return actual == expected, "resume sha256=%s" % actual
 
 # LEDGER STATUSES (the mission vocabulary - one place, never a typo per lane)
 MATCHED, APPLIED, APPLIED_STEP = "MATCHED", "APPLIED", "APPLIED_STEP"
@@ -204,12 +251,12 @@ _PANEL_Q_JS = (
     "(function(){var c=document.querySelector('.chatbot_MessageContainer');"
     "if(!c)return '';"
     "var w=c.ownerDocument.createTreeWalker(c,NodeFilter.SHOW_TEXT,null);"
-    "var n;while(n=w.nextNode()){var t=(n.nodeValue||'').trim();"
-    "if(t.length>8&&t.charAt(t.length-1)==='?')return t;}return '';})()")
+    "var n,last='';while(n=w.nextNode()){var t=(n.nodeValue||'').trim();"
+    "if(t.length>8&&t.charAt(t.length-1)==='?')last=t;}return last;})()")
 
 
 def read_recruiter_question(client):
-    """Return the recruiter question text from the apply panel ONLY, else None."""
+    """Return the latest recruiter question; the panel retains earlier Q&A turns."""
     r = client._js(_PANEL_Q_JS)
     if isinstance(r, dict):
         r = r.get("result")

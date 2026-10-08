@@ -1,0 +1,18 @@
+﻿len=731
+LANE_APPLY start :: title = GenAI Architect | Generative AI | LLM | RAG | Agentic AI
+A1 navigate -> https://www.naukri.com/mnjuser/recommendedjobs
+A2 card index = 0
+A3 select card checkbox
+   select -> checked
+   apply-button state = {"found":true,"disabled":false,"label":"Apply 1 Job"}
+   shot -> FAILED
+A4 click Apply
+   apply -> None
+A5 after url=https://www.naukri.com/mnjuser/recommendedjobs
+   left_list=False in_flow=True body_chars=30471
+   shot -> D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-03-after-apply-20261007004258.png
+   apply context reached (no recruiter question yet)
+  LEDGER + APPLIED :: apply flow opened
+DONE - apply flow open with screenshot.
+client closed cleanly
+

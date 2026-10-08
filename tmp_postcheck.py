@@ -1,0 +1,10 @@
+﻿import json
+g = json.load(open(r'C:\Users\Admin\.config\opencode\opencode.jsonc', encoding='utf-8'))
+p = json.load(open(r'D:\anonym\opencode.json', encoding='utf-8'))
+print('BOTH PARSE OK')
+print('global model      :', g.get('model'))
+print('global browser-mcp:', g.get('mcp', {}).get('browser-mcp', {}).get('enabled'))
+print('global chrome-dev :', g.get('mcp', {}).get('chrome-devtools', {}).get('enabled'))
+print('proj  model      :', p.get('model'))
+print('proj  browser-mcp:', p.get('mcp', {}).get('browser-mcp', {}).get('enabled'))
+print('proj  has provider:', 'provider' in p)

@@ -1,38 +1,52 @@
-# KILO-BRIDGE SETUP — delivery package (buyer copy) — $1 (Rs 100 offer)
+# Kilo Bridge employment setup
 
-## What this is
-"Disobedient Browser, Tamed." An AI automation setup that works inside YOUR real Chrome — Gmail, LinkedIn, job boards — headless, zero screen disruption, receipts for every act. Watch docs/demo-video.mp4 first: 30 seconds, 11 lanes, laptop idling.
+This package launches the employment mission agent through the installed OpenCode CLI and the existing Agent360 browser MCP. `-Launch` is the agent mission entry point; it does not run the deterministic lane scripts as a substitute for the agent.
 
-## Architecture (how it works)
-1. EXTENSION: Agent360 Browser MCP (Chrome Web Store, $10 one-time) sits inside your real Chrome profile — cookies, 2FA, sessions already there. Sites see a legitimate user, not a bot.
-2. SERVER: @agent360/browser-mcp runs headless (no window), speaks JSON-RPC over a local port. Lazy-binds: port opens on first tool call.
-3. RUNNER: scripts/agent360_client.py — Python wrapper (navigate, screenshot, click, fill, read). UTF-8 everywhere.
-4. MISSION: docs/FINAL-AGY-PROMPT-2026-09-24.md — the run-book (recon -> DNA-rank -> engage -> receipt). Your AI agent (OpenCode/AGY) executes it.
-5. RECEIPTS: every act leaves a screenshot + log line. Tool-called is not done; screenshot-shows is done.
+## Client prerequisites
 
-## Install (15 minutes)
-1. Install the Agent360 Browser MCP extension from the Chrome Web Store; pin it; click Reconnect.
-2. Install Node 22+ and Python 3.11+; `pip install faster-whisper` (optional, voice notes).
-3. Copy opencode.json.example to your OpenCode config; add your model key.
-4. Copy scripts/ beside your mission folder. Run a list-tabs test. Green = go.
+- Windows PowerShell 5.1 or PowerShell 7
+- Python 3.11+ and Node.js 20+
+- Google Chrome with the Agent360 extension installed and connected
+- The required job-site sessions already signed in, in the Chrome profile attached to Agent360
+- `@agent360/browser-mcp`; install into this package with `-InstallMcp` if it is not already present
+- OpenCode CLI configured with the Agent360 browser MCP
 
-## First run (same day)
-1. Feed your AI the mission prompt (docs/FINAL-AGY-PROMPT...). 2. It recons your lanes, ranks fits, drafts in your voice. 3. Slow pace on LinkedIn (15/day, 3-min gaps) — never bot-blast. 4. Verify receipts folder. 5. Balance due only after the first verified run.
+The runner never enters passwords or OTPs. Sign in manually before running. Browser actions use the Agent360 MCP interface only.
 
-## UNATTENDED SELF-LOOP (runs while you sleep)
-Like our house runs: `scripts/install-task.ps1` registers KILO-MISSION-LOOP at logon — the agent executes the mission, rests, re-executes, forever. Quota holds pause it automatically; a mutex keeps one owner; create `STOP.loop` in this folder to stop gracefully. Logs: mission.log. This is the same loop pattern that ran 11 lanes overnight with zero screen disruption.
+## Run
 
-## Laws (bind every run)
-- THESIS on every word: mirror customer DNA, ASCII-only, never generic.
-- One send per thread; badges earned (screenshot proof); pixels overrule logs.
-- Never passwords/OTP/bank-calls; your logins never leave your machine.
+From this folder:
 
-## Support
-7-day fix window included. Retainer available. "Say the word and I begin. - Kunal"
+```powershell
+powershell -ExecutionPolicy Bypass -File .\kilo-bridge-setup.ps1 -InstallMcp
+Copy-Item .\candidate-profile.example.json .\candidate-profile.json
+Copy-Item .\scripts\apply_answers.example.txt .\candidate-answers.txt
+# Edit candidate-profile.json and candidate-answers.txt with verified, candidate-specific data.
+powershell -ExecutionPolicy Bypass -File .\kilo-bridge-setup.ps1 -Launch
+```
 
-## DONE-FOR-YOU SETUP (we install it for you)
-DIY not your lane? We do the full setup on YOUR machine over screenshare: extension + server + first verified run, same day. Setup price follows YOUR DNA (we read your lane, you pay your means):
-- VERY POOR / student with nothing: FREE pay-it-forward (1 slot/week — your success story is our ad).
-- POOR / fresher: 999 (seeker lanes) / 1,999 (business lanes).
-- AFFLUENT / business: 1,999 (seeker) / 4,999 (business) + retainer option.
-50% advance (waived for free lane), balance on first verified run. Your logins never leave your machine; we never ask passwords — you stay at the keyboard for logins, we do the rest.
+The setup/install step is allowed before candidate data is configured. `-Launch` requires a
+valid candidate profile, a hash-verified resume, at least two verified skills, and the
+configured private answers file.
+
+`-Launch` validates the local runtime, MCP package, candidate config, resume hash and answer file, then starts the OpenCode agent with the mission documents and existing ledger attached. It does not perform the five-lane deterministic runner in place of the agent. Agent output is saved to `evidence\employment-lane\mission-agent-output.txt`; the launcher log is saved to `evidence\employment-lane\mission-agent-run.log`. Review screenshot and ledger receipts before treating any mission item as complete.
+
+### Limit one application to a specific role
+
+The mission agent can be limited to one exact role by providing the title currently shown as `MATCHED`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\kilo-bridge-setup.ps1 -Launch -SubmitOne -Title "Exact matched role title"
+```
+
+The mission remains subject to the fit, candidate-fact, one-submit, and receipt gates in `MISSION-RUN.txt` and `docs\EMPLOYMENT-LANE-MISSION.md`. The title limits application submission for that run; it does not switch `-Launch` back to the deterministic lane scripts.
+
+## Receipts and profile data
+
+- Copy `candidate-profile.example.json` to a private `candidate-profile.json`; set the candidate's resume path, SHA256, verified skills, and private answer-file path. Copy `scripts\apply_answers.example.txt` to that private answer file and add only candidate-confirmed facts. Never ship a candidate's resume or answer file in a client package.
+- Mission tool directives: `MISSION-RUN.txt` and `docs\EMPLOYMENT-LANE-MISSION.md`. These direct an agent to use Agent360's existing browser tools for visible UI actions; they do not claim that every lane has already passed.
+- Browser and lane code: `scripts\`
+- E2E screenshots and ledger: `evidence\employment-lane\`
+- No credentials are written to this package by the setup script.
+
+The working copy includes candidate-specific evidence of one Naukri application confirmed in history. That receipt is not a client result. Profile updates, Foundit/Indeed/LinkedIn submissions, and LinkedIn comment publication still lack live receipts. Re-run against the target operator's account after the current static fixes before describing the setup as ready to ship. Do not distribute this working folder as-is: it contains local candidate data and evidence; prepare a sanitized client copy first.

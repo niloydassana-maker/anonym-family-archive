@@ -1,0 +1,10 @@
+﻿
+Name                                       Length LastWriteTime        
+----                                       ------ -------------        
+apply-01-naukri-genai-architect-before.png 147036 10/6/2026 11:54:36 PM
+apply-02-after-click-20261007-001143.png   149579 10/7/2026 12:11:46 AM
+apply-select-state.png                     150063 10/7/2026 12:20:37 AM
+apply-02-selected-20261007003520.png       150183 10/7/2026 12:35:29 AM
+apply-03-after-apply-20261007003625.png    102109 10/7/2026 12:36:47 AM
+
+

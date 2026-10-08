@@ -1,0 +1,18 @@
+LANE_APPLY start :: title = AI Architect
+A1 navigate -> https://www.naukri.com/mnjuser/recommendedjobs
+A2 card index = 0
+A3 select card checkbox
+   select -> checked
+   apply-button state = {"found":true,"disabled":false,"label":"Apply 1 Job"}
+   shot -> D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-02-selected-20261007014043.png
+A4 click Apply
+   apply -> clicked-apply
+A5 wait for apply flow / recruiter panel (poll for the QUESTION)
+A5 after url=https://www.naukri.com/mnjuser/recommendedjobs
+   left_list=False in_flow=True body_chars=30514
+   shot -> D:\anonym\delivery\kilo-bridge-setup\evidence\employment-lane\apply-03-after-apply-20261007014048.png
+   ANSWERING: How many years of hands-on experience do you have in GenAI/LLM? -> 2
+   save -> clicked:Save@1136
+  LEDGER + APPLIED_STEP :: recruiter questions answered
+ANSWERED 1 gate(s), Save clicked, read-back verified.
+client closed cleanly

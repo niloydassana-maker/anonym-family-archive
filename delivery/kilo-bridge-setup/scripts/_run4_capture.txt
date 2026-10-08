@@ -1,0 +1,8 @@
+﻿len=294
+LANE_APPLY start :: title = GenAI Architect | Generative AI | LLM | RAG | Agentic AI
+A1 navigate -> https://www.naukri.com/mnjuser/recommendedjobs
+A2 card index = 0
+A3 select card checkbox
+   select -> checked
+   apply-button state = {"found":true,"disabled":false,"label":"Apply 1 Job"}
+

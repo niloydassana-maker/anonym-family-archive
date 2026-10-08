@@ -1,0 +1,18 @@
+{
+  "tabs": {
+    "tabs": [],
+    "session": "Claude 1",
+    "color": "blue"
+  },
+  "href": {
+    "result": "about:blank",
+    "method": "debugger"
+  },
+  "title": {
+    "result": "",
+    "method": "debugger"
+  },
+  "body_chars": -1,
+  "naukri_session": false,
+  "exception": "AttributeError(\"'dict' object has no attribute 'lower'\")"
+}
