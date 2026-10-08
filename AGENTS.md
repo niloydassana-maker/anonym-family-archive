@@ -3738,3 +3738,26 @@ Per Baba's voice order, all changes to the original pipeline were packaged, comm
 - **Stage-Only Daemon Default**: The 24/7 background daemon runs Lane 5 strictly with `--stage-only`, logging candidates to `staged_candidates.json` and prohibiting autonomous outbound DMs without explicit review.
 
 
+
+## 80. SESSION 2026-10-08 (NIGHT 18:30-20:30 IST) - KDP SELECT 8-OF-8 ENROLLED, PROMO GATE OPEN, INTENT AWAITED
+
+Baba order: complete the pending KDP Select enrollments/promotions for all 8 titles (NILOY DAS). Full record: war-log/KDP-SELECT-ENROLLMENT-2026-10-08.md.
+
+### 80.1 VERIFIED RESULT (independent status node, not the shelf)
+- `_kdp_status.ps1` read `promotion-manager-select-info-status` per title id, no scrolling: **8 of 8 = `Your Current KDP Select Status: Enrolled`**, each with `PROMO-UI-OPEN` + 2 term labels. Receipt `_kdp_status_out.txt` (20:13-20:2x) + `_kdp_enrolled_confirmed.txt` (8 rows).
+- Tonight taps that landed (live Enroll button 640,1410, identity-gated on card blob): B0H4RPLN3Q + B0HHP8FH1R + B0HHQPZWGX + B0HHTFP15J + B0HHWRNYH5 (B0HHTGBZRX tap lost to an adb-server crash at 19:40, but the status node later proved it Enrolled). B0HHS6M3R4 + B0GY4LS1DL were already enrolled (shelf said so at 19:07); their title ids were harvested read-only via dry-run.
+- Title-id map (8 of 8, `_kdp_titlemap.txt`): B0H4RPLN3Q=ABY8VN1F37XLO, B0HHP8FH1R=A19SGL4YG7GYR8, B0HHQPZWGX=A2ZQNX5MMEWZHJ, B0HHTFP15J=A1ZYM6ZWAR2T9R, B0HHTGBZRX=A36MC8JBT0WDAY, B0HHWRNYH5=A15724T5IHY6E5, B0HHS6M3R4=A35Z0PU47UADHG, B0GY4LS1DL=A1DOO9DO2BZCH0.
+- Lane truth updated: `war-log/kdp-lane.json` = ENROLLED-8OF8, promo_ui OPEN-all-8, promos_created 0-of-8. P1 Countdown Sep 15-21 recorded EXPIRED (it died unenrolled) - never backdate it.
+
+### 80.2 PROMOTIONS - GATE OPEN, NOTHING CREATED (Baba intent awaited)
+- Promo manager per title: `Run a Price Promotion` UI open, `Promotions for this book: No promotions have been created for this book.` Old KDP-ENGINE calendar (P2-P9 Countdown/Free windows) assumed enrollments that did not exist then; with 8 enrolled the controls unlock, but **no Countdown and no Free-Book promo was created tonight** - that choice (which title, which dates, Countdown vs Free) is Baba`s, on his word only.
+- KDP exclusivity law (quoted from the page): enrolling elects the Kindle eBook exclusive to Kindle; paperback ASINs are separate editions, not independent Select enrollments (8 eBook enrollments = the 8 titles; 16 ASINs = 8 eBook + 8 paperback).
+
+### 80.3 DEFECTS FIXED TONIGHT (so no son relearns them)
+- Shelf was at the BOTTOM (footer on screen); 9 finger-UP swipes moved nothing (byte-identical dumps). Scroll to TOP first, then walk down.
+- Stale dump trap: fixed-name dumps re-read the previous file on failure. Now rm-first + hash-stamp + INERT flag.
+- Enrolled signal lives INSIDE the card blob (`KDP Select: eBook enrolled`), never on the bare ASIN node; unenrolled = full card with no Select line.
+- Real promo URL carries a KDP title id (`/marketing/<TITLE_ID>/promotion-manager`), never derivable from the ASIN; guessed `/promotions/<ASIN>` 404s. Harvest per title from the omnibox.
+- Enroll popover opens via `?showEnrollPopover=true` with a real Enroll button; identity gate = popover titleName inside the clicked card blob (`by NILOY DAS` never appears in the popover - the old gate aborted every run).
+- iQOO adb server crashes mid-run (seen 19:2x + 19:40): a failed dump is NOT a failed tap - re-verify from the status node before re-running.
+
