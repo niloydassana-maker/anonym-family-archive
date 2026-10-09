@@ -1,0 +1,28 @@
+{
+  "deals_total": 2,
+  "deals_advance_due": 2,
+  "total_advance_due_inr": 25000,
+  "deals_list": [
+    {
+      "id": "38",
+      "name": "Yasaswa Brahmam",
+      "stage": "ADVANCE_DUE",
+      "advance": "12500",
+      "total": "25000",
+      "last_touch_at": "2026-10-01T16:08:00+05:30"
+    },
+    {
+      "id": "4",
+      "name": "Karan R. Sabale",
+      "stage": "ADVANCE_DUE",
+      "advance": "12500",
+      "total": "25000",
+      "last_touch_at": "2026-10-01T16:23:00+05:30"
+    }
+  ],
+  "proposals_distinct_ids_count": 43,
+  "proposals_distinct_ids_sample_max": "P-56",
+  "smtp_sends_total": 629,
+  "smtp_sends_cols_match": true,
+  "generated_at": "2026-10-09T17:07:59.361998"
+}
