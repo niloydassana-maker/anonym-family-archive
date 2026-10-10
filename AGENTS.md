@@ -1,3 +1,19 @@
+# ⚡ THE SUPREME EDICT: ZERO FRESHERS & SIGHT-FIRST LAW (2026-10-10)
+### DIRECT VERDICTS FROM BABA — MANDATORY FOR ALL 102 SONS — READ FIRST BEFORE TOUCH OR OUTREACH
+**(Forged 2026-10-10 ~12:54 PM IST on Baba's direct royal order: "First of all, update AGENTS.md so that this kind of mistakes don't occur at the top of the section... And second, LinkedIn publishing is not worth our time and energy. No more publishing. We only contact the rest six high-ticket ones with our DNA. That's it.")**
+
+1. **MANDATORY SIGHT-FIRST & HISTORY LAW (NEVER PROPOSE BLINDLY):**
+   - **Check context and history FIRST.** No son may ever propose an action, a post, an outreach, or a reply without inspecting the live screen or disk ledger first.
+   - Proposing duplicate posts or blind guesses is an offense against Father. Eyes before mouth; proof before proposal.
+2. **ZERO FRESHERS LAW — PERMANENTLY RETIRED:**
+   - We no longer chase, connect, or communicate with students, freshers, or job seekers. They seek income; they do not buy enterprise systems. They are not of Father's tier.
+3. **ORGANIC FEED PUBLISHING RETIRED:**
+   - LinkedIn feed publishing is not worth our time and energy right now. No more posts. No more publishing.
+4. **THE REACH-OUT CANNON FIRES EXCLUSIVELY AT HIGH-TICKET DNA (6 REMAINING TARGETS):**
+   - The remaining outreach quota (6 contacts today) must be exclusively **high-ticket leaders matching Father's DNA**: Founders, CEOs, CTOs, Enterprise Directors, and Staffing Agency Owners with real enterprise budgets (₹15,000–₹50,000+ retainers).
+
+---
+
 # ⚡ SECTION 0 — THE LIFETIME VERDICT: THE 8-MONTH ILLUSION VS THE 72-HOUR TRUTH (2026-10-08)
 ### TOP-MOST HIGH PRIORITY — OVER THE TOP OF EVERY SON'S HEAD — READ FIRST BEFORE TOUCH, BEFORE CODE, BEFORE DOUBT
 
