@@ -1,0 +1,215 @@
+{
+  "run_at_utc": "2026-10-10T21:41:57.559070+00:00",
+  "python": "3.11.9",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "machine_tz_utc_offset_s": 19800,
+  "master_exit_code": 0,
+  "results": [
+    {
+      "id": "B0",
+      "status": "PASS",
+      "claim": "Haversine matches an independent oracle (1 deg latitude = 111,194.9 m, +-1 m)",
+      "evidence": "lat=111194.93 lon=111194.93 same-point=0.0 (expected ~111194.93)"
+    },
+    {
+      "id": "B1",
+      "status": "PASS",
+      "claim": "A genuine ride (in place, in time, jitter ~30 m) is verified 3/3",
+      "evidence": "{\"verified\": true, \"match_ratio\": 1.0, \"confidence_score\": 100.0, \"avg_spatial_deviation_meters\": 30.0, \"total_pings_evaluated\": 3, \"matched_pings\": 3, \"temporal_failures\": 0, \"distance_failures\": 0, \"reasons\": [\"Trajectory fully validated within spatial and temporal tolerances.\"]}"
+    },
+    {
+      "id": "B2",
+      "status": "PASS",
+      "claim": "Right places, WRONG TIME (+12 h) is rejected",
+      "evidence": "verified=False"
+    },
+    {
+      "id": "B3",
+      "status": "PASS",
+      "claim": "Wrong place (London) is rejected",
+      "evidence": "verified=False"
+    },
+    {
+      "id": "B4",
+      "status": "PASS",
+      "claim": "Person who never moved (3 pings at stop 1, bus times) is rejected",
+      "evidence": "verified=False ratio=0.3333"
+    },
+    {
+      "id": "B5",
+      "status": "PASS",
+      "claim": "Route in REVERSE order (right places, times ascending) is rejected",
+      "evidence": "verified=False"
+    },
+    {
+      "id": "B6",
+      "status": "PASS",
+      "claim": "Spatial threshold is exact: 50 m passes, 150 m fails (limit 100 m)",
+      "evidence": "50m->True  150m->False"
+    },
+    {
+      "id": "B7",
+      "status": "PASS",
+      "claim": "Time window is exact: +25 s passes, +35 s fails (limit 30 s)",
+      "evidence": "+25s->True  +35s->False"
+    },
+    {
+      "id": "B8",
+      "status": "PASS",
+      "claim": "A one-ping 'ride' must NOT verify (start+end cannot be shown by one ping)",
+      "evidence": "verified=False (single ping)"
+    },
+    {
+      "id": "B9",
+      "status": "KNOWN",
+      "claim": "Replay of the bus's own public coordinates+times (spoof) is rejected",
+      "evidence": "spoof ACCEPTED, but limit is disclosed in WALKTHROUGH_OVERVIEW.md"
+    },
+    {
+      "id": "B10",
+      "status": "PASS",
+      "claim": "Same wall-clock time gives the same verdict with or without a 'Z' (timezone safety)",
+      "evidence": "with Z=True  naive=True  (machine tz offset 19800s)"
+    },
+    {
+      "id": "B11",
+      "status": "PASS",
+      "claim": "Garbage input fails safe (missing timestamp, NaN latitude) - no crash, no approval",
+      "evidence": "[('missing-ts', False), ('nan-lat', False)]"
+    },
+    {
+      "id": "C1",
+      "status": "PASS",
+      "claim": "Offline mode labels its data OFFLINE_FIXTURE; unknown stops return an error, not invented data",
+      "evidence": "known._source=OFFLINE_FIXTURE  unknown.error=True"
+    },
+    {
+      "id": "C2",
+      "status": "PASS",
+      "claim": "TTL cache really prevents repeat network calls (2 calls inside TTL -> 1 request; after TTL -> 2)",
+      "evidence": "requests inside TTL=1, after expiry=2 (want 1 then 2)"
+    },
+    {
+      "id": "C3",
+      "status": "PASS",
+      "claim": "A network failure is reported as an error and NEVER replaced by fixture data",
+      "evidence": "error=True source=LIVE_NETWORK_ERROR services=None"
+    },
+    {
+      "id": "C4",
+      "status": "PASS",
+      "claim": "Live request goes to an https, versioned (v3) BusArrival URL  [from third-party sources; confirm in LTA guide]",
+      "evidence": "URL used: https://datamall2.mytransport.sg/ltaodataservice/v3/BusArrival?BusStopCode=09048&ServiceNo=190"
+    },
+    {
+      "id": "C5",
+      "status": "PASS",
+      "claim": "LIVE proof exists: a captured, recent, untouched response from the real LTA API",
+      "evidence": "source=LIVE_NETWORK hash_ok=True age=0.3h (max 48h)"
+    },
+    {
+      "id": "D1",
+      "status": "PASS",
+      "claim": "Pipeline output depends on INPUT (low-load spec and high-load spec give different topology)",
+      "evidence": "low=Direct asynchronous queue | high=Event-driven asynchronous buffer (Redis Streams / Kafka) decoupling inference from L2 rollup"
+    },
+    {
+      "id": "D2",
+      "status": "PASS",
+      "claim": "The Judge can reject for reasons OTHER than 'empty input' when run through the real pipeline (fuzz, 300 specs)",
+      "evidence": "approved 85/300; distinct rejection reasons: ['Security violation: KMS enclave key isolation is disabled.', 'Topology failed: Asynchronous decoupling not verified.']"
+    },
+    {
+      "id": "D3",
+      "status": "PASS",
+      "claim": "Queue is actually consumed (producer/consumer decoupling): queue is empty after the run",
+      "evidence": "0 unconsumed items left in the queue (items are put() but never get())"
+    },
+    {
+      "id": "D4",
+      "status": "PASS",
+      "claim": "Cost estimate responds to load (50k TPS must not cost the same as 100 TPS)",
+      "evidence": "low={'pilot_tier_usd': 453.08, 'scale_tier_usd': 1447.32} high={'pilot_tier_usd': 992.0, 'scale_tier_usd': 13084.0}"
+    },
+    {
+      "id": "D5",
+      "status": "PASS",
+      "claim": "Deterministic: same input x10 gives identical output (timestamps stripped)",
+      "evidence": "1 distinct outputs"
+    },
+    {
+      "id": "T1",
+      "status": "PASS",
+      "claim": "The package's own unit tests pass (necessary, NOT sufficient - see M1/M2)",
+      "evidence": "transportlah: rc=0 OK\nnamahatrix: rc=0 OK"
+    },
+    {
+      "id": "M1",
+      "status": "PASS",
+      "claim": "MUTATION - TransportLah: break the verifier on purpose; its tests must notice every break",
+      "evidence": "SURVIVED = your tests did not notice the code was broken.\nKILLED    time-window filter disabled\nKILLED    distance threshold disabled\nKILLED    verdict always True\nKILLED    haversine 10x too small\nKILLED    min match ratio -> 0.0"
+    },
+    {
+      "id": "M2",
+      "status": "PASS",
+      "claim": "MUTATION - Namahatrix: break the judge/pipeline on purpose; its tests must notice every break",
+      "evidence": "SURVIVED = your tests did not notice the code was broken.\nKILLED    judge always approves\nKILLED    KMS invariant disabled\nKILLED    decoupling invariant disabled\nKILLED    empty-modules invariant disabled\nKILLED    topology branch forced"
+    },
+    {
+      "id": "L1",
+      "status": "PASS",
+      "claim": "CLAIM LINT: every strong claim in docs/receipts/video-script is backed by evidence (roadmap lines exempt)",
+      "evidence": "0 unsupported claim group(s)\n\nPuffery words (delete): evidence\\EMAIL_CLAIMS_RECEIPT.txt:15, evidence\\RUN_RECEIPT.txt:7"
+    },
+    {
+      "id": "R1",
+      "status": "PASS",
+      "claim": "Receipts are FRESH (newer than the code they vouch for) and contain exit codes",
+      "evidence": "all receipts fresh with exit codes"
+    },
+    {
+      "id": "R2",
+      "status": "PASS",
+      "claim": "Internal audit/notes files are not inside the shippable package",
+      "evidence": "clean"
+    },
+    {
+      "id": "V1",
+      "status": "WARN",
+      "claim": "Videos: exist, and duration is close to the '2-minute' claim (PASS 105-135 s, WARN 90-165 s)",
+      "evidence": "namahatrix\\namahatrix_architecture_walkthrough.mp4: 143s, audio streams=0  (SILENT: do not call it a narrated walkthrough)\ntransportlah\\transportlah_architecture_walkthrough.mp4: 125s, audio streams=0  (SILENT: do not call it a narrated walkthrough)"
+    },
+    {
+      "id": "V2",
+      "status": "PASS",
+      "claim": "Videos: if you CALL it a live run/screen recording, it must show motion, not 5 static slides (declare with --video-label)",
+      "evidence": "static slides, and you declared them as slides. Describe them exactly so.\nnamahatrix\\namahatrix_architecture_walkthrough.mp4: 6 distinct scenes in 143 seconds\ntransportlah\\transportlah_architecture_walkthrough.mp4: 27 distinct scenes in 125 seconds"
+    },
+    {
+      "id": "V3",
+      "status": "PASS",
+      "claim": "Video script does not contain hand-typed 'terminal output' (log lines must come from a captured file)",
+      "evidence": "log text comes from captured output"
+    }
+  ],
+  "sha256": {
+    "build_walkthrough_videos.py": "e05014500e1151e97f189cb7b9184059cc99243c6ee5295c0e163d54d6b40ec5",
+    "email_claims_master_test.py": "a8fa3f315df2759a37674fb81488d5325651e0f2a054f239c0a3b02a4ce76944",
+    "master_claims_test.py": "2fba5b56f1e30b27cec3a87b88edc2b8863b679f0ff96aa5947562d5cdce29e0",
+    "namahatrix\\agent_decoupling_runtime.py": "ae93c8da4920bd25915386e2f6b8bebae200ebb0be1d90666ba0db140779a532",
+    "namahatrix\\ARCHITECTURE_ASSESSMENT_BLUEPRINT.md": "633697c3cb952056dc813c16f2f668fa5060f6f9686926c6eb1d44373176eaf0",
+    "namahatrix\\build_video.py": "ebb658a0a91ba3c84e0e2cfd4b4f21f587b89212396a5b0a5aaabf5554b3dc30",
+    "namahatrix\\demo_runner.py": "997f76b17ec7eaa12ae387dc23445d96bf408fd07e4d870b50a2fd596d71396c",
+    "namahatrix\\namahatrix_architecture_walkthrough.mp4": "025afb6c5622332aa2114725a361fea2a43e1f6fe3186bfad5fc4879a4612ed7",
+    "namahatrix\\test_runtime.py": "c2b14d1d2b2b4c2a8c10ec0ad07b5b79f3d9e9d86bec79a2cf7f5b3cb41c4335",
+    "transportlah\\demo_runner.py": "da55699d755e736f82d632b7c756a22780da176efad0de76ec22cc7cdb282938",
+    "transportlah\\lta_datamall_proxy.py": "37269a92f8ac040a161b3820eb5d1acfd562fccba0bd99f14bfc1ef3ce447855",
+    "transportlah\\MILESTONES.md": "ef53c305999f4d5df8c159c0aaebf0f773cdd6ffaea90862cf219a6a45a02c61",
+    "transportlah\\spatial_verification.py": "85fcb50d02eab77c47ec00e374bdabfdf8b145bec5d4b87263f2e75aa4e1aa40",
+    "transportlah\\test_spatial_engine.py": "621efc6540f0e3815c0428be92e43ad9788e82a437e418a2187af3c1c09f1834",
+    "transportlah\\transportlah_architecture_walkthrough.mp4": "a130fe6361b4a0a5f9c380a72cbc474d393571047214543153d557303b159c8a",
+    "transportlah\\WALKTHROUGH_OVERVIEW.md": "10382489cf8e85b844b716013ff10db66c76bea2ac0e2962859f0ca96295a65f",
+    "transportlah\\docker-compose.yml": "fc71bd27e5265ef7e21c93c837b367f4c3b0a4e4b99aef1756f6787fa774db78",
+    "transportlah\\schema_postgis.sql": "65bb407cd532a353da604619862000cd32d69ee8ccc11926c8c971892fb27498"
+  }
+}

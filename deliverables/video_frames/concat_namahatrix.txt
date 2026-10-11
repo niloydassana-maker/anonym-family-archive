@@ -1,0 +1,11 @@
+file 'D:/anonym/deliverables/video_frames/n_slide1.png'
+duration 24
+file 'D:/anonym/deliverables/video_frames/n_slide2.png'
+duration 24
+file 'D:/anonym/deliverables/video_frames/n_slide3.png'
+duration 24
+file 'D:/anonym/deliverables/video_frames/n_slide4.png'
+duration 24
+file 'D:/anonym/deliverables/video_frames/n_slide5.png'
+duration 24
+file 'D:/anonym/deliverables/video_frames/n_slide5.png'

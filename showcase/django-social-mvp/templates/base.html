@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Nexus // Distributed Engineering Feed{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        pre, code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="{% url 'feed' %}" class="flex items-center space-x-2">
+                    <span class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-emerald-500/20">N</span>
+                    <span class="font-bold tracking-tight text-lg text-white">NEXUS <span class="text-xs font-mono uppercase px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/60 ml-1">Engineering MVP</span></span>
+                </a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                    <div class="flex items-center space-x-3 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-full text-xs">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-slate-400">Persona:</span>
+                        <a href="{% url 'profile' user.username %}" class="font-semibold text-emerald-300 hover:underline">
+                            {{ user.get_full_name|default:user.username }}
+                        </a>
+                    </div>
+
+                    <a href="{% url 'logout' %}" class="text-xs text-slate-400 hover:text-slate-200 border border-slate-800 hover:border-slate-700 px-3 py-1.5 rounded-md transition">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-xs font-medium bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg transition shadow shadow-emerald-600/30">
+                        Sign In
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Alerts / Flash Messages -->
+    {% if messages %}
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 w-full mt-4 space-y-2">
+        {% for message in messages %}
+        <div class="p-3 rounded-lg border text-sm flex items-center justify-between {% if message.tags == 'error' %}bg-rose-950/60 border-rose-800 text-rose-200{% else %}bg-emerald-950/60 border-emerald-800 text-emerald-200{% endif %}">
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/60 py-6 text-center text-xs text-slate-500 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div>
+                Nexus Social Feed MVP &middot; Distributed Systems Architecture Showcase
+            </div>
+            <div class="font-mono text-[11px] text-slate-400">
+                Django 5.2.18 &bull; SQLite ORM (Zero N+1) &bull; Clean REST / HTMX Patterns
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

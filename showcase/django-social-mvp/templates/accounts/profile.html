@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+
+    <!-- Profile Banner Card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-2xl">
+                    {{ target_user.username|slice:":1"|upper }}
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-white flex items-center gap-2">
+                        {{ target_user.get_full_name|default:target_user.username }}
+                        <span class="text-xs font-mono text-slate-500 font-normal">@{{ target_user.username }}</span>
+                    </h1>
+                    <p class="text-sm text-slate-300 mt-0.5">{{ profile.headline }}</p>
+                    <div class="flex items-center gap-4 text-xs text-slate-400 mt-2 font-mono">
+                        <span>Org: {{ profile.company }}</span>
+                        <span>&bull;</span>
+                        <span>Location: {{ profile.location }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {% if target_user == user %}
+            <div class="bg-emerald-950/60 border border-emerald-800 text-emerald-300 text-xs px-3 py-1.5 rounded-full font-mono">
+                Active Perspective
+            </div>
+            {% else %}
+            <a href="{% url 'switch_user' target_user.id %}" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold px-4 py-2 rounded-lg transition">
+                Switch to this Persona
+            </a>
+            {% endif %}
+        </div>
+
+        {% if profile.bio %}
+        <div class="mt-4 pt-4 border-t border-slate-800 text-sm text-slate-300 leading-relaxed">
+            {{ profile.bio }}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Posts By User -->
+    <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-slate-200 font-mono uppercase tracking-wider flex items-center justify-between">
+            <span>Dispatches by {{ target_user.get_full_name|default:target_user.username }}</span>
+            <span class="text-slate-500 text-xs font-normal">Total: {{ posts.count }}</span>
+        </h3>
+
+        {% for post in posts %}
+        <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+                <time class="text-xs font-mono text-slate-400">{{ post.created_at|date:"M d, Y H:i" }}</time>
+                <div class="flex items-center space-x-3 text-xs text-slate-400">
+                    <span>&hearts; {{ post.like_count }} likes</span>
+                    <span>&bull;</span>
+                    <span>{{ post.comment_count }} comments</span>
+                </div>
+            </div>
+
+            <p class="text-sm text-slate-200 whitespace-pre-line leading-relaxed">{{ post.content }}</p>
+
+            {% if post.code_snippet %}
+            <div class="bg-slate-950 border border-slate-800 rounded-lg p-3 font-mono text-xs text-emerald-300 overflow-x-auto">
+                <code>{{ post.code_snippet }}</code>
+            </div>
+            {% endif %}
+        </article>
+        {% empty %}
+        <div class="text-center py-8 bg-slate-900 border border-slate-800 rounded-xl text-slate-400 text-xs">
+            No dispatches published yet.
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

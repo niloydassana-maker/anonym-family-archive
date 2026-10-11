@@ -1,0 +1,7 @@
+﻿kaggle : 'charmap' codec can't encode characters in position 451-490: character maps to <undefined>
+At line:4 char:1
++ kaggle kernels output isearchxsolve/kilo-xtts-tune 2>&1 | Out-File -E ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ('charmap' codec... to <undefined>:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

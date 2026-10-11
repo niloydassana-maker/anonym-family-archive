@@ -1,0 +1,48 @@
+EMAIL CLAIMS MASTER TEST RECEIPT
+run_at_utc: 2026-10-10T21:45:38.065944+00:00
+exit_code: 0
+
+CLAIM VERDICTS: A1=PASS, A2=ATTESTED, F1=ATTESTED, F2=PASS, F3=UNVERIFIED, F4=PASS, P1=PASS, P2=UNVERIFIED, P3=PASS, SHIP=PASS, V1=PASS, V2=PASS, V3=PASS, V4=PASS
+
+PASS       E0.1  Mail is fully mapped: every sentence holds a registered claim or is a declared no-claim
+PASS       E0.2  Every registered claim quote still appears in the mail (no orphan claims)
+PASS       P1.1  Proxy imports, and with no key runs in labelled OFFLINE_FIXTURE mode; unknown stop = error, not invented data
+PASS       P1.2  TTL cache really suppresses repeat requests (2 calls in TTL -> 1 request; after TTL -> 2)
+PASS       P1.3  Outages and HTTP 429 are surfaced as errors with status code -- never papered over with fixture data
+PASS       P1.4  Live request shape: https, datamall host, /BusArrival with BusStopCode+ServiceNo, AccountKey header; key never echoed back
+UNVERIFIED P2.1  'PostGIS pipeline': code EXECUTES SQL against PostGIS (DB-driver import + execute call). SQL strings, .sql and compose files alone do not count
+PASS       P2.2  The package's own docs agree with the word 'PostGIS' (not contradict it)
+PASS       P2.3  Verification logic behaves: accepts genuine ride; rejects wrong time/place/stationary/reversed/single-ping/garbage; limits exact
+PASS       P2.4  Differential fuzz: 2,000 random scenarios agree with an independent reference verifier (incl. exact boundaries)
+PASS       P2.5  Robustness probe: structurally malformed pings (missing lat/lng, None, string coords) do not crash
+INFO       P2.6  INFO -- limits the mail does NOT mention: replay of the bus's own public feed, and 90 m pedestrian
+PASS       M0    META: break the verifier 5 ways; this suite's own battery must catch every break
+PASS       P3.1  Clean-room reproduction: demo runs from a fresh copy (no key, no private paths), exit 0, shows a pass AND a rejection
+PASS       P3.2  Shipped receipt (transportlah_output.txt) is reproducible: its stdout equals a fresh run's stdout
+PASS       P3.3  Package unit tests pass; count matches the '8 automated unit tests' stated in the video
+PASS       P3.4  Receipt vouches for the bytes shipped: sha256 in evidence/RUN_RECEIPT.json matches current transportlah/* files
+PASS       P3.5  No private machine paths, leftover .pyc, or hard-coded passwords inside what you would send (transportlah/)
+INFO       P3.6  INFO -- 'our test bench': is anything hosted/remote that Aveek could reach?
+PASS       V1.1  A walkthrough video exists in the package
+PASS       V1.2  Duration matches '2-minute' (PASS within 10%, WARN within 25%, FAIL beyond)
+INFO       V1.3  INFO -- audio track present? (silent video should not be called 'narrated')
+PASS       V1.4  What the video SAYS matches what the code DOES (single-ping behaviour, unit-test count)
+PASS       V2.1  'Arrival timestamp correlation' uses the proxy's data: EVERY vehicle-trajectory point is derived from proxy output, none hand-typed
+PASS       V2.2  All timestamps in the demo use ONE consistent UTC offset, matching the proxy's (no Z / +08:00 mixing = the original 8-hour bug)
+PASS       V2.3  Polling accumulates a REAL time series: successive polls give distinct positions, and the demo actually uses it
+PASS       V4.1  Video shows MOTION if called 'running live' (a slideshow of <=12 distinct scenes in >=60 s is not a live run)
+PASS       V4.2  The data-source label is TRUTHFUL: with no API key the demo must not print LIVE_NETWORK, and shipped receipts must show real LIVE data
+PASS       V4.3  LIVE proof file is plausible: not the offline fixture, ETAs lie ahead of capture time, hash intact, recent
+PASS       V4.4  The package does not list 'live LTA key' as Sprint 1 TO-DO while the mail says it is already running live
+PASS       X1    Package does not contradict the mail: its own roadmap must not list PostGIS or live-LTA as PLANNED/future while the mail says they are already done
+PASS       F1.1  Nothing shipped with the mail asks for money (no advance/deposit/retainer/invoice wording in transportlah/ or its video)
+PASS       F2.1  '10-day Sprint 1' matches the written roadmap (Sprint 1 = Days 1-10)
+PASS       F3.1  The written Sprint 1 plan includes the TestFlight/iOS deliverable the mail promises
+INFO       F3.2  INFO -- is there ANY client-app code today? (the 'Commuter App' box in the architecture)
+UNVERIFIED F3.3  Human preconditions for a TestFlight build (cannot be tested by code)
+PASS       F4.1  'Verified milestones' are defined: a MILESTONES.md where each milestone names an acceptance check
+PASS       A1.1  Earlier mail really had 'upfront advance' terms (needs the earlier mail: --prior-email FILE)
+ATTESTED   A2.1  Personal assertion (college batchmates)
+ATTESTED   F1.2  Promise: 'zero obligation' -- you must honour it (attestation)
+PASS       H1    What you send for Aveek (transportlah/ + video) names no OTHER client
+PASS       H2    deliverables.zip as a whole is safe to send to Aveek (no other client's package inside)

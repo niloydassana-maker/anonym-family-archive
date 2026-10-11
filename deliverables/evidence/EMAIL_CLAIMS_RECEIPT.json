@@ -1,0 +1,421 @@
+{
+  "run_at_utc": "2026-10-10T21:45:38.065944+00:00",
+  "python": "3.11.9",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "exit_code": 0,
+  "email_sha256": "1fd944a8457472e9d271b7e96f791406c2abb9813320d2f736c1a5289a4b5002",
+  "claim_verdicts": {
+    "SHIP": "PASS",
+    "P1": "PASS",
+    "P3": "PASS",
+    "P2": "UNVERIFIED",
+    "V3": "PASS",
+    "V4": "PASS",
+    "V1": "PASS",
+    "V2": "PASS",
+    "F1": "ATTESTED",
+    "F4": "PASS",
+    "F2": "PASS",
+    "F3": "UNVERIFIED",
+    "A1": "PASS",
+    "A2": "ATTESTED"
+  },
+  "results": [
+    {
+      "id": "E0.1",
+      "claims": [
+        "SHIP"
+      ],
+      "status": "PASS",
+      "desc": "Mail is fully mapped: every sentence holds a registered claim or is a declared no-claim",
+      "evidence": "8 sentences, all mapped or declared no-claim"
+    },
+    {
+      "id": "E0.2",
+      "claims": [
+        "SHIP"
+      ],
+      "status": "PASS",
+      "desc": "Every registered claim quote still appears in the mail (no orphan claims)",
+      "evidence": "all 13 quotes anchor"
+    },
+    {
+      "id": "P1.1",
+      "claims": [
+        "P1",
+        "P3"
+      ],
+      "status": "PASS",
+      "desc": "Proxy imports, and with no key runs in labelled OFFLINE_FIXTURE mode; unknown stop = error, not invented data",
+      "evidence": "mode=OFFLINE_FIXTURE known._source=OFFLINE_FIXTURE unknown.error=True"
+    },
+    {
+      "id": "P1.2",
+      "claims": [
+        "P1"
+      ],
+      "status": "PASS",
+      "desc": "TTL cache really suppresses repeat requests (2 calls in TTL -> 1 request; after TTL -> 2)",
+      "evidence": "inside TTL=1, after expiry=2 (want 1, 2)"
+    },
+    {
+      "id": "P1.3",
+      "claims": [
+        "P1"
+      ],
+      "status": "PASS",
+      "desc": "Outages and HTTP 429 are surfaced as errors with status code -- never papered over with fixture data",
+      "evidence": "{'outage': (True, 'LIVE_NETWORK_ERROR', None), '429': (True, 'LIVE_NETWORK_ERROR', 429)}"
+    },
+    {
+      "id": "P1.4",
+      "claims": [
+        "P1"
+      ],
+      "status": "PASS",
+      "desc": "Live request shape: https, datamall host, /BusArrival with BusStopCode+ServiceNo, AccountKey header; key never echoed back",
+      "evidence": "url=https://datamall2.mytransport.sg/ltaodataservice/v3/BusArrival?BusStopCode=09048&ServiceNo=190  accountkey_header=True  key_in_result=False"
+    },
+    {
+      "id": "P2.1",
+      "claims": [
+        "P2"
+      ],
+      "status": "UNVERIFIED",
+      "desc": "'PostGIS pipeline': code EXECUTES SQL against PostGIS (DB-driver import + execute call). SQL strings, .sql and compose files alone do not count",
+      "evidence": "driver import ['transportlah\\\\spatial_verification.py:12'] and execute() ['transportlah\\\\spatial_verification.py:66'] exist, but nothing here proves it runs against a real PostGIS (needs a parity run)"
+    },
+    {
+      "id": "P2.2",
+      "claims": [
+        "P2"
+      ],
+      "status": "PASS",
+      "desc": "The package's own docs agree with the word 'PostGIS' (not contradict it)",
+      "evidence": "no contradicting statement in docs"
+    },
+    {
+      "id": "P2.3",
+      "claims": [
+        "P2",
+        "V3"
+      ],
+      "status": "PASS",
+      "desc": "Verification logic behaves: accepts genuine ride; rejects wrong time/place/stationary/reversed/single-ping/garbage; limits exact",
+      "evidence": "ok   genuine ride (30 m jitter, +4 s) verified 3/3\nok   same places, +12 h rejected\nok   London rejected\nok   never-moved passenger rejected\nok   reversed route rejected\nok   distance limit exact: 50 m ok / 150 m rejected\nok   time limit exact: +25 s ok / +35 s rejected\nok   single-ping 'ride' rejected\nok   empty input rejected\nok   garbage (missing/NaN/bad timestamp) fails safe"
+    },
+    {
+      "id": "P2.4",
+      "claims": [
+        "P2",
+        "V3"
+      ],
+      "status": "PASS",
+      "desc": "Differential fuzz: 2,000 random scenarios agree with an independent reference verifier (incl. exact boundaries)",
+      "evidence": "1978 scenarios agree with reference (22 skipped within 1 m of the 100 m edge)"
+    },
+    {
+      "id": "P2.5",
+      "claims": [
+        "P2",
+        "V3"
+      ],
+      "status": "PASS",
+      "desc": "Robustness probe: structurally malformed pings (missing lat/lng, None, string coords) do not crash",
+      "evidence": "all fail safe"
+    },
+    {
+      "id": "P2.6",
+      "claims": [
+        "V3"
+      ],
+      "status": "INFO",
+      "desc": "INFO -- limits the mail does NOT mention: replay of the bus's own public feed, and 90 m pedestrian",
+      "evidence": "replay accepted=True  90m-pedestrian accepted=True  disclosed in docs=True (do not claim spoof/fraud resistance)"
+    },
+    {
+      "id": "M0",
+      "claims": [
+        "P2",
+        "V3"
+      ],
+      "status": "PASS",
+      "desc": "META: break the verifier 5 ways; this suite's own battery must catch every break",
+      "evidence": "SURVIVED = the suite did not notice the code was broken.\nKILLED    time-window filter removed\nKILLED    distance threshold removed\nKILLED    verdict always True\nKILLED    single-ping guard removed\nKILLED    haversine 10x too small"
+    },
+    {
+      "id": "P3.1",
+      "claims": [
+        "P3"
+      ],
+      "status": "PASS",
+      "desc": "Clean-room reproduction: demo runs from a fresh copy (no key, no private paths), exit 0, shows a pass AND a rejection",
+      "evidence": "exit=0  has True=True has False=True  stderr=''"
+    },
+    {
+      "id": "P3.2",
+      "claims": [
+        "P3",
+        "V4"
+      ],
+      "status": "PASS",
+      "desc": "Shipped receipt (transportlah_output.txt) is reproducible: its stdout equals a fresh run's stdout",
+      "evidence": "stdout identical=True  receipt exit code 0=True"
+    },
+    {
+      "id": "P3.3",
+      "claims": [
+        "P3",
+        "V3"
+      ],
+      "status": "PASS",
+      "desc": "Package unit tests pass; count matches the '8 automated unit tests' stated in the video",
+      "evidence": "rc=0 tests=8"
+    },
+    {
+      "id": "P3.4",
+      "claims": [
+        "P3"
+      ],
+      "status": "PASS",
+      "desc": "Receipt vouches for the bytes shipped: sha256 in evidence/RUN_RECEIPT.json matches current transportlah/* files",
+      "evidence": "match=9 changed-since-receipt=[] missing=[]"
+    },
+    {
+      "id": "P3.5",
+      "claims": [
+        "SHIP"
+      ],
+      "status": "PASS",
+      "desc": "No private machine paths, leftover .pyc, or hard-coded passwords inside what you would send (transportlah/)",
+      "evidence": "clean"
+    },
+    {
+      "id": "P3.6",
+      "claims": [
+        "P3"
+      ],
+      "status": "INFO",
+      "desc": "INFO -- 'our test bench': is anything hosted/remote that Aveek could reach?",
+      "evidence": "server/hosted endpoints in package: none => it is a LOCAL bench; Aveek can only watch the video or run it himself"
+    },
+    {
+      "id": "V1.1",
+      "claims": [
+        "V1"
+      ],
+      "status": "PASS",
+      "desc": "A walkthrough video exists in the package",
+      "evidence": "transportlah\\transportlah_architecture_walkthrough.mp4"
+    },
+    {
+      "id": "V1.2",
+      "claims": [
+        "V1"
+      ],
+      "status": "PASS",
+      "desc": "Duration matches '2-minute' (PASS within 10%, WARN within 25%, FAIL beyond)",
+      "evidence": "125 s = 2:05  (4% off 2:00)"
+    },
+    {
+      "id": "V1.3",
+      "claims": [
+        "V1"
+      ],
+      "status": "INFO",
+      "desc": "INFO -- audio track present? (silent video should not be called 'narrated')",
+      "evidence": "audio streams=0  (silent)"
+    },
+    {
+      "id": "V1.4",
+      "claims": [
+        "V1"
+      ],
+      "status": "PASS",
+      "desc": "What the video SAYS matches what the code DOES (single-ping behaviour, unit-test count)",
+      "evidence": "(build-script text (NOT OCR: install tesseract+ffmpeg for stronger evidence))\nconsistent"
+    },
+    {
+      "id": "V2.1",
+      "claims": [
+        "V2"
+      ],
+      "status": "PASS",
+      "desc": "'Arrival timestamp correlation' uses the proxy's data: EVERY vehicle-trajectory point is derived from proxy output, none hand-typed",
+      "evidence": "trajectory built by expression, not a literal list"
+    },
+    {
+      "id": "V2.2",
+      "claims": [
+        "V2"
+      ],
+      "status": "PASS",
+      "desc": "All timestamps in the demo use ONE consistent UTC offset, matching the proxy's (no Z / +08:00 mixing = the original 8-hour bug)",
+      "evidence": "offsets used in demo_runner.py: ['+08:00']; proxy ETA uses +08:00"
+    },
+    {
+      "id": "V2.3",
+      "claims": [
+        "V2"
+      ],
+      "status": "PASS",
+      "desc": "Polling accumulates a REAL time series: successive polls give distinct positions, and the demo actually uses it",
+      "evidence": "poll_trajectory(): 3 distinct positions"
+    },
+    {
+      "id": "V4.1",
+      "claims": [
+        "V4"
+      ],
+      "status": "PASS",
+      "desc": "Video shows MOTION if called 'running live' (a slideshow of <=12 distinct scenes in >=60 s is not a live run)",
+      "evidence": "27 distinct scenes in 125 s"
+    },
+    {
+      "id": "V4.2",
+      "claims": [
+        "V4"
+      ],
+      "status": "PASS",
+      "desc": "The data-source label is TRUTHFUL: with no API key the demo must not print LIVE_NETWORK, and shipped receipts must show real LIVE data",
+      "evidence": "no-key run is labelled OFFLINE; shipped receipt/video carry a LIVE label"
+    },
+    {
+      "id": "V4.3",
+      "claims": [
+        "V4"
+      ],
+      "status": "PASS",
+      "desc": "LIVE proof file is plausible: not the offline fixture, ETAs lie ahead of capture time, hash intact, recent",
+      "evidence": "plausible live capture\n(note: raw_sha256 is computed by the capturer, so it only shows the file was not edited AFTER capture, not that LTA produced it. Re-capture yourself with --capture-live.)"
+    },
+    {
+      "id": "V4.4",
+      "claims": [
+        "V4"
+      ],
+      "status": "PASS",
+      "desc": "The package does not list 'live LTA key' as Sprint 1 TO-DO while the mail says it is already running live",
+      "evidence": "no contradiction"
+    },
+    {
+      "id": "X1",
+      "claims": [
+        "P2",
+        "V4"
+      ],
+      "status": "PASS",
+      "desc": "Package does not contradict the mail: its own roadmap must not list PostGIS or live-LTA as PLANNED/future while the mail says they are already done",
+      "evidence": "no roadmap item contradicts an 'already done' claim"
+    },
+    {
+      "id": "F1.1",
+      "claims": [
+        "F1",
+        "F4"
+      ],
+      "status": "PASS",
+      "desc": "Nothing shipped with the mail asks for money (no advance/deposit/retainer/invoice wording in transportlah/ or its video)",
+      "evidence": "no payment language shipped"
+    },
+    {
+      "id": "F2.1",
+      "claims": [
+        "F2"
+      ],
+      "status": "PASS",
+      "desc": "'10-day Sprint 1' matches the written roadmap (Sprint 1 = Days 1-10)",
+      "evidence": "(build-script text (NOT OCR: install tesseract+ffmpeg for stronger evidence)) roadmap says Sprint 1 = Days 1-10"
+    },
+    {
+      "id": "F3.1",
+      "claims": [
+        "F3"
+      ],
+      "status": "PASS",
+      "desc": "The written Sprint 1 plan includes the TestFlight/iOS deliverable the mail promises",
+      "evidence": "written Sprint 1 scope: 'Sprint 1 (Days 1\u201310 [ESTIMATE]): Deliver initial TestFlight iOS client build and commuter transit verification integration' -- mentions iOS/TestFlight"
+    },
+    {
+      "id": "F3.2",
+      "claims": [
+        "F3"
+      ],
+      "status": "INFO",
+      "desc": "INFO -- is there ANY client-app code today? (the 'Commuter App' box in the architecture)",
+      "evidence": "client-app files: ['transportlah\\\\MILESTONES.md', 'transportlah\\\\WALKTHROUGH_OVERVIEW.md']. => TestFlight in 10 days is 100% future work (that is allowed, but say it)."
+    },
+    {
+      "id": "F3.3",
+      "claims": [
+        "F3"
+      ],
+      "status": "UNVERIFIED",
+      "desc": "Human preconditions for a TestFlight build (cannot be tested by code)",
+      "evidence": "confirm yourself before promising a date:\n  [ ] Apple Developer Program membership active (whose account?)\n  [ ] bundle ID + App Store Connect record\n  [ ] who writes the iOS GPS-capture client (none exists)\n  [ ] who is on the TestFlight tester list"
+    },
+    {
+      "id": "F4.1",
+      "claims": [
+        "F4"
+      ],
+      "status": "PASS",
+      "desc": "'Verified milestones' are defined: a MILESTONES.md where each milestone names an acceptance check",
+      "evidence": "transportlah\\MILESTONES.md: has ACCEPT: lines"
+    },
+    {
+      "id": "A1.1",
+      "claims": [
+        "A1"
+      ],
+      "status": "PASS",
+      "desc": "Earlier mail really had 'upfront advance' terms (needs the earlier mail: --prior-email FILE)",
+      "evidence": "advance-terms wording found in prior email"
+    },
+    {
+      "id": "A2.1",
+      "claims": [
+        "A2"
+      ],
+      "status": "ATTESTED",
+      "desc": "Personal assertion (college batchmates)",
+      "evidence": "attested by you"
+    },
+    {
+      "id": "F1.2",
+      "claims": [
+        "F1"
+      ],
+      "status": "ATTESTED",
+      "desc": "Promise: 'zero obligation' -- you must honour it (attestation)",
+      "evidence": "attested by you"
+    },
+    {
+      "id": "H1",
+      "claims": [
+        "SHIP"
+      ],
+      "status": "PASS",
+      "desc": "What you send for Aveek (transportlah/ + video) names no OTHER client",
+      "evidence": "clean"
+    },
+    {
+      "id": "H2",
+      "claims": [
+        "SHIP"
+      ],
+      "status": "PASS",
+      "desc": "deliverables.zip as a whole is safe to send to Aveek (no other client's package inside)",
+      "evidence": "only TransportLah material"
+    }
+  ],
+  "sha256": {
+    "transportlah\\MILESTONES.md": "ef53c305999f4d5df8c159c0aaebf0f773cdd6ffaea90862cf219a6a45a02c61",
+    "transportlah\\WALKTHROUGH_OVERVIEW.md": "10382489cf8e85b844b716013ff10db66c76bea2ac0e2962859f0ca96295a65f",
+    "transportlah\\demo_runner.py": "da55699d755e736f82d632b7c756a22780da176efad0de76ec22cc7cdb282938",
+    "transportlah\\lta_datamall_proxy.py": "37269a92f8ac040a161b3820eb5d1acfd562fccba0bd99f14bfc1ef3ce447855",
+    "transportlah\\spatial_verification.py": "85fcb50d02eab77c47ec00e374bdabfdf8b145bec5d4b87263f2e75aa4e1aa40",
+    "transportlah\\test_spatial_engine.py": "621efc6540f0e3815c0428be92e43ad9788e82a437e418a2187af3c1c09f1834",
+    "transportlah\\transportlah_architecture_walkthrough.mp4": "a130fe6361b4a0a5f9c380a72cbc474d393571047214543153d557303b159c8a"
+  }
+}

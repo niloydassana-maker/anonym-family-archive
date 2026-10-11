@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Column: Active Persona & Architecture Highlights -->
+    <div class="lg:col-span-3 space-y-6">
+        <!-- Persona Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-bold text-lg">
+                    {{ user.username|slice:":1"|upper|default:"G" }}
+                </div>
+                <div>
+                    <h2 class="font-bold text-white text-base">
+                        {% if user.is_authenticated %}
+                            {{ user.get_full_name|default:user.username }}
+                        {% else %}
+                            Guest Observer
+                        {% endif %}
+                    </h2>
+                    <p class="text-xs text-slate-400">
+                        {% if user.is_authenticated and user.profile %}
+                            {{ user.profile.headline }}
+                        {% else %}
+                            Read-only Access
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            {% if user.is_authenticated and user.profile.bio %}
+            <p class="text-xs text-slate-300 border-t border-slate-800/80 pt-3 leading-relaxed">
+                {{ user.profile.bio }}
+            </p>
+            {% endif %}
+
+            <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-400 space-y-1.5 font-mono">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Org:</span>
+                    <span class="text-slate-300">{{ user.profile.company|default:"Nexus Architecture" }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Region:</span>
+                    <span class="text-slate-300">{{ user.profile.location|default:"India" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Architecture Specs -->
+        <div class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-5 text-xs text-slate-400 space-y-3">
+            <h3 class="font-semibold text-slate-200 uppercase tracking-wider text-[11px] font-mono flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Engine Specs
+            </h3>
+            <p class="leading-relaxed text-slate-300 text-[12px]">
+                Built as a high-efficiency prototype: clean normalized schema, zero N+1 database queries, and async-capable endpoints.
+            </p>
+            <ul class="space-y-1.5 font-mono text-[11px] text-slate-400 pt-1">
+                <li>&bull; Django ORM <code>select_related</code></li>
+                <li>&bull; Instant REST Like toggles</li>
+                <li>&bull; Extensible for Redis Task Queue</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Center Column: Post Composer & Timeline -->
+    <div class="lg:col-span-6 space-y-6">
+
+        <!-- Dispatch Composer -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+            <h3 class="text-sm font-semibold text-slate-200 mb-3 flex items-center justify-between">
+                <span>Dispatch Engineering Update</span>
+                <span class="text-[11px] font-mono text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">Live Wire</span>
+            </h3>
+
+            <form method="POST" action="{% url 'feed' %}" class="space-y-3">
+                {% csrf_token %}
+                <div>
+                    <textarea 
+                        name="content" 
+                        rows="3" 
+                        required
+                        placeholder="{% if user.is_authenticated %}Share an architecture decision, technical insight, or system milestone...{% else %}Select a persona from the right sidebar to publish...{% endif %}"
+                        {% if not user.is_authenticated %}disabled{% endif %}
+                        class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition resize-none"
+                    ></textarea>
+                </div>
+
+                <!-- Optional Code Snippet -->
+                <details class="text-xs group">
+                    <summary class="cursor-pointer text-slate-400 hover:text-emerald-400 font-mono transition select-none flex items-center gap-1.5">
+                        <span class="font-bold">+</span> Attach Code Snippet (Optional)
+                    </summary>
+                    <div class="mt-2 space-y-2 pt-2 border-t border-slate-800/80">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] text-slate-400 font-mono">Language:</span>
+                            <input 
+                                type="text" 
+                                name="language" 
+                                value="python" 
+                                class="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 font-mono w-28 focus:outline-none focus:border-emerald-500"
+                            >
+                        </div>
+                        <textarea 
+                            name="code_snippet" 
+                            rows="4" 
+                            placeholder="# Paste snippet or system configuration..."
+                            class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-emerald-300 placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition resize-none"
+                        ></textarea>
+                    </div>
+                </details>
+
+                <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 gap-3">
+                    <input 
+                        type="text" 
+                        name="tags" 
+                        placeholder="Tags (e.g. #architecture, #django, #redis)" 
+                        class="bg-slate-950 border border-slate-800 rounded-md px-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 flex-1 focus:outline-none focus:border-emerald-500"
+                    >
+                    <button 
+                        type="submit" 
+                        {% if not user.is_authenticated %}disabled{% endif %}
+                        class="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-md shadow-emerald-600/20"
+                    >
+                        Publish Dispatch
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Feed Timeline -->
+        <div class="space-y-5">
+            {% for post in posts %}
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-4 transition hover:border-slate-700/80">
+                <!-- Post Header -->
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                            {{ post.author.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <a href="{% url 'profile' post.author.username %}" class="font-bold text-sm text-slate-100 hover:text-emerald-400 transition">
+                                    {{ post.author.get_full_name|default:post.author.username }}
+                                </a>
+                                <span class="text-[10px] font-mono text-slate-500">@{{ post.author.username }}</span>
+                            </div>
+                            <p class="text-xs text-slate-400">
+                                {{ post.author.profile.headline|default:"Systems Engineer" }}
+                            </p>
+                        </div>
+                    </div>
+                    <time class="text-[11px] font-mono text-slate-500">{{ post.created_at|timesince }} ago</time>
+                </div>
+
+                <!-- Post Body -->
+                <div class="text-sm text-slate-200 leading-relaxed whitespace-pre-line">
+                    {{ post.content }}
+                </div>
+
+                <!-- Code Snippet Container -->
+                {% if post.code_snippet %}
+                <div class="bg-slate-950 border border-slate-800 rounded-lg overflow-hidden font-mono text-xs">
+                    <div class="bg-slate-900/80 px-3 py-1.5 border-b border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                        <span class="text-emerald-400 font-bold uppercase tracking-wider text-[10px]">{{ post.language|default:"code" }}</span>
+                        <span class="text-slate-600">read-only snippet</span>
+                    </div>
+                    <pre class="p-3 text-emerald-300 overflow-x-auto text-[11px] leading-relaxed"><code>{{ post.code_snippet }}</code></pre>
+                </div>
+                {% endif %}
+
+                <!-- Tags -->
+                {% if post.get_tag_list %}
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    {% for tag in post.get_tag_list %}
+                    <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                        {{ tag }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Interaction Actions -->
+                <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+                    <div class="flex items-center space-x-4">
+                        <!-- Like Toggle -->
+                        <button 
+                            type="button"
+                            onclick="toggleLike({{ post.id }})" 
+                            id="like-btn-{{ post.id }}"
+                            class="flex items-center space-x-1.5 hover:text-rose-400 transition {% if user in post.likes.all %}text-rose-400 font-semibold{% endif %}"
+                        >
+                            <span>&hearts;</span>
+                            <span id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+                            <span>Likes</span>
+                        </button>
+
+                        <!-- Comments Toggle -->
+                        <button 
+                            type="button" 
+                            onclick="document.getElementById('comments-{{ post.id }}').classList.toggle('hidden')"
+                            class="flex items-center space-x-1.5 hover:text-emerald-400 transition"
+                        >
+                            <span>&#9993;</span>
+                            <span>{{ post.comment_count }} Discussions</span>
+                        </button>
+                    </div>
+
+                    <span class="text-[11px] font-mono text-slate-500">ID #{{ post.id }}</span>
+                </div>
+
+                <!-- Comments Thread (Expandable) -->
+                <div id="comments-{{ post.id }}" class="mt-3 pt-3 border-t border-slate-800/60 space-y-3">
+                    <div class="space-y-2">
+                        {% for comment in post.comments.all %}
+                        <div class="bg-slate-950/60 border border-slate-800/60 rounded-lg p-2.5 text-xs space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-slate-200">{{ comment.author.get_full_name|default:comment.author.username }}</span>
+                                <span class="font-mono text-[10px] text-slate-500">{{ comment.created_at|timesince }} ago</span>
+                            </div>
+                            <p class="text-slate-300 text-[12px]">{{ comment.content }}</p>
+                        </div>
+                        {% empty %}
+                        <p class="text-[11px] text-slate-500 italic py-1">No comments yet. Start the engineering thread below.</p>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Add Comment Form -->
+                    {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'add_comment' post.id %}" class="flex gap-2 pt-2">
+                        {% csrf_token %}
+                        <input 
+                            type="text" 
+                            name="content" 
+                            required
+                            placeholder="Add your technical review or question..." 
+                            class="flex-1 bg-slate-950 border border-slate-800 rounded px-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                        >
+                        <button 
+                            type="submit" 
+                            class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded text-xs font-medium transition"
+                        >
+                            Reply
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </article>
+            {% empty %}
+            <div class="text-center py-12 bg-slate-900 border border-slate-800 rounded-xl text-slate-400">
+                <p class="text-sm font-medium">No posts found in the timeline.</p>
+                <p class="text-xs text-slate-500 mt-1">Run the seed script or publish the first post above.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Right Column: Demo Switcher & System Vitals -->
+    <div class="lg:col-span-3 space-y-6">
+
+        <!-- Demo Persona Switcher Card -->
+        <div class="bg-slate-900 border border-emerald-800/40 rounded-xl p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xs font-mono uppercase tracking-wider font-bold text-emerald-400 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Demo Switcher
+                </h3>
+                <span class="text-[10px] text-slate-500 font-mono">1-Click Test</span>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+                Click any persona below to switch perspectives instantly and test interactions:
+            </p>
+
+            <div class="space-y-2 pt-1">
+                {% for persona in all_users %}
+                <a 
+                    href="{% url 'switch_user' persona.id %}" 
+                    class="block p-2.5 rounded-lg border transition {% if persona == user %}bg-emerald-950/40 border-emerald-700 text-emerald-200 font-medium{% else %}bg-slate-950/80 border-slate-800 hover:border-slate-700 text-slate-300{% endif %}"
+                >
+                    <div class="text-xs font-semibold flex items-center justify-between">
+                        <span>{{ persona.get_full_name|default:persona.username }}</span>
+                        {% if persona == user %}
+                        <span class="text-[10px] text-emerald-400 font-mono">ACTIVE</span>
+                        {% endif %}
+                    </div>
+                    <div class="text-[11px] text-slate-400 truncate">
+                        {{ persona.profile.headline|default:"Engineer" }}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- System Vitals Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3 text-xs">
+            <h3 class="font-semibold text-slate-200 uppercase tracking-wider text-[11px] font-mono">
+                Cluster Vitals
+            </h3>
+            <div class="space-y-2 font-mono text-[11px]">
+                <div class="flex justify-between py-1 border-b border-slate-800/60">
+                    <span class="text-slate-400">Total Dispatches:</span>
+                    <span class="text-emerald-400 font-bold">{{ total_posts }}</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-800/60">
+                    <span class="text-slate-400">Discussion Nodes:</span>
+                    <span class="text-cyan-400 font-bold">{{ total_comments }}</span>
+                </div>
+                <div class="flex justify-between py-1 border-b border-slate-800/60">
+                    <span class="text-slate-400">Database Engine:</span>
+                    <span class="text-slate-300">SQLite (Zero N+1)</span>
+                </div>
+                <div class="flex justify-between py-1">
+                    <span class="text-slate-400">App Framework:</span>
+                    <span class="text-slate-300">Django 5.2.18</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function toggleLike(postId) {
+        const btn = document.getElementById(`like-btn-${postId}`);
+        const countSpan = document.getElementById(`like-count-${postId}`);
+        
+        fetch(`/post/${postId}/like/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+                return null;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data) {
+                countSpan.innerText = data.like_count;
+                if (data.liked) {
+                    btn.classList.add('text-rose-400', 'font-semibold');
+                } else {
+                    btn.classList.remove('text-rose-400', 'font-semibold');
+                }
+            }
+        })
+        .catch(err => console.error('Error toggling like:', err));
+    }
+</script>
+{% endblock %}

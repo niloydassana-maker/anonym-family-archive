@@ -1,0 +1,54 @@
+MASTER CLAIMS TEST RECEIPT
+run_at_utc: 2026-10-10T21:41:57.559070+00:00
+python: 3.11.9  platform: Windows-10-10.0.19045-SP0
+exit_code: 0
+
+PASS  B0   Haversine matches an independent oracle (1 deg latitude = 111,194.9 m, +-1 m)
+PASS  B1   A genuine ride (in place, in time, jitter ~30 m) is verified 3/3
+PASS  B2   Right places, WRONG TIME (+12 h) is rejected
+PASS  B3   Wrong place (London) is rejected
+PASS  B4   Person who never moved (3 pings at stop 1, bus times) is rejected
+PASS  B5   Route in REVERSE order (right places, times ascending) is rejected
+PASS  B6   Spatial threshold is exact: 50 m passes, 150 m fails (limit 100 m)
+PASS  B7   Time window is exact: +25 s passes, +35 s fails (limit 30 s)
+PASS  B8   A one-ping 'ride' must NOT verify (start+end cannot be shown by one ping)
+KNOWN B9   Replay of the bus's own public coordinates+times (spoof) is rejected
+PASS  B10  Same wall-clock time gives the same verdict with or without a 'Z' (timezone safety)
+PASS  B11  Garbage input fails safe (missing timestamp, NaN latitude) - no crash, no approval
+PASS  C1   Offline mode labels its data OFFLINE_FIXTURE; unknown stops return an error, not invented data
+PASS  C2   TTL cache really prevents repeat network calls (2 calls inside TTL -> 1 request; after TTL -> 2)
+PASS  C3   A network failure is reported as an error and NEVER replaced by fixture data
+PASS  C4   Live request goes to an https, versioned (v3) BusArrival URL  [from third-party sources; confirm in LTA guide]
+PASS  C5   LIVE proof exists: a captured, recent, untouched response from the real LTA API
+PASS  D1   Pipeline output depends on INPUT (low-load spec and high-load spec give different topology)
+PASS  D2   The Judge can reject for reasons OTHER than 'empty input' when run through the real pipeline (fuzz, 300 specs)
+PASS  D3   Queue is actually consumed (producer/consumer decoupling): queue is empty after the run
+PASS  D4   Cost estimate responds to load (50k TPS must not cost the same as 100 TPS)
+PASS  D5   Deterministic: same input x10 gives identical output (timestamps stripped)
+PASS  T1   The package's own unit tests pass (necessary, NOT sufficient - see M1/M2)
+PASS  M1   MUTATION - TransportLah: break the verifier on purpose; its tests must notice every break
+PASS  M2   MUTATION - Namahatrix: break the judge/pipeline on purpose; its tests must notice every break
+PASS  L1   CLAIM LINT: every strong claim in docs/receipts/video-script is backed by evidence (roadmap lines exempt)
+PASS  R1   Receipts are FRESH (newer than the code they vouch for) and contain exit codes
+PASS  R2   Internal audit/notes files are not inside the shippable package
+WARN  V1   Videos: exist, and duration is close to the '2-minute' claim (PASS 105-135 s, WARN 90-165 s)
+PASS  V2   Videos: if you CALL it a live run/screen recording, it must show motion, not 5 static slides (declare with --video-label)
+PASS  V3   Video script does not contain hand-typed 'terminal output' (log lines must come from a captured file)
+
+sha256 of every file this receipt vouches for:
+e05014500e1151e97f189cb7b9184059cc99243c6ee5295c0e163d54d6b40ec5  build_walkthrough_videos.py
+a8fa3f315df2759a37674fb81488d5325651e0f2a054f239c0a3b02a4ce76944  email_claims_master_test.py
+2fba5b56f1e30b27cec3a87b88edc2b8863b679f0ff96aa5947562d5cdce29e0  master_claims_test.py
+633697c3cb952056dc813c16f2f668fa5060f6f9686926c6eb1d44373176eaf0  namahatrix\ARCHITECTURE_ASSESSMENT_BLUEPRINT.md
+ae93c8da4920bd25915386e2f6b8bebae200ebb0be1d90666ba0db140779a532  namahatrix\agent_decoupling_runtime.py
+ebb658a0a91ba3c84e0e2cfd4b4f21f587b89212396a5b0a5aaabf5554b3dc30  namahatrix\build_video.py
+997f76b17ec7eaa12ae387dc23445d96bf408fd07e4d870b50a2fd596d71396c  namahatrix\demo_runner.py
+025afb6c5622332aa2114725a361fea2a43e1f6fe3186bfad5fc4879a4612ed7  namahatrix\namahatrix_architecture_walkthrough.mp4
+c2b14d1d2b2b4c2a8c10ec0ad07b5b79f3d9e9d86bec79a2cf7f5b3cb41c4335  namahatrix\test_runtime.py
+ef53c305999f4d5df8c159c0aaebf0f773cdd6ffaea90862cf219a6a45a02c61  transportlah\MILESTONES.md
+10382489cf8e85b844b716013ff10db66c76bea2ac0e2962859f0ca96295a65f  transportlah\WALKTHROUGH_OVERVIEW.md
+da55699d755e736f82d632b7c756a22780da176efad0de76ec22cc7cdb282938  transportlah\demo_runner.py
+37269a92f8ac040a161b3820eb5d1acfd562fccba0bd99f14bfc1ef3ce447855  transportlah\lta_datamall_proxy.py
+85fcb50d02eab77c47ec00e374bdabfdf8b145bec5d4b87263f2e75aa4e1aa40  transportlah\spatial_verification.py
+621efc6540f0e3815c0428be92e43ad9788e82a437e418a2187af3c1c09f1834  transportlah\test_spatial_engine.py
+a130fe6361b4a0a5f9c380a72cbc474d393571047214543153d557303b159c8a  transportlah\transportlah_architecture_walkthrough.mp4

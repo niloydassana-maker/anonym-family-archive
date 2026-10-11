@@ -1,0 +1,33 @@
+COMMAND: python demo_runner.py
+EXIT_CODE: 0
+--- STDOUT ---
+======================================================================
+ TRANSPORTLAH: LTA DATAMALL PROXY & SPATIAL VERIFICATION TESTBENCH
+ Singapore Transit Ride Validation Engine
+======================================================================
+
+[1] LTA DataMall Proxy initialized: Local Test Bench
+
+[2] Polling vehicle trajectory for Bus Stop: 09048, Service: 190...
+     Accumulated 3 trajectory points from proxy feed.
+     Point 1: Lat=1.3048, Lng=103.8318, ETA=2026-10-10T23:55:00+08:00
+     Point 2: Lat=1.321, Lng=103.8205, ETA=2026-10-11T00:08:00+08:00
+     Point 3: Lat=1.3325, Lng=103.8042, ETA=2026-10-11T00:20:00+08:00
+
+[3] Evaluating Scenario A: Correlated Commuter Ride...
+     Verified: True
+     Confidence Score: 100.0%
+     Avg Spatial Deviation: 15.72m
+     Matched Pings: 3/3
+
+[4] Evaluating Scenario B: Out-of-Window Telemetry (Temporal Drift)...
+     Verified: False
+     Confidence Score: 0.0%
+     Temporal Failures: 3/3
+     Reasons: ['3/3 pings failed temporal correlation (time drift > 30.0s)', 'Match ratio (0.0%) below required threshold (75.0%)']
+
+======================================================================
+ VERIFICATION RUN COMPLETE
+======================================================================
+--- STDERR ---
+

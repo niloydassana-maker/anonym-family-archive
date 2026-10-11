@@ -1,0 +1,54 @@
+{
+  "captured_at_utc": "2026-10-10T21:42:59.758498+00:00",
+  "source": "LIVE_NETWORK",
+  "stop": "44009",
+  "service": "190",
+  "raw": {
+    "odata.metadata": "https://datamall2.mytransport.sg/ltaodataservice/v3/BusArrival",
+    "BusStopCode": "44009",
+    "Services": [
+      {
+        "ServiceNo": "190",
+        "Operator": "SMRT",
+        "NextBus": {
+          "OriginCode": "44009",
+          "DestinationCode": "10499",
+          "EstimatedArrival": "2026-10-11T05:50:00+08:00",
+          "Monitored": 0,
+          "Latitude": "0.0",
+          "Longitude": "0.0",
+          "VisitNumber": "1",
+          "Load": "SEA",
+          "Feature": "WAB",
+          "Type": "DD"
+        },
+        "NextBus2": {
+          "OriginCode": "44009",
+          "DestinationCode": "10499",
+          "EstimatedArrival": "2026-10-11T05:58:00+08:00",
+          "Monitored": 0,
+          "Latitude": "0.0",
+          "Longitude": "0.0",
+          "VisitNumber": "1",
+          "Load": "SEA",
+          "Feature": "WAB",
+          "Type": "DD"
+        },
+        "NextBus3": {
+          "OriginCode": "44009",
+          "DestinationCode": "10499",
+          "EstimatedArrival": "2026-10-11T06:06:00+08:00",
+          "Monitored": 0,
+          "Latitude": "0.0",
+          "Longitude": "0.0",
+          "VisitNumber": "1",
+          "Load": "SEA",
+          "Feature": "WAB",
+          "Type": "SD"
+        }
+      }
+    ],
+    "_source": "LIVE_NETWORK"
+  },
+  "raw_sha256": "b4f78f86b4a7025005cd90be2974678e43aa06ecbe6be493798a2244454778e9"
+}

@@ -1,0 +1,44 @@
+COMMAND: python demo_runner.py
+EXIT_CODE: 0
+RUN_AT_UTC: 2026-10-10T21:39:51.629621+00:00
+--- STDOUT ---
+======================================================================
+ NAMAHATRIX: ASYNCHRONOUS DECOUPLED MULTI-AGENT RUNTIME TESTBENCH
+ Systems Architecture Validation
+======================================================================
+
+[1] Dispatching Pipeline Stages via Asynchronous Queue...
+     Starting decoupled event-driven pipeline for Namahatrix Core Architecture...
+     [03:09:51] Enqueued STAGE_1_DISCOVERY from DiscoveryAgent
+     [03:09:51] Consumer processed STAGE_1_DISCOVERY from queue
+     [03:09:51] Enqueued STAGE_2_DECOUPLING from TopologyArchitectAgent
+     [03:09:51] Consumer processed STAGE_2_DECOUPLING from queue
+     [03:09:51] Enqueued STAGE_3_SECURITY_COST from SecurityCostAgent
+     [03:09:51] Consumer processed STAGE_3_SECURITY_COST from queue
+     [03:09:51] Enqueued STAGE_4_SYNTHESIS from VerificationJudgeAgent
+     [03:09:51] Consumer processed STAGE_4_SYNTHESIS from queue
+
+[2] Cost Model Evaluation (Continuous Formula, No Cliffs):
+     Named Pricing Inputs:
+       * GPU: $1.50/hr [ASSUMPTION: RunPod / Lambda 1x A10G spot, Oct 2026]
+       * CPU: $0.10/hr [ASSUMPTION: AWS c6g.large on-demand, Oct 2026]
+       * Broker: $150.00/mo [ASSUMPTION: AWS Managed Redis/Kafka base tier, Oct 2026]
+       * KMS: $50.00/mo [ASSUMPTION: AWS KMS CloudHSM tier, Oct 2026]
+     Monthly Cost Estimates at 15000 peak TPS [ESTIMATE]:
+       * Pilot Tier: $614.00/mo [ESTIMATE]
+       * Scale Tier: $4922.00/mo [ESTIMATE]
+
+[3] Verification Judge Verdict:
+     Status: APPROVED
+     Invariants Evaluated: 3
+     Violations Found: 0
+     Approved Execution Phases:
+       * Phase 1: Decouple inference queue from blockchain event listeners
+       * Phase 2: Introduce idempotent Redis state machine for transaction rollups
+       * Phase 3: Stress-test under synthetic burst loads
+
+======================================================================
+ PIPELINE EXECUTION APPROVED
+======================================================================
+--- STDERR ---
+
