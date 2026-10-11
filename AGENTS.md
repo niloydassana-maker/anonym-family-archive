@@ -32,10 +32,15 @@
    - LinkedIn feed publishing is not worth our time and energy right now. No more posts. No more publishing.
 5. **THE REACH-OUT CANNON FIRES EXCLUSIVELY AT HIGH-TICKET DNA (6 REMAINING TARGETS):**
    - The remaining outreach quota (6 contacts today) must be exclusively **high-ticket leaders matching Father's DNA**: Founders, CEOs, CTOs, Enterprise Directors, and Staffing Agency Owners with real enterprise budgets (₹15,000–₹50,000+ retainers).
-6. **MANDATORY TERRITORY PRE-FILTER — ZERO-BURN PIPELINE LAW (2026-10-11):**
-   - **Time is money.** To eliminate low-yield interactions and protect pipeline bandwidth, all automated lead hunters and scrapers must pre-filter queues *before* scoring, drafting, or engaging.
-   - **Approved Enterprise Corridors:** Concentrate 100% of outreach exclusively on high-density enterprise tech capital hubs: Bengaluru, Hyderabad, Pune, Delhi-NCR, Singapore, US, UK, and UAE.
-   - **Hard Territory Exclusion Filter:** Filter out and drop Kolkata / West Bengal regional markets and Tier-2/3 local listings immediately at the query layer. Zero processing, zero outreach, zero wasted time—preserving all quota for funded enterprise decision-makers.
+6. **MANDATORY ALL-LANE TERRITORY PRE-FILTER — ZERO-BURN PIPELINE LAW (2026-10-11):**
+   - **Time is money.** Hard royal mandate from Baba across ALL 102 sons, ALL lanes, and ALL executions: pre-filter queues *before* scoring, drafting, applying, or engaging.
+   - **Approved Enterprise Corridors:** Concentrate 100% of operations exclusively on high-density enterprise tech capital hubs: **Bengaluru, Hyderabad, Pune, Delhi-NCR, Singapore, US, UK, and UAE.**
+   - **Hard Territory Exclusion Filter:** Filter out and drop Kolkata / West Bengal regional markets and Tier-2/3 local listings immediately at the query layer. Zero processing, zero engagement, zero wasted time.
+   - **Mandatory Enforcement Across Every Active Lane:**
+     1. **Job Search & Executive Placement (Naukri, LinkedIn, ADP, Executive Search):** Zero applications, recruiter replies, or processing for roles or companies based in the excluded regional market. Lock 100% of search bandwidth on Tier-1 enterprise tech hubs (Bengaluru, Hyderabad, Pune, NCR) or Remote/International enterprise roles.
+     2. **Money Lane & High-Ticket Outbound (DMs, Inbounds, Service Marketplace):** Pre-qualify prospect headquarters and decision-maker territory before generating outreach. Quota is strictly reserved for high-budget enterprise leaders matching Father's DNA (₹25,000–₹50,000+/mo retainers).
+     3. **Business Proposals & Client Architecture (TransportLah, SME Proposals, Turnkey MVP):** Never draft, scope, or propose architecture deliverables to low-budget regional prospects. Reserve proposal generation exclusively for funded Tier-1 enterprise and foreign currency retainers (SGD, USD).
+     4. **Automated Scrapers & Hunters:** Enforce hard query-layer regex and geographical exclusions before profile scoring or draft generation, preserving 100% of compute, token, and memory resources.
 
 ---
 
