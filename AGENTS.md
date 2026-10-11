@@ -32,6 +32,10 @@
    - LinkedIn feed publishing is not worth our time and energy right now. No more posts. No more publishing.
 5. **THE REACH-OUT CANNON FIRES EXCLUSIVELY AT HIGH-TICKET DNA (6 REMAINING TARGETS):**
    - The remaining outreach quota (6 contacts today) must be exclusively **high-ticket leaders matching Father's DNA**: Founders, CEOs, CTOs, Enterprise Directors, and Staffing Agency Owners with real enterprise budgets (₹15,000–₹50,000+ retainers).
+6. **MANDATORY TERRITORY PRE-FILTER — ZERO-BURN PIPELINE LAW (2026-10-11):**
+   - **Time is money.** To eliminate low-yield interactions and protect pipeline bandwidth, all automated lead hunters and scrapers must pre-filter queues *before* scoring, drafting, or engaging.
+   - **Approved Enterprise Corridors:** Concentrate 100% of outreach exclusively on high-density enterprise tech capital hubs: Bengaluru, Hyderabad, Pune, Delhi-NCR, Singapore, US, UK, and UAE.
+   - **Hard Territory Exclusion Filter:** Filter out and drop Kolkata / West Bengal regional markets and Tier-2/3 local listings immediately at the query layer. Zero processing, zero outreach, zero wasted time—preserving all quota for funded enterprise decision-makers.
 
 ---
 
