@@ -30,7 +30,7 @@ Series C4PDHC3JWHP ordered reading: 1-7, 04-the-companion = Book 4, flagship Ord
 
 ## Levers (from EARNING-MAP §3b — free ones only, no ads before first income)
 - [ ] P1 Countdown Deal Kolkata Diaries $4.99→$0.99, Sep 15-21 (KDP agent plan in lane-reports/KDP-ENGINE.md; gated on KDP Select enrollment check)
-- [ ] P1 Fix Book 06 price drift: live eBook $5.99 vs planned $2.99; PB $5.99 sells below ~$1/copy → set eBook $2.99, PB $7.99
+- [x] P1 Fix Book 06 price drift: live eBook $5.99 vs planned $2.99; PB $5.99 sells below ~$1/copy → set eBook $2.99, PB $7.99
 - [ ] P2 Keyword cleanup all 8: remove trademark-risk slots ("Heath Ledger" x2, "Claude Anthropic" keyword — author display unaffected) + title-word dupes on Book 08; fill all 7 boxes
 - [ ] P2 Set all 3 categories consciously per book (KDP assigned random thirds; incl. Book 06 wrong "Computer Vision & Pattern Recognition")
 - [ ] P3 Staggered 5-Free-Days P2-P8, one title/week Thu→Mon, flagship 05 last, companion 04 as funnel; Black-Friday Countdown #2 on 08
