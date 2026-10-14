@@ -3811,3 +3811,90 @@ Baba order: complete the pending KDP Select enrollments/promotions for all 8 tit
 - Enroll popover opens via `?showEnrollPopover=true` with a real Enroll button; identity gate = popover titleName inside the clicked card blob (`by NILOY DAS` never appears in the popover - the old gate aborted every run).
 - iQOO adb server crashes mid-run (seen 19:2x + 19:40): a failed dump is NOT a failed tap - re-verify from the status node before re-running.
 
+
+## 81. SESSION 2026-10-13 (05:25-06:50 IST) - CDP LANE MELTDOWN: PHANTOM-VERIFY, PROXY-POISONED LOCALHOST, AND URBAN VPN IN THE AUTH PROFILE
+
+Baba's screenshot: supervisor cycle 2026-10-13T05:25:59 "chrome verified up", then every one
+of 35 targets "[HEAL] CDP Chrome down - supervisor owns the relaunch / pausing pass".
+Second screenshot: urban-vpn.com/thank-you open in the MAIN Chrome window.
+
+### 81.1 THREE ROOT CAUSES, EACH PROVEN (not guessed)
+1. PHANTOM-VERIFY RACE. Supervisor kill (Stop-Process -Force, async) -> 6s wait -> launch ->
+   Test-Cdp on :9222. A dying zombie still held the port at verify time, died seconds later.
+   Whole pass ran against a dead port. Old ensure_cdp_chrome then failed every target SILENTLY
+   (no exception printed) + 30s sleep = 21 minutes of nothing per pass.
+2. LOCALHOST CALLS WERE PROXY-EXPOSED. All scripts used bare urllib urlopen for 127.0.0.1.
+   Any HTTP_PROXY in the launching shell poisons localhost with WinError 10061 (yesterday's
+   rows carry exactly that error). Fixed at the source so it can never matter again.
+3. URBAN VPN PROXY v5.14.4 INSTALLED IN THE AUTH PROFILE (eppiocemhmnlbhjplcgkofciiegomcon).
+   Cloned from main Profile 17, so it lives in Baba's real profile too. Extension carries
+   webRequest.onCompleted listeners phoning api-pro.urban-vpn.com / stats.urban-vpn.com.
+   Removed from the CDP profile (dir deleted while chrome down, verified absent).
+   MAIN PROFILE STILL HAS IT - Baba should remove it in chrome://extensions. Adware-class;
+   a proxy extension in the profile holding Google + provider sessions is unacceptable.
+
+### 81.2 FIXES SHIPPED (all py_compile clean)
+- cdp_first_graduation.py: ensure_cdp_chrome = proxy-free opener + 3x retry + prints the
+  REAL last exception; removed dead duplicate return; main() prints inherited proxy env once.
+- cdp_sso.py (tabs/new_tab/close), capture_websocket_cdp.py (_activate),
+  capture_sessions_cdp.py (targets/open_tab/version): all via shared CDP_OPENER
+  (build_opener(ProxyHandler(empty))). websocket-client needs no change (no env proxy use).
+- cdp_first_supervisor.ps1 rewritten: prints proxy env each cycle; kills stale passes;
+  waits for cdp chrome death (15s poll); refuses squatted ports; clears Sessions dirs
+  (restore-flood); PROVES the new PID owns :9222 (proc.Id match or cdp-profile owner);
+  rejects launched-but-exited handoffs. NOTE: this .py is LF-ending dominant - patch with
+  newline-preserving ops, never CRLF-anchored replaces. _patch_grad.py keeps that recipe.
+- Restart _cdp_restart.ps1: stopped sup 15448, killed 2 stale passes (2632+1100),
+  killed 17 cdp chromes (left=0), removed urban dir (exists=False), relaunched supervisor.
+- 06:48: fresh chrome PID 10592 owns :9222; cdp_sso walking felo_ai: door felo.ai/search
+  OPEN, Google accounts signin popup reached, renderer churn 1 per second. Lane alive.
+
+### 81.3 NEW HOUSE KNOWLEDGE (do not relearn)
+- An answered :9222 is not a healthy lane - prove the OWNER process, not the port.
+- Localhost HTTP in Python is proxy-vulnerable; every script touching 127.0.0.1 must use a
+  proxy-free opener. The error row yesterday (10061) was the fingerprint.
+- Probe scripts: _cdp_diag.ps1 (chrome tree + port owner), _py_diag.ps1 (orchestrator
+  alive?), _ext_diag.ps1 + _ext_names.ps1 (extension inventory + adware hunt).
+- The tool wrapper eats a dollar-underscore token not followed by dot - write ALL logic with
+  named vars in files (law from tonight, paid for twice).
+- Editor cannot match text in LF-dominant files - patch with Python line ops instead.
+- No inline commands with double-amp or raw ampersand in the wrapper (PS 5.1); sleeps over
+  30s die inside tool calls - fire-and-forget, verify separately.
+
+## 82. SESSION 2026-10-13 (MORNING ~06:30-07:30 IST) - ENV-PROXY HUNT CLOSED AS "NO GLOBAL PROXY", RELAY-GUARDIAN BUG FIXED, WEDDING-DRAFTS PIPELINE REBUILT V2
+
+### 82.1 PROXY HUNT (to explain 81.1 cause 2)
+_env_probe.py dumped process env of the pass/supervisor/chrome PIDs: all three pythons
+(3276+4636 pass, supervising PS) show NO proxy vars at all (checked 11 names incl.
+GRPC_PROXY/NO_PROXY). So "env HTTP_PROXY" as the pass-killer is UNPROVEN - the localhost
+calls failed while chrome was provably up (05:47:45 tree alive, /version answering in this
+shell at the same time). Two candidates remain: (a) a PAC/autoconfig or WinHTTP service-level
+route that affects ONLY the supervisor's session; (b) a CDP-side stall, not a network fail -
+the old check had timeout=6 single-shot, no retry, no error text, so a slow answer looked
+identical to a dead port. The proxy-free opener + 3x retry + loud error in 81.2 covers both
+regardless of which was true. Lesson stands: instrument the check, never trust a bare fail.
+State file still 10/12 8:56 PM - the fresh pass had not saved at compile time; felo door
+tab + Google signin popup visible.
+
+### 82.2 CHAT RELAY SWEEP - guardian bug + misrouted queues
+- relay_guardian.py had an always-True empty-match plus a sentinel value none that made the
+  match True forever - window ran empty 8+ hours. Fixed to equality-only matching + 45-min /
+  1-min heartbeat logs; one guardian per window enforced (window title REQ-RELAY-GUARDIAN).
+- Queues pending_attention (14 rows) + worker_inbox (24 rows) were cross-assigned and the
+  relay served only inbox. Archived to dated archive files + fresh worker_inbox.json written;
+  presence.json marked relay DOWN until Baba word. Receipts chat_relay_sweep_20261013_034523
+  receipt txt + details md.
+
+### 82.3 WEDDING-DRAFTS LANE REBUILT V2 (scripts/wedding_drafts_v2.py)
+Old lane lost drafts to nested-quote shell mangling. V2 = argv-file driven (one process per
+draft): wrote + compiled P-36 Arjun + P-4 Karan drafts. Receipts _draft_P-36 txt,
+_draft_P-4 txt + draft_write_receipt_20261013_034928.txt. Thread-monitor snapshot
+thread_monitor_20261013_032158.jsonl recorded pre-send state. Pending: stale python.exe
+PIDs 6140/10928 (killed 6140, 10928 kept - verdict awaited).
+
+### 82.4 PREMIUM-DESK LANE REBUILT V2 (scripts/premium_desk_v2.py)
+Mirrors drafts-V2 argv-file pattern for premium service request engagement (STANDING-GO
+fits submit; else HOLD). Compiles clean (py_compile_ok) but TRIGGER UNPROVEN - needs one
+verified live run, else it is another unproven lane. Same for thread-monitor (snapshot
+only, no live-diff proof) and wedding drafts above. Deadline noted in-file: pipelines that
+cannot prove one live execution stay parked.
