@@ -1,0 +1,38 @@
+{
+  "capture_id": "github.get_zen.v1",
+  "site": "github",
+  "flow": "get_zen",
+  "version": 1,
+  "captured_at": 1791820800,
+  "account_hint": "public",
+  "wire": {
+    "steps": [
+      {
+        "name": "zen_fetch",
+        "method": "GET",
+        "url": "https://api.github.com/zen",
+        "headers": {
+          "User-Agent": "omniroute-agent-v1",
+          "Accept": "application/vnd.github.v3+json"
+        },
+        "response": "text"
+      }
+    ]
+  },
+  "params": {},
+  "fresh_fields": {},
+  "tls": {
+    "impersonate": "chrome"
+  },
+  "sentinel": {
+    "probe": {
+      "method": "GET",
+      "url": "https://api.github.com/zen"
+    },
+    "expect": {
+      "http_status": 200
+    },
+    "on_fail": "edge_network_failure"
+  },
+  "notes": "Public baseline capture for fast edge verification"
+}

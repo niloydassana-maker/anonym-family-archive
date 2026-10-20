@@ -1,0 +1,69 @@
+{
+  "capture_id": "linkedin.search_jobs.v1",
+  "site": "linkedin",
+  "flow": "search_jobs",
+  "version": 1,
+  "captured_at": 1791820800,
+  "account_hint": "recruiter-session-pool",
+  "wire": {
+    "steps": [
+      {
+        "name": "bootstrap",
+        "method": "GET",
+        "url": "https://www.linkedin.com/jobs/search/?keywords={query}&location={location}",
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+        },
+        "extract": {
+          "csrf_token": "regex:csrfToken\":\"([^\"]+)\"",
+          "page_key": "regex:pageKey\":\"([^\"]+)\""
+        }
+      },
+      {
+        "name": "voyager_query",
+        "method": "GET",
+        "url": "https://www.linkedin.com/voyager/api/voyagerJobsDashJobCards?decorationId=com.linkedin.voyager.dash.deco.jobs.search.JobCardsSearchResults-52&count={count}&start={start}&q=jobSearch&query=(origin:JOB_SEARCH_PAGE_SEARCH_BUTTON,keywords:{query},locationUnion:(geoId:{geo_id}))",
+        "headers": {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          "Accept": "application/vnd.linkedin.normalized+json+2.1",
+          "csrf-token": "{csrf_token}",
+          "x-li-page-instance": "urn:li:page:d_flagship3_search_srp_jobs;{page_instance_uuid}",
+          "x-restli-protocol-version": "2.0.0"
+        },
+        "response": "json"
+      }
+    ]
+  },
+  "params": {
+    "query": "required:string",
+    "location": "optional:string:India",
+    "geo_id": "optional:string:102713980",
+    "count": "optional:int:25",
+    "start": "optional:int:0"
+  },
+  "fresh_fields": {
+    "page_instance_uuid": "crypto:uuid4",
+    "client_timestamp": "time:epoch_ms"
+  },
+  "tls": {
+    "impersonate": "chrome"
+  },
+  "walls": [
+    "csrf",
+    "session-cookie",
+    "ja3"
+  ],
+  "sentinel": {
+    "probe": {
+      "method": "GET",
+      "url": "https://www.linkedin.com/voyager/api/me"
+    },
+    "expect": {
+      "http_status": 200,
+      "contains": "miniProfile"
+    },
+    "on_fail": "session_expired -> rotate account pool"
+  },
+  "notes": "Voyager job search flow: multi-step CSRF extraction + parameterized API dispatch"
+}

@@ -1,0 +1,11 @@
+provider,model,key_i,ms,dev,rep,ok,err
+nvidia,nvidia/nemotron-3-ultra-550b-a55b,0,3588,1.0,0.111,True,
+nvidia,nvidia/nemotron-3-super-120b-a12b,1,567,0.951,0.154,True,
+nvidia,moonshotai/kimi-k3,-1,0,0.0,1.0,False,The read operation timed out
+nvidia,z-ai/glm-5.3-flash,-1,0,0.0,1.0,False,The read operation timed out
+nvidia,deepseek-ai/deepseek-v4-flash-0731,-1,0,0.0,1.0,False,HTTP410
+nvidia,nvidia/nemotron-3-nano-omni-30b-a3b-reasoning,7,6796,1.0,0.083,True,
+nvidia,google/gemma-4-31b-it,6,19336,1.0,0.1,True,
+nvidia,nvidia/nemotron-3.5-lightning-30b-a3b,7,3974,0.917,0.235,True,
+openrouter,nvidia/nemotron-3.5-lightning:free,0,2376,0.0,0.078,False,
+openrouter,liquid/lfm-2.5-2.6b:free,-1,0,0.0,1.0,False,no-answer

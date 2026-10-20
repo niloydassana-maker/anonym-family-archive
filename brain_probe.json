@@ -1,0 +1,137 @@
+[
+ {
+  "provider": "nvidia",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b",
+  "key_i": 0,
+  "ms": 3588,
+  "dev": 1.0,
+  "rep": 0.111,
+  "ok": true,
+  "err": "",
+  "reply": "डॉक्टर साहब सुबह ९ से दोपहर १ बजे तक और शाम ५ से ७ बजे तक मिलते हैं।",
+  "replies": [
+   "जी, आपका नाम और फ़ोन नंबर बताइए।",
+   "हमारा क्लिनिक सुबह ९ से शाम ६ बजे तक खुला रहता है।"
+  ],
+  "dev2": 0.981
+ },
+ {
+  "provider": "nvidia",
+  "model": "nvidia/nemotron-3-super-120b-a12b",
+  "key_i": 1,
+  "ms": 567,
+  "dev": 0.951,
+  "rep": 0.154,
+  "ok": true,
+  "err": "",
+  "reply": "डॉक्टर साहब की टाइमिंग सुबह 9 बजे से शाम 5 बजे तक है।",
+  "replies": [
+   "आपको हमारी वेबसाइट पर जाकर या फोन करके अपॉइंटमेंट बुक करना होगा।",
+   "क्लिनिक सुबह 9 बजे से शाम 5 बजे तक खुली रहती है।"
+  ],
+  "dev2": 0.973
+ },
+ {
+  "provider": "nvidia",
+  "model": "moonshotai/kimi-k3",
+  "key_i": -1,
+  "ms": 0,
+  "dev": 0.0,
+  "rep": 1.0,
+  "ok": false,
+  "err": "The read operation timed out",
+  "reply": ""
+ },
+ {
+  "provider": "nvidia",
+  "model": "z-ai/glm-5.3-flash",
+  "key_i": -1,
+  "ms": 0,
+  "dev": 0.0,
+  "rep": 1.0,
+  "ok": false,
+  "err": "The read operation timed out",
+  "reply": ""
+ },
+ {
+  "provider": "nvidia",
+  "model": "deepseek-ai/deepseek-v4-flash-0731",
+  "key_i": -1,
+  "ms": 0,
+  "dev": 0.0,
+  "rep": 1.0,
+  "ok": false,
+  "err": "HTTP410",
+  "reply": ""
+ },
+ {
+  "provider": "nvidia",
+  "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+  "key_i": 7,
+  "ms": 6796,
+  "dev": 1.0,
+  "rep": 0.083,
+  "ok": true,
+  "err": "",
+  "reply": "डॉक्टर साहेब की टाइमिंग सुबह आठ से दोपहर दो बजे तक है।",
+  "replies": [
+   "ERR:HTTP Error 503: Service Unavailable",
+   "माफ़ कीजिए, दोहराइएगा? क्लिनिक का समय नहीं पता।"
+  ],
+  "dev2": 0.475
+ },
+ {
+  "provider": "nvidia",
+  "model": "google/gemma-4-31b-it",
+  "key_i": 6,
+  "ms": 19336,
+  "dev": 1.0,
+  "rep": 0.1,
+  "ok": true,
+  "err": "",
+  "reply": "डॉक्टर साहब शाम पांच से आठ बजे तक बैठते हैं।",
+  "replies": [
+   "ERR:The read operation timed out",
+   "क्लिनिक सुबह नौ से शाम पांच बजे तक खुला रहता है।"
+  ],
+  "dev2": 0.5
+ },
+ {
+  "provider": "nvidia",
+  "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "key_i": 7,
+  "ms": 3974,
+  "dev": 0.917,
+  "rep": 0.235,
+  "ok": true,
+  "err": "",
+  "reply": "डॉक्टर साहब सुबह 9 बजे से दोपहर 2 बजे तक। शाम 4 बजे से 7 बजे तक।",
+  "replies": [
+   "ERR:The read operation timed out",
+   "ERR:The read operation timed out"
+  ],
+  "dev2": 0.0
+ },
+ {
+  "provider": "openrouter",
+  "model": "nvidia/nemotron-3.5-lightning:free",
+  "key_i": 0,
+  "ms": 2376,
+  "dev": 0.0,
+  "rep": 0.078,
+  "ok": false,
+  "err": "",
+  "reply": "Here's a thinking process:\n\n1.  **Analyze User Input:**\n   - User says: \"Doctor sahab ki timings kya hain?\"\n   - Language: Hindi (written in Roman script, but I need to respond in Devanagari only)\n   - Meaning: \"What are"
+ },
+ {
+  "provider": "openrouter",
+  "model": "liquid/lfm-2.5-2.6b:free",
+  "key_i": -1,
+  "ms": 0,
+  "dev": 0.0,
+  "rep": 1.0,
+  "ok": false,
+  "err": "no-answer",
+  "reply": ""
+ }
+]

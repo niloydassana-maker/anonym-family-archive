@@ -1,0 +1,48 @@
+{
+  "capture_id": "httpbin.post_payload.v1",
+  "site": "httpbin",
+  "flow": "post_payload",
+  "version": 1,
+  "captured_at": 1791820800,
+  "account_hint": "fleet",
+  "wire": {
+    "steps": [
+      {
+        "name": "echo_post",
+        "method": "POST",
+        "url": "https://httpbin.org/post",
+        "headers": {
+          "User-Agent": "omniroute-agent-fleet",
+          "Content-Type": "application/json",
+          "X-Request-Timestamp": "{timestamp_epoch}",
+          "X-Request-Nonce": "{nonce_uuid}",
+          "X-Fleet-Origin": "omniroute-kaggle"
+        },
+        "body_template": "{\"message\":\"{message}\",\"sender\":\"{sender}\",\"timestamp\":{timestamp_epoch}}",
+        "response": "json"
+      }
+    ]
+  },
+  "params": {
+    "message": "required:string",
+    "sender": "optional:string:agent-kilo"
+  },
+  "fresh_fields": {
+    "timestamp_epoch": "time:epoch_s",
+    "nonce_uuid": "crypto:uuid4"
+  },
+  "tls": {
+    "impersonate": "chrome"
+  },
+  "sentinel": {
+    "probe": {
+      "method": "GET",
+      "url": "https://httpbin.org/get"
+    },
+    "expect": {
+      "http_status": 200
+    },
+    "on_fail": "fleet_network_failure"
+  },
+  "notes": "Dynamic header generation + JSON parameter substitution test"
+}
