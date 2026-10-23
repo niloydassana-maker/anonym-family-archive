@@ -1,0 +1,146 @@
+[
+  {
+    "kind": "email",
+    "value": "support@clickup.com",
+    "contact_evidence": "ents, or sensitive personal information. Please disregard any offers received outside these channels and report them to support@clickup.com.",
+    "source_url": "https://jobicy.com/jobs/156568-senior-backend-engineer-cloud-platform",
+    "reason": "non_application_or_example_contact_context",
+    "context": " ClickUp Talent Acquisition will only initiate contact via an @ clickup.com  email or through our official careers portal on  clickup.com . We will never request fees, payments, or sensitive personal information. Please disregard any offers received outside these channels and report them to support@clickup.com."
+  },
+  {
+    "kind": "email",
+    "value": "askpeople@clickup.com",
+    "contact_evidence": " human decision‑making. If you have questions or need an accommodation in the recruitment process, please contact us at AskPeople@ClickUp.com.",
+    "source_url": "https://jobicy.com/jobs/156568-senior-backend-engineer-cloud-platform",
+    "reason": "non_application_or_example_contact_context",
+    "context": " ClickUp may use artificial intelligence and machine learning technologies to help review and screen candidates' employment applications against role-related criteria. These tools support, but do not replace, human decision‑making. If you have questions or need an accommodation in the recruitment process, please contact us at AskPeople@ClickUp.com."
+  },
+  {
+    "kind": "email",
+    "value": "hello@oddball.io",
+    "contact_evidence": "during the application process should contact an Oddball HR representative to request such an accommodation by emailing hello@Oddball.io",
+    "source_url": "https://jobicy.com/jobs/156491-senior-devops-sre-engineer",
+    "reason": "non_application_or_example_contact_context",
+    "context": " Oddball is an Equal Opportunity Employer and does not discriminate against applicants based on race, religion, color, disability, medical condition, legally protected genetic information, national origin, gender, sexual orientation, marital status, gender identity or expression, sex (including pregnancy, childbirth or related medical conditions), age, veteran status or other legally protected characteristics. Any applicant with a mental or physical disability who requires an accommodation during the application process should contact an Oddball HR representative to request such an accommodation by emailing  hello@Oddball.io "
+  },
+  {
+    "kind": "email",
+    "value": "recruiting@legion.co",
+    "contact_evidence": "ls with disabilities who need additional assistance at any point in the application and interview process, please email recruiting@legion.co",
+    "source_url": "https://jobicy.com/jobs/151374-chief-architect",
+    "reason": "non_application_or_example_contact_context",
+    "context": "DISABILITY ACCOMMODATION For individuals with disabilities who need additional assistance at any point in the application and interview process, please email recruiting@legion.co"
+  },
+  {
+    "kind": "email",
+    "value": "privacy@legion.co",
+    "contact_evidence": "How to Contact Us About this Policy – If you have any questions about this Policy, please contact privacy@legion.co.",
+    "source_url": "https://jobicy.com/jobs/151374-chief-architect",
+    "reason": "non_application_or_example_contact_context",
+    "context": "Job Applicant Privacy Policy How to Contact Us About this Policy – If you have any questions about this Policy, please contact  privacy@legion.co ."
+  },
+  {
+    "kind": "email",
+    "value": "accommodations@forhims.com",
+    "contact_evidence": "in our job application procedures. If you need assistance or an accommodation due to a disability, please contact us at accommodations@forhims.com and describe the needed accommodation. Your privacy is important to us, and any information you share will only be used for the legitimate purpose of considering your request for ",
+    "source_url": "https://jobicy.com/jobs/156425-staff-forward-deployed-engineer",
+    "reason": "non_application_or_example_contact_context",
+    "context": "Our Benefits (there are more but here are some highlights): Hims & Hers is committed to providing reasonable accommodations for qualified individuals with disabilities and disabled veterans in our job application procedures. If you need assistance or an accommodation due to a disability, please contact us at  accommodations@forhims.com  and describe the needed accommodation. Your privacy is important to us, and any information you share will only be used for the legitimate purpose of considering your request for accommodation. Hims & Hers gives consideration to all qualified applicants without regard to any protected status, including disability. Please do not send resumes to this email addr"
+  },
+  {
+    "kind": "email",
+    "value": "recruiting@circleci.com",
+    "contact_evidence": "plication, opt out of AI interview note-taking, request an accommodation, or ask questions about how we use AI. Contact recruiting@circleci.com. For how we handle your data, including retention, see our Privacy Policy.",
+    "source_url": "https://jobspresso.co/job/senior-software-engineer-query/",
+    "reason": "non_application_or_example_contact_context",
+    "context": " Your choices: You can ask for human-only review of your application, opt out of AI interview note-taking, request an accommodation, or ask questions about how we use AI. Contact recruiting@circleci.com. For how we handle your data, including retention, see our Privacy Policy."
+  },
+  {
+    "kind": "email",
+    "value": "hr@cloudflare.com",
+    "contact_evidence": "ng specialized equipment. If you require a reasonable accommodation to apply for a job, please contact us via e-mail at hr@cloudflare.com or via mail at 101 Townsend St. San Francisco, CA 94107.",
+    "source_url": "https://jobspresso.co/job/senior-customer-engineer-sled-south-west/",
+    "reason": "non_application_or_example_contact_context",
+    "context": " Cloudflare provides reasonable accommodations to qualified individuals with disabilities. Please tell us if you require a reasonable accommodation to apply for a job. Examples of reasonable accommodations include, but are not limited to, changing the application process, providing documents in an alternate format, using a sign language interpreter, or using specialized equipment. If you require a reasonable accommodation to apply for a job, please contact us via e-mail at hr@cloudflare.com or via mail at 101 Townsend St. San Francisco, CA 94107."
+  },
+  {
+    "kind": "email",
+    "value": "careers@waveapps.com",
+    "contact_evidence": "ible candidate experience. If you require accommodations during the recruitment process, please let us know by emailing careers@waveapps.com. We will work with you to meet your needs.",
+    "source_url": "https://jobspresso.co/job/senior-software-engineer/",
+    "reason": "non_application_or_example_contact_context",
+    "context": " Wave is committed to providing an inclusive and accessible candidate experience. If you require accommodations during the recruitment process, please let us know by emailing careers@waveapps.com. We will work with you to meet your needs."
+  },
+  {
+    "kind": "email",
+    "value": "jobs@curai.com",
+    "contact_evidence": "from a different domain about a job offer, please report it as potential job fraud to law enforcement and contact us at jobs@curai.com.",
+    "source_url": "https://jobspresso.co/job/senior-software-engineer-marketing-platform/",
+    "reason": "non_application_or_example_contact_context",
+    "context": " Beware of job scam fraudsters! Our company uses @curai.com email addresses exclusively. We do not conduct interviews via text or instant message and we do not ask candidates to download software, to purchase equipment through us, or to provide sensitive personally identifiable information such as bank account or social security numbers. If you have been contacted by someone claiming to be from Curai from a different domain about a job offer, please report it as potential job fraud to law enforcement and contact us at  jobs@curai.com ."
+  },
+  {
+    "kind": "email",
+    "value": "nextbit@agilebits.com",
+    "contact_evidence": "ur recruitment process. If you require an accommodation, please speak to your talent acquisition partner or email us at nextbit@agilebits.com and we’ll work to meet your needs.",
+    "source_url": "https://jobspresso.co/job/data-analyst-finance-analytics/",
+    "reason": "non_application_or_example_contact_context",
+    "context": "You belong here. Accommodation is available upon request at any point during our recruitment process. If you require an accommodation, please speak to your talent acquisition partner or email us at nextbit@agilebits.com and we’ll work to meet your needs."
+  },
+  {
+    "kind": "email",
+    "value": "privacy@honeycomb.io",
+    "contact_evidence": "If you do not want us to retain your information, or want us to update it, please contact privacy@honeycomb.io. Please note, however, that we may retain some information if required by law or as necessary to protect ourselves from legal claims.",
+    "source_url": "https://jobspresso.co/job/staff-ai-operations-lead/",
+    "reason": "non_application_or_example_contact_context",
+    "context": "Privacy Notice: If you do not want us to retain your information, or want us to update it, please contact privacy@honeycomb.io. Please note, however, that we may retain some information if required by law or as necessary to protect ourselves from legal claims."
+  },
+  {
+    "kind": "email",
+    "value": "careers@duckduckgo.com",
+    "contact_evidence": "mmodation for any part of the application process because of a medical condition or disability, please send an email to careers@duckduckgo.com to let us know the nature of your request.",
+    "source_url": "https://remoteOK.com/remote-jobs/remote-senior-backend-engineer-duckduckgo-1137551",
+    "reason": "non_application_or_example_contact_context",
+    "context": "Diversity, Equity and Inclusion We want to ensure that our hiring process is accessible. If you need reasonable accommodation for any part of the application process because of a medical condition or disability, please send an email to  careers@duckduckgo.com  to let us know the nature of your request."
+  },
+  {
+    "kind": "email",
+    "value": "careers@duckduckgo.com",
+    "contact_evidence": "echnology in our review process. If you would like to request an alternative selection process, please contact us as at careers@duckduckgo.com. Thank you for your interest in joining DuckDuckGo!",
+    "source_url": "https://remoteOK.com/remote-jobs/remote-senior-backend-engineer-duckduckgo-1137551",
+    "reason": "non_application_or_example_contact_context",
+    "context": "Please note that: By submitting your application, you acknowledge and consent to the use of AI technology in our review process. If you would like to request an alternative selection process, please contact us as at  careers@duckduckgo.com . Thank you for your interest in joining DuckDuckGo!"
+  },
+  {
+    "kind": "email",
+    "value": "reasonableaccommodations@airbnb.com",
+    "contact_evidence": "ndidate with a disability and require reasonable accommodation in order to submit an application, please contact us at: reasonableaccommodations@airbnb.com. Please include your full name, the role you’re applying for and the accommodation necessary to assist you with the recruiting process.",
+    "source_url": "https://weworkremotely.com/remote-jobs/airbnb-operations-engineer-biztech",
+    "reason": "non_application_or_example_contact_context",
+    "context": " We strive to also provide a disability inclusive application and interview process. If you are a candidate with a disability and require reasonable accommodation in order to submit an application, please contact us at:  reasonableaccommodations@airbnb.com . Please include your full name, the role you’re applying for and the accommodation necessary to assist you with the recruiting process."
+  },
+  {
+    "kind": "email",
+    "value": "careers@duckduckgo.com",
+    "contact_evidence": "mmodation for any part of the application process because of a medical condition or disability, please send an email to careers@duckduckgo.com to let us know the nature of your request.",
+    "source_url": "https://weworkremotely.com/remote-jobs/duckduckgo-senior-backend-engineer",
+    "reason": "non_application_or_example_contact_context",
+    "context": "Diversity, Equity and Inclusion We want to ensure that our hiring process is accessible. If you need reasonable accommodation for any part of the application process because of a medical condition or disability, please send an email to  careers@duckduckgo.com  to let us know the nature of your request."
+  },
+  {
+    "kind": "email",
+    "value": "careers@duckduckgo.com",
+    "contact_evidence": "echnology in our review process. If you would like to request an alternative selection process, please contact us as at careers@duckduckgo.com. Thank you for your interest in joining DuckDuckGo!",
+    "source_url": "https://weworkremotely.com/remote-jobs/duckduckgo-senior-backend-engineer",
+    "reason": "non_application_or_example_contact_context",
+    "context": "Please note that: By submitting your application, you acknowledge and consent to the use of AI technology in our review process. If you would like to request an alternative selection process, please contact us as at  careers@duckduckgo.com . Thank you for your interest in joining DuckDuckGo!"
+  },
+  {
+    "kind": "phone",
+    "value": "+971509979102",
+    "contact_evidence": "E data protection (PDPL) and WhatsApp opt-in rules\n\nThank you. I look forward to your reply.\n\nBest regards,\nAvinash\nCEO\n+971 509979102",
+    "source_url": "https://www.freelancer.com/projects/ai-chatbot/lead-generation-agent-for-forwarding",
+    "reason": "non_application_or_example_contact_context",
+    "context": " Hello,\n\nI run a freight forwarding company in the UAE, specialising in import nomination logistics on China-to-UAE  lanes and India to UAE lanes. I'm looking for a developer or agency to build an AI agent that helps us find and win new clients.\n\nWhat I want built (in phases):\n1. Lead discovery: finding UAE importers and China-side sourcing agents or forwarders who show import intent (trade directories, free zone listings, job posts, company websites).\n2. Enrichment and scoring: adding decision-maker contacts, then ranking leads 0-100 with an LLM based on product fit, volume signals and urgency.\n3. Outreach: personalized WhatsApp and email drafts (English, Arabic, Mandarin), with my approval"
+  }
+]

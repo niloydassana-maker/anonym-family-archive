@@ -1,0 +1,5464 @@
+{
+  "captured_at_utc": "2026-10-23T11:50:20.910118+00:00",
+  "options": {
+    "sources": "all",
+    "url": [],
+    "urls_file": null,
+    "limit": 500,
+    "days": 5,
+    "max_topics": 30,
+    "max_batches": 2,
+    "max_feed_pages": 10,
+    "max_requests": 600,
+    "delay": 0.5,
+    "per_query": 20,
+    "query": null,
+    "no_profiles": false,
+    "suppress_file": "D:\\anonym\\tools\\lead_hunter\\already_contacted.json",
+    "out": "D:\\anonym\\tools\\lead_hunter\\output",
+    "deliverables_dir": "D:\\anonym\\deliverables"
+  },
+  "retained_candidates": 0,
+  "unique_candidates_before_limit": 0,
+  "interrupted": false,
+  "leads_with_coordinate": {
+    "email": 0,
+    "linkedin": 0,
+    "phone": 0,
+    "whatsapp_number": 0
+  },
+  "errors": [
+    {
+      "stage": "forum_discovery",
+      "url": "https://community.make.com/search.json?q=hiring+after%3A2026-10-18",
+      "error": "robots.txt disallows this source"
+    }
+  ],
+  "excluded": [
+    {
+      "url": "https://jobicy.com/jobs/156532-senior-applied-ai-solutions-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156500-senior-software-engineer-frontend-3",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156493-engineering-manager-11",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153899-senior-software-engineer-add-ons",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153922-engineering-manager-8",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153882-senior-manager-solution-engineering-docv",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153888-chief-technology-officer-us-based",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151412-developer-advocate",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151415-full-stack-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153889-staff-backend-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153647-staff-software-backend-engineer-tech-lead-foundations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151374-chief-architect",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151365-fullstack-engineer-2",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/144139-senior-ai-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156465-senior-backend-engineer-11",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156466-manager-software-test-automation",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156457-software-development-manager",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156456-senior-software-engineer-php",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156460-senior-director-agentic-engineering",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156452-solutions-integration-architect-sap",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156451-staff-engineer-telematics",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156450-software-engineer-go",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156436-research-engineer-web-crawlers",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156425-staff-forward-deployed-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156398-software-engineer-engineer-iii-to-principal-formal-methods",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156380-software-engineer-c-developer-pgd",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156381-staff-software-engineer-clickhouse-committer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156356-senior-staff-engineer-ios",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156354-senior-staff-engineer-android",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156331-senior-solutions-architect",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156322-senior-ai-ml-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156308-senior-software-engineer-15",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156287-staff-full-stack-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156270-member-of-technical-staff",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155051-software-engineer-ai-enablement",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153829-design-engineer-site",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153842-director-ai-solutions",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153844-principal-ai-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153804-senior-software-engineer-5",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153799-software-engineer-10",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151338-scout-junior-quality-coordinator-spanish-mexico",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151333-scout-junior-quality-coordinator-portuguese-brazil",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153823-ai-software-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151329-engineering-manager-product-engineering",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151337-technical-lead-manager",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151326-director-of-engineering-data",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151308-senior-software-engineer-backend-usa-only-100-remote",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151290-senior-software-engineer-3",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151197-c-rust-graphics-and-windowing-system-software-engineer-mir",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/144040-staff-software-engineer-app-platform",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156257-senior-director-bss-engineering-product",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156228-mobile-developer-i-us-remote",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156186-senior-web-engineer-subscriptions",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156183-senior-product-quality-analyst-ai-voice",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156181-staff-software-engineer-9",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156176-contract-staff-software-engineer-firefox-cstorage-encryption",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156178-senior-contract-c-javascript-software-engineer-firefox-browser-engine",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156172-contract-staff-software-engineer-bug-burndown",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156140-staff-software-engineer-market-data",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156146-software-engineer-net",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156122-engineering-manager-10",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156118-principal-software-engineer-product-platforms",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156097-manager-machine-learning-engineering",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156098-applied-ai-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153741-senior-software-enginner-full-stack-node-react",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153740-ai-senior-engineer-vision",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153701-full-stack-growth-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153752-senior-software-engineer-edge-security",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153697-staff-software-engineer-6",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153712-founding-forward-deployed-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151260-generative-media-engineer-ai-social-us",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151258-generative-media-engineer-ai-social-canada",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153716-senior-frontend-engineer-react",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151251-engineering-manager-maps-search-us",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146760-norwegian-tech-linguistic-tester",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151246-engineering-manager-maps-search-canada",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151249-engineering-manager-frontend",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146984-sales-engineer-upstream-bioprocessing",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146976-principal-software-engineer-data-lakes",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151229-principal-engineer-tl-m-software-development-paas",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/147050-ai-systems-engineering-expert",
+      "reasons": [
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/152767-member-of-technical-staff-gpu-performance-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/147066-staff-android-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156080-backend-engineer-ruby-plan-spec-driven-development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156076-backend-engineer-create-source-code-experience-ruby",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156055-manager-engineering-frontend",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156059-senior-software-engineer-ii-integrations",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156026-senior-software-engineer-agents-2",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156024-senior-creative-front-end-engineer-digital-agency-brazil",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156021-senior-creative-front-end-engineer-digital-agency-mexico",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156017-engineering-manager-knowledge-graph-platform",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155998-principal-software-engineer-2",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155995-principal-engineer-platform-data-3",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155997-senior-electrical-delivery-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155988-staff-software-engineer-full-stack-backend",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155996-sr-staff-engineer-fullstack-frontend",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155991-sr-staff-engineer-fullstack-backend",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155969-director-engineering-platform-services",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155963-senior-ai-engineer-gtm",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155959-engineering-manager-compose",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155950-full-stack-engineer-7",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155949-senior-full-stack-engineer-8",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153652-principal-engineer-platform-data-2",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153674-application-integration-developer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153679-product-engineering-future-opportunities",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153629-manager-software-engineering-operations",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151003-testing-a-financial-app-for-italian-business-owners",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153641-engineering-manager-platform-application-excellence",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153649-senior-software-engineer-go",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150994-software-engineer-secure-container-images",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153621-director-software-engineering-ai-workflows-ecosystem-2",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151131-senior-uicc-euicc-esim-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151124-senior-software-engineer-smartcard-development",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151178-senior-fullstack-engineer-2",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151159-principal-engineer-platform-data",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146757-finnish-tech-linguistic-tester",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151013-distributed-systems-testing-software-engineer-python-go",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150975-backend-software-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155937-forward-deployed-engineer-software-engineer-argentina",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155941-full-stack-engineer-creative-agents",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155939-full-stack-engineer-backend-leaning-creative-agents",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155938-forward-deployed-engineer-software-engineer-mexico",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155936-developer-experience-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155925-binance-accelerator-program-qa-automation",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155928-senior-software-development-engineer-in-test-sdet-2",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155930-quality-engineer-3",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155929-kazakh-localization-qa-tester-proofreader",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155927-qa-automation-engineer-digital-media-advertising-brazil",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155923-qa-devops-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155921-backend-engineer-agent-tools-latam",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155915-senior-or-staff-software-engineer-data-platform-brazil",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155893-demo-architect-emea",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155885-mobile-engineer-react-native-paris-or-remote-france",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155868-senior-software-engineer-data",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155865-staff-software-engineer-ocr-text-extraction",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155863-staff-software-engineer-next-gen",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155860-senior-software-engineer-ai-growth",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155858-senior-software-engineer-marketplace",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155861-software-engineer-growth",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155854-senior-software-engineer-growth-3",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155840-full-stack-developer-frontend-focused-canada",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155839-staff-engineer-mobile-kotlin",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155835-staff-engineer-backend-kotlin",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155824-software-engineering-manager",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155815-paytient-interest-application-technical-roles",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155809-backend-engineer-ruby-create-change-record",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155806-backend-engineer-ruby-ai-engineering-agent-foundations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155803-forward-deployed-engineer-7",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155802-forward-deployed-engineer-software-engineer-usa",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153571-ads-quality-rater-finnish-finland",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/154396-sr-software-engineer-ii-tech-lead-agentic-platform-poland-remote-b2b",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153570-ads-quality-rater-dutch-netherlands",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153575-ads-quality-rater-hungarian-hungary",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153579-ads-quality-rater-italian-italy",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153577-ads-quality-rater-italian-germany",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153573-ads-quality-rater-german-germany",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153592-software-engineer-analytics",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153596-software-engineer-application-integration",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153568-ads-quality-rater-dutch-france",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153563-ads-quality-rater-czech-slovakia",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153565-ads-quality-rater-dutch-belgium",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153561-technical-consultant",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153557-ads-quality-rater-croatian-croatia",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153567-senior-backend-engineer-net",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153558-staff-firmware-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153564-senior-solutions-architect-data-ai",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153545-senior-software-developer-api-platform-and-ecosystem",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155766-senior-qa-engineer-3",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155746-machine-learning-engineer-governance-ml-platform",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155744-full-stack-software-engineer-2",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155730-senior-software-engineer-data-pipeline",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155731-staff-software-engineer-python-java-spring-or-go",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155726-manager-engineering-remote-eligible-in-bulgaria",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155723-staff-software-engineer-audit-full-stack",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155720-senior-software-engineer-audit-full-stack",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155695-ads-quality-rater-jezyk-polski-polska",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155692-ads-quality-rater-german-austria",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155689-ads-quality-rater-slovenian-slovenia",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155678-software-engineer-ii-poland",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155671-software-engineer-applied-ai",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155660-software-engineer-12",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155665-full-stack-developer-frontend-focused-mexico",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155662-senior-software-engineer-ai-engineer-brazil",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155661-full-stack-developer-frontend-focused-brazil",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155651-senior-c-ios-engineer-user-platform",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155656-ads-quality-rater-slovak-slovakia",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155655-senior-fullstack-engineer-3",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155649-ads-quality-rater-lithuanian-lithuania",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155652-ads-quality-rater-norwegian-norway",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155632-director-ai-platforms",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155618-senior-software-engineer-growth-2",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150901-senior-software-engineer-2",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150902-software-engineer-4",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153535-senior-software-architect-c-angular-ai-first-govtech-saas-company",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153504-forward-deployed-engineer-5",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150933-senior-software-engineer-elixir",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153501-staff-software-engineer-identity-and-access-management",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153500-senior-software-engineer-integrated-workflows",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150907-director-software-engineering-ai-workflows-ecosystem",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155611-ads-quality-rater-hebrew-israel",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155603-engineering-manager-supportx-2",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155600-senior-backend-engineer-booking-integrations-contract",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155587-engineering-director-eu",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155579-ai-engineer-4-day-week-remote",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155575-power-platform-developer",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155572-full-stack-engineer-6",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155565-1140-lead-developer-architect-web3",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153461-senior-manager-ai-engineering-2",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153452-edge-functions-engineer",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153449-software-engineer-auth",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153404-senior-software-engineer-home-energy-2",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153469-senior-qa-automation-engineer-product-latam",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153370-android-engineer-mid-level",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153397-engineering-manager-ai-transformation",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153380-senior-full-stack-engineer-2",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153372-android-mobile-engineer",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153366-digital-solutions-architect",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150846-software-engineer-3",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/149301-garment-manufacturing-qc-specialist-freelance-ai-trainer-project",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155488-senior-software-engineer-ii-business-systems",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155439-software-engineer-ii",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155435-principal-applied-research-engineer",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155423-integration-specialist-live-entertainment-company",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155430-backend-engineer-pythonai-engineering-agent-foundations",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/solutions-engineer-commercial-expansion-sales/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/project-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/crypto-researcher/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-platform-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ai-engineer-3/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/security-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/devops-engineer-vac-dst/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sdk-engineer-python/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-ic4/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/ml-agentic-systems-engineer-ic4/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sustaining-operations-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/community-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ai-engineer-2/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-developer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-reliability-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-query/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-staff-machine-learning-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/business-development-representative-german-speaking/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/account-executive-uk-western-europe/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/solutions-engineer-doit-cloud-intelligence-thai-speaking/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-full-stack-engineer-ai-cost-visibility/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/cybersecurity-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/solutions-consultant/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-product-designer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "unpaid_or_applicant_fee_request"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/strategic-alliances-partnership-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/support-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/marketing-analytics-director/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-frontend-engineer-grafana-dataviz/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-customer-engineer-sled-south-west/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ai-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/support-engineer-amer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/python-kubernetes-software-engineer-data-workflows-ai-ml-analytics/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/alliances-field-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-manager-lifecycle-marketing/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/regional-sales-operations-manager-emea/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/junior-security-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/merchandise-associate/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-apac-go-market/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-solutions-engineer-firefox-enterprise/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-engineer-tier-1/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-of-analytics/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-platform/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-coordinators/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-2/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-marketing-manager-3/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-identity/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/seo-analytics-strategist/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/finance-people-operations-associate/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/curriculum-product-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-coordinator/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/account-executive/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-marketing-manager-2/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/account-executive-seo/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/backend-software-engineer-python-postgres/",
+      "reasons": [
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/travel-visa-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/principal-3cs-designer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-linux-support-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/marketing-team-lead/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/telus-digital-us-ai-data-various-content-reviewer-us/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/head-business-development-logos-ecosystem/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-infrastructure-self-managed-experience-smx/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-engineering-operations/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/devops-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-platform/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-firefox-c-storage-encryption/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/junior-backend-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-marketing-platform/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-support-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sales-operations-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/analytics-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/strategic-customer-success-manager-americas/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/enterprise-account-executive/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-customer-support-specialist/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/level-2-support-representative/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-center-design-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/market-activation-analyst-health-plans-health-systems/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-staff-security-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-sales-operations-specialist/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/account-executive-sled/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-success-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/strategic-customer-success-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-experience-specialist/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-growth/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/happiness-engineer-customer-support-success/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-owner-xsolla-partner-network/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/integrated-campaign-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-software-engineer-ai-automation/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-project-manager-business-transformation/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/backend-engineer-ruby-create-change-record/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/lending-operations-specialist/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/hr-enablement-lead/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-specialist/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/cx-vendor-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/solutions-engineer-ai-build-team/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/workers-compensation-coordinator/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-governance-risk-compliance/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-engineer-data/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/program-associate/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-marketing-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-manager/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-platform-engineer-fanatics-markets/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-support-specialist-pacific-mountain-time/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-product-manager-opentelemetry/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-build-systems-engineer/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-manager-23/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-data-platform-5/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/mozilla-canada-france-germany-united-kingdom-remote-developer-software-engineer-webcompat-tooling-dashboards-and-reporting-firefox/",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-manager-12/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/account-executive-compliance-sales/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-engineer-marketing-technology/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-infrastructure-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-ai-gateway/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-analyst-finance-analytics/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-ai-operations-lead/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-paid-marketing-strategist/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/digital-marketing-strategist/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-ii-applied-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/scaled-customer-success-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/forward-deployed-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ios-engineer-4/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-23/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-ai-ml/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/cloud-engineer-automation-remote-ontario/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/shyftoff-united-states-support-remote-financial-services-agent-independent-contractor-inbound-card-account-support/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/lead-outsourcing-vfx-artist/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-author/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/paid-media-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/commercial-health-customer-service-representative/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/growth-marketing-manager-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sr-product-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-fullstack-search/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/cloud-solutions-architect-alliances/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-mlops-analytics/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/ubuntu-security-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-cloud-sustaining-engineering/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-representative/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/principal-product-manager-conversational-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-full-stack-engineer-realtime-voice/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-technical-account-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-staff-product-manager-device-security/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-22/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-science-engineering-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-k6-core/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/back-end-engineer-php/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-manager-product-marketing-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-devops-engineer-4/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-developer-billing-integrations/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-administrative-assistant/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-staff-software-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-21/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-data-platform-4/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-patient/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-marketing-analytics/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-data-scientist/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-product-manager-ai-personalization/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-airfam-products/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-product-designer-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-frontend-developer-design-systems/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-developer-windows-product-security/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-ii-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-performance-marketing-manager-paid-media/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-quality-operations-specialist/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/machine-learning-engineer-foundation-model-evaluation-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/analytics-lead-card-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/enterprise-account-executive-canada-growth/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-specialist-17/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-specialist-usa/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-developer-backend/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/principal-product-marketing-manager-developer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-analyst-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/mobile-software-engineer-enterprise/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-ux-designer-ai-investment/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-graphics/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-program-manager-release-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-data-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-product-security-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-machine-learning-engineer-4/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-support-engineer-software/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-profile-community/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-frontend-engineer-graphql-networking-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-online-database-infrastructure-ingestion/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-data-analyst-fraud/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-engineer-analytics/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-machine-learning-engineer-automation-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-full-stack-developer-aws/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/business-development-associate-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/machine-learning-engineer-intern-poe/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/social-community-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-genai-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-30/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-security-accelerate/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-marketing-manager-9/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-frontend-engineer-grafana-data-transforms/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-financial-analyst-corporate-finance/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/manager-technical-support-level-1/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/marketing-operations-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/ai-engineer-12-months-18-months-fixed-term/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/operations-senior-associate/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/account-manager-ii-institutional/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-43/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-engineering-manager-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-frontend-web-software-engineer-enterprise-commerce/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-hr-business-partner/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-operations-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-manager-enterprise-commerce/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-intern-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/freelance-producer-editor/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-service-agent-4/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-data-infrastructure/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/ai-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-developer-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-full-stack-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-intern-2026/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-back-end-engineer-forward-deployed/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/backend-engineer-node-js-typescript/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-data-scientist-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-fullstack/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-full-stack-engineer-ads/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/hr-generalist-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-data-engineer-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-cloud-platform-engineering/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-database-monitoring/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-api-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/content-operations-associate/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-specialist-north-america/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-data-scientist-crypto-products/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-user-researcher-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-product-designer-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-manager-usa/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-provider-experience/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-developer-experience-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-marketing-manager-13/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-manager-engineering-trust/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-growth-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/manager-cloud-security/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/global-trainer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/modlab-community-coordinator-contract/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/principal-software-engineer-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/machine-learning-engineer-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/creative-designer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-data-analyst/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/major-account-executive-acquisition/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-grafana-oss-big-tent/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-scientist-16/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-20/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-qa-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-senior-product-designer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-developer-product-engineering-full-stack/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-site-reliability/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-machine-learning-engineer-ads-measurement/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-frontend-consumer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-rust-backend/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-marketing-analyst/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/cloud-infrastructure-engineer-intern/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-warpstream/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/commercial-counsel/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-analyst-product/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-scientist-15/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/team-lead-paid-search-marketing/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-engineering-manager-developer-experience/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-affiliate-marketing-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/head-enterprise-sales/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-backend-engineer-grafana-databases-pyroscope/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/analytics-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/principal-analytics-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/lead-data-scientist/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/developer-advocate-5/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-advocate-6/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/brand-marketing-talent-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/marketing-manager-brand-partnerships/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-machine-learning-engineer-ai-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-software-engineer-9/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-admin-experience/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/people-operations-associate-generalist/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-product-management-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-architect-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-designer-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ai-engineer-google-cloud/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-ii-frontend/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-social-media-editor-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-24/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/machine-learning-engineer-ii-ads-response-prediction/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-android-engineer-instacart-business/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-backend-developer-node-js-sre/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/frontend-engineer-compliance-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-mozilla-vpn/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-communications-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-project-manager-finance/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-patient-experience/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/lifecycle-marketing-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-manager-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-onchain-devx/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-29/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/ai-automation-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-manager-patient-experience/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-scientist-14/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-password-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-social-media-specialist/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-dashboard/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-designer-dashboard/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/backend-api-engineer-money-service/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-backend-engineer-grafana-app-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-support-sales-rep/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/principal-product-manager-commerce/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-manager-network-growth/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-ii-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-machine-learning-engineer-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-enablement-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/strategic-account-executive-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-scheduling/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-fpa-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-advocate-devops/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-23/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-data-engineer-l3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-designer-ii-consumer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-scientist-ii/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-backend-consumer-coinbase-card/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-full-stack-people-innovation/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/distributed-systems-engineer-security/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-hotels/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-data-ml/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/junior-developer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-manager-data-access-management/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-machine-learning-engineer-gen-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/manager-marketing-data-science/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-42/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-software-engineer-8/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-machine-learning-engineer-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-android-engineer-poe/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/machine-learning-engineer-foundation-model-evaluation/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-program-manager-release/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-frontend-4/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/strategic-account-manager-defi/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-blockchain-engineer-dex-data/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-community-support-engineering/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-experience-designer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-data-scientist-notification-engagement-strategy/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-managed-invest-crypto-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-project-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-programming-editor/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-social-media-editor/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-nodejs/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/tech-lead-engineering/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-manager-22/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/hr-business-partner-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-ii-partnerships/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-sourcer-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-managed-invest-crypto/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-manager-smb-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/design-operations-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-foundations/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sales-manager-6/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-technical-program-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/copy-editor-7/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sr-growth-marketing-manager-b2b-partnerships/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/head-business-systems/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/seo-manager-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-revenue/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-full-stack-software-engineer-6/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-customer-support-l1/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-mid-senior/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-machine-learning-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/creative-lead-web-brand/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-engineer-6/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-brand-design/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-windows-desktop-app/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-16/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-fullstack-software-engineer-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-designer-27/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-business-operations-manager-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/business-development-manager-4/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineering-team-lead-sql-net-core-c-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-business-operations-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/head-brand-marketing/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-manager-21/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineering-team-lead-sql-net-core-c/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-19/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-designer-ui/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-provider-clinical-team/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/machine-learning-engineer-ii-subscriptions/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-support-specialist-apac/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/ai-product-manager-images/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/executive-assistant-13/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-service-representative-german/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineering-intern-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-content-designer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/brand-designer-marketing/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/marketing-strategy-operations-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-marketing-manager-12/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-manager-smb/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-engineer-typescript-messaging-team/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-representative-swedish-english/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-data-scientist-ml-algorithms-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-frontend-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-frontend-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-applied-ai/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ai-researcher/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/machine-learning-engineer-intern/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-manager-20/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-manager-19/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineering-intern-12m-term-winter-2025/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/business-development-intern-winter-2025-term/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-editor-daily-desk/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-science-co-op-july-2025/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-cross-chain-interoperability-protocol-ccip/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/manager-copywriting/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-backend-engineer-enterprise-workflows/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-super/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/salesforce-developer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-quality-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-crypto-operations/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-manager-research-operations/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/intern-finance-winter-2025/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/junior-solutions-architect/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-customer-success-manager-enterprise/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/revenue-operations-coordinator-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-manager-platform/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sr-product-manager-outcomes/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/executive-assistant-12/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/head-communications-southern-europe/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-manager-compatibility-matrix/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/business-development-manager-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-net-core-c/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-frontend-engineer-grafana-dataviz/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-retail-marketing-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-data-engineer-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/ui-ux-designer-5/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/financial-crime-investigator/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-scientist-10/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-full-stack/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-sourcer-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-recruiter-11/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/manager-backend-platform-engineering/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-front-end-engineer-nextjs/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ai-research-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/ai-researcher/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-recruiter-10/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-recruiter-9/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-product-designer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineering-team-lead-net-core-c/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/people-operations-generalist/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/social-media-coordinator-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-software-engineer-7/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-product-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-specialist-latam/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-strategic-customer-success-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/renewal-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-full-stack-software-engineer-5/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-site-reliability-engineer-5/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-ui-systems-team/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-social-media-manager-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-41/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/financial-accountant/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-cloud-support-engineer-sql/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-software-engineer-catering/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-management-intern-usability-winter-2025/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-design-intern-design-ux-winter-2025/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-intern-data-analytics-eng-winter-2025/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/developer-intern-developer-ecosystems-winter-2025/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/global-success-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-airbnb-real-estate/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-backend-software-engineer-search-input/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-backend-engineer-grafana-ops-alerting/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/talent-development-partner-ld/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-web-platforms-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/client-analytics-manager/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-front-end-engineer-firefox/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/picture-desk-editor/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-search/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-data-platform-3/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-29/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/business-development-representative-4/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/community-manager-5/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sr-engineer-backend-payments/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineer-backend-runner/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-observability/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-ads-bidding-pacing/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-cash-banking/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-developer-crypto/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/b2b-product-marketing-lead-wealthsimple-business/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-consumer-products/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-data-platform-2/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sr-machine-learning-research-engineer/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/backend-developer-rust/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-developer-authentication-experience/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-audience-editor/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/people-team-project-coordinator/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-site-reliability-engineer-databases/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/front-end-engineer-firefox/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-fullstack-engineer-ads/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-web-platforms/",
+      "reasons": [
+        "publication_date_unknown_or_stale"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-senior-finance-manager-management-accountant-d2b-1137556",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-accounting-finance-manager-political-asylum-lawyers-1137555",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-accounting-operations-plaid-1137554",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-lkjlkjxcv-scvsdv-1137553",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-clinical-data-manager-penumbra-1137550",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-risk-analyst-pavago-1137548",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-customer-support-consultant-hospitality-supportyourapp-1137547",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-senior-software-engineer-sothebys-1137545",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-senior-backend-engineer-rain-1137544",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/toptal-senior-deployment-engineer-with-llm-and-gpu-infrastructure-experience",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineer-agentic-systems",
+      "reasons": [
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/moonshot-solidity-rust-remote",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/affirm-analytics-engineer-ii-full-stack-revenue-analytics",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/netlify-senior-staff-data-scientist",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/mercury-business-continuity-management-lead",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/offerup-software-development-engineer-ii-remote-colombia",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/maven-clinic-head-of-member-growth-b2b2c",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/lemon-io-senior-vue-developer-1",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/ritual-core-protocol-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/oportun-senior-data-engineer-capital-markets-r13923",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/toptal-senior-analytics-engineer-bi-lead-channel-insights-ix360",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/toptal-salesforce-developer-for-org-ownership-and-ongoing-platform-development",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/celonis-client-value-partner-cvp-utilities-energy-industry",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/celonis-client-value-partner-cvp-oil-gas-industry",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/reddit-analytics-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/growth-minded-senior-data-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/bdf-experts-sap-berater-fi-co-m-w-d",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/proxify-ab-senior-fullstack-developer-react-js-node-js-5",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/clover-health-director-ai-enabled-fraud-prevention-investigations",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/vertex-marketing-group-distribution-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/proxify-ab-senior-backend-developer-python-11",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/proxify-ab-senior-backend-developer-node-js-nest-js-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/ping-identity-channel-account-manager-1",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/beyondtrust-enterprise-account-manager-sled-1",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/discord-qa-devops-engineer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/discord-engineering-manager-platform-security",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/ping-identity-channel-account-manager",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/carrot-director-information-security",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/flexport-senior-security-engineer-detection-response",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/n8n/YouTube-Video-Producer-With-Automation",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-video-editing/Build-Automated-Local-Video-Studio",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/n8n/SEO-Autopilot-Setup",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780885",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780884",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/automation/Virtual-Assistant-Needed-for-Commercial",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-automation/Orchestration-Agent-Setup-Codex-Claude",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/n8n/WhatsApp-Auto-Messaging-Setup",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/software-development/Freelancer-Setup-Database-Leads-Otomasi",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Advanced-Telegram-Assistant-Using",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/automation/Automatizaci-administrativa-con-Make",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/automation/Agent-Developer-Automation-Engineer",
+      "reasons": [
+        "india_remote_eligibility_conflict"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/artificial-intelligence/Engaging-Corporate-Trainer-Needed",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/nextjs/Building-PRESTIA-Full-stack-Next",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/n8n/Automate-WooCommerce-WhatsApp-Support",
+      "reasons": [
+        "older_than_age_limit",
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-chatbot/lead-generation-agent-for-forwarding",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/nextjs/PRESTIA-SaaS-Platform-Full-Stack",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/api/ElevenLabs-Voice-Pipeline-Fix-Multi",
+      "reasons": [
+        "older_than_age_limit",
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/adobe-photoshop/project-40782943",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/logo-design/Complete-Logo-Brand-Identity-Package",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/adobe-illustrator/Elegant-Brand-Logo-Design-40782924",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/web-development/Credit-Based-Property-Portal-Development",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/sales/Video-Sales-Representative-Commission",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "unpaid_or_applicant_fee_request"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/motion-graphics/Premium-Brand-Video-Motion-Designer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/juniper/Juniper-Mist-Home-Lab-Setup",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/deep-learning/Computer-Vision-Research-Collaboration",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/cold-calling/Real-Estate-Cold-Caller-Appointment",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-voiceover/Marathi-Hindi-Lip-Sync-Dub",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/3d-animation/Cinematic-GasFuse-Safety-Advertisement-40782780",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/3d-animation/Cinematic-GasFuse-Safety-Advertisement",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/anime-manga-marketing-promotion/Anime-Tee-Hoodie-Illustrations",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/advertisement-design/Urgent-Google-Image-Design",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/power-bi/Power-Farm-Production-Dashboard",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/content-writing/University-Personal-Impact-Essay",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-training-data/Seeking-Training-Data-Partners",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/adobe-illustrator/Projekt-plakatu-druku",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-video-editing/Driven-Telugu-Thriller-Concept-Film",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/embedded-systems/PCB-Design-for-Industrial-ESP",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/adobe-acrobat/PDF-Text-Table-Extraction",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/wordpress/WooCommerce-Certificate-Portal",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/data-processing/Extend-Python-Gambio-Import",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/wordpress/Build-Five-SEO-WordPress-Learning",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/python/Hybrid-Encryption-Blockchain-Storage",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/postgresql/React-Python-Business-Dashboard",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/b2b-marketing/Digital-Sales-Partner-Needed",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-chatbot/Full-Stack-Developer-Needed-for",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/microsoft-365/Microsoft-Power-Platform-Solutions",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/streamlit/Development-Basic-Electronic",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/google-analytics/Senior-SEO-Specialist-for-Growth",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/Make-com/Build-Email-Automation-MVP-BCcGuardDog",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/chatbot-development/Asistente-FAQ-para-WhatsApp",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/python/Urgent-Smart-Organised-Generalist-needed",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/autodesk/Complete-AutoCAD-Plant-Catalog-Package",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/rpa-development/UiPath-Web-Report-Automation",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/web-development/School-Bus-Tracking-Platform-Development",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Refine-Secure-Launch-Express-Kitchen",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Optimize-Criclive-SEO-Performance",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ui-design/OpenCart-Supplement-Store-Redesign",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Upgrade-Criclive-for-Speed-Scale",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Launch-MediBookHome-Web-Apps",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/web-development/Children-Book-Webshop-Development",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/flutter/Develop-Cross-Platform-Cricket-Live",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/digital-marketing/Meta-Ads-Campaign-for-High",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/web-design/Software-Landing-Page-Design",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/security-auditing/Gaming-Platform-Security-API-Audit",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/postgresql/Independent-PostgreSQL-Architecture",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/mobile-app-development/Cross-Platform-Criclive-App-Development",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/telegram-api/Telegram-Paid-Channel-Bot-Setup",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Enhance-Marketplace-Service-Ads",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/blockchain/Web-Developer-for-Finance-Assistant",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Optimize-Criclive-Website-SEO",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/telemarketing/Telemarketer-Appointment-Setter-Base-Pay",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/email-marketing/Setup-Gmail-Bisnis-Menguntungkan",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/business-development/Business-Development-Client-Success",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/video-conferencing/Remote-Closer-for-Vastu-Consultations",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/nextjs/Next-Website-Development-with-CMS",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/sales/Senior-Enterprise-eLearning-Sales",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/oracle-apex/Oracle-Freelancer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/administrative-support/Asistente-remoto-atenci-reclamos",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/flutter/Job-Title-Build-MVP-Android",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/2d-drafting/Industrial-Control-Panel-Schematics",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/payroll/Monthly-Sage-Bookkeeping-Retainer",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/mobile-app-testing/Teach-Mobile-App-Testing-Earnings",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/web-development/GST-Billing-Website-App",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/lead-generation/Verified-Contacts",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/adobe-premiere-pro/Fast-Paced-Social-Clip-Editor",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/editing/Chaptered-Novel-Shivpur-Family-Saga",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/2d-animation/Educational-Animation-Video-Editor",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/content-strategy/YouTube-Recap-Channel-Growth",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-video-editing/Photorealistic-Brand-Creation",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/legal-translation/Page-Legal-English-German-Translation",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/project-management/Recruitment-Onboarding-Assistant",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323862",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323860",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323364",
+      "reasons": [
+        "buyer_already_contacted"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/322445",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    }
+  ],
+  "http_attempts": 35,
+  "receipts": [
+    {
+      "url": "https://jobicy.com/api/jobs?count=100&industry=engineering",
+      "final_url": "https://jobicy.com/api/jobs?count=100&industry=engineering",
+      "fetched_at": "2026-10-23T11:49:09.425499+00:00",
+      "sha256": "89f3c7c23df9e58ba497102b2803e92a971e7b420783ddb9560d31a6c4260697",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\89f3c7c23df9e58ba497102b2803e92a971e7b420783ddb9560d31a6c4260697.bin"
+    },
+    {
+      "url": "https://jobicy.com/api/jobs?count=100&industry=engineering&cursor=AgAAAABq20m0AAAAAGrXhz8AAAAAAAJhVE0zVhQkI8JYfGeOL2bNeSwvpjGOV7-iA1vhuPyR3yEvJUMLxb2fZFlXOKZvmcoaE7fP4I93laWdKw2BFuAGZZw",
+      "final_url": "https://jobicy.com/api/jobs?count=100&industry=engineering&cursor=AgAAAABq20m0AAAAAGrXhz8AAAAAAAJhVE0zVhQkI8JYfGeOL2bNeSwvpjGOV7-iA1vhuPyR3yEvJUMLxb2fZFlXOKZvmcoaE7fP4I93laWdKw2BFuAGZZw",
+      "fetched_at": "2026-10-23T11:49:14.041171+00:00",
+      "sha256": "2f0f9642e84c7661a0dcbfb1f8fa0da1c8f10908ac00f8a71b40ec818fa87ee6",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\2f0f9642e84c7661a0dcbfb1f8fa0da1c8f10908ac00f8a71b40ec818fa87ee6.bin"
+    },
+    {
+      "url": "https://jobicy.com/api/jobs?count=100&industry=engineering&cursor=AgAAAABq20m0AAAAAGrUPn8AAAAAAAJXoE0zVhQkI8JYfGeOL2bNeSwvpjGOV7-iA1vhuPyR3yEvbRfjU4FaxVoEgceD-E8XZ5P9i-NSDXbwkinW6vdZsT8",
+      "final_url": "https://jobicy.com/api/jobs?count=100&industry=engineering&cursor=AgAAAABq20m0AAAAAGrUPn8AAAAAAAJXoE0zVhQkI8JYfGeOL2bNeSwvpjGOV7-iA1vhuPyR3yEvbRfjU4FaxVoEgceD-E8XZ5P9i-NSDXbwkinW6vdZsT8",
+      "fetched_at": "2026-10-23T11:49:16.444767+00:00",
+      "sha256": "62360037edefdfea57fd4783676d10388476b5f0671dc7c40ca0b18d0f309cca",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\62360037edefdfea57fd4783676d10388476b5f0671dc7c40ca0b18d0f309cca.bin"
+    },
+    {
+      "url": "https://jobicy.com/api/jobs/status?ids=156284%2C156280%2C156289%2C151239%2C151253",
+      "final_url": "https://jobicy.com/api/jobs/status?ids=156284%2C156280%2C156289%2C151239%2C151253",
+      "fetched_at": "2026-10-23T11:49:17.723883+00:00",
+      "sha256": "366d82a3b208db6e96d38c63d4178cf695ea39e9f0e41fc9803e842e997ffaff",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\366d82a3b208db6e96d38c63d4178cf695ea39e9f0e41fc9803e842e997ffaff.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=1",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=1",
+      "fetched_at": "2026-10-23T11:49:21.514484+00:00",
+      "sha256": "087f41975058c44d21efdbf62a09981402b10f9d1dda839a4865b1d7a99c48b7",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\087f41975058c44d21efdbf62a09981402b10f9d1dda839a4865b1d7a99c48b7.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=2",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=2",
+      "fetched_at": "2026-10-23T11:49:25.590745+00:00",
+      "sha256": "ceebd1aaf106a979309b66d18f9702f70ed4e050e94a16369b5401d1400b0890",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\ceebd1aaf106a979309b66d18f9702f70ed4e050e94a16369b5401d1400b0890.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=3",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=3",
+      "fetched_at": "2026-10-23T11:49:29.412328+00:00",
+      "sha256": "d42db80da7492db78bcf28f0781ba872376ece881cf145d74cfc23151bba6b55",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\d42db80da7492db78bcf28f0781ba872376ece881cf145d74cfc23151bba6b55.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=4",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=4",
+      "fetched_at": "2026-10-23T11:49:33.100188+00:00",
+      "sha256": "230c55d0d9ad07baf0354daffab986b91a0c96cdae1392f52fc5658b9218a4fb",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\230c55d0d9ad07baf0354daffab986b91a0c96cdae1392f52fc5658b9218a4fb.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=5",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=5",
+      "fetched_at": "2026-10-23T11:49:36.850642+00:00",
+      "sha256": "f759a2957c940ff1df4953fbf8b7c03552e04a1854b85104f5d2eb8935286fe8",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\f759a2957c940ff1df4953fbf8b7c03552e04a1854b85104f5d2eb8935286fe8.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=6",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=6",
+      "fetched_at": "2026-10-23T11:49:40.542343+00:00",
+      "sha256": "9234481ed25a344807d19a8d7379ce785e6a76a6225428198b14853690161ded",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\9234481ed25a344807d19a8d7379ce785e6a76a6225428198b14853690161ded.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=7",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=7",
+      "fetched_at": "2026-10-23T11:49:45.167342+00:00",
+      "sha256": "73ed60fcb25a993133e9e6525099ff32bbaa0d61bef58e79088a96e53375275f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\73ed60fcb25a993133e9e6525099ff32bbaa0d61bef58e79088a96e53375275f.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=8",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=8",
+      "fetched_at": "2026-10-23T11:49:48.630226+00:00",
+      "sha256": "f1788fb175f52af49cb2e62f17a70712a8ba7715ce8d099ab52c3d7af1f58445",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\f1788fb175f52af49cb2e62f17a70712a8ba7715ce8d099ab52c3d7af1f58445.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=9",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=9",
+      "fetched_at": "2026-10-23T11:49:52.287440+00:00",
+      "sha256": "60c41af16476f6261534f3f6fa65e3c52a118edfbed1ccd6a8d3e0481f366ef5",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\60c41af16476f6261534f3f6fa65e3c52a118edfbed1ccd6a8d3e0481f366ef5.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=10",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=10",
+      "fetched_at": "2026-10-23T11:49:55.973333+00:00",
+      "sha256": "4dc4ed574b55a953641afee61c983ff75b84538a2c4d7976af5bd96f25e8cb65",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\4dc4ed574b55a953641afee61c983ff75b84538a2c4d7976af5bd96f25e8cb65.bin"
+    },
+    {
+      "url": "https://remoteok.com/api",
+      "final_url": "https://remoteok.com/api",
+      "fetched_at": "2026-10-23T11:49:57.915419+00:00",
+      "sha256": "b6bdea6ef1b2d37b299cd888d49ea7f197b02768e36fef03c0593a5d090fba5d",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\b6bdea6ef1b2d37b299cd888d49ea7f197b02768e36fef03c0593a5d090fba5d.bin"
+    },
+    {
+      "url": "https://weworkremotely.com/categories/remote-full-stack-programming-jobs.rss",
+      "final_url": "https://weworkremotely.com/categories/remote-full-stack-programming-jobs.rss",
+      "fetched_at": "2026-10-23T11:49:59.282347+00:00",
+      "sha256": "367b75254bb22bc61d913a483a3509234863644bfb8fb91c9f6c554c5cc94766",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\367b75254bb22bc61d913a483a3509234863644bfb8fb91c9f6c554c5cc94766.bin"
+    },
+    {
+      "url": "https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss",
+      "final_url": "https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss",
+      "fetched_at": "2026-10-23T11:50:00.191260+00:00",
+      "sha256": "9aa7a880824191252ab5fbc8cb95faca589c73de6d1d23c9510f7544588bf45f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\9aa7a880824191252ab5fbc8cb95faca589c73de6d1d23c9510f7544588bf45f.bin"
+    },
+    {
+      "url": "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss",
+      "final_url": "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss",
+      "fetched_at": "2026-10-23T11:50:01.296196+00:00",
+      "sha256": "7cf02162d10aa8fc2e4ee05a2fb8f9c4d589debca7728a82ee36e746e410d1b9",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\7cf02162d10aa8fc2e4ee05a2fb8f9c4d589debca7728a82ee36e746e410d1b9.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=n8n&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=n8n&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:50:02.323185+00:00",
+      "sha256": "9e1f32d01bf96080de5584b1a53400a365d660ffee7159f94f5ccd44c1c24e56",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\9e1f32d01bf96080de5584b1a53400a365d660ffee7159f94f5ccd44c1c24e56.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=AI+agent&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=AI+agent&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:50:03.050522+00:00",
+      "sha256": "1c8fb1ea6fddcb802914062eed8616ca9fc8c82c2d624520a9217dae5de08494",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\1c8fb1ea6fddcb802914062eed8616ca9fc8c82c2d624520a9217dae5de08494.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=Python+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=Python+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:50:04.008421+00:00",
+      "sha256": "8f1d8b60499ac7dc6d30d6a584a01fb7c4f5cc5bfe0f617da1f139b448fd9f1f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\8f1d8b60499ac7dc6d30d6a584a01fb7c4f5cc5bfe0f617da1f139b448fd9f1f.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=API+integration&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=API+integration&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:50:05.480257+00:00",
+      "sha256": "a9fbc4fd24d201f7c0288f6656ad71aca61025b4faec8f222d1bee5dfebe3ab9",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\a9fbc4fd24d201f7c0288f6656ad71aca61025b4faec8f222d1bee5dfebe3ab9.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=CRM+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=CRM+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:50:06.506312+00:00",
+      "sha256": "b0da669309a034f2edb5f94ec5f5c2a5c31777eca85f7fe9e11722940678280a",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\b0da669309a034f2edb5f94ec5f5c2a5c31777eca85f7fe9e11722940678280a.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=workflow+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=workflow+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:50:08.066098+00:00",
+      "sha256": "e44138d4862cf330c0dc7c4a39257d15840e28799f4d9b2d18ec987a58cd25d5",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\e44138d4862cf330c0dc7c4a39257d15840e28799f4d9b2d18ec987a58cd25d5.bin"
+    },
+    {
+      "url": "https://community.n8n.io/c/jobs/13.json",
+      "final_url": "https://community.n8n.io/c/jobs/13.json",
+      "fetched_at": "2026-10-23T11:50:10.235862+00:00",
+      "sha256": "74a44992791ca08bc60f6b11f51c68e6f2a1dd3ad1494f07e90b708486995948",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\74a44992791ca08bc60f6b11f51c68e6f2a1dd3ad1494f07e90b708486995948.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323862.json",
+      "final_url": "https://community.n8n.io/t/323862.json",
+      "fetched_at": "2026-10-23T11:50:12.240567+00:00",
+      "sha256": "360a3a1470a276ac96e8c6a2dd66cb2b3f827349225fae19e1626ef8748906de",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\360a3a1470a276ac96e8c6a2dd66cb2b3f827349225fae19e1626ef8748906de.bin"
+    },
+    {
+      "url": "https://community.n8n.io/u/Danish_Koul_14.json",
+      "final_url": "https://community.n8n.io/u/Danish_Koul_14.json",
+      "fetched_at": "2026-10-23T11:50:13.157443+00:00",
+      "sha256": "638be591f5bba1b6688e7e8c303f44b52bbcc18b3181c835206271ebb7a88083",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\638be591f5bba1b6688e7e8c303f44b52bbcc18b3181c835206271ebb7a88083.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323860.json",
+      "final_url": "https://community.n8n.io/t/323860.json",
+      "fetched_at": "2026-10-23T11:50:14.124404+00:00",
+      "sha256": "0967b0bab38ad427037dafb4f0946200e9c8708141a627dadac1b4a3d76fee8c",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\0967b0bab38ad427037dafb4f0946200e9c8708141a627dadac1b4a3d76fee8c.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323364.json",
+      "final_url": "https://community.n8n.io/t/323364.json",
+      "fetched_at": "2026-10-23T11:50:15.681124+00:00",
+      "sha256": "1773b88a277c9e7273af9afdc981b5ec1a09e73c7a6bf52adf8e71b219427434",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\1773b88a277c9e7273af9afdc981b5ec1a09e73c7a6bf52adf8e71b219427434.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323364/posts.json?post_ids%5B%5D=604154&post_ids%5B%5D=604214&post_ids%5B%5D=604218&post_ids%5B%5D=604224&post_ids%5B%5D=604225&post_ids%5B%5D=604241&post_ids%5B%5D=604246&post_ids%5B%5D=604269&post_ids%5B%5D=604297&post_ids%5B%5D=604314&post_ids%5B%5D=604325&post_ids%5B%5D=604360&post_ids%5B%5D=604398&post_ids%5B%5D=604407&post_ids%5B%5D=604427&post_ids%5B%5D=604456&post_ids%5B%5D=604463&post_ids%5B%5D=604469&post_ids%5B%5D=604470",
+      "final_url": "https://community.n8n.io/t/323364/posts.json?post_ids%5B%5D=604154&post_ids%5B%5D=604214&post_ids%5B%5D=604218&post_ids%5B%5D=604224&post_ids%5B%5D=604225&post_ids%5B%5D=604241&post_ids%5B%5D=604246&post_ids%5B%5D=604269&post_ids%5B%5D=604297&post_ids%5B%5D=604314&post_ids%5B%5D=604325&post_ids%5B%5D=604360&post_ids%5B%5D=604398&post_ids%5B%5D=604407&post_ids%5B%5D=604427&post_ids%5B%5D=604456&post_ids%5B%5D=604463&post_ids%5B%5D=604469&post_ids%5B%5D=604470",
+      "fetched_at": "2026-10-23T11:50:16.860168+00:00",
+      "sha256": "a12019d6c04bdac7d0644facbe94867925e630be465d3b003024a0fed6d4a8a3",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\a12019d6c04bdac7d0644facbe94867925e630be465d3b003024a0fed6d4a8a3.bin"
+    },
+    {
+      "url": "https://community.n8n.io/u/Alvaro_Zapata.json",
+      "final_url": "https://community.n8n.io/u/Alvaro_Zapata.json",
+      "fetched_at": "2026-10-23T11:50:17.620174+00:00",
+      "sha256": "4ee24545bcc0d0608166c7ac890307d3c18e9c947cd636026e4c91776f3798ca",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\4ee24545bcc0d0608166c7ac890307d3c18e9c947cd636026e4c91776f3798ca.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/322445.json",
+      "final_url": "https://community.n8n.io/t/322445.json",
+      "fetched_at": "2026-10-23T11:50:18.896722+00:00",
+      "sha256": "bde5f5d4e96ecf5ff4270d6f293b1f54955d3ad1f1d34783afc5b075f3737d91",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\bde5f5d4e96ecf5ff4270d6f293b1f54955d3ad1f1d34783afc5b075f3737d91.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/322445/posts.json?post_ids%5B%5D=602841&post_ids%5B%5D=603129&post_ids%5B%5D=603131&post_ids%5B%5D=603146&post_ids%5B%5D=603218&post_ids%5B%5D=603256&post_ids%5B%5D=604083&post_ids%5B%5D=604499&post_ids%5B%5D=604500",
+      "final_url": "https://community.n8n.io/t/322445/posts.json?post_ids%5B%5D=602841&post_ids%5B%5D=603129&post_ids%5B%5D=603131&post_ids%5B%5D=603146&post_ids%5B%5D=603218&post_ids%5B%5D=603256&post_ids%5B%5D=604083&post_ids%5B%5D=604499&post_ids%5B%5D=604500",
+      "fetched_at": "2026-10-23T11:50:20.056119+00:00",
+      "sha256": "b24997134c20e5a3060e24202b6396dc085bf5cb8346c3969b11927596acd437",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\b24997134c20e5a3060e24202b6396dc085bf5cb8346c3969b11927596acd437.bin"
+    },
+    {
+      "url": "https://community.n8n.io/u/boston_young.json",
+      "final_url": "https://community.n8n.io/u/boston_young.json",
+      "fetched_at": "2026-10-23T11:50:20.890405+00:00",
+      "sha256": "014b7738aca64dda7ba14b4c4369fccd4507cf1edaad0f55f9600bc8c2a247f2",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T114906529492Z\\evidence\\014b7738aca64dda7ba14b4c4369fccd4507cf1edaad0f55f9600bc8c2a247f2.bin"
+    }
+  ],
+  "quarantined": 7,
+  "rejected_coordinate_observations": 13,
+  "duplicate_observations": 0,
+  "verification_policy": "No automated ownership or zero-false-positive guarantee. OUTREACH_READY is empty until human verification."
+}

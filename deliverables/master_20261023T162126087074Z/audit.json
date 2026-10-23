@@ -1,0 +1,668 @@
+{
+  "captured_at_utc": "2026-10-23T16:23:10.206696+00:00",
+  "options": {
+    "sources": "all",
+    "contact_policy": "direct-only",
+    "coordinate_scope": "email-linkedin",
+    "direct_first": true,
+    "url": [],
+    "urls_file": null,
+    "limit": 100,
+    "days": 14,
+    "max_topics": 104,
+    "max_batches": 2,
+    "max_feed_pages": 2,
+    "max_requests": 500,
+    "delay": 0.4,
+    "per_query": 20,
+    "query": null,
+    "no_profiles": false,
+    "suppress_file": "D:\\anonym\\tools\\lead_hunter\\already_contacted.json",
+    "out": "D:\\anonym\\tools\\lead_hunter\\output",
+    "deliverables_dir": "D:\\anonym\\deliverables"
+  },
+  "retained_candidates": 0,
+  "unique_candidates_before_limit": 0,
+  "interrupted": false,
+  "leads_with_coordinate": {
+    "email": 0,
+    "linkedin": 0
+  },
+  "errors": [],
+  "excluded": [
+    {
+      "url": "https://news.ycombinator.com/item?id=50104234",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50095921",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50095249",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50091446",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50090302",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50075162",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50071142",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50068986",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50066343",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50066205",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50063248",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50063001",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50062997",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50061040",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50059584",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50056667",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50055019",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50033036",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=50025234",
+      "reasons": [
+        "employment_listing_not_direct_service_buyer"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323862",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323860",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323364",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/322445",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/321311",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/321244",
+      "reasons": [
+        "topic_marked_closed",
+        "vendor_marketplace_or_creator_program_not_client_demand"
+      ]
+    },
+    {
+      "url": "https://community.make.com/t/118015",
+      "reasons": [
+        "no_requested_email_or_linkedin_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://forum.bubble.io/t/401796",
+      "reasons": [
+        "no_requested_email_or_linkedin_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://discuss.huggingface.co/t/190929",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://discuss.huggingface.co/t/190907",
+      "reasons": [
+        "no_requested_email_or_linkedin_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://discuss.huggingface.co/t/190891",
+      "reasons": [
+        "no_requested_email_or_linkedin_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://discuss.huggingface.co/t/190881",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://community.baserow.io/t/13078",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed"
+      ]
+    }
+  ],
+  "http_attempts": 62,
+  "receipts": [
+    {
+      "url": "https://hn.algolia.com/api/v1/search_by_date?tags=story%2Cauthor_whoishiring&hitsPerPage=12",
+      "final_url": "https://hn.algolia.com/api/v1/search_by_date?tags=story%2Cauthor_whoishiring&hitsPerPage=12",
+      "fetched_at": "2026-10-23T16:21:28.950900+00:00",
+      "sha256": "36e8ee41e57e4ecf8d874686e74717cfbfd07d116dd12e1b096c85870d94ae69",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\36e8ee41e57e4ecf8d874686e74717cfbfd07d116dd12e1b096c85870d94ae69.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/49922569.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/49922569.json",
+      "fetched_at": "2026-10-23T16:21:30.391131+00:00",
+      "sha256": "ad1fc11a71c7a784b9a1256e679bc37166f8f1686ed2b4a875b29c942af1dba4",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\ad1fc11a71c7a784b9a1256e679bc37166f8f1686ed2b4a875b29c942af1dba4.bin"
+    },
+    {
+      "url": "https://hn.algolia.com/api/v1/search_by_date?tags=comment%2Cstory_49922569&numericFilters=created_at_i%3E1791562886&hitsPerPage=100&page=0",
+      "final_url": "https://hn.algolia.com/api/v1/search_by_date?tags=comment%2Cstory_49922569&numericFilters=created_at_i%3E1791562886&hitsPerPage=100&page=0",
+      "fetched_at": "2026-10-23T16:21:31.573246+00:00",
+      "sha256": "f42927df857d4f2986330d7df31025c80f729f310d1d6a8f84391ac33211dd1f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\f42927df857d4f2986330d7df31025c80f729f310d1d6a8f84391ac33211dd1f.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50104234.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50104234.json",
+      "fetched_at": "2026-10-23T16:21:32.588215+00:00",
+      "sha256": "eac571e1a62cb4daf27a922d946b1256fc484d6728dde33f4a815b26cca84a5b",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\eac571e1a62cb4daf27a922d946b1256fc484d6728dde33f4a815b26cca84a5b.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50095921.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50095921.json",
+      "fetched_at": "2026-10-23T16:21:33.580325+00:00",
+      "sha256": "3ab042df9ba0904ede4f186e803f78b158af6410be97dfa3175396a2b580dad5",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\3ab042df9ba0904ede4f186e803f78b158af6410be97dfa3175396a2b580dad5.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50095249.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50095249.json",
+      "fetched_at": "2026-10-23T16:21:34.510097+00:00",
+      "sha256": "ba4cf495edc745ffd40956fe85c85ba5d81baf4ff8a3a8e5d245c67a63a862e7",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\ba4cf495edc745ffd40956fe85c85ba5d81baf4ff8a3a8e5d245c67a63a862e7.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50091446.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50091446.json",
+      "fetched_at": "2026-10-23T16:21:35.525775+00:00",
+      "sha256": "7c547781fc76cc83a1a62f9a5c041757865b3124211b7595e175d3bb3606bd5b",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\7c547781fc76cc83a1a62f9a5c041757865b3124211b7595e175d3bb3606bd5b.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50090302.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50090302.json",
+      "fetched_at": "2026-10-23T16:21:36.456204+00:00",
+      "sha256": "5889e05828a8775f8da97ad40974cd2b514e7530711d4e60d6ded2fd056534ee",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\5889e05828a8775f8da97ad40974cd2b514e7530711d4e60d6ded2fd056534ee.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50075162.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50075162.json",
+      "fetched_at": "2026-10-23T16:21:37.430437+00:00",
+      "sha256": "a9131ca9d1659ffb11d39056a5eea4536532827d3717d71d72e6cb1d1f58c996",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\a9131ca9d1659ffb11d39056a5eea4536532827d3717d71d72e6cb1d1f58c996.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50071142.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50071142.json",
+      "fetched_at": "2026-10-23T16:21:38.438865+00:00",
+      "sha256": "94dd4ad90d7f8c44796a0609594835e7e01fda9b9618d8ba8d408f92d2b45e6c",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\94dd4ad90d7f8c44796a0609594835e7e01fda9b9618d8ba8d408f92d2b45e6c.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50068986.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50068986.json",
+      "fetched_at": "2026-10-23T16:21:39.546714+00:00",
+      "sha256": "283a39a1b09348e9435a98f33ad5ddd4e8390eeaf4b7723f2403949e1511c34a",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\283a39a1b09348e9435a98f33ad5ddd4e8390eeaf4b7723f2403949e1511c34a.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50066343.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50066343.json",
+      "fetched_at": "2026-10-23T16:21:40.559568+00:00",
+      "sha256": "c6704709ff49c5df9b84d4222274e6ca39096f8c8f99d28ec7b388128b799995",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\c6704709ff49c5df9b84d4222274e6ca39096f8c8f99d28ec7b388128b799995.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50066205.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50066205.json",
+      "fetched_at": "2026-10-23T16:21:41.556103+00:00",
+      "sha256": "6d8d03bcf235f839ca7ffe688f5c2cb606d6a9c8bd13a9a7707ae5b3462d44a7",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\6d8d03bcf235f839ca7ffe688f5c2cb606d6a9c8bd13a9a7707ae5b3462d44a7.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50063248.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50063248.json",
+      "fetched_at": "2026-10-23T16:21:42.472655+00:00",
+      "sha256": "0fc1a09765cbf6d184f6e9bbfc875fe113d9c540a8fd0710d3734922e43e0574",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\0fc1a09765cbf6d184f6e9bbfc875fe113d9c540a8fd0710d3734922e43e0574.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50063001.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50063001.json",
+      "fetched_at": "2026-10-23T16:21:43.835134+00:00",
+      "sha256": "bdc53ce86ae1cb33af65dc9bd509ef955a116f6b87a71734c8a535fa4dc4145b",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\bdc53ce86ae1cb33af65dc9bd509ef955a116f6b87a71734c8a535fa4dc4145b.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50062997.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50062997.json",
+      "fetched_at": "2026-10-23T16:21:45.156787+00:00",
+      "sha256": "c7dd395e18da1362b1c7003f2d28c10240d972c1f5cd7e481f6e77af86b76ff6",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\c7dd395e18da1362b1c7003f2d28c10240d972c1f5cd7e481f6e77af86b76ff6.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50061040.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50061040.json",
+      "fetched_at": "2026-10-23T16:21:46.348502+00:00",
+      "sha256": "1c3bf918985ad026d5a796e4590ec79835cb10875ec2a2ab8a8cbde86947f6cc",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\1c3bf918985ad026d5a796e4590ec79835cb10875ec2a2ab8a8cbde86947f6cc.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50059584.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50059584.json",
+      "fetched_at": "2026-10-23T16:21:47.517712+00:00",
+      "sha256": "f19bc595e8760a2d867ea711ac1ffb850084d976f77ff08911b4b9858989e52b",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\f19bc595e8760a2d867ea711ac1ffb850084d976f77ff08911b4b9858989e52b.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50056667.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50056667.json",
+      "fetched_at": "2026-10-23T16:21:48.684158+00:00",
+      "sha256": "7582c26614ee435a980f8cb6dc4fcf48c9c984ef1078fd26d082538360998211",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\7582c26614ee435a980f8cb6dc4fcf48c9c984ef1078fd26d082538360998211.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50055019.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50055019.json",
+      "fetched_at": "2026-10-23T16:21:49.903821+00:00",
+      "sha256": "20652e4ef4d727f18258838128137d8177e1e8fdd5eb7cfc8b164938fc7a5c47",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\20652e4ef4d727f18258838128137d8177e1e8fdd5eb7cfc8b164938fc7a5c47.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50033036.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50033036.json",
+      "fetched_at": "2026-10-23T16:21:51.024133+00:00",
+      "sha256": "b1149aeb0e2401832673f588319eb2260b8945fa6a2352b22cfe510acc9a0c4d",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\b1149aeb0e2401832673f588319eb2260b8945fa6a2352b22cfe510acc9a0c4d.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/50025234.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/50025234.json",
+      "fetched_at": "2026-10-23T16:21:52.026299+00:00",
+      "sha256": "ced35be24b6ce322fbf715655f89c77c0f657a862467b85832b986fcc36a5ab7",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\ced35be24b6ce322fbf715655f89c77c0f657a862467b85832b986fcc36a5ab7.bin"
+    },
+    {
+      "url": "https://community.n8n.io/c/jobs/13.json?order=created&page=0",
+      "final_url": "https://community.n8n.io/c/jobs/13.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:21:54.299848+00:00",
+      "sha256": "b37f1b0ce1a3ce820246eeaeb7f5a1ce284e7de7e86209b742ff06b4546c3075",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\b37f1b0ce1a3ce820246eeaeb7f5a1ce284e7de7e86209b742ff06b4546c3075.bin"
+    },
+    {
+      "url": "https://community.n8n.io/c/jobs/13.json?order=created&page=1",
+      "final_url": "https://community.n8n.io/c/jobs/13.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:21:55.571895+00:00",
+      "sha256": "89350c54569c948bbf2614b179a1c8ba08289ea783918794213aadc30dd87573",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\89350c54569c948bbf2614b179a1c8ba08289ea783918794213aadc30dd87573.bin"
+    },
+    {
+      "url": "https://community.make.com/c/74.json?order=created&page=0",
+      "final_url": "https://community.make.com/c/hire-a-pro/hire-help/74.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:21:58.173435+00:00",
+      "sha256": "0d0418da048bcc5e4550f49d0befdac39f9c0f9430d33cf47a78f67cb8074a71",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\0d0418da048bcc5e4550f49d0befdac39f9c0f9430d33cf47a78f67cb8074a71.bin"
+    },
+    {
+      "url": "https://community.make.com/c/74.json?order=created&page=1",
+      "final_url": "https://community.make.com/c/hire-a-pro/hire-help/74.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:21:59.285025+00:00",
+      "sha256": "5ab8d62c97a51d6846044efef3524ebeb0cff2c97204ce114c229921672c200a",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\5ab8d62c97a51d6846044efef3524ebeb0cff2c97204ce114c229921672c200a.bin"
+    },
+    {
+      "url": "https://discuss.frappe.io/c/jobs/24.json?order=created&page=0",
+      "final_url": "https://discuss.frappe.io/c/framework/app-development/24.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:01.512035+00:00",
+      "sha256": "d286c983709d932194bc78a51f1abb155b0a114b1b07169dc0b4877c7e5aad53",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\d286c983709d932194bc78a51f1abb155b0a114b1b07169dc0b4877c7e5aad53.bin"
+    },
+    {
+      "url": "https://discuss.frappe.io/c/jobs/24.json?order=created&page=1",
+      "final_url": "https://discuss.frappe.io/c/framework/app-development/24.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:22:02.942316+00:00",
+      "sha256": "d9f29ff2497b7f92364f5489c1ab23f1f77afb2c4417f47d70e248433e1be3cd",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\d9f29ff2497b7f92364f5489c1ab23f1f77afb2c4417f47d70e248433e1be3cd.bin"
+    },
+    {
+      "url": "https://community.directus.io/latest.json?order=created&page=0",
+      "final_url": "https://community.directus.com/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:09.072989+00:00",
+      "sha256": "f2dfdb13bd3b357af0ae63f7bf817009d5ad9380345f4fed477ecc0c901bb8bd",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\f2dfdb13bd3b357af0ae63f7bf817009d5ad9380345f4fed477ecc0c901bb8bd.bin"
+    },
+    {
+      "url": "https://community.directus.io/latest.json?order=created&page=1",
+      "final_url": "https://community.directus.com/latest.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:22:12.045667+00:00",
+      "sha256": "1ed2d648a45dac51247d81b7a8c42cf9fdd7922a91270cae4bf2e3b25de5a8c9",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\1ed2d648a45dac51247d81b7a8c42cf9fdd7922a91270cae4bf2e3b25de5a8c9.bin"
+    },
+    {
+      "url": "https://community.weweb.io/c/jobs/22.json?order=created&page=0",
+      "final_url": "https://community.weweb.io/c/jobs/22.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:15.521645+00:00",
+      "sha256": "ca354aeb311f5d53ca25761eae992d46a309eb647061af26076bcd0d140d9a97",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\ca354aeb311f5d53ca25761eae992d46a309eb647061af26076bcd0d140d9a97.bin"
+    },
+    {
+      "url": "https://forum.camunda.io/latest.json?order=created&page=0",
+      "final_url": "https://forum.camunda.io/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:18.372524+00:00",
+      "sha256": "9521db7e75c8c76153b16c050f5b03fb7420818a09f87327e38df6054a40e2ad",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\9521db7e75c8c76153b16c050f5b03fb7420818a09f87327e38df6054a40e2ad.bin"
+    },
+    {
+      "url": "https://forum.camunda.io/latest.json?order=created&page=1",
+      "final_url": "https://forum.camunda.io/latest.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:22:20.015309+00:00",
+      "sha256": "3e8c4fcdce454575ee9de0bf6b440ee090c5b79c1691a5991696bc5d0d549e1f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\3e8c4fcdce454575ee9de0bf6b440ee090c5b79c1691a5991696bc5d0d549e1f.bin"
+    },
+    {
+      "url": "https://forum.bubble.io/c/jobs-freelance/13.json?order=created&page=0",
+      "final_url": "https://forum.bubble.io/c/jobs-freelance/13.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:23.138197+00:00",
+      "sha256": "eeb707d7723692e3ed4d6857197a0fd3918e642cf7726485378a93f606875e91",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\eeb707d7723692e3ed4d6857197a0fd3918e642cf7726485378a93f606875e91.bin"
+    },
+    {
+      "url": "https://forum.bubble.io/c/jobs-freelance/13.json?order=created&page=1",
+      "final_url": "https://forum.bubble.io/c/jobs-freelance/13.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:22:24.894734+00:00",
+      "sha256": "f84244d4bf0e638c0125c5b4cbfaae08311e037b5b92f7142c976a17323839b9",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\f84244d4bf0e638c0125c5b4cbfaae08311e037b5b92f7142c976a17323839b9.bin"
+    },
+    {
+      "url": "https://community.retool.com/latest.json?order=created&page=0",
+      "final_url": "https://community.retool.com/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:27.883645+00:00",
+      "sha256": "52fee650707d2280a983a7bb164d21488e975da531c7a79bf8208daf30b3572f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\52fee650707d2280a983a7bb164d21488e975da531c7a79bf8208daf30b3572f.bin"
+    },
+    {
+      "url": "https://community.retool.com/latest.json?order=created&page=1",
+      "final_url": "https://community.retool.com/latest.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:22:29.661015+00:00",
+      "sha256": "87957e993d2ff2f5fc0bf7b5c4a8adaf4b9d5578b9702be7ecec0b433c03e765",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\87957e993d2ff2f5fc0bf7b5c4a8adaf4b9d5578b9702be7ecec0b433c03e765.bin"
+    },
+    {
+      "url": "https://discuss.huggingface.co/latest.json?order=created&page=0",
+      "final_url": "https://discuss.huggingface.co/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:32.517850+00:00",
+      "sha256": "068d493119e37c4416da627d80bb90e048b10a5c39a126def2d7a02f50fc8ec1",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\068d493119e37c4416da627d80bb90e048b10a5c39a126def2d7a02f50fc8ec1.bin"
+    },
+    {
+      "url": "https://discuss.huggingface.co/latest.json?order=created&page=1",
+      "final_url": "https://discuss.huggingface.co/latest.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:22:34.312258+00:00",
+      "sha256": "c4cd8b535dfaded07ec3abea01d19fca25cbd8e649fba78f945a380a009dd93f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\c4cd8b535dfaded07ec3abea01d19fca25cbd8e649fba78f945a380a009dd93f.bin"
+    },
+    {
+      "url": "https://forum.langchain.com/latest.json?order=created&page=0",
+      "final_url": "https://forum.langchain.com/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:37.437264+00:00",
+      "sha256": "80093c938f8d43dff83e4d46575b4c63bdc4d4a1a5eea1026bb56e97c754950f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\80093c938f8d43dff83e4d46575b4c63bdc4d4a1a5eea1026bb56e97c754950f.bin"
+    },
+    {
+      "url": "https://forum.langchain.com/latest.json?order=created&page=1",
+      "final_url": "https://forum.langchain.com/latest.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:22:39.041926+00:00",
+      "sha256": "35ac55c35e259d8e21232450b53f39bc78fdfd14540c87196ccd2c07961273cf",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\35ac55c35e259d8e21232450b53f39bc78fdfd14540c87196ccd2c07961273cf.bin"
+    },
+    {
+      "url": "https://community.nocodb.com/latest.json?order=created&page=0",
+      "final_url": "https://community.nocodb.com/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:41.880931+00:00",
+      "sha256": "21a204918bd45b3d855d7d396c05aac3cd35f06946e7d2b7b4b9d7a836831456",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\21a204918bd45b3d855d7d396c05aac3cd35f06946e7d2b7b4b9d7a836831456.bin"
+    },
+    {
+      "url": "https://community.nocodb.com/latest.json?order=created&page=1",
+      "final_url": "https://community.nocodb.com/latest.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:22:43.515747+00:00",
+      "sha256": "9ebe44ca35708b3af3f1829d9c4d58a82f18dcc190a195570c90e96104308f38",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\9ebe44ca35708b3af3f1829d9c4d58a82f18dcc190a195570c90e96104308f38.bin"
+    },
+    {
+      "url": "https://community.baserow.io/latest.json?order=created&page=0",
+      "final_url": "https://community.baserow.io/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T16:22:45.706050+00:00",
+      "sha256": "f298aee3c87c12cd5f6d4d8bf04c55e12773d0bd486116108ab09d9548f1393e",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\f298aee3c87c12cd5f6d4d8bf04c55e12773d0bd486116108ab09d9548f1393e.bin"
+    },
+    {
+      "url": "https://community.baserow.io/latest.json?order=created&page=1",
+      "final_url": "https://community.baserow.io/latest.json?order=created&page=1",
+      "fetched_at": "2026-10-23T16:22:47.052620+00:00",
+      "sha256": "ac3abc358a7fd8a392f86ac9e21effd7038811461364d3edffac718e4b46b1d0",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\ac3abc358a7fd8a392f86ac9e21effd7038811461364d3edffac718e4b46b1d0.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323862.json",
+      "final_url": "https://community.n8n.io/t/323862.json",
+      "fetched_at": "2026-10-23T16:22:48.095556+00:00",
+      "sha256": "de186c11a83d0dc5872b8bb252fde0134aa366095a31b54de0fecf7330fb4bcc",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\de186c11a83d0dc5872b8bb252fde0134aa366095a31b54de0fecf7330fb4bcc.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323860.json",
+      "final_url": "https://community.n8n.io/t/323860.json",
+      "fetched_at": "2026-10-23T16:22:48.982306+00:00",
+      "sha256": "e6133fdb7537747f606a503d6f1944ec40e2c0948297ff3782b471fda1ee075a",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\e6133fdb7537747f606a503d6f1944ec40e2c0948297ff3782b471fda1ee075a.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323364.json",
+      "final_url": "https://community.n8n.io/t/323364.json",
+      "fetched_at": "2026-10-23T16:22:50.580888+00:00",
+      "sha256": "6db8784e33b2be7b22eff2165f5ccfecdfd19e281be8a0a7095ee6be758181e7",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\6db8784e33b2be7b22eff2165f5ccfecdfd19e281be8a0a7095ee6be758181e7.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/322445.json",
+      "final_url": "https://community.n8n.io/t/322445.json",
+      "fetched_at": "2026-10-23T16:22:52.093274+00:00",
+      "sha256": "a32ba9340a15bfadf46283fab08df6ebb128ee4bdf06a09a9fee2653eea60b82",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\a32ba9340a15bfadf46283fab08df6ebb128ee4bdf06a09a9fee2653eea60b82.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/321311.json",
+      "final_url": "https://community.n8n.io/t/321311.json",
+      "fetched_at": "2026-10-23T16:22:53.692321+00:00",
+      "sha256": "d6d279f1c7fe811d5739648ef76a5bd3a6417a5ef6361a4f0a574e649d7fd846",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\d6d279f1c7fe811d5739648ef76a5bd3a6417a5ef6361a4f0a574e649d7fd846.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/321244.json",
+      "final_url": "https://community.n8n.io/t/321244.json",
+      "fetched_at": "2026-10-23T16:22:55.233524+00:00",
+      "sha256": "b3881f3bb5e19c21cf2d70f028089c10554eaea9785826518a6f9d5804c36c40",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\b3881f3bb5e19c21cf2d70f028089c10554eaea9785826518a6f9d5804c36c40.bin"
+    },
+    {
+      "url": "https://community.make.com/t/118015.json",
+      "final_url": "https://community.make.com/t/118015.json",
+      "fetched_at": "2026-10-23T16:22:56.551871+00:00",
+      "sha256": "50a7bd7bb07395c6e1c1d7789380d826d888dacc6d32e7258c03546769f27eb2",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\50a7bd7bb07395c6e1c1d7789380d826d888dacc6d32e7258c03546769f27eb2.bin"
+    },
+    {
+      "url": "https://community.make.com/u/Devyn_Williams.json",
+      "final_url": "https://community.make.com/u/Devyn_Williams.json",
+      "fetched_at": "2026-10-23T16:22:57.122370+00:00",
+      "sha256": "36630c0ecb2285ef81aea92b14d0af2205fdfaf6d623e67a06246ac85e21d51f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\36630c0ecb2285ef81aea92b14d0af2205fdfaf6d623e67a06246ac85e21d51f.bin"
+    },
+    {
+      "url": "https://forum.bubble.io/t/401796.json",
+      "final_url": "https://forum.bubble.io/t/401796.json",
+      "fetched_at": "2026-10-23T16:22:58.889144+00:00",
+      "sha256": "10c4bcb1406488053ca5e975857ed1eeec11ba182e1c2e8455c4f837a46fea3b",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\10c4bcb1406488053ca5e975857ed1eeec11ba182e1c2e8455c4f837a46fea3b.bin"
+    },
+    {
+      "url": "https://forum.bubble.io/u/shefaindustries72.json",
+      "final_url": "https://forum.bubble.io/u/shefaindustries72.json",
+      "fetched_at": "2026-10-23T16:23:00.116497+00:00",
+      "sha256": "24c16170c6c0f9092921a456f1e8fc7a4dc15d9a881e3c10190d0c28f8137461",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\24c16170c6c0f9092921a456f1e8fc7a4dc15d9a881e3c10190d0c28f8137461.bin"
+    },
+    {
+      "url": "https://discuss.huggingface.co/t/190929.json",
+      "final_url": "https://discuss.huggingface.co/t/190929.json",
+      "fetched_at": "2026-10-23T16:23:01.367949+00:00",
+      "sha256": "c0b820bee0aca281cc19ab11fa9a6541630a97197bde56509e0f5c2aeefcc1c7",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\c0b820bee0aca281cc19ab11fa9a6541630a97197bde56509e0f5c2aeefcc1c7.bin"
+    },
+    {
+      "url": "https://discuss.huggingface.co/t/190907.json",
+      "final_url": "https://discuss.huggingface.co/t/190907.json",
+      "fetched_at": "2026-10-23T16:23:03.161708+00:00",
+      "sha256": "ca6d46ba791ee48fc3b19edee0a20a984e9b4f3d8b8f434ba55e35544e74f067",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\ca6d46ba791ee48fc3b19edee0a20a984e9b4f3d8b8f434ba55e35544e74f067.bin"
+    },
+    {
+      "url": "https://discuss.huggingface.co/u/utsabdahal34.json",
+      "final_url": "https://discuss.huggingface.co/u/utsabdahal34.json",
+      "fetched_at": "2026-10-23T16:23:04.321695+00:00",
+      "sha256": "a80af4ef8e7461050cfebd295e4bb4e147230dbc330c7e1b85b1739b6df74bfa",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\a80af4ef8e7461050cfebd295e4bb4e147230dbc330c7e1b85b1739b6df74bfa.bin"
+    },
+    {
+      "url": "https://discuss.huggingface.co/t/190891.json",
+      "final_url": "https://discuss.huggingface.co/t/190891.json",
+      "fetched_at": "2026-10-23T16:23:05.808708+00:00",
+      "sha256": "dc638185bf68c964f6dad83ff68d0077c154401f795b2aa192b0480bb566af13",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\dc638185bf68c964f6dad83ff68d0077c154401f795b2aa192b0480bb566af13.bin"
+    },
+    {
+      "url": "https://discuss.huggingface.co/u/hatabishchip.json",
+      "final_url": "https://discuss.huggingface.co/u/hatabishchip.json",
+      "fetched_at": "2026-10-23T16:23:07.439344+00:00",
+      "sha256": "e812dead32094d3eeb2dd2b2225242a485eae7e25202112f851c28f5c79b0560",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\e812dead32094d3eeb2dd2b2225242a485eae7e25202112f851c28f5c79b0560.bin"
+    },
+    {
+      "url": "https://discuss.huggingface.co/t/190881.json",
+      "final_url": "https://discuss.huggingface.co/t/190881.json",
+      "fetched_at": "2026-10-23T16:23:08.951711+00:00",
+      "sha256": "c389984525397a9841ef4ecac12fa7ad43d48368b0e598bbb49c50a3eed1ecb6",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\c389984525397a9841ef4ecac12fa7ad43d48368b0e598bbb49c50a3eed1ecb6.bin"
+    },
+    {
+      "url": "https://community.baserow.io/t/13078.json",
+      "final_url": "https://community.baserow.io/t/13078.json",
+      "fetched_at": "2026-10-23T16:23:10.191502+00:00",
+      "sha256": "cfbe211cfc2b4d8c952c096c294c3dffa4c6bddaeb192089b104fe02b8f99180",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T162126087074Z\\evidence\\cfbe211cfc2b4d8c952c096c294c3dffa4c6bddaeb192089b104fe02b8f99180.bin"
+    }
+  ],
+  "quarantined": 0,
+  "rejected_coordinate_observations": 0,
+  "duplicate_observations": 0,
+  "verification_policy": "No automated ownership or zero-false-positive guarantee. OUTREACH_READY is empty until human verification."
+}

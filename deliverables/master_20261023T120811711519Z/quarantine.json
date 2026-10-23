@@ -1,0 +1,51 @@
+[
+  {
+    "lead_id": "JOBSPRESSO-163918",
+    "platform": "Jobspresso",
+    "source_url": "https://jobspresso.co/job/backend-software-engineer-python-postgres/",
+    "title": "Backend Software Engineer &#8211; Python/Postgres",
+    "created_at": "2026-10-22T15:23:25+00:00",
+    "captured_at": "2026-10-23T12:09:00.656154+00:00",
+    "brief_snippet": "Do you want to work for a mission-driven non-profit, writing software that will contribute to helping the livelihoods of millions of coffee farmers around the world? Enveritas is a 501(c)(3) non-profit and Y Combinator-backed startup looking to hire for our Engineering & Data Group. We are looking for a backend software engineer with a focus on python and PostgreSQL to join our EUDR engineering team on a remote/global, full-time basis. You can learn more about this job and our group at https://www.enveritas.org/jobs/backend-software-eng/\n\nWe’re a small team and every hire makes a large impact, so we’re careful and thorough when it comes to hiring, but we are actively considering candidates and moving them through the process as quickly as we can.\n\nAbout our engineering & data group\n\nWe are a quirky, talented, and humble group of about thirty people with diverse backgrounds, ranging from journalism to academia to international industry. We’re represented across the gender spectrum, with 36% of our Engineering and Data Group identifying as women and/or nonbinary. Several of us are parents, with more expecting.\n\nOur group builds software to collect, analyze, and report data about coff",
+    "buyer_username": "",
+    "buyer_real_name": "",
+    "buyer_company": "",
+    "buyer_website": "",
+    "buyer_profile_url": "",
+    "buyer_location": "",
+    "can_direct_message": null,
+    "status": "review_required",
+    "review_flags": [
+      "aggregated_listing_open_status_unconfirmed"
+    ],
+    "budget": "Not established",
+    "budget_mentions": [],
+    "email": [
+      "jobs@enveritas.org"
+    ],
+    "linkedin": [],
+    "phone": [],
+    "whatsapp_number": [],
+    "whatsapp_links": [],
+    "contact_evidence": [
+      {
+        "kind": "email",
+        "value": "jobs@enveritas.org",
+        "contact_evidence": "Please apply using our Greenhouse application form. Feel free to contact us at jobs@enveritas.org should you have any questions about the position or the interview process. Questions about this opportunity or process will not reflect negatively on your application.",
+        "contact_context": " Please apply using our Greenhouse application form. Feel free to contact us at  jobs@enveritas.org  should you have any questions about the position or the interview process. Questions about this opportunity or process will not reflect negatively on your application.",
+        "purpose": "explicit_contact_context_not_ownership_verification",
+        "source_url": "https://jobspresso.co/job/backend-software-engineer-python-postgres/",
+        "ownership": "publication_only_owner_not_independently_verified"
+      }
+    ],
+    "suppressed_values": 0,
+    "coordinate_count": 1,
+    "contact_value_count": 1,
+    "email_status": "published_candidate",
+    "linkedin_status": "not_found_in_scanned_content",
+    "phone_status": "not_found_in_scanned_content",
+    "whatsapp_number_status": "not_found_in_scanned_content",
+    "rejected_coordinates": [],
+    "contact_route": "Review the original application instructions; public contact availability is not off-platform permission"
+  }
+]

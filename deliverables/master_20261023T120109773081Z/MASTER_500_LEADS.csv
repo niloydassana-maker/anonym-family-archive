@@ -1,0 +1,158 @@
+﻿lead_id,platform,source_url,title,created_at,captured_at,brief_snippet,buyer_username,buyer_real_name,buyer_company,buyer_website,buyer_profile_url,buyer_location,can_direct_message,status,review_flags,budget,budget_mentions,email,linkedin,phone,whatsapp_number,whatsapp_links,contact_evidence,suppressed_values,coordinate_count,contact_value_count,email_status,linkedin_status,phone_status,whatsapp_number_status,engagement_type,fit_signals,buyer_id,rejected_coordinates,contact_kind,listing_status,listing_status_source,contact_route,verification_status
+FL-40782862,Freelancer,https://www.freelancer.com/projects/n8n/YouTube-Video-Producer-With-Automation,YouTube Video Producer With N8N Automation System Needed ,2026-10-23T10:30:16+00:00,2026-10-23T12:01:26.512885+00:00,"Hi,
+
+We’re looking for a long-term partner with a pre-built N8N youtube automation system, and experience running it, to support our team. This is not a one-time collaboration, but a partnership where we’ll promote the service and forward the orders to the partner(s) we select. 
+
+We produce custom animations and explainer videos and we want to start offering complete YouTube automation packages to our clients. Ideally, you already have a working N8N YouTube automation system and can operate it for us at low reseller prices.
+
+If you’re interested, please start your bid with “N8N” and answer these questions:
+1. Do you already have a working, pre-built n8n YouTube automation system? If so, tell us more about your system. 
+2. Can you operate the system for us at the following prices?
+• Channel setup – $10: Channel branding, logo, banner, intro, SEO and channel keywords.
+• 10 long videos + 10 Shorts – $50: Ideas, scripts, AI voice-over, visuals, editing, thumbnails, uploading and SEO.
+• 15 long videos + 15 Shorts – $75: Same complete service as above.
+4. Can your system handle the entire process, including branding, scripts, voice-over, visuals, subtitles, thumbnails, SEO and YouTube up",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bn8n\\b""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40782504,Freelancer,https://www.freelancer.com/projects/ai-video-editing/Build-Automated-Local-Video-Studio,Build Automated Local AI Video Studio,2026-10-23T06:11:57+00:00,2026-10-23T12:01:26.523011+00:00,"I am seeking an expert AI Systems Specialist / Technical Director to configure and optimize a high-performance local AI production server. The goal is to build an end-to-end automated pipeline for producing hyper-realistic AI mini-series featuring consistent realistic characters, lip-synced dialogues, cinematic editing, and automated multi-platform publishing (Instagram, TikTok, Facebook, along with NSFW variants for premium platforms).
+
+Server Hardware & Environment
+OS: Ubuntu 26.04 LTS
+CPU: Intel Core Ultra 9 285K (24 Cores / 24 Threads)
+GPU: NVIDIA GeForce RTX 5090 (32 GB VRAM, Driver 595.84, 575 W power limit)
+RAM: 60 GB System Memory
+Storage: 2 TB Samsung 9100 PRO NVMe SSD
+
+Key Responsibilities & Scope of Work
+Server Setup & Stack Configuration:
+
+Complete Ubuntu environment setup optimized for PyTorch, CUDA, and high-vram local inference.
+Deployment and tuning of ComfyUI, Open WebUI, and n8n.
+AI Character & Video Production Pipeline:
+Build advanced ComfyUI workflows leveraging SOTA open-source video/image models.
+Implement character consistency tools using LoRAs and IP-Adapter/ControlNet pipelines.
+Integrate lip-sync and dialogue tools (e.g., LivePortrait, MuseTalk, ElevenLabs",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bn8n\\b"", ""API integration""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40782295,Freelancer,https://www.freelancer.com/projects/Make-com/Build-Email-Automation-MVP-BCcGuardDog,Build AI Email Automation MVP “BCcGuardDog”,2026-10-23T03:27:46+00:00,2026-10-23T12:01:28.313104+00:00,"Job Title: Low-Code/Backend Developer: Asynchronous AI Email Automation (Make.com + Node.js/APIs)
+
+Project Overview:
+I am looking for a talented automation and backend developer to build a lightweight MVP for an asynchronous, email-first administrative tool. 
+
+Crucially, this system has no web portal, app dashboard, or frontend user interface. It operates 100% via email forwarding, BCC, and automated asynchronous workflows. The user interface is strictly the inbox.
+
+Our Core Tech Stack:
+* Workflow/Orchestration: Make.com (or lightweight custom backend where appropriate)
+* Email Routing & Parsing: Postmark or SendGrid (Inbound webhooks handling attachments)
+* AI Brain: OpenAI or Anthropic API (Factual extraction & classification, temperature 0.2)
+* Database & Billing: Stripe API + a lightweight database layer (PostgreSQL or secure Airtable base)
+
+The 3 Core Asynchronous Workflows Required:
+1. Inbound Document Parsing: A webhook that catches forwarded emails, identifies user context, securely extracts text from an attached file (PDF/DOCX), passes it to an AI engine for analysis, and replies back to the user with a formatted report.
+2. Contextual Email Comparison: A webhook that liste",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bmake\\.com\\b"", ""\\bwebhooks?\\b""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40782065,Freelancer,https://www.freelancer.com/projects/n8n/SEO-Autopilot-Setup,n8n SEO Autopilot Setup,2026-10-22T23:58:03+00:00,2026-10-23T12:01:26.530606+00:00,"I run a taxi company website built on Sanity CMS that already hosts about 100 location-focused pages. I now want to place the entire SEO / AEO / GEO workload on digital autopilot with n8n at the core.
+
+Scope of the first phase 
+– The initial workflows should concentrate on generating fresh, fully optimised content, turning it into Sanity drafts for my manual approval, then tracking how the new or updated pages perform in Google. Improving existing pages must be part of the same loop.
+
+What I expect the automation to do 
+1. Pull keyword, location and intent data, create new outlines or snippets, and push them into Sanity as draft documents. 
+2. Notify me when a draft is ready; on my approval, publish it and trigger a resubmit to Google Search Console. 
+3. Create quality backlinks from relevant websites with high DA/DR and low spam scores
+4. Record ranking changes, impressions and clicks for every page so I can see gains at a glance. 
+5. Lay the groundwork for later add-ons that will manage business listings, reviews and social accounts in a similar hands-off fashion.
+
+Technical stack 
+n8n will orchestrate everything, talking to the Sanity Content API and Google tools. If extra conne",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bn8n\\b""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40780885,Freelancer,https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780885,Complete SocioVik - AI Creative & Social Media SaaS -- 2,2026-10-22T08:15:40+00:00,2026-10-23T12:01:26.543294+00:00,"We need an experienced full-stack developer or team to complete our existing Bolt.new platform into an AI-powered SaaS for agencies, brands, and creators.
+
+Core workflow: Brief/prompt → AI creative generation or upload → captions → approval → scheduling/publishing → analytics.
+
+The platform must combine AI images, videos, and UGC with Publishing & Scheduling, Analytics & Reporting, Engagement, Review Generation, Collaboration, and White Label.
+
+Review the existing code and latest Bolt audit, preserve working features, and map all issues and requirements to an agreed delivery checklist.
+
+PHASE 1 — Fixes, Social Connections, Publishing & Analytics
+
+Priority: bug fixes → social connections → posting → scheduling → advanced publishing → reporting.
+
+Audit and fixes: Resolve existing frontend/backend bugs, authentication/Google login, roles, workspace isolation, database/build issues, security, media storage, existing AI workflows, credits, Razorpay billing, admin/CMS, and mobile defects. Verify scheduler/n8n workflows; establish staging, monitoring, and critical tests.
+
+Social connectors: Implement native APIs, a third-party connector, or a hybrid solution. Prioritize Facebook, Instagra",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 200.0 - 400.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bn8n\\b"", ""\\bwebhooks?\\b""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40780884,Freelancer,https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780884,Complete SocioVik - AI Creative & Social Media SaaS,2026-10-22T08:15:25+00:00,2026-10-23T12:01:26.563162+00:00,"We need an experienced full-stack developer or team to complete our existing Bolt.new platform into an AI-powered SaaS for agencies, brands, and creators.
+
+Core workflow: Brief/prompt → AI creative generation or upload → captions → approval → scheduling/publishing → analytics.
+
+The platform must combine AI images, videos, and UGC with Publishing & Scheduling, Analytics & Reporting, Engagement, Review Generation, Collaboration, and White Label.
+
+Review the existing code and latest Bolt audit, preserve working features, and map all issues and requirements to an agreed delivery checklist.
+
+PHASE 1 — Fixes, Social Connections, Publishing & Analytics
+
+Priority: bug fixes → social connections → posting → scheduling → advanced publishing → reporting.
+
+Audit and fixes: Resolve existing frontend/backend bugs, authentication/Google login, roles, workspace isolation, database/build issues, security, media storage, existing AI workflows, credits, Razorpay billing, admin/CMS, and mobile defects. Verify scheduler/n8n workflows; establish staging, monitoring, and critical tests.
+
+Social connectors: Implement native APIs, a third-party connector, or a hybrid solution. Prioritize Facebook, Instagra",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 200.0 - 400.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bn8n\\b"", ""\\bwebhooks?\\b""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40779763,Freelancer,https://www.freelancer.com/projects/n8n/WhatsApp-Auto-Messaging-Setup,n8n WhatsApp Auto-Messaging Setup,2026-10-21T15:51:28+00:00,2026-10-23T12:01:26.577665+00:00,"I need an n8n workflow that connects to my WhatsApp Business account and fires off automated messages without manual intervention. The goal is to handle three use-cases—promotions, time-sensitive notifications, and gentle reminders—while pulling in personalized user data so every chat feels 1-to-1 rather than a blast.
+
+Here is what I have in mind:
+
+• The trigger can be either a webhook, a schedule, or a call from an existing REST endpoint—whichever you feel is the cleanest way to pass user-specific variables such as name, order number, or appointment date into the workflow. 
+• n8n should then format the message, inject the variables, and hit the WhatsApp Business API (or your preferred gateway) to send it. 
+• I’d like a simple success/fail log so I can track delivery and catch any API errors quickly. 
+
+You’re free to suggest nodes, credentials handling, or helper services that keep the setup lightweight and secure. Once complete, I’ll need the .json export of the workflow plus a brief step-by-step so I can replicate it in another instance.
+
+If you have previous experience combining n8n with WhatsApp, especially for personalized campaigns, let’s talk details and timelines.
+
+Project:",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bn8n\\b"", ""\\bwebhooks?\\b""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40778097,Freelancer,https://www.freelancer.com/projects/php/Advanced-Telegram-Assistant-Using,Advanced Telegram Assistant Using n8n -- 2,2026-10-20T16:12:36+00:00,2026-10-23T12:01:26.587570+00:00,"Project Description:
+
+Designed and engineered an advanced, end-to-end automation pipeline utilizing n8n to build a smart Telegram assistant capable of processing user interactions dynamically.
+
+Key Workflow Features:
+
+Trigger & Input Handling: Listens to incoming user messages in real-time via a Telegram Trigger.
+
+Data Retrieval & Logging: Interacts with Google Sheets (Get row(s)) to fetch historical context or verify user data.
+
+Custom JavaScript Processing: Implements custom JS code nodes to format payloads, manipulate JSON data, and prepare contextual inputs.
+
+AI Integration: Connects via HTTP Request to the Google Gemini Generative AI API to generate intelligent, context-aware responses.
+
+Automated Multi-Channel Actions: Simultaneously dispatches the AI-generated reply back to the user via Telegram (Send a text message) while appending chat session details and activity logs into Google Sheets (Append row).
+
+Tech Stack:
+
+n 8 n Cloud | Telegram Bot API | Google Gemini API | Google Sheets API | JavaScript",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 10.0 - 30.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bn8n\\b""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40776493,Freelancer,https://www.freelancer.com/projects/automation/Automatizaci-administrativa-con-Make,Automatización administrativa con N8N/Make,2026-10-19T20:01:51+00:00,2026-10-23T12:01:26.593289+00:00,"Quiero delegar la construcción de automatizaciones que optimicen el día a día de mi clientes, principalmente en procesos administrativos y en la relación con sus clientes. 
+
+Mi idea es ir cerrando proyectos por flujo, con entregables claros:
+
+• Workflows listos para producción en n8n, Make u otra alternativa pactada. 
+• Documentación breve de cada escenario (activadores, APIs usadas, lógica y puntos de fallo). 
+• Pruebas de funcionamiento que permitan validar generación de reportes, reglas de correo y los disparadores de seguimiento/marketing sin intervención manual.
+
+Prefiero a alguien de Chile para facilitar las reuniones y la facturación, aunque la prioridad es la experiencia real construyendo integraciones sólidas. Si dominas Zapier, Integromat/Make, n8n o herramientas similares y puedes mostrar ejemplos donde hayas automatizado reportes, correos, aprobaciones y flujos de CRM, conversemos y pactemos el primer sprint.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bn8n\\b""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40775872,Freelancer,https://www.freelancer.com/projects/artificial-intelligence/Engaging-Corporate-Trainer-Needed,Engaging AI Corporate Trainer Needed,2026-10-19T11:45:07+00:00,2026-10-23T12:01:26.597864+00:00,"# Hiring: Technical AI Corporate Trainer — AI Tools, Automation & Business Use Cases
+
+**Company:** Aiexl. — An UPSKILLORS PRIVATE LIMITED Company
+**Project Type:** Freelance / Project-Based
+**Engagement:** Corporate Training Sessions and Workshop Development
+
+## About Aiexl.
+
+Aiexl. is an emerging EdTech and AI career development company focused on practical, industry-relevant learning and professional capability building.
+
+We are expanding into corporate AI training to help organizations understand, adopt, and effectively implement AI tools in their everyday business operations.
+
+We are looking for an experienced **Technical AI Corporate Trainer** who can design and deliver practical, engaging training sessions for corporate professionals, business teams, and organizations.
+
+## What We Are Looking For
+
+We need a trainer who understands both the technical capabilities of AI and its practical application in business environments.
+
+The ideal candidate should be able to explain complex concepts in simple terms, demonstrate tools live, and guide participants through hands-on exercises based on real corporate scenarios.
+
+### Key Responsibilities
+
+**1. AI Fundamentals for Business**
+
+* E",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1000.0 - 5000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,paid_project_request,"[""\\bn8n\\b"", ""\\bwebhooks?\\b"", ""AI agents?""]",,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review

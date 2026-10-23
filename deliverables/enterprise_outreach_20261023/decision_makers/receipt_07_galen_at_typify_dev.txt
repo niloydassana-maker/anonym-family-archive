@@ -1,0 +1,31 @@
+TO: galen@typify.dev
+NAME: Galen Sprout
+TITLE: Co-Founder & CTO
+COMPANY: Typify
+SUBJECT: Functional systems architecture & high-reliability LLM pipelines — 22y systems experience
+MESSAGE-ID: <179277440198.14236.5792408378425052727@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK
+SENT_AT: 2026-10-23T16:53:24.032536+00:00
+SHA256_BODY: a8ff6400ccd2c690ab1e2adf2e701fe48c5eb9d15bb41ae0fa7b4efc8959125f
+
+BODY:
+Hi Galen,
+
+Came across Typify's engineering post on AI application architecture and functional backend pipelines.
+
+I am a 22-year enterprise systems architect (NIT Silchar 2003 honours, former Director & CTO) with extensive background in functional data pipeline design, PostgreSQL optimization, and high-reliability LLM integration.
+
+Developing reliable AI systems requires strong type safety, immutable event streams, and bounded latency execution so complex multi-step models remain robust under continuous production loads. My recent work includes multi-agent orchestration frameworks and latency-optimized API middleware.
+
+References:
+- Systems & Repositories Catalog (118 repositories / 1.95M LOC): https://github.com/isearchxsolve/repo-catalog
+- Profile & Background: https://www.linkedin.com/in/kunal-das-technologist/
+
+I work via asynchronous written technical specifications and architectural walkthroughs. If of interest, I can prepare an architectural overview addressing latency minimization and type-safe schema validation for production LLM pipelines.
+
+Best regards,
+
+Kunal Das
+Principal Systems Architect & Technology Leader
+Email: isearch.xsolve@gmail.com
+WhatsApp: +91 86172 16163

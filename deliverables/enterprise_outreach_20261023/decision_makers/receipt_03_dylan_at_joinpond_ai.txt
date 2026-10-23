@@ -1,0 +1,31 @@
+TO: dylan@joinpond.ai
+NAME: Dylan Zhang
+TITLE: Co-Founder & CEO
+COMPANY: Pond AI
+SUBJECT: Distributed agent marketplace & worker queue architecture — 22y systems pedigree
+MESSAGE-ID: <179277437413.14236.16633582072779947319@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK
+SENT_AT: 2026-10-23T16:52:56.080326+00:00
+SHA256_BODY: 8fc569be7b168d6a73a66d99cdd87a33df1b80a35e5d918599f617bfc9d3cef7
+
+BODY:
+Hi Dylan,
+
+Followed your progress with Pond AI in building an AI workforce and distributed task execution marketplace. 
+
+I am a 22-year enterprise systems architect (NIT Silchar 2003 honours, former Director & CTO). My background centers on distributed queue architectures, high-throughput worker state machines, and resilient multi-tenant orchestration platforms.
+
+For a decentralized or multi-worker agent marketplace, the primary architectural hurdles are verifiable execution proofs, worker state consensus, rate-limiting upstream LLM providers, and human-in-the-loop approval barriers. Our team designed ASES v3.1 around deterministic worker queues and cryptographic event receipts to ensure 100% auditability across autonomous agent executions.
+
+Key background:
+- Production Repository Catalog (118 repos / 1.95M LOC): https://github.com/isearchxsolve/repo-catalog
+- Profile & Track Record: https://www.linkedin.com/in/kunal-das-technologist/
+
+I work via asynchronous written proposals and architectural specifications. I would be pleased to prepare a structured architectural design on distributed agent task dispatching and verification gates for Pond's marketplace infrastructure.
+
+Best regards,
+
+Kunal Das
+Principal Systems Architect & Technology Leader
+Email: isearch.xsolve@gmail.com
+WhatsApp: +91 86172 16163

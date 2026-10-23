@@ -1,0 +1,16 @@
+TO: careers@veracyte.com
+COMPANY: Veracyte
+SUBJECT: Test automation engineering leader — backend + CI/CD + healthcare systems
+MESSAGE-ID: <179276544148.21600.16335415817044553931@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK  1792765445 a92af1059eb24-197ec59d692sm418356c88.17 - gsmtp
+SENT_AT: 2026-10-23T14:24:04.530890+00:00
+BODY:
+Hi,
+
+I came across Veracyte's Manager, Software Test Automation opening and wanted to reach out directly.
+
+I'm a 22-year technology architect with deep experience in automated test strategy, CI/CD pipeline design, and systems integration — specifically for mission-critical products where accuracy is non-negotiable. I understand the weight of building test automation for diagnostic and healthcare platforms where a gap in coverage has real stakes.
+
+I'd love to understand the scope of the role — are you building net-new QA infrastructure or rebuilding and scaling an existing framework? That shapes what I'd bring to the table.
+
+Kunal Das

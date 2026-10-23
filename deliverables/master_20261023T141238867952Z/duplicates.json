@@ -1,0 +1,20 @@
+[
+  {
+    "source_url": "https://jobicy.com/jobs/156560-senior-software-engineer-product-ai",
+    "reason": "same_source_or_shared_published_contact_no_automatic_identity_merge"
+  },
+  {
+    "source_url": "https://jobspresso.co/job/software-engineer-engineering-operations/",
+    "reason": "same_source_or_shared_published_contact_no_automatic_identity_merge"
+  },
+  {
+    "source_url": "https://www.freelancer.com/projects/selenium/Web-Browser-Task-Automation-Script",
+    "retained_source_url": "https://www.freelancer.com/projects/javascript/Web-Browser-Task-Automation-Script",
+    "reason": "identical_full_brief_and_title_repost_not_independent_demand"
+  },
+  {
+    "source_url": "https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780884",
+    "retained_source_url": "https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780885",
+    "reason": "identical_full_brief_and_title_repost_not_independent_demand"
+  }
+]

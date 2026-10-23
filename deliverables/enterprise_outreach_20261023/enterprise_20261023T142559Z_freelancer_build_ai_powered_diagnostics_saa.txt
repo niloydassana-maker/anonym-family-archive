@@ -1,0 +1,23 @@
+CHANNEL: Freelancer Bid
+PROJECT: Build AI-Powered Diagnostics SaaS Beta
+URL: https://www.freelancer.com/projects/full-stack-development/Build-Powered-Diagnostics-SaaS-Beta
+BUDGET: USD $750 – $1,500
+DRAFTED_AT: 2026-10-23T14:25:59.168109+00:00
+STATUS: READY_FOR_MANUAL_BID
+
+BID TEXT:
+Hi,
+
+I specialize in exactly this — guided decision-tree SaaS products with field-facing UX and clean backend logic.
+
+What I bring to NextStep Diagnostics:
+
+→ Structured fault-isolation engine: I'll model your diagnostic decision trees as a clean, versioned backend schema (PostgreSQL + Python FastAPI), so technicians move through one-question-at-a-time flows without state loss.
+
+→ Full-stack delivery: React or Next.js frontend for the field-ready experience, Python backend, and Postgres for complaint/resolution tracking. I've shipped this stack in production for enterprise clients.
+
+→ Beta hardening: I'll identify and resolve the gaps between your current prototype and a beta that survives real field use — error handling, offline-tolerance, session resilience.
+
+Timeline: 2–3 weeks for core beta milestone. Happy to scope in detail once you share the existing codebase and the specific gaps you want addressed.
+
+What's the current state of the existing product?

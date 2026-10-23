@@ -1,0 +1,31 @@
+TO: chris@generalintelligencecapital.com
+NAME: Chris Worsey
+TITLE: Founder & Technical CEO
+COMPANY: General Intelligence Holdings
+SUBJECT: Founding CTO / Principal AI Architect — Enterprise generative intelligence platform
+MESSAGE-ID: <179277440903.14236.1877506038012729439@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK
+SENT_AT: 2026-10-23T16:53:30.990081+00:00
+SHA256_BODY: 4a7e2ea402491de8b85110e8b9a675be6acf6b4610596e01e050ecfae1d7244d
+
+BODY:
+Hi Chris,
+
+Read your briefing regarding General Intelligence Holdings and your search for technical leadership / Founding CTO expertise for your enterprise generative intelligence platform.
+
+I am an enterprise technology leader and systems architect with 22+ years of production experience (NIT Silchar 2003 honours, former Director & CTO). I have architected and scaled distributed backend platforms, real-time data ingestion pipelines, and multi-cloud AI infrastructure across global corridors (US, UK, UAE, Singapore).
+
+For an institutional-grade generative intelligence platform, the foundational imperatives are scalable model orchestration, secure vector retrieval topologies (RAG), strict tenant isolation, and auditable governance logs that satisfy enterprise compliance requirements.
+
+Credentials & work:
+- Production Systems Catalog (118 repos / 1.95M LOC): https://github.com/isearchxsolve/repo-catalog
+- Professional Profile: https://www.linkedin.com/in/kunal-das-technologist/
+
+I operate via written technical roadmaps, asynchronous systems design, and structured milestone deliveries. I would be happy to draft a technical roadmap outlining the core infrastructure, scalability layers, and security topology for your enterprise platform.
+
+Best regards,
+
+Kunal Das
+Principal Systems Architect & Technology Leader
+Email: isearch.xsolve@gmail.com
+WhatsApp: +91 86172 16163

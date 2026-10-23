@@ -1,0 +1,18 @@
+TO: careers@deepgram.com
+COMPANY: Deepgram
+SUBJECT: Solutions architect — Voice AI, real-time speech systems, enterprise scale
+MESSAGE-ID: <179276549809.21600.5336514530555186803@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK  1792765502 a92af1059eb24-197ec59d692sm418356c88.17 - gsmtp
+SENT_AT: 2026-10-23T14:25:01.423424+00:00
+BODY:
+Hi,
+
+I'm reaching out about the Senior Solutions Architect – Europe role at Deepgram.
+
+My background: 22 years in enterprise systems and AI architecture, with hands-on work in real-time API design, STT/TTS integration pipelines, and building production-grade AI agent infrastructure. I've designed voice-driven customer interaction systems for enterprise clients and understand the pre-sales, solutioning, and post-deployment lifecycle that an SA at Deepgram would own.
+
+The Twilio, Cloudflare, and Vapi integrations you mentioned in the JD are architectures I've worked directly adjacent to.
+
+Is there an open slot with your EMEA recruiting team to explore fit?
+
+Kunal Das

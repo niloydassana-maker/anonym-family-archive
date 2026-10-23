@@ -1,0 +1,31 @@
+TO: kiet@superset.sh
+NAME: Kiet Ho
+TITLE: Co-Founder & CEO
+COMPANY: Superset (YC)
+SUBJECT: Multi-agent process orchestration & terminal execution boundaries — 22y systems architecture
+MESSAGE-ID: <179277436731.14236.10840243950783466969@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK
+SENT_AT: 2026-10-23T16:52:49.130936+00:00
+SHA256_BODY: 62915cbc72d7d3782d83e5339a97a6b11545e2471bb4b0f9fb4c895ca985012a
+
+BODY:
+Hi Kiet,
+
+Saw your work on Superset — building an AI-native workspace and terminal-first IDE for running parallel coding agents is one of the most compelling systems challenges right now.
+
+I am a 22-year enterprise systems architect (NIT Silchar 2003 honours, former Director & CTO) specializing in process isolation, deterministic IPC protocol design, and resilient agent lifecycle management. 
+
+When orchestrating multiple concurrent coding agents, the critical bottlenecks are workspace state synchronization, deterministic tool boundary gating, and preventing runaway subagent processes during long-running tasks. In our ASES orchestration systems, we enforce cryptographic receipt logging, sandboxed execution bounds, and zero-loss session persistence.
+
+Portfolio & credentials:
+- Systems Catalog (118 repositories / 1.95M LOC): https://github.com/isearchxsolve/repo-catalog
+- Executive Profile: https://www.linkedin.com/in/kunal-das-technologist/
+
+I collaborate via detailed written architectural deliverables and asynchronous code walkthroughs. If you would find it valuable, I would be glad to share an architectural memo on subagent lifecycle supervisors and process-level sandboxing for parallel agent IDEs.
+
+Best regards,
+
+Kunal Das
+Principal Systems Architect & Technology Leader
+Email: isearch.xsolve@gmail.com
+WhatsApp: +91 86172 16163

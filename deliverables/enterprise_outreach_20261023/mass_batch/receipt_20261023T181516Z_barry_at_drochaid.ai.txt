@@ -1,0 +1,26 @@
+RECEIPT — ENTERPRISE MASS DISPATCH
+Timestamp: 20261023T181516Z
+Recipient: barry@drochaid.ai
+Company: Drochaid AI
+Role: Founder & Managing Director
+Subject: Turnkey n8n & B2B automation engine — 22 years systems architecture
+Message-ID: <179277931621.16432.4518681493093125530@gmail.com>
+Status: 250 OK (Dispatched via smtp.gmail.com:587)
+SHA256: 3dd93980a99161242f8e3c29cd1ee6d22f7f867ae720fdbaa0734cade836bc23
+==================================================
+BODY:
+Hi Barry,
+
+Saw Drochaid AI's focus on white-label enterprise workflow automation and Make/n8n pipelines. 
+
+Most automated workflow pipelines break down when scaling B2B integrations due to non-deterministic webhook payloads and unhandled API rate-limit spikes. Over 22 years in systems architecture (NIT Silchar Honours, former Director & CTO), I've designed resilient, event-driven automation hubs with deterministic validation gates, PostgreSQL deduplication, and zero-loss error recovery.
+
+Our catalog includes pre-built, production-tested n8n orchestration engines and multi-agent execution pipelines (1.9M+ lines of verified code). Rather than building from scratch, we deploy turnkey, containerized automation systems that handle complex enterprise workflows out of the box.
+
+I work entirely asynchronously in writing — no sales calls. Detailed specs, architecture memos, and Docker deployments delivered directly to your team.
+
+If you have a workflow bottleneck or client pipeline ready for a turnkey sprint, let me know where to send the architectural blueprint.
+
+Written lane: isearch.xsolve@gmail.com / WhatsApp text +91 86172 16163
+
+Kunal

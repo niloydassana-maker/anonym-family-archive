@@ -1,0 +1,6444 @@
+{
+  "captured_at_utc": "2026-10-23T11:37:56.288827+00:00",
+  "options": {
+    "sources": "all",
+    "url": [],
+    "urls_file": null,
+    "limit": 500,
+    "days": 5,
+    "max_topics": 30,
+    "max_batches": 2,
+    "max_requests": 600,
+    "delay": 0.5,
+    "per_query": 20,
+    "query": null,
+    "no_profiles": false,
+    "suppress_file": "D:\\anonym\\tools\\lead_hunter\\already_contacted.json",
+    "out": "D:\\anonym\\tools\\lead_hunter\\output",
+    "deliverables_dir": "D:\\anonym\\deliverables"
+  },
+  "retained_candidates": 166,
+  "unique_candidates_before_limit": 166,
+  "interrupted": false,
+  "leads_with_coordinate": {
+    "email": 152,
+    "linkedin": 14,
+    "phone": 2,
+    "whatsapp_number": 0
+  },
+  "errors": [],
+  "excluded": [
+    {
+      "url": "https://jobicy.com/jobs/156540-senior-hpc-cluster-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156543-senior-hpc-engineer-gpu-compute",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156542-partner-manager-german-speaker",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156539-partner-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156541-technical-manager-north",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156538-technical-director",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156537-senior-data-engineer-5",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156535-senior-customer-ai-engineer-token-factory",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156536-pre-sales-engineer-romania-timisoara",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156533-pre-sales-engineer-sicilia",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156532-senior-applied-ai-solutions-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156531-enterprise-account-executive-24",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156530-pre-sales-engineer-lombardia",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156529-security-solutions-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156527-pre-sales-engineer-emilia-romagna-region",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156526-pre-sales-engineer-baltic-states",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156525-product-manager-anti-fraud",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156524-key-account-manager-italy-tuscany-emilia-romagna-marche-and-umbria",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156518-commercial-sedentaire-b2b-english-french",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156522-key-account-manager-italy-lombardy-piedmont-liguria-valle-daosta",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156519-support-trainer-emea",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156517-compliance-risk-lead-maternity-cover",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156515-channel-sales-manager-south-italy",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156521-inside-sales-specialist-paris",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156520-content-writer",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156514-customer-success-associate-spanish-english-speaker",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156512-model-validation-senior-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156506-lead-machine-learning-scientist-search",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156513-sales-development-representative-netherlands-remote",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156510-lead-product-designer-growth",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156509-regional-sales-director-enterprise-growth-uk-remote",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156505-manager-solutions-engineering-norben-remote",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156511-sales-development-representative-germany-remote",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156508-lead-product-designer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156507-generative-content-creator",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156504-sr-account-manager-emea-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156496-principal-product-manager-omnichannel-cx-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156503-senior-product-designer-16",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156494-head-of-customer-operations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156502-regional-sales-manager-financial-services",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156499-learning-experience-designer-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156497-sales-director-credit-unions",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156495-compliance-regulatory-counsel",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156501-senior-salesforce-business-systems-administrator",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156500-senior-software-engineer-frontend-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156498-senior-people-business-partner",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156493-engineering-manager-11",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156487-capture-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156489-customer-results-manager-marketing",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156484-customer-results-manager-ii",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156481-influencer-outreach-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156476-senior-rd-supply-chain-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156475-junior-content-editor",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156480-engineering-supply-chain-manager-mechanical",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156478-gtm-senior-solutions-consultant-presales",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156482-gtm-solutions-consultant-ii-presales",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156479-law-school-admissions-consultant",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156474-employment-counsel",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156120-product-manager-new-content-initiatives-and-analysis",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153919-international-audio-video-remote-karen-and-thai-interpreter",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153884-ceo-ai-services-us-based",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153883-senior-counsel",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153880-account-executive-us-based",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153916-international-audio-video-remote-hakha-chin-interpreter",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153922-engineering-manager-8",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153918-staff-principal-product-manager-patient-experience",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153915-account-executive-23",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153910-psychosociaal-therapeut",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153908-psychosociaal-medewerker",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153906-psychosociaal-counselor",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153903-psycholoog",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153882-senior-manager-solution-engineering-docv",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153888-chief-technology-officer-us-based",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153887-senior-security-engineer-product-security",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153850-part-time-psychotherapist-saturday-sunday",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151368-controls-engineer-ii",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153857-psychotherapist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153897-people-business-partner",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153892-field-account-executive-munchen-w-m-d",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153901-technical-program-manager-5",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153889-staff-backend-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153858-technical-consultant-workday-financials",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153895-expansion-manager-german-speaking-hamburg-based-m-f-x",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153886-senior-data-engineer-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153861-staff-product-security-engineer-security",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153853-account-executive-mid-market-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153647-staff-software-backend-engineer-tech-lead-foundations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153875-head-of-market-growth",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151411-audit-associate-remote-usa-based",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153873-marketing-manager-brazil",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153872-client-finance-analyst-i",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151365-fullstack-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151357-senior-developer-success-engineer-west",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151318-data-analytics-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/149471-clinical-data-team-lead",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/149437-customer-service-rep-up-to-19-hour-no-degree-needed",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/144139-senior-ai-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/143990-seasonal-customer-love-associate-remote-tx-based-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156465-senior-backend-engineer-11",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156472-medical-science-liaison",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156464-technical-account-manager-9",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156469-senior-manager-expansion-risk",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156467-senior-it-operations-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156468-customer-success-manager-ii-emea",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156459-full-time-lsat-tutor",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156457-software-development-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156463-full-time-mcat-tutor",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156461-local-visibility-optimization",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156460-senior-director-agentic-engineering",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156455-bs-md-admissions-consultant-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156452-solutions-integration-architect-sap",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156449-senior-manager-professional-services-emea",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156448-business-development-representative-19",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156447-senior-manager-customer-success-management-emea-apj",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156443-senior-field-marketing-manager-middle-east-africa",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156450-software-engineer-go",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156446-senior-erp-solutions-consultant-german-fluency",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156444-business-development-representative-18",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156439-compensation-total-rewards",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156438-senior-manager-client-analytics-partner",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156436-research-engineer-web-crawlers",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156435-senior-analyst-gtm-verticals-and-performance",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156434-regional-director-sales-ceur",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156432-partner-sales-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156431-customer-support-specialist-3",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156437-senior-customer-success-manager-germany",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156433-senior-accountant-4",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156427-senior-marketing-design-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156426-staff-product-manager-search-and-ai-visibility-us",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156420-enterprise-account-executive-texas",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156424-partner-business-manager-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156423-sr-marketing-designer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156422-staff-product-manager-search-and-ai-visibility-canada",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156418-senior-devops-engineer-latam-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156419-sr-manager-of-cx-enablement",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156402-growth-product-manager-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156398-software-engineer-engineer-iii-to-principal-formal-methods",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156397-director-of-product-marketing-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156401-senior-manager-of-marketing-operations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156399-group-product-manager-data-feeds",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156396-trust-integrity-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156395-director-of-brand-and-creative",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156400-telehealth-physician-missouri-remote",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156387-principal-solutions-architect-middle-east",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156384-firefox-enterprise-partnership-lead-france",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156388-product-manager-commercial-agreements-pricing-mechanics",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156386-offensive-security-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156382-key-customers-solutions-architect-mea",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156389-product-manager-security",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156385-network-security-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156380-software-engineer-c-developer-pgd",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156383-firefox-enterprise-partnership-lead-dach",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156381-staff-software-engineer-clickhouse-committer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156377-senior-enterprise-account-executive-acquisition-tokyo-japan",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156378-business-development-manager-6",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156376-data-analytics-revenue-reporting-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156372-vp-of-sales-apac",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156371-sales-engineer-thailand",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156374-customer-support-specialist-full-remote-philippines",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156373-growth-partnerships-manager-korea",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156370-founding-customer-success-manager-apac",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156375-content-creator",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156369-binance-accelerator-program-tradfi-business-development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156366-commercial-account-executive-6",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156361-senior-solution-engineer-pre-sales",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156358-senior-staff-product-designer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156359-engineering-manager-dedicated-integrations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156356-senior-staff-engineer-ios",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156352-associate-vice-president-pre-sales-emea",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156350-principal-engineer-core-cloud-platform",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156357-engineering-manager-build",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156355-corporate-development-director-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156351-business-development-representative-german-speaking-uk-i",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156354-senior-staff-engineer-android",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156353-commercial-account-executive-5",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156349-procurement-analyst",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156348-data-center-site-selection-manager-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156344-strategic-technical-account-manager-gpu",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156347-website-onboarding-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156346-principal-product-manager-strategic-accounts",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156343-sr-technical-program-manager-data-center-network-delivery",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156342-rma-systems-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156341-linux-systems-administrator",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156340-senior-technical-project-manager-data-center-network-delivery",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156339-senior-manager-customer-complaints",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156338-technical-account-manager-8",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156333-senior-product-manager-platform-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156331-senior-solutions-architect",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156337-technical-support-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156336-senior-product-manager-marketplace-partner-ecosystem",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156330-overseas-operations-manager-p2p",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156329-technical-support-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156326-senior-linux-system-administrator",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156328-presales-consultant",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156327-technical-marketing-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156322-senior-ai-ml-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156321-senior-deployment-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156318-sr-clinical-research-associate-netherlands",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156317-senior-sales-engineer-data-ai-security",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156312-solutions-engineer-edi-e-invoicing-f-m-d",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156314-sr-clinical-research-associate-germany",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156311-director-commercial-legal-emea",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156309-dental-field-trainer-germany",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156306-senior-platform-engineer-6",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156308-senior-software-engineer-15",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156307-dental-field-trainer-netherlands",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156305-head-of-bids",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156302-marketing-manager-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156304-team-lead-customer-success-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156300-clinical-research-associate",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156293-vp-expansion",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156295-security-engineer-full-remote-austria",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156299-audit-methodology-lead",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156298-security-engineer-full-remote-poland",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156292-security-engineer-full-remote-germany",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156290-onboarding-implementation-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156297-learning-experience-designer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156296-enterprise-account-executive-corporate",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156294-senior-equity-administration-analyst",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156291-technical-program-manager-data-center-infrastructure-delivery",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156282-opticien-contrat-freelance-%f0%9f%87%ab%f0%9f%87%b7",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156287-staff-full-stack-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156283-senior-technical-account-manager-federal",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156286-head-of-marketing-compliance",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156281-growth-product-manager-activation-monetization",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156270-member-of-technical-staff",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156274-commercial-account-executive-4",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156266-mid-market-implementation-specialist-emea",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156273-customer-success-manager-dutch-english-speaker",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156275-customer-success-manager-europe",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156268-director-of-strategic-affairs-emea",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156269-peer-success-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150754-business-development-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155051-software-engineer-ai-enablement",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153812-creative-motion-design",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153726-enterprise-customer-success-manager-7",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155006-it-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153822-account-executive-ecomm",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153777-sales-manager-net-new-sales",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153829-design-engineer-site",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153826-enterprise-account-executive-22",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153842-director-ai-solutions",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153839-director-earned-and-owned-strategy",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153802-digital-media-planner-direct-io-b2b",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153845-principal-software-engineer-infrastructure-security",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153841-principal-security-engineer-infrastructure-security",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153831-senior-integrated-campaign-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153844-principal-ai-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153838-account-director-digital-native-new-business",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153834-director-sales-middle-east",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153833-solutions-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153830-director-partner-programs-enablement-and-operations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153804-senior-software-engineer-5",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153803-senior-product-designer-full-remote-uk",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153798-senior-product-designer-full-remote-netherlands",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153799-software-engineer-10",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153795-director-it",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153824-product-manager-ai-transformation-salesforce",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151347-business-development-representative-8",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151141-aws-data-engineer-associate",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153788-marketing-specialist-public-sector-federal-sled",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153807-kansas-remote-mental-health-licensed-therapist-1099-contractor-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151338-scout-junior-quality-coordinator-spanish-mexico",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151333-scout-junior-quality-coordinator-portuguese-brazil",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153808-creative-graphic-designer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153787-enterprise-account-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153785-lifecycle-marketing-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153823-ai-software-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153816-account-executive-22",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153786-enterprise-solution-engineer-pre-sales",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151336-director-of-business-development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151329-engineering-manager-product-engineering",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151300-support-engineer-amer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151292-licensed-psychiatric-nurse-practitioner",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153790-partner-business-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153793-privacy-advisor",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153789-lead-revenue-operations-analyst",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151325-strategic-enterprise-account-executive",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153791-enterprise-account-executive-central-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151337-technical-lead-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151326-director-of-engineering-data",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151323-international-tax-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151308-senior-software-engineer-backend-usa-only-100-remote",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151305-support-engineer-apac",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151301-account-executive-8",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151296-licensed-psychiatrist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151290-senior-software-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151287-licensed-mental-health-therapist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/143979-senior-data-analyst-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/143813-customer-success-japan",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/147145-ai-chatbot-product-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153780-senior-account-executive-5",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150340-senior-manager-customer-success-operations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150339-senior-analyst-customer-success-operations",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153775-principal-people-experience-partner",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151278-associate-general-counsel",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151197-c-rust-graphics-and-windowing-system-software-engineer-mir",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151196-embedded-devices-software-solution-sales-manager-apac",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151195-customer-support-engineer-tier-1",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151191-enterprise-customer-success-manager-central",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/144040-staff-software-engineer-app-platform",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156261-mid-market-account-executive-7",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156262-legal-operations-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156257-senior-director-bss-engineering-product",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156263-enterprise-solution-engineer-south-east-mid-atlantic",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156260-mid-market-account-executive-emea-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156259-sr-marketing-automation-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156258-inside-sales-representative-enterprise",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156254-partner-solutions-architect-aws",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156253-solutions-engineer-singapore",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156251-materials-sourcing-manager-wool",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156249-database-support-engineer-japanese-speaking",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156252-product-support-engineer-apac",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156248-regional-sales-director-singapore",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156246-enterprise-solutions-consultant-anz",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156250-accounts-receivable-clerk-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156244-manager-product-support-apac",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156238-strategic-account-executive-brazil-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156234-ai-automation-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156239-strategic-account-executive-financial-services-brazil",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156237-senior-secops-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156236-regional-sales-director-commercial-latam",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156235-senior-product-analyst",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156233-it-operations-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156230-hr-business-partner",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156225-account-executive-26",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156231-senior-platform-engineer-us-remote",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156227-clinical-operations-lead-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156228-mobile-developer-i-us-remote",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156226-pmo-portfolio-analyst",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156213-sr-content-marketing-manager-b2b-saas",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156203-senior-director-analytics-and-data-science-core-product-growth",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156212-senior-product-designer-ii-revenue-experimentation",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156211-commercial-account-manager-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156204-partnership-development-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156210-senior-manager-strategic-finance",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156209-campaign-operations-manager-individual-contributor",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156207-financial-crimes-analyst",
+      "reasons": [
+        "technical_fit_unconfirmed",
+        "filled_or_closed_notice"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156205-sales-marketing-operations-specialist-mexico",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156198-enterprise-account-executive-singapore",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156196-senior-sales-manager-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156195-customer-success-architect-japan",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156194-senior-brand-lead",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156193-senior-manager-inventory-development",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156190-head-of-apac-client-services",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156189-commercial-account-executive-australia",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156192-commercial-account-executive-south-korea",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156185-legal-counsel-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156180-enterprise-account-executive-dach-5",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156188-manager-customer-success-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156187-senior-software-engineer-platform-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156186-senior-web-engineer-subscriptions",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156184-staff-software-engineer-platform-infrastructure",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156183-senior-product-quality-analyst-ai-voice",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156182-payroll-expenses-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156179-senior-product-manager-audiobooks-format-foundations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156171-solutions-architect-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156177-policy-communications-lead-europe",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156176-contract-staff-software-engineer-firefox-cstorage-encryption",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156175-localisation-project-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156178-senior-contract-c-javascript-software-engineer-firefox-browser-engine",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156174-vip-relationship-manager-poland",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156172-contract-staff-software-engineer-bug-burndown",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156150-senior-user-acquisition-manager-paid-social-ads",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156154-commercial-account-executive-dach",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156149-product-manager-4-day-week-remote-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156142-stagiaire-operations-titres-f-h-d",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156145-it-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156141-international-business-development-representative-nordics",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156147-securities-operations-intern-f-m-d",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156144-head-of-product-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156140-staff-software-engineer-market-data",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156146-software-engineer-net",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156137-sales-manager-southeast-asia",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156133-sales-manager-senior-sales-manager-japan",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156130-programmatic-account-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156129-reseller-sales-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156128-creator-marketing-lead",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156135-product-designer-visual-craft-ai",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156134-senior-contracts-and-budget-associate",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156131-lead-product-manager-genai",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156125-lead-data-scientist-3",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156126-sales-manager-ecommerce",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156123-senior-product-security-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156122-engineering-manager-10",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156118-principal-software-engineer-product-platforms",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156124-sales-manager-b2b",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156121-programmatic-sales-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156119-marketing-campaign-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156103-director-technology-alliances",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156097-manager-machine-learning-engineering",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156102-health-coach-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156100-director-data-distribution-partnerships",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156098-applied-ai-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156099-people-business-partner-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153742-client-advisor",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153741-senior-software-enginner-full-stack-node-react",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153739-account-executive-21",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153737-infrastructure-engineer-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153718-security-engineering-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153765-manager-enterprise-business-development-apj",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153763-field-marketing-specialist-anz",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153761-field-marketing-manager-asia",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153759-enterprise-sales-engineer-singapore",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153740-ai-senior-engineer-vision",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153727-account-executive-public-sector",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153723-business-travel-consultant-germany-remote",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153719-associate-account-manager-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153764-sales-director-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153749-customer-evidence-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153762-partner-sales-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153745-operations-analyst-finance",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153701-full-stack-growth-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153751-associate-director-of-bioinformatics-womens-health-and-organ-health",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153711-evening-part-time-psychotherapist-5-9pm",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153705-content-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153710-accounting-manager-fixed-assets-capital-accounting",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153702-b2b-account-director-abm-focus",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153699-associate-director-influencer-creator-marketing",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153698-director-of-facilities",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153697-staff-software-engineer-6",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153712-founding-forward-deployed-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153689-chief-technology-and-product-officer",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153691-short-form-comms",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153688-state-regional-west",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151222-mortgage-sales-recruiter",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151146-aws-data-engineer-senior",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153717-account-director-digital-native-enterprise",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151218-mortgage-processor",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151260-generative-media-engineer-ai-social-us",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151221-senior-technical-program-manager-security",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153724-director-growth",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153713-account-director-digital-native-large-enterprise",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151258-generative-media-engineer-ai-social-canada",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151225-senior-loan-officer",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153715-lcsw-clinical-supervisor",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151243-enterprise-account-executive-10",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153696-client-success-manager-pharma",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153716-senior-frontend-engineer-react",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153694-gtm-healthcare",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151242-bilingual-client-retention-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151251-engineering-manager-maps-search-us",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146760-norwegian-tech-linguistic-tester",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151246-engineering-manager-maps-search-canada",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/145923-account-executive-enterprise-west",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151256-lead-solutions-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151252-client-retention-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151249-engineering-manager-frontend",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151247-bilingual-customer-service-representative-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151234-territory-manager-nebraska",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151230-territory-manager-deniliquin-beef",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151224-software-engineer-security-observability",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146984-sales-engineer-upstream-bioprocessing",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146976-principal-software-engineer-data-lakes",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146743-sales-manager-weather-climate-emea-apac",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146688-technical-product-marketer-k0rdent-ai-remote-in-the-us",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151229-principal-engineer-tl-m-software-development-paas",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/147050-ai-systems-engineering-expert",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151211-ai-lead-creative",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/152818-account-executive-17",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151207-ai-creative-director-ai-associate-creative-director",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151217-director-government-partnership-development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/152767-member-of-technical-staff-gpu-performance-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153245-member-of-technical-staff-data-intelligence",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151843-senior-erp-solutions-consultant",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/147066-staff-android-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151084-customer-experience-associate-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156093-key-accounts-executive",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156088-account-manager-smb-dedicated-i",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156084-director-of-finance",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156092-senior-revenue-accountant",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156083-enterprise-business-development-representative",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156082-765-data-analyst-healthcare-fraud",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156075-749-hhs-meetings-and-event-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156080-backend-engineer-ruby-plan-spec-driven-development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156078-global-pricing-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156077-creative-illustrator",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156074-ai-enablement-and-learning-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156076-backend-engineer-create-source-code-experience-ruby",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156071-enterprise-account-executive-healthcare-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156064-enterprise-account-executive-federal-financials",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156068-enterprise-account-executive-gaming",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156065-billing-sme-product",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156072-case-resolution-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156066-senior-machine-learning-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156069-billing-subject-matter-expert-support",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156056-home-based-primary-care-physician-md-do",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156061-implementation-manager-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156060-senior-tax-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156058-sr-customer-success-manager-7",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156057-collections-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156055-manager-engineering-frontend",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156054-vp-of-people",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156059-senior-software-engineer-ii-integrations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156047-manager-business-analytics-insights",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156052-senior-manager-enterprise-sales",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156051-client-partner-ecosystem",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156049-senior-devops-engineer-11",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156048-chief-of-staff-science",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156046-junior-sales-development-representative",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156045-call-center-supervisor",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156036-head-of-field-and-partner-marketing",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156041-director-product-marketing",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156033-account-executive-pharmacy-benefits",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156042-senior-account-executive-latam",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156039-senior-account-executive-7",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156026-senior-software-engineer-agents-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156020-head-of-sales-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156027-form-builder-technology",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156024-senior-creative-front-end-engineer-digital-agency-brazil",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156023-head-of-customer-growth",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156021-senior-creative-front-end-engineer-digital-agency-mexico",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156017-engineering-manager-knowledge-graph-platform",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156015-director-intellectual-property",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156013-strategic-account-executive-west",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156011-rvp-enterprise-sales-leader",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156012-business-development-manager-fire-and-life-safety-products",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156009-senior-lead-account-executive-enterprise",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156010-analytics-engineer-5",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156005-enterprise-account-executive-new-business-development-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156003-community-moderator-external-contractor-usa-canada",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156001-community-moderator-external-contractor-uae",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/156000-technical-support-specialist-night-shift",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155995-principal-engineer-platform-data-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155990-chro-cpo-senior-hr-executive-talent",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155997-senior-electrical-delivery-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155989-technical-success-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155994-recruiter-legal-contract",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155993-solutions-engineer-financial-audit",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155992-staff-data-center-implementation-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155981-compliance-manager-bsa-aml-program",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155984-technical-product-manager-ai-data-analytics",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155980-sales-enablement-program-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155986-performance-marketing-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155978-customer-success-manager-53",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155983-fulfillment-specialist-canada",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155979-customer-experience-dental-lab-technician-french-english",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155982-senior-director-revenue-strategy",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155976-corporate-sales-manager-enterprise-nz",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155977-licensed-clinical-professional-counselor",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155970-account-manager-bay-of-plenty",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155973-territory-manager-south-taranaki",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155971-lead-data-scientist-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155974-principal-product-manager-identity-trust",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155972-director-of-strategic-data-partnerships",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155969-director-engineering-platform-services",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155968-licensed-clinical-mental-health-counselor",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155966-staff-systems-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155963-senior-ai-engineer-gtm",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155962-microsoft-365-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155965-strategic-account-executive-life-science",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155958-senior-fpa-analyst",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155964-ml-infrastructure-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155959-engineering-manager-compose",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155957-proposal-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155952-founding-enterprise-account-executive-uk-tavily",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155956-manager-ml-solutions-architecture-token-factory",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155955-learning-experience-designer-nebius-academy",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155951-forward-deployed-engineer-physical-ai-infrastructure",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155950-full-stack-engineer-7",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155949-senior-full-stack-engineer-8",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155947-director-of-mssp-sales-emea",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155954-head-of-employee-relations",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155948-3pl-operations-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155953-group-product-manager-platform-experience",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153642-business-development-manager-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153656-global-financial-crime-sanctions-legal-counsel",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153646-business-development-manager-baden-wurttemberg",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153653-devops-engineer-blockchain-infra-fully-remote",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153669-graduate-customer-success-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153675-enterprise-customer-success-manager-6",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153652-principal-engineer-platform-data-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153674-application-integration-developer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151172-bulgarian-seo-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153680-sales-compensation-analyst-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153679-product-engineering-future-opportunities",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153673-enterprise-account-executive-13",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153672-area-vp-sales-emea-west",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151174-seo-aso-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151116-senior-account-executive-us-west-coast",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151114-scientific-engagement",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151006-dutch-sports-localization-specialist-football",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153631-technical-recruiter",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153633-account-executive-commercial-coms114",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153626-professional-services-engineer-ii-west",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153639-security-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153632-sales-director-namer-us",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153643-account-executive-dach-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153629-manager-software-engineering-operations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153634-named-technical-support-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151003-testing-a-financial-app-for-italian-business-owners",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153638-data-engineer-fedd024",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151014-associate-linux-support-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153641-engineering-manager-platform-application-excellence",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153648-enterprise-sales-engineer-dach",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153649-senior-software-engineer-go",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150994-software-engineer-secure-container-images",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153640-director-emea-government-affairs-public-policy",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153628-associate-director-b2b-strategy",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153621-director-software-engineering-ai-workflows-ecosystem-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153625-staff-product-manager-fintech-new-bets",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151147-customer-success-manager-13",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151131-senior-uicc-euicc-esim-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151126-senior-loan-fulfillment-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151124-senior-software-engineer-smartcard-development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151164-director-of-product-marketing",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146474-seo-strategist-canada",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151142-account-executive-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151120-enterprise-account-executive-9",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151079-compliance-manager-australia",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151016-devices-iot-field-engineering-manager-americas-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151015-alliances-channels-leader-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/145803-account-manager-speech-ai-technologies",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151178-senior-fullstack-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151166-principal-revenue-operations-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151159-principal-engineer-platform-data",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150389-part-time-court-researcher-hardin-county-ky",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150277-customer-engineer-melbourne",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150151-part-time-remote-psychiatric-nurse-practitioner-fee-for-service-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150149-part-time-remote-licensed-talk-therapist-fee-for-service",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146925-engineering-manager-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146757-finnish-tech-linguistic-tester",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151013-distributed-systems-testing-software-engineer-python-go",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146814-senior-sales-engineer-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150980-user-acquisition-manager-meta-snapchat",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150975-backend-software-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/146751-customer-success-manager-38",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155933-growth-marketing-manager-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155940-online-psychiatrist-md-do",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155937-forward-deployed-engineer-software-engineer-argentina",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155934-account-management-lead-uk-i",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155941-full-stack-engineer-creative-agents",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155939-full-stack-engineer-backend-leaning-creative-agents",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155938-forward-deployed-engineer-software-engineer-mexico",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155936-developer-experience-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155935-account-management-lead-western-europe",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155925-binance-accelerator-program-qa-automation",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155928-senior-software-development-engineer-in-test-sdet-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155922-senior-clinical-qa-specialist-ai",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155930-quality-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155929-kazakh-localization-qa-tester-proofreader",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155927-qa-automation-engineer-digital-media-advertising-brazil",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155923-qa-devops-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155920-senior-program-manager-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155919-marketing-analyst-new-business-and-ma",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155913-solution-architect-north-america",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155916-manager-smb-sales",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155917-assistant-manager-fund-administration-accounting",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155905-regulatory-and-site-start-up-specialist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155909-influencer-marketing-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155902-customer-success-travel-operations-specialist-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155910-safety-specialist-safety-lead",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155899-new-business-account-executive-german-speaker",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155898-distinguished-engineer-core-devops",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155897-machine-learning-engineer-7",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155895-inside-sales-representative-active-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155894-business-development-representative-executive-partnership-development-executive",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155892-digital-sales-representative-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155896-director-legal-employment",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155893-demo-architect-emea",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155890-senior-affiliate-manager-full-remote-uk",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155887-senior-affiliate-manager-full-remote-ukraine",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155882-senior-affiliate-manager-full-remote-greece-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155889-senior-affiliate-manager-full-remote-romania",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155884-community-manager-dutch-speaking-contract",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155888-senior-affiliate-manager-full-remote-bulgaria",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155886-senior-affiliate-manager-full-remote-cyprus-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155881-group-copy-supervisor-market-access",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155879-fpa-manager-3",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155880-group-account-supervisor-healthcare-and-pharmaceutical-advertising",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155878-engagement-manager-market-access-consulting",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155873-staff-applied-ai-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155872-clinical-trial-manager-senior-clinical-trial-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155870-sr-statistician-client-intelligence",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155866-senior-manager-pricing-yield",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155868-senior-software-engineer-data",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155862-sales-development-representative-hospital-solutions",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155864-senior-data-scientist-8",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155859-sales-development-representative-clinical-search",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155855-marketing-events-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155858-senior-software-engineer-marketplace",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155861-software-engineer-growth",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155854-senior-software-engineer-growth-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155848-alliances-channels-leader-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155849-senior-data-analyst-supply",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155842-lead-product-manager-fan-experience",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155847-sales-marketing-operations-specialist-brazil",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155846-paid-social-programmatic-analyst-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155843-senior-accountant-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155841-accountant-5",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155840-full-stack-developer-frontend-focused-canada",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155836-hr-enablement-lead",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155833-enterprise-account-executive-23",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155832-principal-product-strategist-ai-engagement-leader",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155827-product-manager-onboarding-and-growth",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155829-head-of-credit-fraud",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155828-business-development-representative-provider",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155826-creative-marketing-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155823-revenue-enablement-manager-sales-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155824-software-engineering-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155822-business-intelligence-analyst-contractor",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155821-treasury-analyst",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155817-manager-strategic-finance",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155818-accounting-associate-turkish-speaking",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155815-paytient-interest-application-technical-roles",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155814-senior-affiliate-manager-full-remote-czech-republic",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155812-senior-affiliate-manager-full-remote-poland",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155805-senior-affiliate-manager-full-remote-italy-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155809-backend-engineer-ruby-create-change-record",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155808-senior-affiliate-manager-full-remote-spain-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155813-business-development-representative-spanish-speaking",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155811-business-development-representative-italian-speaking",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155810-senior-affiliate-manager-full-remote-portugal-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155806-backend-engineer-ruby-ai-engineering-agent-foundations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155797-associate-medical-director-oncology-west-coast",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155799-research-scientist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155798-account-executive-japan-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155802-forward-deployed-engineer-software-engineer-usa",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155787-account-executive-government-public-sector",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155788-customer-growth-manager-3",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155786-contador-publico-certificado-senior-accountant-mexico",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155791-account-executive-new-business-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155790-partnership-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155785-hr-operations-payroll-specialist-mxc",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153612-conceptual-copywriter",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153608-conceptual-art-director",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153571-ads-quality-rater-finnish-finland",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153611-gtm-ai",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153609-product-manager-growth",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153607-billing-follow-up-specialist",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153570-ads-quality-rater-dutch-netherlands",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153599-infrastructure-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153575-ads-quality-rater-hungarian-hungary",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153579-ads-quality-rater-italian-italy",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153577-ads-quality-rater-italian-germany",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153573-ads-quality-rater-german-germany",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153593-senior-technical-project-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153592-software-engineer-analytics",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153584-business-development-manager-northeastern",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153582-director-of-product-marketing-2",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153596-software-engineer-application-integration",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153589-inbound-call-center-representative",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153580-financial-data-analyst-account-management",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153568-ads-quality-rater-dutch-france",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153563-ads-quality-rater-czech-slovakia",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153565-ads-quality-rater-dutch-belgium",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153561-technical-consultant",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153557-ads-quality-rater-croatian-croatia",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153554-product-designer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153567-senior-backend-engineer-net",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153558-staff-firmware-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153555-leather-material-developer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153551-senior-electrical-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153546-consultant-rheumatologist-paye",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153564-senior-solutions-architect-data-ai",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153556-named-enterprise-account-executive",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153550-senior-revenue-operations-analyst",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153549-site-reliability-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153547-supply-partnership-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/149361-senior-technical-product-manager-token-factory",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/149362-vulnerability-operation-center-lead",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/149365-offensive-security-lead",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151032-account-director",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/150946-international-audio-video-remote-kunama-interpreter-must-also-speak-tigrinya-or-arabic",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/153545-senior-software-developer-api-platform-and-ecosystem",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151042-psychiatric-nurse-practitioner-pmhnp",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151040-product-growth-strategist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151034-enterprise-sales-engineer-uk",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151033-telehealth-physician",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151020-infrastructure-engineer-brazil",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/151044-customer-solution-architect-amer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155774-inbound-sales-representative-remote-central-time",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155773-senior-it-corporate-engineering",
+      "reasons": [
+        "filled_or_closed_notice"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155769-general-manager-venture-private-equity",
+      "reasons": [
+        "technical_fit_unconfirmed",
+        "filled_or_closed_notice"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155770-product-owner-growth",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155768-general-manager-construction",
+      "reasons": [
+        "technical_fit_unconfirmed",
+        "filled_or_closed_notice"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155772-risk-analyst",
+      "reasons": [
+        "filled_or_closed_notice"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155771-product-owner-payments-and-infrastructure",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155766-senior-qa-engineer-3",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155767-customer-experience-specialist-7",
+      "reasons": [
+        "filled_or_closed_notice"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155764-bilingual-customer-experience-specialist-spanish",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155763-gtm-strategist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155762-international-audio-video-remote-toisan-and-mandarin-or-cantonese-interpreter",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155761-b2b-event-marketing-manager-6-month-contract",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155757-corporate-development-director",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155756-strategic-sourcing-lead-fulfillment-mexico",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155755-account-manager-14",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155759-fpa-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155758-international-audio-video-remote-spanish-interpreter",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155742-director-of-security-operations-and-engineering",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155746-machine-learning-engineer-governance-ml-platform",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155745-account-executive-enterprise-southern-ca",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155740-ae-sr-ae-sales",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155737-consultant-relations-senior-manager",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155744-full-stack-software-engineer-2",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155739-customer-success-manager-52",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155726-manager-engineering-remote-eligible-in-bulgaria",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155723-staff-software-engineer-audit-full-stack",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155722-business-development-manager-5",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155720-senior-software-engineer-audit-full-stack",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155718-pre-sales-engineer-west-coast",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155716-assistant-general-counsel-servicing",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155724-1-on-1-math-tutor-for-grades-9-12",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155721-1-on-1-math-tutor-for-grades-5-8",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobicy.com/jobs/155717-1-on-1-high-school-math-tutor-3",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/solutions-engineer-commercial-expansion-sales/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/project-manager/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/crypto-researcher/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-platform-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ai-engineer-3/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/security-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/devops-engineer-vac-dst/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sdk-engineer-python/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-manager-ic4/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/ml-agentic-systems-engineer-ic4/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sustaining-operations-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/community-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ai-engineer-2/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-developer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-reliability-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-staff-machine-learning-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/business-development-representative-german-speaking/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/solutions-engineer-doit-cloud-intelligence-thai-speaking/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-full-stack-engineer-ai-cost-visibility/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/cybersecurity-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/solutions-consultant/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-product-designer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/support-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/marketing-analytics-director/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-frontend-engineer-grafana-dataviz/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-ai-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/support-engineer-amer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/python-kubernetes-software-engineer-data-workflows-ai-ml-analytics/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/alliances-field-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-manager-lifecycle-marketing/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/regional-sales-operations-manager-emea/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/junior-security-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/merchandise-associate/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-apac-go-market/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-engineer-tier-1/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-of-analytics/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/engineering-manager-platform/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-coordinators/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer-2/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-marketing-manager-3/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-identity/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/seo-analytics-strategist/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/finance-people-operations-associate/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/curriculum-product-manager/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-coordinator/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/account-executive/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-marketing-manager-2/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-designer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/account-executive-seo/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/travel-visa-manager/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/principal-3cs-designer/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/associate-linux-support-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/marketing-team-lead/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/telus-digital-us-ai-data-various-content-reviewer-us/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/head-business-development-logos-ecosystem/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/devops-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-platform/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-software-engineer-firefox-c-storage-encryption/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/junior-backend-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-support-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/sales-operations-manager/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/analytics-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/enterprise-account-executive/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-customer-support-specialist/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/data-center-design-manager/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/market-activation-analyst-health-plans-health-systems/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-staff-security-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-sales-operations-specialist/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/account-executive-sled/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/technical-success-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/strategic-customer-success-manager/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-experience-specialist/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/software-engineer-growth/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/happiness-engineer-customer-support-success/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-owner-xsolla-partner-network/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/full-stack-software-engineer-ai-automation/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-project-manager-business-transformation/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/backend-engineer-ruby-create-change-record/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/lending-operations-specialist/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/hr-enablement-lead/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-support-specialist/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/cx-vendor-manager/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/solutions-engineer-ai-build-team/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/workers-compensation-coordinator/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/director-governance-risk-compliance/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-engineer-data/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/program-associate/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-marketing-manager/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-product-manager/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-platform-engineer-fanatics-markets/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/product-support-specialist-pacific-mountain-time/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/staff-product-manager-opentelemetry/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-build-systems-engineer/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/customer-success-manager-23/",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/senior-software-engineer-data-platform-5/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://jobspresso.co/job/mozilla-canada-france-germany-united-kingdom-remote-developer-software-engineer-webcompat-tooling-dashboards-and-reporting-firefox/",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-senior-finance-manager-management-accountant-d2b-1137556",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-accounting-finance-manager-political-asylum-lawyers-1137555",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-lkjlkjxcv-scvsdv-1137553",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-clinical-data-manager-penumbra-1137550",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-risk-analyst-pavago-1137548",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-customer-support-consultant-hospitality-supportyourapp-1137547",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-senior-software-engineer-sothebys-1137545",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://remoteOK.com/remote-jobs/remote-senior-backend-engineer-rain-1137544",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/toptal-senior-deployment-engineer-with-llm-and-gpu-infrastructure-experience",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/toptal-ai-engineer-agentic-systems",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/moonshot-solidity-rust-remote",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/affirm-analytics-engineer-ii-full-stack-revenue-analytics",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/netlify-senior-staff-data-scientist",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/mercury-business-continuity-management-lead",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/offerup-software-development-engineer-ii-remote-colombia",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/maven-clinic-head-of-member-growth-b2b2c",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/lemon-io-senior-vue-developer-1",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/ritual-core-protocol-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/oportun-senior-data-engineer-capital-markets-r13923",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/toptal-senior-analytics-engineer-bi-lead-channel-insights-ix360",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/toptal-salesforce-developer-for-org-ownership-and-ongoing-platform-development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/celonis-client-value-partner-cvp-utilities-energy-industry",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/celonis-client-value-partner-cvp-oil-gas-industry",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/reddit-analytics-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/growth-minded-senior-data-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/bdf-experts-sap-berater-fi-co-m-w-d",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/proxify-ab-senior-fullstack-developer-react-js-node-js-5",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/clover-health-director-ai-enabled-fraud-prevention-investigations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/vertex-marketing-group-distribution-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/proxify-ab-senior-backend-developer-python-11",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/proxify-ab-senior-backend-developer-node-js-nest-js-4",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/ping-identity-channel-account-manager-1",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/beyondtrust-enterprise-account-manager-sled-1",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/discord-qa-devops-engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/discord-engineering-manager-platform-security",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/ping-identity-channel-account-manager",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://weworkremotely.com/remote-jobs/flexport-senior-security-engineer-detection-response",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/n8n/YouTube-Video-Producer-With-Automation",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-video-editing/Build-Automated-Local-Video-Studio",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/n8n/SEO-Autopilot-Setup",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780885",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780884",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/automation/Virtual-Assistant-Needed-for-Commercial",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-automation/Orchestration-Agent-Setup-Codex-Claude",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/n8n/WhatsApp-Auto-Messaging-Setup",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/software-development/Freelancer-Setup-Database-Leads-Otomasi",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Advanced-Telegram-Assistant-Using",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/automation/Automatizaci-administrativa-con-Make",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/automation/Agent-Developer-Automation-Engineer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/artificial-intelligence/Engaging-Corporate-Trainer-Needed",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/nextjs/Building-PRESTIA-Full-stack-Next",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/n8n/Automate-WooCommerce-WhatsApp-Support",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-chatbot/lead-generation-agent-for-forwarding",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/nextjs/PRESTIA-SaaS-Platform-Full-Stack",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/api/ElevenLabs-Voice-Pipeline-Fix-Multi",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media",
+      "reasons": [
+        "older_than_age_limit"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/logo-design/Complete-Logo-Brand-Identity-Package",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/adobe-illustrator/Elegant-Brand-Logo-Design-40782924",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/web-development/Credit-Based-Property-Portal-Development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/sales/Video-Sales-Representative-Commission",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/motion-graphics/Premium-Brand-Video-Motion-Designer",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/juniper/Juniper-Mist-Home-Lab-Setup",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/deep-learning/Computer-Vision-Research-Collaboration",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/cold-calling/Real-Estate-Cold-Caller-Appointment",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-voiceover/Marathi-Hindi-Lip-Sync-Dub",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/3d-animation/Cinematic-GasFuse-Safety-Advertisement-40782780",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/3d-animation/Cinematic-GasFuse-Safety-Advertisement",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/anime-manga-marketing-promotion/Anime-Tee-Hoodie-Illustrations",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/advertisement-design/Urgent-Google-Image-Design",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/power-bi/Power-Farm-Production-Dashboard",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/content-writing/University-Personal-Impact-Essay",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-training-data/Seeking-Training-Data-Partners",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/adobe-illustrator/Projekt-plakatu-druku",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-video-editing/Driven-Telugu-Thriller-Concept-Film",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/cnc/CNC-Machined-Parts-Data-Licensing",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/embedded-systems/PCB-Design-for-Industrial-ESP",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/adobe-acrobat/PDF-Text-Table-Extraction",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/wordpress/WooCommerce-Certificate-Portal",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/data-processing/Extend-Python-Gambio-Import",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/wordpress/Build-Five-SEO-WordPress-Learning",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/python/Hybrid-Encryption-Blockchain-Storage",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/postgresql/React-Python-Business-Dashboard",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/b2b-marketing/Digital-Sales-Partner-Needed",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-chatbot/Full-Stack-Developer-Needed-for",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/microsoft-365/Microsoft-Power-Platform-Solutions",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/streamlit/Development-Basic-Electronic",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/google-analytics/Senior-SEO-Specialist-for-Growth",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/Make-com/Build-Email-Automation-MVP-BCcGuardDog",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/chatbot-development/Asistente-FAQ-para-WhatsApp",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/python/Urgent-Smart-Organised-Generalist-needed",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/autodesk/Complete-AutoCAD-Plant-Catalog-Package",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/rpa-development/UiPath-Web-Report-Automation",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Refine-Secure-Launch-Express-Kitchen",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Optimize-Criclive-SEO-Performance",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ui-design/OpenCart-Supplement-Store-Redesign",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Upgrade-Criclive-for-Speed-Scale",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Launch-MediBookHome-Web-Apps",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/web-development/Children-Book-Webshop-Development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/flutter/Develop-Cross-Platform-Cricket-Live",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/digital-marketing/Meta-Ads-Campaign-for-High",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/web-design/Software-Landing-Page-Design",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/security-auditing/Gaming-Platform-Security-API-Audit",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/postgresql/Independent-PostgreSQL-Architecture",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/mobile-app-development/Cross-Platform-Criclive-App-Development",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/telegram-api/Telegram-Paid-Channel-Bot-Setup",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/php/Enhance-Marketplace-Service-Ads",
+      "reasons": [
+        "technical_fit_unconfirmed"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/blockchain/Web-Developer-for-Finance-Assistant",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/full-stack-development/Optimize-Criclive-Website-SEO",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/nextjs/Next-Website-Development-with-CMS",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/telemarketing/Telemarketer-Appointment-Setter-Base-Pay",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/email-marketing/Setup-Gmail-Bisnis-Menguntungkan",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/business-development/Business-Development-Client-Success",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/video-conferencing/Remote-Closer-for-Vastu-Consultations",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/sales/Senior-Enterprise-eLearning-Sales",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/oracle-apex/Oracle-Freelancer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/administrative-support/Asistente-remoto-atenci-reclamos",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/flutter/Job-Title-Build-MVP-Android",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/2d-drafting/Industrial-Control-Panel-Schematics",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/payroll/Monthly-Sage-Bookkeeping-Retainer",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/mobile-app-testing/Teach-Mobile-App-Testing-Earnings",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/web-development/GST-Billing-Website-App",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/lead-generation/Verified-Contacts",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/adobe-premiere-pro/Fast-Paced-Social-Clip-Editor",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/editing/Chaptered-Novel-Shivpur-Family-Saga",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/2d-animation/Educational-Animation-Video-Editor",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/content-strategy/YouTube-Recap-Channel-Growth",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/ai-video-editing/Photorealistic-Brand-Creation",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/legal-translation/Page-Legal-English-German-Translation",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://www.freelancer.com/projects/project-management/Recruitment-Onboarding-Assistant",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323862",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323860",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323364",
+      "reasons": [
+        "buyer_already_contacted"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/322445",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    }
+  ],
+  "http_attempts": 25,
+  "receipts": [
+    {
+      "url": "https://jobicy.com/api/v2/remote-jobs",
+      "final_url": "https://jobicy.com/api/v2/remote-jobs",
+      "fetched_at": "2026-10-23T11:36:30.593959+00:00",
+      "sha256": "f56a8f8a6d97582a88916065c9d0a868cc75af1375f8de74308cfe1f20d906c9",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\f56a8f8a6d97582a88916065c9d0a868cc75af1375f8de74308cfe1f20d906c9.bin"
+    },
+    {
+      "url": "https://jobicy.com/api/v2/remote-jobs?cursor=AgAAAABq20WcAAAAAGrZ5cQAAAAAAAJiwpGStyjVOt7ULMvdFdHp_0xjGsH--7hP_G6cSgT0AUpIGauu29lKa3Bfqd9PNGUuUp3S6XnRvniNEyFRtAwafhU",
+      "final_url": "https://jobicy.com/api/v2/remote-jobs?cursor=AgAAAABq20WcAAAAAGrZ5cQAAAAAAAJiwpGStyjVOt7ULMvdFdHp_0xjGsH--7hP_G6cSgT0AUpIGauu29lKa3Bfqd9PNGUuUp3S6XnRvniNEyFRtAwafhU",
+      "fetched_at": "2026-10-23T11:36:40.590114+00:00",
+      "sha256": "6e445355ff1b319fb4ff1d7e922b9fae7e954948b6e51662bc748123f1e169e3",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\6e445355ff1b319fb4ff1d7e922b9fae7e954948b6e51662bc748123f1e169e3.bin"
+    },
+    {
+      "url": "https://jobicy.com/api/v2/remote-jobs?cursor=AgAAAABq20WcAAAAAGrYnF4AAAAAAAJiI5GStyjVOt7ULMvdFdHp_0xjGsH--7hP_G6cSgT0AUpI-4mRaK8Cj-nLpm0ynBPlbLnpNO0BTWZhsFa0kHy7Ids",
+      "final_url": "https://jobicy.com/api/v2/remote-jobs?cursor=AgAAAABq20WcAAAAAGrYnF4AAAAAAAJiI5GStyjVOt7ULMvdFdHp_0xjGsH--7hP_G6cSgT0AUpI-4mRaK8Cj-nLpm0ynBPlbLnpNO0BTWZhsFa0kHy7Ids",
+      "fetched_at": "2026-10-23T11:36:52.290530+00:00",
+      "sha256": "b503b7fc243bad0a5327073c74c38b119e284ee05dfa11cc921b7c575abab009",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\b503b7fc243bad0a5327073c74c38b119e284ee05dfa11cc921b7c575abab009.bin"
+    },
+    {
+      "url": "https://jobicy.com/api/v2/remote-jobs?cursor=AgAAAABq20WcAAAAAGrXiEoAAAAAAAJhc5GStyjVOt7ULMvdFdHp_0xjGsH--7hP_G6cSgT0AUpInY4AOEOqin4yritN9Z-O4rjwgzJotj4MApjnCcUDzN8",
+      "final_url": "https://jobicy.com/api/v2/remote-jobs?cursor=AgAAAABq20WcAAAAAGrXiEoAAAAAAAJhc5GStyjVOt7ULMvdFdHp_0xjGsH--7hP_G6cSgT0AUpInY4AOEOqin4yritN9Z-O4rjwgzJotj4MApjnCcUDzN8",
+      "fetched_at": "2026-10-23T11:37:00.980308+00:00",
+      "sha256": "7be9963d9f3a993b4fdd03dd3b5afae26096e78a2020ea9b04c1965a9a41ec93",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\7be9963d9f3a993b4fdd03dd3b5afae26096e78a2020ea9b04c1965a9a41ec93.bin"
+    },
+    {
+      "url": "https://jobicy.com/api/v2/remote-jobs?cursor=AgAAAABq20WcAAAAAGrWQQgAAAAAAAJgzpGStyjVOt7ULMvdFdHp_0xjGsH--7hP_G6cSgT0AUpIlCfAkEYyl6GM0NM81VdLbxNWvq_-M3Bn2f0yBsz50dU",
+      "final_url": "https://jobicy.com/api/v2/remote-jobs?cursor=AgAAAABq20WcAAAAAGrWQQgAAAAAAAJgzpGStyjVOt7ULMvdFdHp_0xjGsH--7hP_G6cSgT0AUpIlCfAkEYyl6GM0NM81VdLbxNWvq_-M3Bn2f0yBsz50dU",
+      "fetched_at": "2026-10-23T11:37:08.832361+00:00",
+      "sha256": "e3498bc6f27c2c272991f4270c7ea4c8b0024338937e47ed660ec0e9bfd558ad",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\e3498bc6f27c2c272991f4270c7ea4c8b0024338937e47ed660ec0e9bfd558ad.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=1",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=1",
+      "fetched_at": "2026-10-23T11:37:18.439706+00:00",
+      "sha256": "087f41975058c44d21efdbf62a09981402b10f9d1dda839a4865b1d7a99c48b7",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\087f41975058c44d21efdbf62a09981402b10f9d1dda839a4865b1d7a99c48b7.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=2",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=2",
+      "fetched_at": "2026-10-23T11:37:24.720545+00:00",
+      "sha256": "ceebd1aaf106a979309b66d18f9702f70ed4e050e94a16369b5401d1400b0890",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\ceebd1aaf106a979309b66d18f9702f70ed4e050e94a16369b5401d1400b0890.bin"
+    },
+    {
+      "url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=3",
+      "final_url": "https://jobspresso.co/wp-json/wp/v2/job-listings?per_page=50&page=3",
+      "fetched_at": "2026-10-23T11:37:29.433220+00:00",
+      "sha256": "d42db80da7492db78bcf28f0781ba872376ece881cf145d74cfc23151bba6b55",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\d42db80da7492db78bcf28f0781ba872376ece881cf145d74cfc23151bba6b55.bin"
+    },
+    {
+      "url": "https://remoteok.com/api",
+      "final_url": "https://remoteok.com/api",
+      "fetched_at": "2026-10-23T11:37:32.197152+00:00",
+      "sha256": "b6bdea6ef1b2d37b299cd888d49ea7f197b02768e36fef03c0593a5d090fba5d",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\b6bdea6ef1b2d37b299cd888d49ea7f197b02768e36fef03c0593a5d090fba5d.bin"
+    },
+    {
+      "url": "https://weworkremotely.com/categories/remote-full-stack-programming-jobs.rss",
+      "final_url": "https://weworkremotely.com/categories/remote-full-stack-programming-jobs.rss",
+      "fetched_at": "2026-10-23T11:37:34.504647+00:00",
+      "sha256": "367b75254bb22bc61d913a483a3509234863644bfb8fb91c9f6c554c5cc94766",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\367b75254bb22bc61d913a483a3509234863644bfb8fb91c9f6c554c5cc94766.bin"
+    },
+    {
+      "url": "https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss",
+      "final_url": "https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss",
+      "fetched_at": "2026-10-23T11:37:35.469199+00:00",
+      "sha256": "9aa7a880824191252ab5fbc8cb95faca589c73de6d1d23c9510f7544588bf45f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\9aa7a880824191252ab5fbc8cb95faca589c73de6d1d23c9510f7544588bf45f.bin"
+    },
+    {
+      "url": "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss",
+      "final_url": "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss",
+      "fetched_at": "2026-10-23T11:37:36.556980+00:00",
+      "sha256": "7cf02162d10aa8fc2e4ee05a2fb8f9c4d589debca7728a82ee36e746e410d1b9",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\7cf02162d10aa8fc2e4ee05a2fb8f9c4d589debca7728a82ee36e746e410d1b9.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=n8n&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=n8n&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:37:37.552758+00:00",
+      "sha256": "c084227e6e72adb56a0f55f67cc21af6689d900415aff2baba4b80eb352db6d9",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\c084227e6e72adb56a0f55f67cc21af6689d900415aff2baba4b80eb352db6d9.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=AI+agent&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=AI+agent&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:37:38.328505+00:00",
+      "sha256": "1d5d5ec65398e67f72f95ca4ab0bd4b24851bff5c61c8c12c33f9eb5ec9b7eda",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\1d5d5ec65398e67f72f95ca4ab0bd4b24851bff5c61c8c12c33f9eb5ec9b7eda.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=Python+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=Python+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:37:39.150920+00:00",
+      "sha256": "f8eb141b749a1dd17d6f097280d5f98a61f3a37338dd6968b81647daf16d5603",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\f8eb141b749a1dd17d6f097280d5f98a61f3a37338dd6968b81647daf16d5603.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=API+integration&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=API+integration&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:37:40.166600+00:00",
+      "sha256": "85bdfd032920681a8eb30b9b7c1a3f35714c306750bc055b58bbfe9cf804c1da",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\85bdfd032920681a8eb30b9b7c1a3f35714c306750bc055b58bbfe9cf804c1da.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=CRM+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=CRM+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:37:41.313211+00:00",
+      "sha256": "2c0fa072f654d9a757b8fcca7b968df9f6a13b9fe69ad02425e21bbab3b98659",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\2c0fa072f654d9a757b8fcca7b968df9f6a13b9fe69ad02425e21bbab3b98659.bin"
+    },
+    {
+      "url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=workflow+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "final_url": "https://www.freelancer.com/api/projects/0.1/projects/active/?query=workflow+automation&limit=20&full_description=true&sort_field=time_submitted",
+      "fetched_at": "2026-10-23T11:37:42.829358+00:00",
+      "sha256": "6a4ba94363302acf484cfbd671466c1a24ecc10685861fdc36f24e1093d134e4",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\6a4ba94363302acf484cfbd671466c1a24ecc10685861fdc36f24e1093d134e4.bin"
+    },
+    {
+      "url": "https://community.n8n.io/c/jobs/13.json",
+      "final_url": "https://community.n8n.io/c/jobs/13.json",
+      "fetched_at": "2026-10-23T11:37:45.668817+00:00",
+      "sha256": "e0255bc1196f2252eaaacfbd9f4b41655109dfe172ef11de9743abe8773756dc",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\e0255bc1196f2252eaaacfbd9f4b41655109dfe172ef11de9743abe8773756dc.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323862.json",
+      "final_url": "https://community.n8n.io/t/323862.json",
+      "fetched_at": "2026-10-23T11:37:46.664201+00:00",
+      "sha256": "4aab4302b763117840b921f429dcc5a87d706f7ed87dc0135c5e5cbb0bd962e8",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\4aab4302b763117840b921f429dcc5a87d706f7ed87dc0135c5e5cbb0bd962e8.bin"
+    },
+    {
+      "url": "https://community.n8n.io/u/Danish_Koul_14.json",
+      "final_url": "https://community.n8n.io/u/Danish_Koul_14.json",
+      "fetched_at": "2026-10-23T11:37:47.659882+00:00",
+      "sha256": "17bf6cdda830ec556910cb1979350cdf47bdf09a994eaab48a5041c1d9324f6b",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\17bf6cdda830ec556910cb1979350cdf47bdf09a994eaab48a5041c1d9324f6b.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323860.json",
+      "final_url": "https://community.n8n.io/t/323860.json",
+      "fetched_at": "2026-10-23T11:37:48.642210+00:00",
+      "sha256": "a36fba18bf25c8b29249e78008cfd6c0f53ba7384b63bccd001389cea9402e77",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\a36fba18bf25c8b29249e78008cfd6c0f53ba7384b63bccd001389cea9402e77.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323364.json",
+      "final_url": "https://community.n8n.io/t/323364.json",
+      "fetched_at": "2026-10-23T11:37:50.060256+00:00",
+      "sha256": "cf475486e8c257461dc9d177c394923bb0cf24b5e51c117a9067f31c8d0d0408",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\cf475486e8c257461dc9d177c394923bb0cf24b5e51c117a9067f31c8d0d0408.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323364/posts.json?post_ids%5B%5D=604154&post_ids%5B%5D=604214&post_ids%5B%5D=604218&post_ids%5B%5D=604224&post_ids%5B%5D=604225&post_ids%5B%5D=604241&post_ids%5B%5D=604246&post_ids%5B%5D=604269&post_ids%5B%5D=604297&post_ids%5B%5D=604314&post_ids%5B%5D=604325&post_ids%5B%5D=604360&post_ids%5B%5D=604398&post_ids%5B%5D=604407&post_ids%5B%5D=604427&post_ids%5B%5D=604456&post_ids%5B%5D=604463&post_ids%5B%5D=604469&post_ids%5B%5D=604470",
+      "final_url": "https://community.n8n.io/t/323364/posts.json?post_ids%5B%5D=604154&post_ids%5B%5D=604214&post_ids%5B%5D=604218&post_ids%5B%5D=604224&post_ids%5B%5D=604225&post_ids%5B%5D=604241&post_ids%5B%5D=604246&post_ids%5B%5D=604269&post_ids%5B%5D=604297&post_ids%5B%5D=604314&post_ids%5B%5D=604325&post_ids%5B%5D=604360&post_ids%5B%5D=604398&post_ids%5B%5D=604407&post_ids%5B%5D=604427&post_ids%5B%5D=604456&post_ids%5B%5D=604463&post_ids%5B%5D=604469&post_ids%5B%5D=604470",
+      "fetched_at": "2026-10-23T11:37:51.672367+00:00",
+      "sha256": "2edb2c5d0762527d1e3bae0d0ca0176a93bef868ad604dc00fb19e16650744cc",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\2edb2c5d0762527d1e3bae0d0ca0176a93bef868ad604dc00fb19e16650744cc.bin"
+    },
+    {
+      "url": "https://community.n8n.io/u/Alvaro_Zapata.json",
+      "final_url": "https://community.n8n.io/u/Alvaro_Zapata.json",
+      "fetched_at": "2026-10-23T11:37:52.494729+00:00",
+      "sha256": "de26e97ba9170de7fdc9764a6818bdbaf0a66aef1148e6eedb7980a010ee1e1c",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\de26e97ba9170de7fdc9764a6818bdbaf0a66aef1148e6eedb7980a010ee1e1c.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/322445.json",
+      "final_url": "https://community.n8n.io/t/322445.json",
+      "fetched_at": "2026-10-23T11:37:53.932053+00:00",
+      "sha256": "eb6cab7d13af00ef478963c0bee3839324c1f0bf9c6f3392a92e36086e6f7c69",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\eb6cab7d13af00ef478963c0bee3839324c1f0bf9c6f3392a92e36086e6f7c69.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/322445/posts.json?post_ids%5B%5D=602841&post_ids%5B%5D=603129&post_ids%5B%5D=603131&post_ids%5B%5D=603146&post_ids%5B%5D=603218&post_ids%5B%5D=603256&post_ids%5B%5D=604083&post_ids%5B%5D=604499&post_ids%5B%5D=604500",
+      "final_url": "https://community.n8n.io/t/322445/posts.json?post_ids%5B%5D=602841&post_ids%5B%5D=603129&post_ids%5B%5D=603131&post_ids%5B%5D=603146&post_ids%5B%5D=603218&post_ids%5B%5D=603256&post_ids%5B%5D=604083&post_ids%5B%5D=604499&post_ids%5B%5D=604500",
+      "fetched_at": "2026-10-23T11:37:55.032896+00:00",
+      "sha256": "f352e02111e23d730d5d618a8bf9d33900b99369c55323aa2b9df57c9823543f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\f352e02111e23d730d5d618a8bf9d33900b99369c55323aa2b9df57c9823543f.bin"
+    },
+    {
+      "url": "https://community.n8n.io/u/boston_young.json",
+      "final_url": "https://community.n8n.io/u/boston_young.json",
+      "fetched_at": "2026-10-23T11:37:55.932497+00:00",
+      "sha256": "014b7738aca64dda7ba14b4c4369fccd4507cf1edaad0f55f9600bc8c2a247f2",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T113628619235Z\\evidence\\014b7738aca64dda7ba14b4c4369fccd4507cf1edaad0f55f9600bc8c2a247f2.bin"
+    }
+  ]
+}

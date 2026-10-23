@@ -1,0 +1,31 @@
+TO: steve@pango.ai
+NAME: Steve Rahimi
+TITLE: Co-Founder & CEO
+COMPANY: Pango (YC S26)
+SUBJECT: Agentic event-driven architecture & logistics state machines — 22 yrs systems experience
+MESSAGE-ID: <179277436014.14236.459318180769202728@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK
+SENT_AT: 2026-10-23T16:52:42.316567+00:00
+SHA256_BODY: 2a4c31f315e2820aee9ddbdd6ad84ba1a809930d0118e37ec8f2ef6cc17bbf02
+
+BODY:
+Hi Steve,
+
+Came across Pango's recent engineering announcement regarding your agentic operating system for post-purchase logistics, returns, and tracking automation.
+
+As a 22-year enterprise systems architect (NIT Silchar 2003 honours, former Director & CTO), I specialize in resilient distributed architectures that handle multi-tenant webhook ingestion, event-driven state machines, and fail-safe API orchestration at high scale. 
+
+In e-commerce logistics, agent reliability depends on deterministic state reconciliation and error boundaries so downstream carriers and stores never suffer inconsistent transaction states. My recent architecture work includes production multi-agent orchestration (ASES v3.1) and high-concurrency event telemetry engines.
+
+Key references:
+- Enterprise Architecture & Systems Catalog (118 private repositories / 1.95M LOC): https://github.com/isearchxsolve/repo-catalog
+- Verified Profile & Career History: https://www.linkedin.com/in/kunal-das-technologist/
+
+I operate on written architectural deliverables and asynchronous engineering reviews. If helpful, I can provide a concise architectural specification outlining a zero-loss webhook and retry state topology tailored to Pango's post-purchase pipeline.
+
+Best regards,
+
+Kunal Das
+Principal Systems Architect & Technology Leader
+Email: isearch.xsolve@gmail.com
+WhatsApp: +91 86172 16163

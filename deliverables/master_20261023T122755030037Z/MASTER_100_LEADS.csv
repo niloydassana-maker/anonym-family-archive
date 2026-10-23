@@ -1,0 +1,71 @@
+﻿lead_id,platform,source_url,title,created_at,captured_at,brief_snippet,buyer_username,buyer_real_name,buyer_company,buyer_website,buyer_profile_url,buyer_location,can_direct_message,status,review_flags,budget,budget_mentions,email,linkedin,phone,whatsapp_number,whatsapp_links,contact_evidence,suppressed_values,coordinate_count,contact_value_count,email_status,linkedin_status,phone_status,whatsapp_number_status,topic_closed,rejected_coordinates,contact_kind,contact_route,verification_status
+N8N-321244,n8n,https://community.n8n.io/t/321244,Looking for Founding n8n Automation Creators | Osmium,2026-10-14T07:03:57.126000+00:00,2026-10-23T12:28:10.762155+00:00,"Hey n8n builders! 
+
+we’re Osmium, a newly launched marketplace for reusable software capabilities, AI systems, APIs, and automation tools.
+
+We’re inviting 20 independent developers and automation creators to join our founding vendor cohort.
+
+Who we’re looking for:
+
+
+
+
+n8n builders with original, reusable automation solutions
+
+
+
+
+AI agent and workflow developers
+
+
+
+
+API and backend integration creators
+
+
+
+
+Independent developers with working software they’d like to monetize
+
+
+
+What we’re offering:
+
+
+
+
+An additional channel to sell your existing work
+
+
+
+
+Freedom to set your own prices
+
+
+
+
+Ownership of your original software
+
+
+
+
+Personal onboarding assistance
+
+
+
+
+Opportunities to showcase available testing evidence
+
+
+
+This is an independent vendor opportunity, not salaried employment. Earnings depend on actual sales, and we cannot guarantee customers.
+
+If you’ve built something reusable, we’d love to explore bringing it to Osmium.
+
+Interested? Email: heythere@osmiumcodes.com
+
+Subject: Osmium Founding Vendor
+
+Tell us what you’ve built and share a demo or portfolio if available.
+
+Looking forward to meeting some brilliant builders!",osmiumc,,,,https://community.n8n.io/u/osmiumc,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],"[""heythere@osmiumcodes.com""]",[],[],[],[],"[{""kind"": ""email"", ""value"": ""heythere@osmiumcodes.com"", ""contact_evidence"": ""Interested? Email: heythere@osmiumcodes.com"", ""contact_context"": "" Interested? Email:  heythere@osmiumcodes.com "", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://community.n8n.io/t/321244/1"", ""ownership"": ""publication_only_owner_not_independently_verified""}, {""kind"": ""email"", ""value"": ""heythere@osmiumcodes.com"", ""contact_evidence"": ""We’d love to explore your work for Osmium’s founding vendor program. Could you email us at heythere@osmiumcodes.com with a brief overview, demo, and any available documentation?"", ""contact_context"": "" We’d love to explore your work for Osmium’s founding vendor program. Could you email us at  heythere@osmiumcodes.com  with a brief overview, demo, and any available documentation?"", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://community.n8n.io/t/321244/12"", ""ownership"": ""publication_only_owner_not_independently_verified""}, {""kind"": ""email"", ""value"": ""heythere@osmiumcodes.com"", ""contact_evidence"": ""Could you email us at heythere@osmiumcodes.com with a brief technical overview, your GitHub repository, and any available demonstrations or testing evidence?"", ""contact_context"": "" Could you email us at  heythere@osmiumcodes.com  with a brief technical overview, your GitHub repository, and any available demonstrations or testing evidence?"", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://community.n8n.io/t/321244/13"", ""ownership"": ""publication_only_owner_not_independently_verified""}, {""kind"": ""email"", ""value"": ""heythere@osmiumcodes.com"", ""contact_evidence"": ""We’d love to explore your work for our founding creator program. Could you email us at heythere@osmiumcodes.com with a brief overview, available demos, and technical documentation?"", ""contact_context"": "" We’d love to explore your work for our founding creator program. Could you email us at  heythere@osmiumcodes.com  with a brief overview, available demos, and technical documentation?"", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://community.n8n.io/t/321244/14"", ""ownership"": ""publication_only_owner_not_independently_verified""}, {""kind"": ""email"", ""value"": ""heythere@osmiumcodes.com"", ""contact_evidence"": ""Would you email us at heythere@osmiumcodes.com? I’d love to learn more about your team’s work and continue the conversation."", ""contact_context"": "" Would you email us at  heythere@osmiumcodes.com ? I’d love to learn more about your team’s work and continue the conversation."", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://community.n8n.io/t/321244/15"", ""ownership"": ""publication_only_owner_not_independently_verified""}, {""kind"": ""email"", ""value"": ""heythere@osmiumcodes.com"", ""contact_evidence"": ""We’d love to explore your work! Could you email us at heythere@osmiumcodes.com with a brief overview, any available demonstrations, and technical documentation?"", ""contact_context"": "" We’d love to explore your work! Could you email us at  heythere@osmiumcodes.com  with a brief overview, any available demonstrations, and technical documentation?"", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://community.n8n.io/t/321244/16"", ""ownership"": ""publication_only_owner_not_independently_verified""}, {""kind"": ""email"", ""value"": ""heythere@osmiumcodes.com"", ""contact_evidence"": ""Could you email us at heythere@osmiumcodes.com with your portfolio, a brief technical overview, and any available demos or documentation? We’d be delighted to review your work and discuss how we could showcase it on Osmium."", ""contact_context"": "" Could you email us at  heythere@osmiumcodes.com  with your portfolio, a brief technical overview, and any available demos or documentation? We’d be delighted to review your work and discuss how we could showcase it on Osmium."", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://community.n8n.io/t/321244/17"", ""ownership"": ""publication_only_owner_not_independently_verified""}, {""kind"": ""email"", ""value"": ""heythere@osmiumcodes.com"", ""contact_evidence"": ""We’d love to explore your work! Could you email us at heythere@osmiumcodes.com with a brief overview, demonstrations, and any available technical documentation?"", ""contact_context"": "" We’d love to explore your work! Could you email us at  heythere@osmiumcodes.com  with a brief overview, demonstrations, and any available technical documentation?"", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://community.n8n.io/t/321244/18"", ""ownership"": ""publication_only_owner_not_independently_verified""}]",0,1,1,published_candidate,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,True,[],published_direct_contact,Review the published application/contact instructions; ownership and permission require confirmation,source_filtered_candidate_requires_human_ownership_and_eligibility_review

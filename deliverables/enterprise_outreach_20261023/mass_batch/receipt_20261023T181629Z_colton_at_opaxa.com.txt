@@ -1,0 +1,28 @@
+RECEIPT — ENTERPRISE MASS DISPATCH
+Timestamp: 20261023T181629Z
+Recipient: colton@opaxa.com
+Company: Opaxa
+Role: Co-Founder / Engineering Lead
+Subject: Resilient multi-location event architecture — 22 years distributed systems
+Message-ID: <179277938941.22124.6924380703343762908@gmail.com>
+Status: 250 OK (Dispatched via smtp.gmail.com:587)
+SHA256: 7d337cc213a34658e27f1595971c881b321e90ef937cf232a699a1cef0e76f87
+==================================================
+BODY:
+Hi Colton,
+
+Came across Opaxa's build of an AI agent platform for multi-location restaurant operations.
+
+Coordinating multi-location data aggregation and back-office sync across distributed points of sale requires rock-solid event-driven architecture—specifically offline/online queue synchronization, idempotent webhook processing, and zero-drift database state machines.
+
+Background: 22+ years distributed backend architecture (NIT Silchar Honours, former Director & CTO). I've built and scaled high-throughput event backends in Python/FastAPI, distributed queue orchestrations, and autonomous agent execution frameworks with strict 3-tier TDD gates.
+
+We deploy modular, turnkey backend and agent pipelines ready for containerized deployment, cutting months off custom infrastructure build time.
+
+I operate strictly in writing with zero meeting overhead. Code memos, repo PRs, and Docker containers delivered directly.
+
+Happy to share an architectural teardown of how we structure resilient multi-location sync if of interest.
+
+Written lane: isearch.xsolve@gmail.com / WhatsApp text +91 86172 16163
+
+Kunal

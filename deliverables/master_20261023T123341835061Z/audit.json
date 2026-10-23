@@ -1,0 +1,222 @@
+{
+  "captured_at_utc": "2026-10-23T12:34:00.708381+00:00",
+  "options": {
+    "sources": "discourse",
+    "contact_policy": "direct-only",
+    "direct_first": true,
+    "url": [],
+    "urls_file": null,
+    "limit": 500,
+    "days": 30,
+    "max_topics": 15,
+    "max_batches": 1,
+    "max_feed_pages": 2,
+    "max_requests": 150,
+    "delay": 0.2,
+    "per_query": 20,
+    "query": null,
+    "no_profiles": true,
+    "suppress_file": "D:\\anonym\\tools\\lead_hunter\\already_contacted.json",
+    "out": "D:\\anonym\\tools\\lead_hunter\\output",
+    "deliverables_dir": "D:\\anonym\\deliverables"
+  },
+  "retained_candidates": 0,
+  "unique_candidates_before_limit": 0,
+  "interrupted": false,
+  "leads_with_coordinate": {
+    "email": 0,
+    "linkedin": 0,
+    "phone": 0,
+    "whatsapp_number": 0
+  },
+  "errors": [],
+  "excluded": [
+    {
+      "url": "https://community.n8n.io/t/323862",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323860",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323364",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/322445",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/321311",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/321244",
+      "reasons": [
+        "topic_marked_closed",
+        "vendor_marketplace_or_creator_program_not_client_demand"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/319764",
+      "reasons": [
+        "specific_automation_or_backend_fit_unconfirmed",
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.make.com/t/116932",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.make.com/t/116881",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.make.com/t/116649",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.make.com/t/116489",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    }
+  ],
+  "http_attempts": 16,
+  "receipts": [
+    {
+      "url": "https://community.n8n.io/c/jobs/13.json?order=created&page=0",
+      "final_url": "https://community.n8n.io/c/jobs/13.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:33:43.957819+00:00",
+      "sha256": "6b6a5a5f16bd7c1954162967f42d6a196c62327ea8b32f1ba77cce5440ea2854",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\6b6a5a5f16bd7c1954162967f42d6a196c62327ea8b32f1ba77cce5440ea2854.bin"
+    },
+    {
+      "url": "https://community.n8n.io/c/jobs/13.json?order=created&page=1",
+      "final_url": "https://community.n8n.io/c/jobs/13.json?order=created&page=1",
+      "fetched_at": "2026-10-23T12:33:45.103891+00:00",
+      "sha256": "784e8e479d93899c594e43ba6f2a1ef568a3635615ce87585928be4e892ee308",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\784e8e479d93899c594e43ba6f2a1ef568a3635615ce87585928be4e892ee308.bin"
+    },
+    {
+      "url": "https://community.make.com/c/74.json?order=created&page=0",
+      "final_url": "https://community.make.com/c/hire-a-pro/hire-help/74.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:33:47.190761+00:00",
+      "sha256": "c253c42f04b0479d1f1c24ba0c76f36d261d008e4cbea4af544a2013d15b2be5",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\c253c42f04b0479d1f1c24ba0c76f36d261d008e4cbea4af544a2013d15b2be5.bin"
+    },
+    {
+      "url": "https://community.make.com/c/74.json?order=created&page=1",
+      "final_url": "https://community.make.com/c/hire-a-pro/hire-help/74.json?order=created&page=1",
+      "fetched_at": "2026-10-23T12:33:48.320956+00:00",
+      "sha256": "8a1e09f4553b5fe061782c3cef098f9d1d218978c9898f1741b2cadb63b596c5",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\8a1e09f4553b5fe061782c3cef098f9d1d218978c9898f1741b2cadb63b596c5.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323862.json",
+      "final_url": "https://community.n8n.io/t/323862.json",
+      "fetched_at": "2026-10-23T12:33:49.351800+00:00",
+      "sha256": "43daa86800d245eb3222fd8fca7e01152ff46c89e9ec3b532bfd793b87aaec50",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\43daa86800d245eb3222fd8fca7e01152ff46c89e9ec3b532bfd793b87aaec50.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323860.json",
+      "final_url": "https://community.n8n.io/t/323860.json",
+      "fetched_at": "2026-10-23T12:33:50.260964+00:00",
+      "sha256": "0ba84657bb7c07bdc312b9326bd2855615b354747e93aeb681bc07f5fceee490",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\0ba84657bb7c07bdc312b9326bd2855615b354747e93aeb681bc07f5fceee490.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323364.json",
+      "final_url": "https://community.n8n.io/t/323364.json",
+      "fetched_at": "2026-10-23T12:33:51.758098+00:00",
+      "sha256": "8878eb6770b49263d780fd4318008bfe590a3cf2e6a9bd99f89fbd14e11473f5",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\8878eb6770b49263d780fd4318008bfe590a3cf2e6a9bd99f89fbd14e11473f5.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/322445.json",
+      "final_url": "https://community.n8n.io/t/322445.json",
+      "fetched_at": "2026-10-23T12:33:53.177326+00:00",
+      "sha256": "cd937266e45a99efd33560ba13ba7e703d886aed81dc8c0224f699e1d8680d7c",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\cd937266e45a99efd33560ba13ba7e703d886aed81dc8c0224f699e1d8680d7c.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/321311.json",
+      "final_url": "https://community.n8n.io/t/321311.json",
+      "fetched_at": "2026-10-23T12:33:54.746900+00:00",
+      "sha256": "ef235a5d9f4a7b74e8889e805d45a438d0acac6d6e915308df8e7d97e69c62c8",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\ef235a5d9f4a7b74e8889e805d45a438d0acac6d6e915308df8e7d97e69c62c8.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/321244.json",
+      "final_url": "https://community.n8n.io/t/321244.json",
+      "fetched_at": "2026-10-23T12:33:56.073308+00:00",
+      "sha256": "7a2fe15a2caadcf280f0ceb5c2866bff98b2e001e33167f8be446227b60b2be0",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\7a2fe15a2caadcf280f0ceb5c2866bff98b2e001e33167f8be446227b60b2be0.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/319764.json",
+      "final_url": "https://community.n8n.io/t/319764.json",
+      "fetched_at": "2026-10-23T12:33:57.467814+00:00",
+      "sha256": "41f0dd17c2193bee455789b7347065f822747c8de30fd5869f081d72fdd5cecb",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\41f0dd17c2193bee455789b7347065f822747c8de30fd5869f081d72fdd5cecb.bin"
+    },
+    {
+      "url": "https://community.make.com/t/116932.json",
+      "final_url": "https://community.make.com/t/116932.json",
+      "fetched_at": "2026-10-23T12:33:57.996252+00:00",
+      "sha256": "2b4f8d93630bcea93389da98e9fd38034bf8af2d7409d120dee3f22b6c1d064a",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\2b4f8d93630bcea93389da98e9fd38034bf8af2d7409d120dee3f22b6c1d064a.bin"
+    },
+    {
+      "url": "https://community.make.com/t/116881.json",
+      "final_url": "https://community.make.com/t/116881.json",
+      "fetched_at": "2026-10-23T12:33:58.639295+00:00",
+      "sha256": "616327a3c6594f3ed7c9966434d5f4be05c7cd6c1533e61fe698e13ad805aebe",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\616327a3c6594f3ed7c9966434d5f4be05c7cd6c1533e61fe698e13ad805aebe.bin"
+    },
+    {
+      "url": "https://community.make.com/t/116649.json",
+      "final_url": "https://community.make.com/t/116649.json",
+      "fetched_at": "2026-10-23T12:33:59.345583+00:00",
+      "sha256": "a4e38d4ea3bd40801464710b43aad7c8bf850c9e07351f0a2682451b7d8fbaf6",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\a4e38d4ea3bd40801464710b43aad7c8bf850c9e07351f0a2682451b7d8fbaf6.bin"
+    },
+    {
+      "url": "https://community.make.com/t/116649/posts.json?post_ids%5B%5D=273712&post_ids%5B%5D=273722&post_ids%5B%5D=273732&post_ids%5B%5D=273734&post_ids%5B%5D=273736&post_ids%5B%5D=273762&post_ids%5B%5D=273764&post_ids%5B%5D=273767&post_ids%5B%5D=273957&post_ids%5B%5D=273967&post_ids%5B%5D=273973&post_ids%5B%5D=273996&post_ids%5B%5D=273998&post_ids%5B%5D=274000&post_ids%5B%5D=274002&post_ids%5B%5D=274010&post_ids%5B%5D=274023&post_ids%5B%5D=274210&post_ids%5B%5D=274218&post_ids%5B%5D=274223",
+      "final_url": "https://community.make.com/t/116649/posts.json?post_ids%5B%5D=273712&post_ids%5B%5D=273722&post_ids%5B%5D=273732&post_ids%5B%5D=273734&post_ids%5B%5D=273736&post_ids%5B%5D=273762&post_ids%5B%5D=273764&post_ids%5B%5D=273767&post_ids%5B%5D=273957&post_ids%5B%5D=273967&post_ids%5B%5D=273973&post_ids%5B%5D=273996&post_ids%5B%5D=273998&post_ids%5B%5D=274000&post_ids%5B%5D=274002&post_ids%5B%5D=274010&post_ids%5B%5D=274023&post_ids%5B%5D=274210&post_ids%5B%5D=274218&post_ids%5B%5D=274223",
+      "fetched_at": "2026-10-23T12:33:59.941802+00:00",
+      "sha256": "52fbed609aab8a91a75c9714a96f168edb83f1c2744f0979a31071010dba5b20",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\52fbed609aab8a91a75c9714a96f168edb83f1c2744f0979a31071010dba5b20.bin"
+    },
+    {
+      "url": "https://community.make.com/t/116489.json",
+      "final_url": "https://community.make.com/t/116489.json",
+      "fetched_at": "2026-10-23T12:34:00.555222+00:00",
+      "sha256": "207ef4c4d0375f41d107e7b1cbd75dccebd0c4016f916432e0d4bccc36b3bc3a",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T123341835061Z\\evidence\\207ef4c4d0375f41d107e7b1cbd75dccebd0c4016f916432e0d4bccc36b3bc3a.bin"
+    }
+  ],
+  "quarantined": 0,
+  "rejected_coordinate_observations": 0,
+  "duplicate_observations": 0,
+  "verification_policy": "No automated ownership or zero-false-positive guarantee. OUTREACH_READY is empty until human verification."
+}

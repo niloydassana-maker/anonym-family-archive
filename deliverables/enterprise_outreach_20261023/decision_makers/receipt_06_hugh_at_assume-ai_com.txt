@@ -1,0 +1,31 @@
+TO: hugh@assume-ai.com
+NAME: Hugh Dowling
+TITLE: Co-Founder & Head of Development
+COMPANY: AssumeAI
+SUBJECT: Enterprise AI workflow engineering & LangGraph orchestration — 22y backend architecture
+MESSAGE-ID: <179277439505.14236.14093259086668242645@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK
+SENT_AT: 2026-10-23T16:53:16.983367+00:00
+SHA256_BODY: c8abc23200f75af63eb7eecd6faa7e117317da334ba922bfd21f4ff3f3a5c2ac
+
+BODY:
+Hi Hugh,
+
+Saw AssumeAI's engineering note on custom enterprise AI workflow automations and consulting solutions.
+
+I am a 22-year enterprise systems architect (NIT Silchar 2003 honours, former Director & CTO). I specialize in production-grade Python/FastAPI backends, graph-based agent orchestration (LangGraph, ASES v3.1), and deterministic validation layers that eliminate LLM drift for enterprise clients.
+
+When delivering AI automations to consultancies, the critical challenge is building deterministic guardrails, structured JSON schema enforcement, and retry/dead-letter queue pipelines so complex client workflows never fail silently in production.
+
+Work history and catalog:
+- Enterprise Systems Catalog (118 private repos / 1.95M LOC): https://github.com/isearchxsolve/repo-catalog
+- LinkedIn Profile: https://www.linkedin.com/in/kunal-das-technologist/
+
+I deliver through clear written specifications, modular code architecture, and asynchronous reviews. I would be pleased to share a blueprint for robust agentic graph pipelines and validation layers suited to your consulting engagements.
+
+Best regards,
+
+Kunal Das
+Principal Systems Architect & Technology Leader
+Email: isearch.xsolve@gmail.com
+WhatsApp: +91 86172 16163

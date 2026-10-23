@@ -82,7 +82,7 @@ class Web:
             if len(data) > 3_000_000:
                 raise ValueError('Response exceeds 3 MB cap')
             ctype = r.headers.get_content_type()
-            if ctype not in ('text/html', 'text/plain', 'application/json', 'application/ld+json'):
+            if ctype not in ('text/html', 'text/plain', 'application/json', 'application/ld+json', 'application/xml', 'text/xml', 'application/rss+xml'):
                 raise ValueError('Unsupported response content type: ' + ctype)
             return data, r.headers.get_content_charset() or 'utf-8', r.geturl()
 

@@ -1,0 +1,23 @@
+CHANNEL: Freelancer Bid
+PROJECT: Complete n8n Workflow Automation
+URL: https://www.freelancer.com/projects/n8n/Complete-Workflow-Automation
+BUDGET: USD $750 – $1,500
+DRAFTED_AT: 2026-10-23T14:25:59.169113+00:00
+STATUS: READY_FOR_MANUAL_BID
+
+BID TEXT:
+Hi,
+
+n8n workflow architecture and enterprise integration is a core part of what I do.
+
+Specifically for your stated needs:
+
+→ Seamless data movement between core apps: I'll design reliable n8n flows connecting your stack (Google Workspace, HubSpot, Salesforce, Slack — whichever combination you're running) using webhooks and direct API calls with proper error handling and retry logic.
+
+→ Real-time alerts and follow-up triggers: Event-driven trigger nodes with conditional branching, so notifications and follow-up messages fire accurately without duplicates or missed events.
+
+→ Form/email-based record creation and updates: Structured ingest nodes that parse incoming form submissions or emails, validate fields, and write clean records to your CRM or Sheets.
+
+I'll need your field maps and credentials once we align on scope. Should take 1–2 weeks for a robust, documented workflow.
+
+What's your current stack — Google Workspace + HubSpot, or something else?

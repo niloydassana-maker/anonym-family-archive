@@ -1,0 +1,826 @@
+﻿lead_id,platform,source_url,title,created_at,captured_at,brief_snippet,buyer_username,buyer_real_name,buyer_company,buyer_website,buyer_profile_url,buyer_location,can_direct_message,status,review_flags,budget,budget_mentions,email,linkedin,phone,whatsapp_number,whatsapp_links,contact_evidence,suppressed_values,coordinate_count,contact_value_count,email_status,linkedin_status,phone_status,whatsapp_number_status,brief_sha256,brief_length,engagement_type,fit_signals,buyer_id,budget_source,rejected_coordinates,contact_kind,listing_status,listing_status_source,contact_route,verification_status,eligibility_location,topic_closed
+FL-40783105,Freelancer,https://www.freelancer.com/projects/full-stack-development/Build-Powered-Diagnostics-SaaS-Beta,Build AI-Powered Diagnostics SaaS Beta,2026-10-23T14:00:34+00:00,2026-10-23T14:05:59.166883+00:00,"We are seeking an experienced Full-Stack Developer to update and extend the beta version of NextStep Diagnostics, an innovative guided diagnostic platform for working appliance technicians. The platform simplifies complex appliance troubleshooting by walking technicians through one-question-at-a-time diagnostics - from verifying the appliance and capturing the complaint to isolating the failure - presented in a clear, field-ready way.
+
+The core product concept, visual identity, landing page, primary UX, and main feature specifications are already established. We are looking for a developer to translate this existing product vision into a functional, improved beta - not to create the product from scratch. The platform will offer both Free and Premium experiences, incorporating advanced diagnostic flows, personalization, and AI-assisted features.
+
+Key responsibilities and tasks for this project include:
+
+React / TypeScript frontend development.
+
+Implementation of user authentication and profile management systems.
+
+Design and implementation of database architecture (appliances, symptoms, diagnostic decision trees, technician accounts).
+
+Integration with AI / LLM APIs to power intelli",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 750.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,b18b5c94668e7894ab71e02bdd11c7bbac8cad382577a40989d007505f657820,2793,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40783077,Freelancer,https://www.freelancer.com/projects/ai-chatbot/Website-Chatbot-Content-Generator,Website Chatbot & Content Generator,2026-10-23T13:36:43+00:00,2026-10-23T14:05:58.159448+00:00,"I need an AI assistant that sits in my website’s chat window, confidently answers customer questions in real time, and—when prompted—spins up both written content (think emails, posts, short articles) and on-brand images. OpenAI GPT-4 or a similar LLM can handle the conversational side; DALL·E, Stable Diffusion, or another image model can cover the graphics. I’m open to the stack you prefer, as long as it delivers fast, accurate replies and fresh creative assets without sending users off-site. 
+
+Core workflow I have in mind: 
+• Visitor opens the chat widget. 
+• They ask product or service questions; the bot draws on a knowledge base I can update easily (PDFs, URLs, or manual entries). 
+• If the visitor—or my support team—requests a blog intro, a promo email, or a product mock-up, the same interface generates it on the spot and returns the file or text snippet. 
+
+I’ll provide brand guidelines, voice examples, and starter FAQs. You’ll wire up the chat front end to the LLM/image endpoints, set up secure API keys, and hand over concise documentation plus a short walkthrough call so I can maintain and extend the knowledge base myself.
+
+Acceptance criteria 
+1. Chat widget embedded and st",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 100.0 - 2500.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,30c7e92ad895df4da739c712a39844ec0f1f934bbf24c38422d8a61b0a2ffca2,1611,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40783072,Freelancer,https://www.freelancer.com/projects/b2b-marketing/Lead-Generation-for-Automation,B2B Lead Generation for AI Automation,2026-10-23T13:32:50+00:00,2026-10-23T14:05:58.171455+00:00,"Project Title: Freelance B2B Sales & Lead Generation for AI Automation – Pune, India
+
+We are building LogicSetu, an AI automation business helping manufacturing companies reduce manual work, save time and improve operational efficiency.
+
+We are looking for a freelance Business Development Executive who can identify manufacturing companies in Pune and generate genuine business opportunities for our AI automation solutions.
+
+Responsibilities:
+
+- Identify and approach manufacturing companies in Pune and nearby industrial areas.
+- Connect with company owners, plant heads, operations managers and decision-makers.
+- Visit companies in person where possible and explain our AI automation services.
+- Understand business challenges such as manual data entry, quotation preparation, repetitive reporting, order tracking and customer follow-ups.
+- Arrange meetings with interested companies so our technical team can discuss and propose solutions.
+- Maintain a report of companies contacted, decision-makers reached, problems identified and meetings scheduled.
+
+Ideal Candidate:
+
+- Experience in B2B sales, field sales, industrial sales or business development.
+- Existing contacts in manufacturing com",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,49bf7d63b0151c5c0c28bcc45093beb35612618d76acff3082dbb9e30c7445bb,2074,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40783037,Freelancer,https://www.freelancer.com/projects/azure/Senior-Camel-Integration-Support,Senior Camel Integration Support,2026-10-23T13:07:47+00:00,2026-10-23T14:05:59.188885+00:00,"I’m searching for an expert‐level integration developer who can take ownership of a mature suite of Apache Camel microservices and keep them running smoothly while we expand our Azure footprint. The day-to-day focus will be improving and supporting our existing integrations rather than building from scratch, so you’ll spend a lot of time analysing current Camel routes, refactoring Java/Groovy code, tightening Spring Boot configurations, and containerising updates for Azure Container Apps and Registry. 
+
+You’ll work across Service Bus, Key Vault, API Management, Docker, and SQL, wiring everything into our CI/CD pipeline with solid JUnit 5 coverage. Clear communication, sharp debugging skills, and a proactive attitude toward performance monitoring (Dynatrace or Splunk experience is a plus) will make you a great fit. 
+
+If you’ve carried complex integrations for a decade or more, please send: 
+• Your latest résumé 
+• A concise, detailed project proposal outlining how you would approach stabilising and enhancing an existing Camel codebase in Azure 
+• Your full-time availability and earliest start date 
+
+There’s no rigid deadline; quality and maintainability come first. I look forward to",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 150000.0 - 250000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,0961e6885e36645f2971dd5e6a153f62160048162e3ff9ff080623f06d244cd3,1254,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782988,Freelancer,https://www.freelancer.com/projects/n8n/Complete-Workflow-Automation,Complete n8n Workflow Automation,2026-10-23T12:23:27+00:00,2026-10-23T14:05:53.710362+00:00,"I need a fully-built n8n workflow that can:
+
+• move information seamlessly between my core apps, 
+• send real-time alerts or follow-up messages when specific events occur, and 
+• create or update records that arrive via forms or emails.
+
+The exact stack is still open—think Google Sheets, Gmail, Drive, HubSpot, Salesforce, Slack, or similar—but the goal is to have everything talking to each other reliably through n8n using webhooks or direct API calls. I will share credentials, field maps, and preferred timing once we agree on the best approach.
+
+Deliverables I expect:
+1. A production-ready n8n workflow file (JSON) with clear node labels. 
+2. A brief Loom or written walkthrough showing how to adjust credentials, schedules, and message templates. 
+3. Post-deployment support for any tweaks discovered during the first week of live use.
+
+The build should be clean, modular, and error-handled so future nodes can be added without breaking the chain. If you have experience setting up multi-step automations—especially those that mix data sync, notifications, and record creation—let’s get this running quickly.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 750.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,8a6a6bcbcb11aa58690f26ce9cf22203671a5f4b60585adc1524ca6a7b430dff,1116,paid_project_request,"[""\\bn8n\\b"", ""\\bwebhooks?\\b"", ""workflow automation""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782984,Freelancer,https://www.freelancer.com/projects/javascript/Web-Browser-Task-Automation-Script,Web Browser Task Automation Script -- 2,2026-10-23T12:19:39+00:00,2026-10-23T14:05:58.194994+00:00,"Every day I repeat the exact same sequence of clicks inside a web browser—open a site, sign in, navigate through a couple of pages, download a file, then trigger an upload elsewhere. I want a Python-based solution that takes this chore off my hands by reproducing each step reliably and quickly.
+
+Scope of work 
+The script’s first responsibility is to handle those repetitive steps entirely in the browser. Selenium, Playwright, or a similarly robust library is fine as long as it can drive Chrome or Edge in both headed and headless modes. All credentials, URLs, and other variables must live in an external config (JSON, .env, or YAML) so I can adjust them without touching code. Any files created or fetched should be stored in clearly named date-stamped folders, and each run needs to leave behind a simple log so I know what happened and how long it took.
+
+Deliverables 
+• Well-commented Python 3 script (.py) 
+• requirements.txt listing exact versions 
+• README that explains setup, config structure, and how to launch manually or via the OS scheduler 
+
+Acceptance criteria 
+1. On a fresh Windows 10/11 machine with only Python installed, `pip install -r requirements.txt` completes without err",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,857a32c78cf3727e67d0ab18b3f145b2b57e6f189e1ba34a4008fdf02ae7e73c,1611,paid_project_request,"[""automation script""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782862,Freelancer,https://www.freelancer.com/projects/n8n/YouTube-Video-Producer-With-Automation,YouTube Video Producer With N8N Automation System Needed ,2026-10-23T10:30:16+00:00,2026-10-23T14:05:53.720356+00:00,"Hi,
+
+We’re looking for a long-term partner with a pre-built N8N youtube automation system, and experience running it, to support our team. This is not a one-time collaboration, but a partnership where we’ll promote the service and forward the orders to the partner(s) we select. 
+
+We produce custom animations and explainer videos and we want to start offering complete YouTube automation packages to our clients. Ideally, you already have a working N8N YouTube automation system and can operate it for us at low reseller prices.
+
+If you’re interested, please start your bid with “N8N” and answer these questions:
+1. Do you already have a working, pre-built n8n YouTube automation system? If so, tell us more about your system. 
+2. Can you operate the system for us at the following prices?
+• Channel setup – $10: Channel branding, logo, banner, intro, SEO and channel keywords.
+• 10 long videos + 10 Shorts – $50: Ideas, scripts, AI voice-over, visuals, editing, thumbnails, uploading and SEO.
+• 15 long videos + 15 Shorts – $75: Same complete service as above.
+4. Can your system handle the entire process, including branding, scripts, voice-over, visuals, subtitles, thumbnails, SEO and YouTube up",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),"[""$10"", ""$50"", ""$75""]",[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,4feeec1cd8e49b438415783479fd6652bfd37e881673e55a8080283d75267347,1568,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782608,Freelancer,https://www.freelancer.com/projects/telegram-api/Telegram-Paid-Channel-Bot-Setup,Telegram Paid Channel Bot Setup,2026-10-23T07:27:40+00:00,2026-10-23T14:05:57.152777+00:00,"I already run a public Telegram channel and now need a bot that handles the entire pay-wall flow for a second, members-only channel. Here’s exactly what I want it to do:
+
+• Collect payment exclusively through Telegram Stars. 
+• Upon successful payment, generate and deliver a unique, private invite link to the paid channel. 
+• Grant each buyer one-time, permanent access; no renewals or subscription logic is required. 
+• Operate hands-off after deployment, so I can focus on content while the bot manages entry.
+
+Please build, configure, and test the bot (Telegram Bot API, payments configuration, webhook or cloud function—use whichever stack you prefer) and provide clear instructions so I can adjust prices or links later. Speed matters: I’d like this running as soon as possible without compromising security or compliance with Telegram’s policies.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,515253a15554e2bf5934204129d81d79267bbc148aeac45d157967b7124b5bf6,854,paid_project_request,"[""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782543,Freelancer,https://www.freelancer.com/projects/postgresql/React-Python-Business-Dashboard,React & Python Business Dashboard,2026-10-23T06:40:49+00:00,2026-10-23T14:05:56.104716+00:00,"I need a full-stack web app built with React JS on the front end and Python on the back end that works seamlessly as both an internal website and a responsive PWA. The goal is a unified business dashboard that lets me oversee every operational area without bouncing between different tools. 
+
+What the platform must cover 
+• Customers, leads, and sales 
+• Staff, tasks, and schedules 
+• Stock, orders, and deliveries 
+
+Who will be logging in 
+• Business owners and managers 
+• Sales and customer-support staff 
+• Warehouse and delivery staff 
+
+
+
+
+
+
+
+Core requirements 
+– Clean React component architecture, state handled with Redux or Context, and charts/tables rendered with a proven library such as Recharts or Chart.js. 
+– Python API (FastAPI or Django REST is fine) that exposes secure endpoints, supports token-based authentication, and scales for future mobile apps. 
+– Role-based access so each user group only sees the modules they need. 
+– Realtime updates for inventory and task status, preferably via WebSockets. 
+– PostgreSQL (or another SQL engine) for structured data plus clear migrations and seed data. 
+– Dockerised dev/production setup and step-by-step deploy docs for a VPS or AWS ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,0c0399880c26d7c07b49fe1e336ca85789d6b558e8bfa49007ba80cbc7b37f73,1583,paid_project_request,"[""\\bfastapi\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782504,Freelancer,https://www.freelancer.com/projects/ai-video-editing/Build-Automated-Local-Video-Studio,Build Automated Local AI Video Studio,2026-10-23T06:11:57+00:00,2026-10-23T14:05:53.731358+00:00,"I am seeking an expert AI Systems Specialist / Technical Director to configure and optimize a high-performance local AI production server. The goal is to build an end-to-end automated pipeline for producing hyper-realistic AI mini-series featuring consistent realistic characters, lip-synced dialogues, cinematic editing, and automated multi-platform publishing (Instagram, TikTok, Facebook, along with NSFW variants for premium platforms).
+
+Server Hardware & Environment
+OS: Ubuntu 26.04 LTS
+CPU: Intel Core Ultra 9 285K (24 Cores / 24 Threads)
+GPU: NVIDIA GeForce RTX 5090 (32 GB VRAM, Driver 595.84, 575 W power limit)
+RAM: 60 GB System Memory
+Storage: 2 TB Samsung 9100 PRO NVMe SSD
+
+Key Responsibilities & Scope of Work
+Server Setup & Stack Configuration:
+
+Complete Ubuntu environment setup optimized for PyTorch, CUDA, and high-vram local inference.
+Deployment and tuning of ComfyUI, Open WebUI, and n8n.
+AI Character & Video Production Pipeline:
+Build advanced ComfyUI workflows leveraging SOTA open-source video/image models.
+Implement character consistency tools using LoRAs and IP-Adapter/ControlNet pipelines.
+Integrate lip-sync and dialogue tools (e.g., LivePortrait, MuseTalk, ElevenLabs",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,ad327ec7960ae33aa3948a54cc388e792a12936e7a5a9f9bbce95e731156f2da,2411,paid_project_request,"[""\\bn8n\\b"", ""API integration""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782454,Freelancer,https://www.freelancer.com/projects/ai-chatbot/Full-Stack-Developer-Needed-for,Full-Stack Developer Needed for a Basic AI-Powered E-commerce Website,2026-10-23T05:40:56+00:00,2026-10-23T14:06:01.169877+00:00,"Project Description
+
+I’m looking for a full-stack developer to build a basic e-commerce website for my business with a few AI-powered features.
+
+The goal is to create a simple, modern, and user-friendly website where customers can browse products, search for items, and interact with an AI chatbot. I have a limited budget for the initial version, so I want to focus on the main features first and improve the website over time.
+
+I’m looking for someone who can suggest a suitable technology stack and deliver a working, basic version within the agreed budget.
+
+Key Requirements
+
+Develop a responsive e-commerce website.
+
+Create product listings and categories.
+
+Add basic product search and filtering.
+
+Implement a shopping cart.
+
+Create basic user registration and login.
+
+Integrate a simple AI chatbot using an existing AI API.
+
+Build a basic admin panel to manage products.
+
+Use Python with Flask or Django for the backend.
+
+Connect the frontend and backend using APIs.
+
+Test the main features and provide the source code.
+
+Required Skills
+
+Python and Flask or Django
+
+React.js or basic frontend development
+
+HTML, CSS, and JavaScript
+
+REST API integration
+
+Database management
+
+Basic AI chatbot ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 3000.0 - 4000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,76712ef2d476f5e2cbe7cc30e477537390fa3b5ed8ba392c99049b98484eaead,1880,paid_project_request,"[""API integration""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782295,Freelancer,https://www.freelancer.com/projects/Make-com/Build-Email-Automation-MVP-BCcGuardDog,Build AI Email Automation MVP “BCcGuardDog”,2026-10-23T03:27:46+00:00,2026-10-23T14:05:54.529209+00:00,"Job Title: Low-Code/Backend Developer: Asynchronous AI Email Automation (Make.com + Node.js/APIs)
+
+Project Overview:
+I am looking for a talented automation and backend developer to build a lightweight MVP for an asynchronous, email-first administrative tool. 
+
+Crucially, this system has no web portal, app dashboard, or frontend user interface. It operates 100% via email forwarding, BCC, and automated asynchronous workflows. The user interface is strictly the inbox.
+
+Our Core Tech Stack:
+* Workflow/Orchestration: Make.com (or lightweight custom backend where appropriate)
+* Email Routing & Parsing: Postmark or SendGrid (Inbound webhooks handling attachments)
+* AI Brain: OpenAI or Anthropic API (Factual extraction & classification, temperature 0.2)
+* Database & Billing: Stripe API + a lightweight database layer (PostgreSQL or secure Airtable base)
+
+The 3 Core Asynchronous Workflows Required:
+1. Inbound Document Parsing: A webhook that catches forwarded emails, identifies user context, securely extracts text from an attached file (PDF/DOCX), passes it to an AI engine for analysis, and replies back to the user with a formatted report.
+2. Contextual Email Comparison: A webhook that liste",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,97f5bd905606a8512be3e6d32a7f14b69be32f585ada69bdad2a7869f0bbd1e3,2717,paid_project_request,"[""\\bmake\\.com\\b"", ""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782245,Freelancer,https://www.freelancer.com/projects/rpa-development/UiPath-Web-Report-Automation,UiPath Web Report Automation,2026-10-23T02:42:07+00:00,2026-10-23T14:06:07.421506+00:00,"I need a UiPath workflow that signs in to our browser-based reporting site with a simple username/password, retrieves different reports, distills each one to the key metrics we track, and writes those figures into the existing cloud Excel workbooks that power our live dashboard. The robot must loop every five minutes, so solid scheduling through Orchestrator (or an equivalent trigger) and reliable exception handling are essential.
+
+Please build the solution in UiPath Studio, using standard browser automation (no client-side extensions that would block frequent runs) and the Office 365 / Excel Online activities for writing data. Each run should end with a short log entry confirming success or flagging any issues so we can intervene quickly.
+
+Deliverables:
+• Fully documented UiPath project (.xaml files, config) 
+• Credentials vault or secure string approach for the website login 
+• Orchestrator (or Windows Task) schedule set to a 5-minute interval 
+• Step-by-step guide for deployment and future maintenance 
+
+I’ll provide sample credentials, the report URLs, and a template of the cloud workbooks once we agree. Let me know your estimated turnaround time and any clarifying questions.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,d3d02125c48a38e09c38dc04694311a759fd9fffb1ec2a731d394b2ac8a483fa,1197,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782161,Freelancer,https://www.freelancer.com/projects/data-analysis/NSE-Excel-Data-Dashboard-Automation,NSE Excel Data Dashboard Automation,2026-10-23T01:33:30+00:00,2026-10-23T14:06:07.427506+00:00,"Want to fetch nse data on excel sheet. Mainly open interest % change, volume,LTP & sectoral heat map.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,fd4b8fa97f8bbfddc5b39b66a7760b524e5ab52ef82e9f6b2185f16b03e7723c,101,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782067,Freelancer,https://www.freelancer.com/projects/ui-design/FORGEAI-Complete-Existing-MVP,FORGEAI – Complete Existing MVP of an Engineering Decision Intelligence Platform (Next.js + FastAPI),2026-10-22T23:58:32+00:00,2026-10-23T14:05:56.120720+00:00,"# Project Overview
+
+I am building **FORGEAI – Engineering Decision Intelligence (EDI)**, a B2B software platform designed to improve engineering workflow verification, quality control, evidence traceability, and work-package readiness in industrial infrastructure projects.
+
+The initial target use case is the **Hydro-Mechanical (H&M) department, specifically penstock fabrication and inspection workflows in pumped-storage hydropower projects**.
+
+An initial codebase and MVP foundation already exist. I am looking for an experienced full-stack developer to review the existing code, fix bugs and integration issues, complete the core workflows, and deliver a stable, demonstrable MVP. I do not want an unnecessary complete rewrite.
+
+## Existing Technology Stack
+
+- Frontend: Next.js, React, TypeScript
+- Backend: Python, FastAPI
+- Database: SQLAlchemy with SQLite in the current development setup
+- API integration: REST APIs
+- Existing modules include templates, a Rules Builder, work packages, verification, and related engineering workflow functionality.
+
+The freelancer must first inspect the existing codebase and propose a realistic implementation plan before making major architectural change",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,8e12e3d3cf7dabec9972ceb4e6d686aa5cda1268ba4c88e62be4993e2068628a,7079,paid_project_request,"[""\\bfastapi\\b"", ""API integration""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40782065,Freelancer,https://www.freelancer.com/projects/n8n/SEO-Autopilot-Setup,n8n SEO Autopilot Setup,2026-10-22T23:58:03+00:00,2026-10-23T14:05:53.746355+00:00,"I run a taxi company website built on Sanity CMS that already hosts about 100 location-focused pages. I now want to place the entire SEO / AEO / GEO workload on digital autopilot with n8n at the core.
+
+Scope of the first phase 
+– The initial workflows should concentrate on generating fresh, fully optimised content, turning it into Sanity drafts for my manual approval, then tracking how the new or updated pages perform in Google. Improving existing pages must be part of the same loop.
+
+What I expect the automation to do 
+1. Pull keyword, location and intent data, create new outlines or snippets, and push them into Sanity as draft documents. 
+2. Notify me when a draft is ready; on my approval, publish it and trigger a resubmit to Google Search Console. 
+3. Create quality backlinks from relevant websites with high DA/DR and low spam scores
+4. Record ranking changes, impressions and clicks for every page so I can see gains at a glance. 
+5. Lay the groundwork for later add-ons that will manage business listings, reviews and social accounts in a similar hands-off fashion.
+
+Technical stack 
+n8n will orchestrate everything, talking to the Sanity Content API and Google tools. If extra conne",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,326f0f6c5227543f0b9ea0d5f480c2645742d684cd91b42b3abebe5a067c41a7,1732,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40781757,Freelancer,https://www.freelancer.com/projects/telegram-api/Telegram-Automation-Script-for-Marketers,Telegram Automation Script for Marketers,2026-10-22T19:03:34+00:00,2026-10-23T14:06:12.491206+00:00,"I want to add a new, production-ready Telegram automation script to my portfolio of marketing tools—this one aimed squarely at professional marketers and agencies. The goal is to streamline repetitive chat tasks, free up campaign managers’ time, and offer them a plug-and-play solution they can deploy under their own brand.
+
+Here is what matters most to me:
+• Commercial-grade code. A clean, well-documented code-base (Python or Node.js preferred, but I’m open to stronger arguments for something else) that I can maintain and extend after delivery. 
+• Easy deployment. The script should work out-of-the-box on a typical VPS or in Docker, with a concise setup guide. 
+• White-label ready. Clear configuration files, language files, and a straightforward licensing check so I can package and resell. 
+• Marketing-centric features. While we’ll pin down the exact feature list together, everything should focus on the day-to-day workflow of agencies—think lead capture hooks, broadcast logic, basic analytics endpoints and other quality-of-life touches that teams expect. 
+
+Process 
+We’ll move in short milestones: initial architecture proposal, MVP, polish & packaging. Each stage closes with a quick ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 2.0 - 8.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,1076ac1694a7db32986233b4566164db2d48fbb0c53d267f7feab18acb0b86ce,1499,paid_project_request,"[""automation script""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40781375,Freelancer,https://www.freelancer.com/projects/api/Experienced-Python-Developer-Needed,Experienced Python Developer Needed – Bybit Early Pump & Dump Detector,2026-10-22T14:25:34+00:00,2026-10-23T14:06:12.504915+00:00,"I have an existing, fully functional Bybit cryptocurrency trading bot and need an experienced developer to integrate an additional independent module.
+
+**Module: Early Pump & Dump Detector**
+
+**Main requirements:**
+- Early detection of PUMP and DUMP movements across Bybit USDT Perpetual pairs.
+- Real-time analysis of volume, order flow, liquidity, and price momentum.
+- Automatic LONG/SHORT entries with signal validation.
+- Dynamic leverage and strict risk management.
+- TP1 (20%), TP2 (20%), and TP3 (60%).
+- Adaptive ATR Chandelier trailing stop to maximize trend-following opportunities.
+- Full integration with my existing bot without disrupting current functionality.
+- Backtesting and Bybit Demo Trading validation.
+
+The existing bot already includes trading infrastructure and ATR Chandelier functionality that should be reused.
+
+**Important:** I need an additional module, NOT a new trading bot.
+
+Please provide your fixed price, estimated delivery time, and relevant Bybit API/trading bot experience.
+
+Full technical specifications will be provided.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 750.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,bbd2a0da92ec9226e867920dcb85b833d17693701c660b3472c9252dd96f1cfd,1061,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40781327,Freelancer,https://www.freelancer.com/projects/algorithmic-trading/Optimize-Nifty-Options-Trading-Bot,Optimize Nifty Options Trading Bot,2026-10-22T13:56:12+00:00,2026-10-23T14:06:12.515812+00:00,"My intraday bot has been paper-trading Nifty options successfully, but before I let it handle real money I need its decision logic sharpened. I already have the full source code; what I’m looking for is a developer who can study the existing entry-exit rules and make them statistically tighter so that every live signal is based on sound, test-backed probabilities.
+
+Key focus 
+• Improve the rule set: refine indicators, filters or pattern-recognition modules so the bot avoids low-quality setups. 
+• Embed a hard stop-loss on every position so risk is capped automatically. 
+• Keep the current framework intact—no need to change the language or architecture unless that directly boosts accuracy or execution speed.
+
+Deliverables 
+1. Revised code with the enhanced trading logic and per-trade stop-loss parameter. 
+2. Back-test report showing performance over at least the past six months of Nifty options data, contrasted with the current version. 
+3. A brief hand-off note explaining new parameters so I can tweak them later.
+
+I will provide the repository, past trade logs and my metric targets the moment we start. If your improvements beat the benchmark on win-rate and max drawdown, we are goo",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,8688c762bbec2a2c9fde6adfdb3c762a68dbb60a919d0bc52e26c1bf23ae0596,1228,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40780885,Freelancer,https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780885,Complete SocioVik - AI Creative & Social Media SaaS -- 2,2026-10-22T08:15:40+00:00,2026-10-23T14:05:53.761878+00:00,"We need an experienced full-stack developer or team to complete our existing Bolt.new platform into an AI-powered SaaS for agencies, brands, and creators.
+
+Core workflow: Brief/prompt → AI creative generation or upload → captions → approval → scheduling/publishing → analytics.
+
+The platform must combine AI images, videos, and UGC with Publishing & Scheduling, Analytics & Reporting, Engagement, Review Generation, Collaboration, and White Label.
+
+Review the existing code and latest Bolt audit, preserve working features, and map all issues and requirements to an agreed delivery checklist.
+
+PHASE 1 — Fixes, Social Connections, Publishing & Analytics
+
+Priority: bug fixes → social connections → posting → scheduling → advanced publishing → reporting.
+
+Audit and fixes: Resolve existing frontend/backend bugs, authentication/Google login, roles, workspace isolation, database/build issues, security, media storage, existing AI workflows, credits, Razorpay billing, admin/CMS, and mobile defects. Verify scheduler/n8n workflows; establish staging, monitoring, and critical tests.
+
+Social connectors: Implement native APIs, a third-party connector, or a hybrid solution. Prioritize Facebook, Instagra",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 200.0 - 400.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,64af1db0c904e3ec485068ca82061937d13e718a945802270302004a6d250afb,5557,paid_project_request,"[""\\bn8n\\b"", ""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40780871,Freelancer,https://www.freelancer.com/projects/bot-development/Multi-Site-Stock-Alert-Bot,Multi Site Stock Alert Bot,2026-10-22T08:06:25+00:00,2026-10-23T14:06:12.526715+00:00,"I need a reliable bot that keeps an eye on several named retail sites and instantly tells me through Telegram or Discord the second a product switches from “out of stock” to “available.” Nothing more complex than that for now—no auto–checkout, just accurate, real-time alerts so I can handle the purchase myself.
+Possibly similar to Stellaaio or valor but a more user friendly simple option for more personal use 
+
+Core expectations 
+• Continuous monitoring of the sites I specify, with easy editing so I can add or remove URLs later. 
+• Detection must be fast enough to beat standard browser refreshes; seconds matter. 
+• Alert formatting that clearly shows product name, price, direct link and the exact time the change was detected. 
+• A simple config file or dashboard where I can paste new product URLs and set keywords or size filters when needed. 
+• auto captcha if possible 
+•join the queue with multiple profiles for the best position at launch",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",GBP 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,a47b8d80fb976006aaabe2c5225f670bb3d72f5790d322e14c828ea84ed65993,953,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40780863,Freelancer,https://www.freelancer.com/projects/game-ai-programming/Driven-Game-Player-Development,AI-Driven In-Game Player Development,2026-10-22T08:01:01+00:00,2026-10-23T14:06:12.541004+00:00,"I’m looking for a developer to design and build an AI system that controls in-game characters so they look and behave like real players. The goal is to make the world feel more populated and alive.
+
+What the AI characters should do
+
+Move around the world naturally: walking routes, idling, sitting, travelling between towns and hunting areas
+Level up and grind mobs the way a real player would
+Use skills and combos that suit their clan/class (Shaolin, Wudang, Beggar, Eunyeon, Heaven, Sacred Alliance, etc.)
+Have realistic gear, names and appearances for their level
+[Optional] Chat now and then with simple, context-aware messages (greetings, emotes, short replies)
+[Optional] Join parties, respond to trades or duel requests, or take part in clan wars
+Vary in skill level and play style so they don’t all act the same
+Stay controllable by admins: spawn/despawn, set how many are active, set behaviour profiles
+
+Technical details
+
+Server files: [e.g. C++ server source / emulator name / version]
+Database: [e.g. MSSQL / MySQL]
+Preferred approach: [server-side fake players / headless clients / open to suggestions]
+Must not noticeably hurt server performance with [X] AI characters running at the s",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",GBP 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,ebd57ad605860ef92e32ed9ce5a2a5371ee0bfd7235f2d8b247f023aab2a6712,1661,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40780755,Freelancer,https://www.freelancer.com/projects/full-stack-development/Full-Stack-Web-App-40780755,Full-Stack AI Web App,2026-10-22T06:47:15+00:00,2026-10-23T14:05:56.155931+00:00,"I need an experienced engineer who can take an AI-powered web application from concept to production. The core of the project is building a modern, scalable application that leverages machine-learning models to deliver real-time intelligence through a clean, responsive interface.
+
+Here’s the flow I have in mind: set up a secure, cloud-ready backend (Python/FastAPI or Node.js), connect the appropriate ML models—whether via OpenAI, Hugging Face, or custom-trained pipelines—and surface the results in a front-end built with React or Vue. Containerisation with Docker, automated testing, and CI/CD are essential so the app can be deployed smoothly to AWS or GCP. I’ll need clean, well-documented code in Git, a straightforward setup guide, and your support during the initial launch.
+
+If you have a portfolio that shows end-to-end AI web projects, and you’re comfortable handling both data pipelines and polished UI work, let’s talk details and timelines.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,92d773177f67d846388fcdbcd5f41318b31bede73e56941a8731e65ef24b8b9f,956,paid_project_request,"[""\\bfastapi\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40780416,Freelancer,https://www.freelancer.com/projects/ai-automation/Orchestration-Agent-Setup-Codex-Claude,Ai Orchestration Agent Setup (Codex + Claude Code),2026-10-22T02:21:44+00:00,2026-10-23T14:05:53.828137+00:00,AI Automation Developer Needed — OpenHands / n8n Orchestration Setup (Codex + Claude Code),,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,28cfcbbc8cf2db35cc82d1cfa8d854954ee93ae45a36252a68c7f5d15a10cf10,90,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40780332,Freelancer,https://www.freelancer.com/projects/chatbot-development/WhatsApp-Support-Chatbot-Development,WhatsApp Support Chatbot Development,2026-10-22T00:49:02+00:00,2026-10-23T14:06:12.570621+00:00,"I need an automated WhatsApp chat bot that can handle customer support queries from start to finish. The bot should:
+
+• Connect to my WhatsApp Business number through an approved API provider (e.g., WhatsApp Business API, Twilio, or a similar gateway). 
+• Greet users, capture their name / order number, and answer common FAQs drawn from a simple knowledge base I will supply. 
+• Escalate to a live agent only when the bot cannot resolve the question, handing over the full chat history. 
+• Log every interaction to a Google Sheet or lightweight database so I can review conversation quality and response times.
+
+I will provide the FAQ content and any brand tone guidelines. You will configure the flow, implement quick-reply buttons where possible, test end-to-end, and deliver clear setup instructions so I can maintain or expand the bot later.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,dab3238cc957d1d5f6b33bd62249800e2c4c4f1d9da6942d472649548a0b9ccd,846,paid_project_request,"[""bot development""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40780251,Freelancer,https://www.freelancer.com/projects/supabase/Supabase-Stripe-Netlify-backend-for,"Supabase + Stripe + Netlify backend for a finished lawn bowls web app: sign-in, 30-day trial, annual subscriptions, access lock",2026-10-21T23:05:12+00:00,2026-10-23T14:06:08.238515+00:00,"I own Bowls Draw, a web app that helps social lawn bowls coordinators pick fair teams each week.
+The app and the marketing website are finished and live on two Netlify sites. I need an experienced
+developer to build the account and payment layer around them. I am not asking for a rebuild.
+What you would build
+• Sign-up, sign-in, password reset and email confirmation with Supabase Auth.
+• A 30-day free trial with no card, tracked in the database, with reminder emails at 14, 7 and 1
+days before it ends.
+• Stripe subscriptions in AUD: Individual $49 a year (1 login) and Club $99 a year (3 coordinator
+logins). Annual auto-renewal, receipts, failed-payment handling, Customer Portal, webhooks.
+• Access gating on Netlify: the app only opens for a live trial or a paid year. When access ends it
+locks, with no grace period.
+• One active session per login.
+• Online cancellation, a My Account page, and a simple admin panel for me.
+• Transactional emails (welcome, reminders, receipts, cancellation) with my wording.
+• Documentation and a clean handover to a repository and accounts that I own.
+
+Why this is a good project
+• The front end, pricing, business rules and customer flow are already decid",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",AUD 750.0 - 1500.0 (fixed),"[""$49"", ""$99""]",[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,970e406c0507cce10b0c45af1e28243ba5841b3586753b037c147da46bfb1ca9,2637,paid_project_request,"[""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40779952,Freelancer,https://www.freelancer.com/projects/ai-agents/PerfGuard-Agent-Development,PerfGuard AI Agent Development,2026-10-21T18:10:30+00:00,2026-10-23T14:05:56.162931+00:00,"Here are the full details:
+
+What PerfGuard Agent does:
+
+Developer opens a GitHub PR
+PerfGuard automatically scans the changed code
+AI identifies performance risks (slow queries, memory leaks, N+1 problems)
+Posts analysis as PR comment with risk score
+Teams notification with findings
+
+
+1 (setup + GitHub):
+
+- Create Flask/FastAPI app
+- GitHub webhook to receive PR events
+- Extract changed files from PR
+
+(AI analysis):
+
+- Send code diff to OpenAI
+- Analyze for performance issues
+- Generate risk score + recommendations
+
+(output + demo):
+
+- Post results as GitHub PR comment
+- Send Teams notification
+- Live demo with real PR
+
+GitHub PR opened
+ ↓
+PerfGuard webhook triggered
+ ↓
+Scan changed files (code diff)
+ ↓
+AI analyzes performance risks
+ ↓
+Risk score: HIGH / MEDIUM / LOW
+ ↓
+Post comment on PR
+ ↓
+Teams notification
+ ↓
+HTML report",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",CAD 10.0 - 30.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,0a2cfa8a4dcd78a41ed914eed9b84aa4ccf38e4e92c952c330d9c691a21d7cd2,836,paid_project_request,"[""\\bfastapi\\b"", ""\\bwebhooks?\\b"", ""AI agents?""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40779813,Freelancer,https://www.freelancer.com/projects/natural-language-processing/Sentence-Level-Plagiarism-Tool,AI Sentence-Level Plagiarism Tool,2026-10-21T16:35:58+00:00,2026-10-23T14:05:56.177744+00:00,"The project is to build a web-based plagiarism checker that can ingest large documents (10,000+ words) in PDF or DOCX format, scan every sentence, highlight any matches it finds, and instantly generate an English-only rephrased version that preserves the author’s intent. The user should be able to upload three to five files in a single batch, see colour-coded plagiarism highlights on screen, accept or reject each auto-rewrite, then download the fully updated document as a single DOCX file.
+
+Core expectations 
+• Accurate, sentence-level comparison against the major public web and academic indexes. 
+• Fast in-memory processing for files of 10k words or more without timeouts. 
+• High-quality rephrasing powered by modern NLP (e.g., Transformer or GPT-style models) with meaning retention checks. 
+• A clean browser interface: drag-and-drop upload area, progress indicators, side-by-side original vs. rewritten sentences, final one-click DOCX export.
+
+Deliverables 
+1. Fully functional application (frontend + backend) deployable on a standard cloud VM or Docker. 
+2. Source code with installation guide and model-training or API-integration notes. 
+3. Test suite covering PDF/DOCX ingestion, de",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,eddfaa23287ed19658e2ddcabcae99af117f554e0a7daa7f14c31135308ef16c,1825,paid_project_request,"[""\\bfastapi\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40779763,Freelancer,https://www.freelancer.com/projects/n8n/WhatsApp-Auto-Messaging-Setup,n8n WhatsApp Auto-Messaging Setup,2026-10-21T15:51:28+00:00,2026-10-23T14:05:53.831137+00:00,"I need an n8n workflow that connects to my WhatsApp Business account and fires off automated messages without manual intervention. The goal is to handle three use-cases—promotions, time-sensitive notifications, and gentle reminders—while pulling in personalized user data so every chat feels 1-to-1 rather than a blast.
+
+Here is what I have in mind:
+
+• The trigger can be either a webhook, a schedule, or a call from an existing REST endpoint—whichever you feel is the cleanest way to pass user-specific variables such as name, order number, or appointment date into the workflow. 
+• n8n should then format the message, inject the variables, and hit the WhatsApp Business API (or your preferred gateway) to send it. 
+• I’d like a simple success/fail log so I can track delivery and catch any API errors quickly. 
+
+You’re free to suggest nodes, credentials handling, or helper services that keep the setup lightweight and secure. Once complete, I’ll need the .json export of the workflow plus a brief step-by-step so I can replicate it in another instance.
+
+If you have previous experience combining n8n with WhatsApp, especially for personalized campaigns, let’s talk details and timelines.
+
+Project:",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,c336cf5ed833452587701b9a870081e48aa5349480df4a76bd11d2f745606418,2029,paid_project_request,"[""\\bn8n\\b"", ""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40778969,Freelancer,https://www.freelancer.com/projects/software-development/Freelancer-Setup-Database-Leads-Otomasi,Freelancer Setup Database Leads & Otomasi Penjualan,2026-10-21T06:05:55+00:00,2026-10-23T14:05:53.848136+00:00,"Kami sedang mencari freelancer untuk membuat sistem database dan otomatisasi leads menggunakan platform no-code database berbasis PostgreSQL untuk menampung sekitar 100k–200k data. Lingkup pekerjaan mencakup pembuatan alur otomatisasi (n8n / Make) untuk penarikan data iklan, pembagian prospek ke tim sales, pencegahan duplikasi data, integrasi WhatsApp gateway, serta pengaturan hak akses pengguna.
+
+Budget, biaya, dan durasi pengerjaan akan dibahas once sudah clear on the scope",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,a6c883c047d7cd403b9411a6bc8b5a12a30c464d46815d05dae10f48cb56624a,480,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40778859,Freelancer,https://www.freelancer.com/projects/ai-agents/Agents-for-School-Automation,AI Agents for School Automation,2026-10-21T04:35:59+00:00,2026-10-23T14:05:56.186740+00:00,"I’m building a cloud-based platform that lets schools and colleges hand off routine academic and administrative work to practical AI agents. The first release will centre on AI agents and, more specifically, data-analysis agents that can crunch institutional data and surface insights educators can act on immediately. 
+
+Here is what I need from you: 
+• Architect and code the core agent framework so multiple institutions can be onboarded under one roof without any data leakage. 
+• Train and fine-tune the data-analysis agents to ingest grades, attendance records, and other common SIS/LMS exports, then return clear dashboards or API responses that teachers, administrators, and management can use day-to-day. 
+• Wrap everything in an intuitive web interface (or expose a clean REST/GraphQL layer) so non-technical staff can trigger, monitor, and interpret each agent’s output with minimal hand-holding. 
+• Provide deployment scripts, unit tests, and concise documentation so future agents—for example chatbots or scheduling assistants—can be plugged in effortlessly.
+
+I’m tech-agnostic on the exact stack, though Python with scalable frameworks such as FastAPI, LangChain, and either TensorFlow o",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 37500.0 - 75000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,0c4aaeea83157af4d3a9298d5a0a08c6c81e483a4afe22da818d11f54af5abd3,1391,paid_project_request,"[""\\bfastapi\\b"", ""AI agents?""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40778857,Freelancer,https://www.freelancer.com/projects/supabase/Multi-App-School-PWA-Supabase,"Multi-App School PWA, Supabase",2026-10-21T04:30:32+00:00,2026-10-23T14:06:08.265584+00:00,"Build PPB Haldia school platform: 6 apps (Student, Teacher, Staff & Security, School Admin, Transport, Super Admin) on one Supabase backend.
+Email/Google login; accounts created only by the role above.
+Strict RLS, audit log, private documents.
+Live bus GPS, UPI receipts.
+English/Hindi/Bengali, mobile PWA.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,82790d776bd893e13abc85df7113f55d9f67e08280a5773121baba2796d7cc44,306,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40778363,Freelancer,https://www.freelancer.com/projects/chatbot-development/Bot-WhatsApp-con-env-correos,Bot WhatsApp con envío de correos,2026-10-20T19:45:24+00:00,2026-10-23T14:05:57.174783+00:00,"Necesito un bot que se instale en mi línea de WhatsApp Business y actúe como primer punto de atención al cliente. Su trabajo será conversar de forma natural, responder las preguntas más frecuentes y ofrecer información detallada sobre nuestros productos y servicios. 
+
+Cuando el cliente complete un formulario dentro del chat, el bot debe tomar ese documento, generar un correo personalizado y enviarlo automáticamente a la dirección que corresponda; todo esto sin intervención humana, salvo en casos que yo mismo indique. 
+
+Espero recibir un flujo totalmente configurado (Webhook, WhatsApp Business API o Twilio, según tu preferencia) y un panel sencillo para ajustar respuestas, plantillas de correo y credenciales SMTP. El proyecto queda completo cuando: 
+• el bot responde FAQs y consultas de catálogo sin errores, 
+• captura el formulario en PDF/HTML, lo adjunta y envía el correo al destinatario correcto, 
+• guarda cada interacción en un simple dashboard o en Google Sheets para seguimiento. 
+
+Si dominas Python, Node.js o herramientas no-code que integren ambas funciones, dime cómo lo harás y el tiempo estimado. Quiero algo estable, fácil de mantener y, sobre todo, listo para usar.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 10.0 - 30.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,d22e6c9719c66c8cac903eff68cc1ff44b6793f949e6b32eea64a9384051aec9,1192,paid_project_request,"[""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40777837,Freelancer,https://www.freelancer.com/projects/nextjs/Backend-API-Integration-for-Lead,Backend API Integration for Lead Intake & Authentication System,2026-10-20T13:15:45+00:00,2026-10-23T14:05:57.186237+00:00,"Project Overview:
+The project is a Next.js lending pre-qualification application built with TypeScript, Supabase Postgres, and Prisma. We need a developer to complete and secure the backend API integrations for lead intake and authentication.
+
+Tech Stack:
+
+Next.js (App Router) with TypeScript
+Supabase Postgres (Prisma ORM)
+NextAuth.js for authentication
+Vercel deployment
+Integration Tasks:
+
+1. Lead Intake Webhook Integration
+Complete the existing webhook endpoint at /api/webhooks/lead
+Ensure HMAC signature verification is working correctly
+Validate webhook payload with Zod schema
+Implement proper idempotency handling (prevent duplicate leads)
+Store leads in Supabase database via Prisma
+Return appropriate HTTP responses (200/202/422/401)
+
+2. Authentication System Setup
+Complete NextAuth.js configuration (currently basic setup in /src/lib/auth)
+Implement secure session management
+Set up organization-based multi-tenant authentication
+Create user login/logout functionality
+Implement password reset flow
+Add user invitation system for team members
+
+3. TidyCal Webhook Integration
+Secure the /api/webhooks/tidycal endpoint
+Implement webhook signature verification or token-based auth
+Parse b",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,63617de8480409f6243f84b095b9e0e06869800ea9aed5bcac7eaff1eb5cea88,1749,paid_project_request,"[""\\bwebhooks?\\b"", ""API integration""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40777273,Freelancer,https://www.freelancer.com/projects/ai-model-development/Python-GenAI-Image-Recognition-Platform,Python GenAI Image Recognition Platform,2026-10-20T07:04:13+00:00,2026-10-23T14:05:56.194740+00:00,"I’m building a production-ready image-recognition web app that works exclusively with photographs. The core tasks are facial recognition and general image classification; object detection could be added later, but it is not part of this first milestone.
+
+You’ll take the project end-to-end: model selection or fine-tuning (TensorFlow / PyTorch, OpenCV, or a comparable GenAI framework), a RESTful API layer, and a lightweight front-end where users can upload images and see results. I already have an AWS account plus a small labelled photo set; you’ll help expand the dataset and optimise accuracy.
+
+The workflow I’m envisioning:
+• Users upload a photo → backend securely stores it, runs preprocessing, then either returns a face-match report or a classification label set with confidence scores. 
+• All calls are authenticated with JWT and logged. 
+• Results must come back in under half a second for a 1080p image on a t3.medium instance. 
+
+Deliverables 
+• Clean, well-commented Python code (preferably FastAPI) packaged in Docker 
+• Front-end (React / Next.js or similar) for upload and result display 
+• Unit & integration tests covering 80 % of the codebase 
+• README and deployment script for ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 100.0 - 400.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,e12e6ce4a3cea6f4a967f09ee321aebda8700fa3d67352eb38d5bced7e3b948b,1721,paid_project_request,"[""\\bfastapi\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40776529,Freelancer,https://www.freelancer.com/projects/claude/Claude-Integration-Specialist-Project,Claude AI Integration Specialist (Project-Based / Remote),2026-10-19T20:46:55+00:00,2026-10-23T14:06:06.617189+00:00,"Claude AI Integration Specialist (Project-Based / Remote)
+
+Personal Sedan Services is a luxury chauffeured transportation company based in Las Vegas. We’ve been in business since 2000 and run 50+ vehicles, serving executives, conventions, VIP events, and airport transfers locally and nationwide. We’re looking for an experienced AI consultant for a project to integrate Claude (by Anthropic) into our day-to-day operations.
+
+Project scope:
+
+Connect Claude to our business tools: Gmail, Google Calendar, Google Drive, Slack, and our dispatch software (Limo Anywhere)
+Automate quoting, booking follow-ups, and customer email responses
+Set up workflows for call and email quality control, accounts receivable follow-ups, and daily dispatch reporting
+Build reusable Claude skills and templates that match our brand voice and pricing rules
+Support marketing with ad copy, social content, and Google Ads reporting summaries
+Train our team to use Claude confidently once the project is complete
+
+What we’re looking for:
+
+Hands-on experience with Claude (claude.ai, Projects, connectors/MCP, skills) or the Claude API
+Experience integrating AI with CRMs, dispatch, or booking systems. Transportation or hosp",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,302fe704a99d59782891fd5acb112f5d147f8a9db33f7177ed3b519f19a8c62c,1421,paid_project_request,[],,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40776493,Freelancer,https://www.freelancer.com/projects/automation/Automatizaci-administrativa-con-Make,Automatización administrativa con N8N/Make,2026-10-19T20:01:51+00:00,2026-10-23T14:05:53.855136+00:00,"Quiero delegar la construcción de automatizaciones que optimicen el día a día de mi clientes, principalmente en procesos administrativos y en la relación con sus clientes. 
+
+Mi idea es ir cerrando proyectos por flujo, con entregables claros:
+
+• Workflows listos para producción en n8n, Make u otra alternativa pactada. 
+• Documentación breve de cada escenario (activadores, APIs usadas, lógica y puntos de fallo). 
+• Pruebas de funcionamiento que permitan validar generación de reportes, reglas de correo y los disparadores de seguimiento/marketing sin intervención manual.
+
+Prefiero a alguien de Chile para facilitar las reuniones y la facturación, aunque la prioridad es la experiencia real construyendo integraciones sólidas. Si dominas Zapier, Integromat/Make, n8n o herramientas similares y puedes mostrar ejemplos donde hayas automatizado reportes, correos, aprobaciones y flujos de CRM, conversemos y pactemos el primer sprint.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,73803d6b562fe8badeb98bde336492a2bf72dbaa9658cfb10750b9e8664eea86,934,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40776255,Freelancer,https://www.freelancer.com/projects/automation/Agent-Developer-Automation-Engineer,AI Agent Developer & Automation Engineer,2026-10-19T16:58:23+00:00,2026-10-23T14:05:53.860147+00:00,"WE’RE HIRING: AI Agent Developer & Automation Engineer
+
+We're looking for an experienced developer for a project-based engagement with a US-based client.
+
+We’re looking for someone who can build AI agents and automation systems to streamline business operations, including technician outreach, calls and emails, order intake, data entry, and reporting.
+
+What we’re looking for:
+- Experience building and deploying AI agents
+- Knowledge of Python and/or JavaScript, LLM APIs, and workflow automation tools such as n8n or Make
+- Experience with API integrations and business process automation
+- Ability to deliver a documented solution that the client can manage independently
+
+Remote | Project-Based | Independent Contractor
+
+Interested? Please include your portfolio, relevant project examples(proposals without proof of prior experience will not be acknowledged), your proposed pricing, and estimated timeline.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 25.0 - 50.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,c794c135ad2c580b880231e0a4b4985213836038e791aca51bb8df14976cb789,912,paid_project_request,"[""\\bn8n\\b"", ""workflow automation"", ""API integration"", ""AI agents?""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40776249,Freelancer,https://www.freelancer.com/projects/postgresql/Python-Developer-Needed-Multi-User-40776249,"Python Developer Needed: Multi-User Web Scraping & Lead Generation Platform (Django, Celery, PostgreSQL) -- 2",2026-10-19T16:46:01+00:00,2026-10-23T14:05:56.206742+00:00,"Python Developer Needed: Multi-User Web Scraping & Lead Generation Platform (Django, Celery, PostgreSQL)
+
+Post:
+We are building a secure, multi-user web platform that collects business and recruitment data from public sources and delivers clean, ready-to-use records to each user.
+What the platform does:
+Collects data from job portals and other public business sources
+Cleans and standardizes phone numbers and emails
+Blocks duplicate records
+Exports to Excel and Google Sheets
+Includes a user dashboard and an admin panel
+
+You should have:
+Strong Python experience (Django or FastAPI)
+Proven web scraping experience, including dynamic sites and anti-bot handling
+Experience with Celery, Redis and PostgreSQL
+Experience with multi-user or SaaS-style architecture
+Comfort deploying on a client-owned cloud server
+
+Project details:
+Milestone-based delivery, with a live walkthrough after each milestone
+All code goes to our private repository and all infrastructure stays on our own servers
+Detailed technical specification shared with shortlisted candidates only
+Start your bid with the code word TM-HARVEST-31. Bids without it will not be reviewed.
+
+To apply, please include:
+Examples of similar scr",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,c11f7ec90512e9e7ea772bc0107dbad7d8d4d8b01424cea054f97ebec88ed35c,1338,paid_project_request,"[""\\bfastapi\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40775398,Freelancer,https://www.freelancer.com/projects/rest-api/GenAI-Python-Full-Stack-Developer,GenAI Python Full Stack Developer  -- 2,2026-10-19T06:17:28+00:00,2026-10-23T14:05:56.217740+00:00,"Required skills: Python, FastAPI, REST API development, Generative AI, LLM integration, prompt engineering, document and email processing, structured data extraction, PostgreSQL, SQLAlchemy, and Docker. Experience with agentic AI workflows, retrieval-augmented generation (RAG), Microsoft Graph email integration, Redis/Celery, Azure deployment, and human-in-the-loop validation is preferred.
+
+The solution should be modular, secure, scalable, and suitable for a proof of concept that can be developed within approximately six weeks.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,7be130e10c4efd7890ac3a8214b0319f90cdd1793370365d6ee4ed1adb0386cd,533,paid_project_request,"[""\\bfastapi\\b"", ""\\bRAG\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40774331,Freelancer,https://www.freelancer.com/projects/chatbot-development/Website-Customer-Chat-Bot,Website Customer Chat Bot,2026-10-19T04:39:36+00:00,2026-10-23T14:05:56.223741+00:00,"I want to add a customer-service chat widget to my website that can greet visitors, answer common questions automatically, and route them to a contact form when the bot can’t find a match. The focus for now is on fully automated responses; I don’t need live-agent hand-off or long-term chat history yet, so the build can stay lean and fast.
+
+Key requirements
+• Front-end widget that looks good on desktop and mobile browsers 
+• NLP-driven or rules-based reply engine I can train with my own FAQ list 
+• Simple dashboard where I can edit questions, answers, and fallback text 
+• Seamless embedding on any page via one JavaScript snippet 
+• Clear documentation so I can maintain or expand the bot later
+
+Nice to have
+• Hooks or webhooks that could let me add live agents in the future 
+• Basic analytics showing number of chats, resolved vs. escalated questions 
+
+I’m open to your recommended tech stack—popular choices like Node.js, Python (Flask/FastAPI), or serverless functions are all fine as long as they integrate smoothly with a standard HTML/CSS/JS site.
+
+Please outline:
+1. Your proposed approach (frameworks, third-party APIs, hosting). 
+2. Milestones and approximate timeline from prototype",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,893c84b11fb8ca456ffe96505d8fcfe451036b8d66d0da8b0c3087b34219ba93,1382,paid_project_request,"[""\\bfastapi\\b"", ""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40775210,Freelancer,https://www.freelancer.com/projects/react-js/Intelligent-Document-Analysis-Platform,Intelligent AI/ML Document Analysis & QA Platform,2026-10-19T04:07:00+00:00,2026-10-23T14:05:56.240740+00:00,"# Build an AI-Powered Document Analysis & Q&A Platform (Python, LLM, RAG)
+
+**Project Type:** Fixed Price 
+**Budget:** $1,500 USD 
+**Timeline:** 3 Weeks 
+**Experience Level:** Expert
+
+### Project Description
+
+We are looking for an experienced AI/ML developer to build a web-based intelligent document analysis platform using Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG).
+
+The application should allow users to upload PDF documents, ask questions in natural language, and receive accurate, context-aware answers based on the uploaded content.
+
+We want a functional MVP with clean, maintainable code and a user-friendly interface.
+
+### Core Requirements
+
+**1. Document Processing**
+- Upload and process text-based PDF documents.
+- Support up to 30 documents per workspace, with a maximum of 10 MB per document.
+- Extract, clean, and split document text into meaningful chunks.
+- Generate and store embeddings for semantic retrieval.
+
+**2. AI/ML Integration**
+- Integrate an LLM API such as OpenAI.
+- Implement a RAG pipeline using LangChain or LlamaIndex.
+- Use a vector database such as ChromaDB or FAISS.
+- Support semantic search and context-based question answering.
+- Displ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee"", ""brief_budget_conflicts_with_structured_listing_confirm_before_quoting""]",USD 250.0 - 750.0 (fixed),"[""$1,500"", ""$300"", ""$700"", ""$500""]",[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,754ead07add7268d4d25e6858691729da01fa40c5c1202751184b2f920929e6d,3696,paid_project_request,"[""\\bfastapi\\b"", ""\\bRAG\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40774932,Freelancer,https://www.freelancer.com/projects/nextjs/Prestia-Platform-Next-Full-Stack,Prestia AI Platform: Next.js Full-Stack Developer,2026-10-18T23:43:53+00:00,2026-10-23T14:05:57.209242+00:00,"Hiring: Senior http://Next.js Full-Stack - PRESTIA AI Platform
+*Fixed Price | 30 Days | 180-Day Warranty | 100% Measurable Delivery*
+
+*We don't hire coders. We hire a technical partner who can ship money.*
+
+PRESTIA AI is a secure, high-conversion B2B SaaS for US + GCC markets. Built to sell from Day 1. If you have shipped real Stripe funnels with Upsells that actually charge , this is for you.
+
+*Contract: All-inclusive fixed price. No hidden costs. No WordPress. No Templates.*
+
+*1. WHAT YOU WILL DELIVER - Measured, Not Promised*
+
+*A. 6 Templates = 10 pages + 18-22 Funnel Paths:*
+Home / Solutions / Assessment [with revenue calculator] / Funnel [Pricing + Checkout + Thank You + 6x Upsell] / Content / Legal
+
+*B. 5 Packages [Configurable via JSON]:*
+1. ACQUIRE 2. CONVERT 3. REVENUE STARTER 4. REVENUE SCALE 5. REVENUE ENTERPRISE
+Monthly/Annual toggle [20% saving] + 4 currencies USD/SAR/AED/EGP + EN/AR full RTL
+
+*C. Sales Engine - The Money Part:*
+30 Add-on Services + 5 Order Bumps [Live Total] + 10-15 conditional flows per package [Upsell / Downsell / One-Click where supported]
+Total 28-30 Upsells controlled from `funnel.json`
+
+*2. MANDATORY STACK - Non-Negotiable*
+http://Next.js 14+ Ap",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,2c6403e997c977532b21436c5a52951a291874397b03d399b7867d4edd97596b,3588,paid_project_request,"[""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40774853,Freelancer,https://www.freelancer.com/projects/ai-chatbot/Website-Personal-Assistant-Chatbot,Website Personal Assistant Chatbot -- 2,2026-10-18T22:24:55+00:00,2026-10-23T14:05:57.228238+00:00,"I want to add an AI-driven personal assistant to my website that can greet visitors, answer their questions, and complete simple tasks such as booking calls, collecting feedback, and guiding them to relevant pages or documents. From conversation design through to live deployment, I need a full-cycle solution.
+
+Here is what I have in mind and what I will look for in your proposal:
+
+• A natural, friendly dialogue flow powered by modern NLP (OpenAI, Dialogflow CX, Rasa, or a comparable framework) 
+• Web-based widget or embedded chat panel that fits seamlessly into my existing site stack (React + Node) 
+• Secure webhook or REST endpoints so the bot can trigger server-side actions and log interactions in my database 
+• A straightforward way for me to update the knowledge base—Markdown, Google Sheet, or JSON is fine—without redeploying code 
+• Analytics on usage, fallback rates, and user sentiment so I can iteratively improve the model 
+• Deployment instructions (Docker or serverless preferred) and documented source code in Git
+
+Acceptance criteria 
+– The assistant reliably recognises at least 90 % of the test intents I provide. 
+– All text responses render correctly on desktop and mobil",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,c0d6adec27732f76214263f5cfc6bbc674a3be494eb09693e0f1e5aaa6301df1,1501,paid_project_request,"[""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+FL-40774397,Freelancer,https://www.freelancer.com/projects/nextjs/Full-Stack-Development-for-PRESTIA,Full-Stack Development for PRESTIA AI Platform,2026-10-18T15:09:17+00:00,2026-10-23T14:05:57.240247+00:00,"Hiring: Senior http://Next.js Full-Stack - PRESTIA AI Platform
+*Fixed Price | 30 Days | 180-Day Warranty | 100% Measurable Delivery*
+
+*We don't hire coders. We hire a technical partner who can ship money.*
+
+PRESTIA AI is a secure, high-conversion B2B SaaS for US + GCC markets. Built to sell from Day 1. If you have shipped real Stripe funnels with Upsells that actually charge , this is for you.
+
+*Contract: All-inclusive fixed price. No hidden costs. No WordPress. No Templates.*
+
+*1. WHAT YOU WILL DELIVER - Measured, Not Promised*
+
+*A. 6 Templates = 10 pages + 18-22 Funnel Paths:*
+Home / Solutions / Assessment [with revenue calculator] / Funnel [Pricing + Checkout + Thank You + 6x Upsell] / Content / Legal
+
+*B. 5 Packages [Configurable via JSON]:*
+1. ACQUIRE 2. CONVERT 3. REVENUE STARTER 4. REVENUE SCALE 5. REVENUE ENTERPRISE
+Monthly/Annual toggle [20% saving] + 4 currencies USD/SAR/AED/EGP + EN/AR full RTL
+
+*C. Sales Engine - The Money Part:*
+30 Add-on Services + 5 Order Bumps [Live Total] + 10-15 conditional flows per package [Upsell / Downsell / One-Click where supported]
+Total 28-30 Upsells controlled from `funnel.json`
+
+*2. MANDATORY STACK - Non-Negotiable*
+http://Next.js 14+ Ap",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,1b64e0892d40fdafaa882548a1575ed5e8e66e5dfabba31f228847d1624e6cf2,3729,paid_project_request,"[""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+JOBICY-156558,Jobicy,https://jobicy.com/jobs/156558-senior-software-engineer-backend-4,"Customer.io: Senior Software Engineer, Backend",2026-10-23T09:13:24+00:00,2026-10-23T14:04:10.160467+00:00,"Hi, I’m Paul, VP of Engineering at Customer.io. We’re looking for experienced backend engineers who care deeply about reliability, performance, and scalability. You’ll design, build, and evolve the systems that power communication at massive scale - while helping us push the boundaries of what great engineering can look like.
+About Customer.io
+
+Over 9,000 companies - from scrappy startups to global brands - use our platform to send billions of emails, push notifications, in-app messages, and SMS every day. Customer.io powers automated communication that people actually want to receive. 
+
+We help teams send smarter, more relevant messages using real-time behavioral data. Under the hood: Go, React, Ember and AI help us ship fast and scale with confidence.
+What We Value
+
+Ownership
+You own problems end to end. You move fast, act like an owner, and thrive in ambiguity. You've led complex projects before, whether officially or not, and you're ready to do it again.
+
+Engineers with product taste
+
+You think like a user, not just an engineer. You care how your systems power real customer value - and how to make them better.
+
+A healthy skepticism for “the way things are done.”
+
+You bring rigo",,,Customer.io,,,EMEA,,review_required,"[""aggregated_listing_not_employer_ownership_proof""]",Not established,[],"[""jobs@customer.io""]",[],[],[],[],"[{""kind"": ""email"", ""value"": ""jobs@customer.io"", ""contact_evidence"": ""omer.io letterhead. Please be vigilant in all of your job search activity, and if you have any questions please contact jobs@customer.io."", ""contact_context"": ""Our Process Zoom is the only video conference platform that we use, virtual interviews will be conducted using the video capability (i.e., not via the chat), and offers will be extended in writing on official  Customer.io  letterhead. Please be vigilant in all of your job search activity, and if you have any questions please contact jobs@customer.io."", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://jobicy.com/jobs/156558-senior-software-engineer-backend-4"", ""ownership"": ""publication_only_owner_not_independently_verified""}]",0,1,1,published_candidate,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,,,,,,[],,active,https://jobicy.com/api/jobs/status?ids=156558%2C156560%2C156466%2C156151%2C153654%2C150935,Use the Jobicy application route unless an employer application contact is explicitly authorized,source_filtered_candidate_requires_human_ownership_and_eligibility_review,EMEA,
+JOBICY-156466,Jobicy,https://jobicy.com/jobs/156466-manager-software-test-automation,Veracyte: Manager Software Test Automation,2026-10-22T20:38:09+00:00,2026-10-23T14:04:15.842400+00:00,"At Veracyte, we offer exciting career opportunities for those interested in joining a pioneering team that is committed to transforming cancer care for patients across the globe. Working at Veracyte enables our employees to not only make a meaningful impact on the lives of patients, but to also learn and grow within a purpose driven environment. This is what we call the Veracyte way – it’s about how we work together, guided by our values, to give clinicians the insights they need to help patients make life-changing decisions. 
+
+Our Values:
+
+
+We Seek A Better Way: We pursue bold ideas, embrace complexity, and keep pushing forward.
+
+We Make It Happen: We act with urgency, deliver with excellence, and always find a way. 
+
+We Are Stronger Together: We engage with empathy, align around what's best for Veracyte, and celebrate as one team. 
+
+We Care Deeply: We show up with integrity, kindness, and respect for one another. 
+
+The Position:
+
+Veracyte is seeking an experienced Manager, Software Test Automation, to lead our Quality Engineering Platform team. This team's mission is to enable every product engineering team to own software quality by providing scalable automation frameworks, self",,,Veracyte,,,USA,,review_required,"[""aggregated_listing_not_employer_ownership_proof""]",Not established,[],"[""careers@veracyte.com""]",[],[],[],[],"[{""kind"": ""email"", ""value"": ""careers@veracyte.com"", ""contact_evidence"": ""dIn or other online job sites for any position at Veracyte, please exercise caution and promptly report any concerns to careers@veracyte.com"", ""contact_context"": ""About Veracyte If you receive any suspicious alerts or communications through LinkedIn or other online job sites for any position at Veracyte, please exercise caution and promptly report any concerns to  careers@veracyte.com "", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://jobicy.com/jobs/156466-manager-software-test-automation"", ""ownership"": ""publication_only_owner_not_independently_verified""}]",0,1,1,published_candidate,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,,,,,,[],,active,https://jobicy.com/api/jobs/status?ids=156558%2C156560%2C156466%2C156151%2C153654%2C150935,Use the Jobicy application route unless an employer application contact is explicitly authorized,source_filtered_candidate_requires_human_ownership_and_eligibility_review,USA,
+JOBSPRESSO-163918,Jobspresso,https://jobspresso.co/job/backend-software-engineer-python-postgres/,Backend Software Engineer &#8211; Python/Postgres,2026-10-22T15:23:25+00:00,2026-10-23T14:05:12.480992+00:00,"Do you want to work for a mission-driven non-profit, writing software that will contribute to helping the livelihoods of millions of coffee farmers around the world? Enveritas is a 501(c)(3) non-profit and Y Combinator-backed startup looking to hire for our Engineering & Data Group. We are looking for a backend software engineer with a focus on python and PostgreSQL to join our EUDR engineering team on a remote/global, full-time basis. You can learn more about this job and our group at https://www.enveritas.org/jobs/backend-software-eng/
+
+We’re a small team and every hire makes a large impact, so we’re careful and thorough when it comes to hiring, but we are actively considering candidates and moving them through the process as quickly as we can.
+
+About our engineering & data group
+
+We are a quirky, talented, and humble group of about thirty people with diverse backgrounds, ranging from journalism to academia to international industry. We’re represented across the gender spectrum, with 36% of our Engineering and Data Group identifying as women and/or nonbinary. Several of us are parents, with more expecting.
+
+Our group builds software to collect, analyze, and report data about coff",,,,,,,,review_required,"[""aggregated_listing_open_status_unconfirmed""]",Not established,[],"[""jobs@enveritas.org""]",[],[],[],[],"[{""kind"": ""email"", ""value"": ""jobs@enveritas.org"", ""contact_evidence"": ""Please apply using our Greenhouse application form. Feel free to contact us at jobs@enveritas.org should you have any questions about the position or the interview process. Questions about this opportunity or process will not reflect negatively on your application."", ""contact_context"": "" Please apply using our Greenhouse application form. Feel free to contact us at  jobs@enveritas.org  should you have any questions about the position or the interview process. Questions about this opportunity or process will not reflect negatively on your application."", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://jobspresso.co/job/backend-software-engineer-python-postgres/"", ""ownership"": ""publication_only_owner_not_independently_verified""}]",0,1,1,published_candidate,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,,,,,,[],,,,Direct outreach via published email,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+JOBICY-156151,Jobicy,https://jobicy.com/jobs/156151-senior-solutions-architect-europe,Deepgram: Senior Solutions Architect - Europe,2026-10-21T09:44:03+00:00,2026-10-23T14:04:34.478167+00:00,"Company Overview
+
+Deepgram is the leading platform underpinning the emerging trillion-dollar Voice AI economy, providing real-time APIs for speech-to-text (STT), text-to-speech (TTS), and building production-grade voice agents at scale. More than 200,000 developers and 1,300+ organizations build voice offerings that are ‘Powered by Deepgram’, including Twilio, Cloudflare, Sierra, Decagon, Vapi, Daily, Cresta, Granola, and Jack in the Box. Deepgram’s voice-native foundation models are accessed through cloud APIs or as self-hosted and on-premises software, with unmatched accuracy, low latency, and cost efficiency. Backed by a recent Series C led by leading global investors and strategic partners, Deepgram has processed over 50,000 years of audio and transcribed more than 1 trillion words. There is no organization in the world that understands voice better than Deepgram.
+
+Company Operating Rhythm
+
+At Deepgram, we expect an AI-first mindset—AI use and comfort aren’t optional, they’re core to how we operate, innovate, and measure performance.
+
+Every team member who works at Deepgram is expected to actively use and experiment with advanced AI tools, and even build your own into your ever",,,Deepgram,,,"Austria,  Germany,  Ireland,  Netherlands,  Spain,  Switzerland,  UK",,review_required,"[""aggregated_listing_not_employer_ownership_proof""]",Not established,[],"[""careers@deepgram.com""]",[],[],[],[],"[{""kind"": ""email"", ""value"": ""careers@deepgram.com"", ""contact_evidence"": ""n comes from an @deepgram.com email address. If you've received a message claiming to be Deepgram, please forward it to careers@deepgram.com."", ""contact_context"": ""Interview Process Notice: We're aware of individuals impersonating Deepgram recruiters. All legitimate Deepgram recruiting communication comes from an @ deepgram.com  email address. If you've received a message claiming to be Deepgram, please forward it to careers@deepgram.com."", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://jobicy.com/jobs/156151-senior-solutions-architect-europe"", ""ownership"": ""publication_only_owner_not_independently_verified""}]",0,1,1,published_candidate,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,,,,,,[],,active,https://jobicy.com/api/jobs/status?ids=156558%2C156560%2C156466%2C156151%2C153654%2C150935,Use the Jobicy application route unless an employer application contact is explicitly authorized,source_filtered_candidate_requires_human_ownership_and_eligibility_review,"Austria,  Germany,  Ireland,  Netherlands,  Spain,  Switzerland,  UK",
+JOBSPRESSO-163726,Jobspresso,https://jobspresso.co/job/software-engineer-infrastructure-self-managed-experience-smx/,"Software Engineer, Infrastructure &#8211; Self Managed Experience (SMX)",2026-10-21T06:36:32+00:00,2026-10-23T14:05:12.640345+00:00,"Camunda is the enterprise platform for agentic orchestration, enabling organizations to coordinate AI agents, people, and systems across complex, end-to-end business processes. With built-in governance, auditability, and human oversight, Camunda gives enterprises the control they need to move AI from pilots to production — safely and at scale. Trusted by over 700 organizations worldwide, including 9 of top 10 US banks, Camunda helps enterprises boost operational efficiency, accelerate time-to-value, and deliver better customer experiences.
+
+Fully remote and global, we are in the middle of something bigger: transforming into an AI-first organisation, built on our own platform. We use Agentic AI to automate, orchestrate intelligent processes, and elevate human contribution across every team.
+
+Named GP Bullhound’s Top 100 Next Unicorn list, 2025 Great Place to Work certified. Visionary in 2025 Gartner® Magic Quadrant™ for Business Orchestration and Automation Technologies. ranked 3rd in Flexa’s 2026 Most Flexible Companies, We’re growing fast and looking for top talent to join our team. If you want meaningful work, visible impact and put something genuinely rare on your CV, keep readi",,,,,,,,review_required,"[""aggregated_listing_open_status_unconfirmed""]",Not established,[],"[""talent-operations@camunda.com""]",[],[],[],[],"[{""kind"": ""email"", ""value"": ""talent-operations@camunda.com"", ""contact_evidence"": ""imply select ‘No’ when prompted during your application. You can also change your preferences at any time by contacting talent-operations@camunda.com."", ""contact_context"": "" To opt-out, simply select ‘No’ when prompted during your application. You can also change your preferences at any time by contacting talent-operations@camunda.com."", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://jobspresso.co/job/software-engineer-infrastructure-self-managed-experience-smx/"", ""ownership"": ""publication_only_owner_not_independently_verified""}]",0,1,1,published_candidate,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,,,,,,[],,,,Direct outreach via published email,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,
+JOBICY-153654,Jobicy,https://jobicy.com/jobs/153654-principal-product-manager-conversational-ai,Hopper: Principal Product Manager- Conversational AI,2026-10-20T04:15:08+00:00,2026-10-23T14:04:42.504184+00:00,"About the Role
+
+ HTS Assist is Hopper's agentic AI assistant for travel, resolving real customer issues like flight changes, cancellations, refunds, and bookings over chat and voice for some of the largest travel brands and enterprises in the world. Voice carries its own product problems, from latency and turn-taking to escalation timing when a human is on the line, and this role owns both surfaces with equal depth. 
+
+ As Principal Product Manager, you will own the customer-facing agent end to end: the conversations, the interface, and the experience our partners put in front of millions of travelers. This is a deliberately design-leaning role, and you will be the day-to-day design decision-maker, shaping flows and interfaces directly in close partnership with partner design teams and our in-house designer.
+
+What would your day-to-day look like
+
+
+
+
+Own the roadmap for the customer-facing conversational agent across chat and voice, from intent coverage and conversation design to the interfaces partners embed in their apps and websites
+
+
+
+
+Set the product bar for voice specifically, covering latency, turn-taking, barge-in handling, localization, realtime voice and ASR/TTS quality, si",,,Hopper,,,Spain,,review_required,"[""aggregated_listing_not_employer_ownership_proof""]",Not established,[],"[""recruiting@hopper.com""]",[],[],[],[],"[{""kind"": ""email"", ""value"": ""recruiting@hopper.com"", ""contact_evidence"": "" correction of your data, or request a human review of any automated decision. To exercise these rights, please contact recruiting@hopper.com."", ""contact_context"": "" This role utilizes automated decision-making systems to assess candidate suitability. Under local regulations, you have the right to understand the principal factors used in this assessment, request a correction of your data, or request a human review of any automated decision. To exercise these rights, please contact  recruiting@hopper.com ."", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://jobicy.com/jobs/153654-principal-product-manager-conversational-ai"", ""ownership"": ""publication_only_owner_not_independently_verified""}]",0,1,1,published_candidate,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,,,,,,[],,active,https://jobicy.com/api/jobs/status?ids=156558%2C156560%2C156466%2C156151%2C153654%2C150935,Use the Jobicy application route unless an employer application contact is explicitly authorized,source_filtered_candidate_requires_human_ownership_and_eligibility_review,Spain,
+JOBICY-150935,Jobicy,https://jobicy.com/jobs/150935-customer-engineer-apac,"Cresta: Customer Engineer, APAC",2026-10-19T02:35:14+00:00,2026-10-23T14:05:01.428991+00:00,"Cresta unlocks the true potential of the customer experience, turning every conversation into a competitive advantage. Cresta’s unified AI platform combines conversational AI agents, real-time human agent augmentation, and comprehensive conversation intelligence to drive revenue and efficiency gains across every channel. The world’s leading companies, including United Airlines, Cox Communications, and Marriott, use Cresta to power world-class customer experiences every day. 
+
+Born from the Stanford AI Lab, Cresta has raised more than $270 million from the world’s leading investors, including a16z, Greylock, and Sequoia. Cresta’s leadership includes some of the leading minds in AI today. Our CEO, Ping Wu, founded and led Google's Contact Center AI and Vertex AI platforms before joining Cresta to build the future of AI-driven customer experiences.
+
+Over the next few years, AI is going to redefine how people all over the world interact with businesses every day. Come build that future at Cresta.About the Role:
+As a Customer Engineer, APAC at Cresta, you'll play a key role in delivering our cutting-edge AI solutions to enterprise contact centers across the Asia-Pacific region. You'll",,,Cresta,,,APAC,,review_required,"[""aggregated_listing_not_employer_ownership_proof""]",Not established,[],[],"[""https://www.linkedin.com/in/pingwu""]",[],[],[],"[{""kind"": ""linkedin"", ""value"": ""https://www.linkedin.com/in/pingwu"", ""contact_evidence"": ""Explicit personal profile: https://www.linkedin.com/in/pingwu/"", ""contact_context"": "" Born from the Stanford AI Lab, Cresta has raised more than $270 million from the world’s leading investors, including a16z, Greylock, and Sequoia. Cresta’s leadership includes some of the leading minds in AI today. Our CEO,  Ping Wu , founded and led Google's Contact Center AI and Vertex AI platforms before joining Cresta to build the future of AI-driven customer experiences."", ""purpose"": ""explicit_contact_context_not_ownership_verification"", ""source_url"": ""https://jobicy.com/jobs/150935-customer-engineer-apac"", ""ownership"": ""publication_only_owner_not_independently_verified""}]",0,1,1,not_found_in_scanned_content,published_candidate,not_found_in_scanned_content,not_found_in_scanned_content,,,,,,,[],,active,https://jobicy.com/api/jobs/status?ids=156558%2C156560%2C156466%2C156151%2C153654%2C150935,Use the Jobicy application route unless an employer application contact is explicitly authorized,source_filtered_candidate_requires_human_ownership_and_eligibility_review,APAC,
+HUGGINGFACE-190907,HuggingFace,https://discuss.huggingface.co/t/190907,Looking for testers and feedback on StepFork: Behavioral regression testing for AI agents,2026-10-22T12:53:38.461000+00:00,2026-10-23T14:04:04.371401+00:00,"Hey everyone!
+
+I’ve been building StepFork, an open-source, local-first tool for behavioral regression testing of AI agents.
+
+The idea is simple: when your agent fails, turn that failure into a reproducible test.
+
+StepFork captures agent execution traces in .sftrace files, lets you replay and evaluate them, and helps identify behavioral regressions as you change your agent or its underlying models.
+
+ GitHub: GitHub - utsab345/stepfork: Open-source Python toolkit to record and replay AI agent executions, detect regressions, and turn failures into reproducible pytest tests. · GitHub
+
+I’m looking for people working on LLM applications, AI agents, RAG systems, or agentic workflows to try it out and share honest feedback.
+
+I’d especially appreciate feedback on:
+
+
+
+
+Getting started: Is the installation and workflow straightforward?
+
+
+
+
+Usability: Does the CLI feel intuitive? What’s confusing or missing?
+
+
+
+
+Real-world usefulness: Would this help you catch regressions in your own agents?
+
+
+
+
+Bugs and edge cases: What breaks when you try it with your own workflows?
+
+
+
+
+Feature direction: What would make you actually use a tool like this?
+
+
+
+You don’t need to contribute code. Even a quick r",utsabdahal34,,,,https://discuss.huggingface.co/u/utsabdahal34,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,,,,,,[],platform_application,,,Native forum reply to the hiring topic; check current account permissions,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,False
+BUBBLE-401796,Bubble,https://forum.bubble.io/t/401796,Looking for an experienced Bubble developer to finish and grow a live AI SaaS app (web + native mobile),2026-10-19T23:37:31.792000+00:00,2026-10-23T14:03:59.765873+00:00,"Hi everyone,
+
+I’m the founder of Landman Tools, a subscription app that gives right-of-way and land professionals in the energy industry (pipelines, electric transmission, renewables, public works) AI-generated prompts and field notes built for their daily work. I have deep industry experience but I’m not a developer. I built the app myself in Bubble over the past several months, and I’m now looking for an experienced Bubble developer to help me finish it, make it more robust, and take it to native mobile.
+
+What’s already built and live
+
+
+Signup/login, password reset (SendGrid on a custom domain), onboarding screens, and in-app account deletion
+
+AI generation through the Anthropic (Claude) API using the API Connector, with a layered prompt setup across four categories. Generation runs in backend API workflows.
+
+An “Agent Note” feature that turns field notes into clean records, with voice-to-text through OpenAI Whisper
+
+Three plans (Free / Field / Pro) with monthly generation limits, Stripe Payment Links, a working checkout webhook that updates the user’s plan, and a Stripe Customer Portal for cancellations
+
+A saved-prompt library, copy-to-clipboard, and save confirmations
+
+Deployed",shefaindustries72,,,,https://forum.bubble.io/u/shefaindustries72,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,,,,,,[],platform_application,,,Native forum reply to the hiring topic; check current account permissions,source_filtered_candidate_requires_human_ownership_and_eligibility_review,,False

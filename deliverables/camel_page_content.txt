@@ -1,0 +1,1 @@
+Error: Cannot access contents of url "about:blank". Extension manifest must request permission to access this host.

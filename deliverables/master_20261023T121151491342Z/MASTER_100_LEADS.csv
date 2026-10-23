@@ -1,0 +1,251 @@
+﻿lead_id,platform,source_url,title,created_at,captured_at,brief_snippet,buyer_username,buyer_real_name,buyer_company,buyer_website,buyer_profile_url,buyer_location,can_direct_message,status,review_flags,budget,budget_mentions,email,linkedin,phone,whatsapp_number,whatsapp_links,contact_evidence,suppressed_values,coordinate_count,contact_value_count,email_status,linkedin_status,phone_status,whatsapp_number_status,brief_sha256,brief_length,engagement_type,fit_signals,buyer_id,budget_source,rejected_coordinates,contact_kind,listing_status,listing_status_source,contact_route,verification_status
+FL-40782862,Freelancer,https://www.freelancer.com/projects/n8n/YouTube-Video-Producer-With-Automation,YouTube Video Producer With N8N Automation System Needed ,2026-10-23T10:30:16+00:00,2026-10-23T12:11:55.516605+00:00,"Hi,
+
+We’re looking for a long-term partner with a pre-built N8N youtube automation system, and experience running it, to support our team. This is not a one-time collaboration, but a partnership where we’ll promote the service and forward the orders to the partner(s) we select. 
+
+We produce custom animations and explainer videos and we want to start offering complete YouTube automation packages to our clients. Ideally, you already have a working N8N YouTube automation system and can operate it for us at low reseller prices.
+
+If you’re interested, please start your bid with “N8N” and answer these questions:
+1. Do you already have a working, pre-built n8n YouTube automation system? If so, tell us more about your system. 
+2. Can you operate the system for us at the following prices?
+• Channel setup – $10: Channel branding, logo, banner, intro, SEO and channel keywords.
+• 10 long videos + 10 Shorts – $50: Ideas, scripts, AI voice-over, visuals, editing, thumbnails, uploading and SEO.
+• 15 long videos + 15 Shorts – $75: Same complete service as above.
+4. Can your system handle the entire process, including branding, scripts, voice-over, visuals, subtitles, thumbnails, SEO and YouTube up",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),"[""$10"", ""$50"", ""$75""]",[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,4feeec1cd8e49b438415783479fd6652bfd37e881673e55a8080283d75267347,1568,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40782504,Freelancer,https://www.freelancer.com/projects/ai-video-editing/Build-Automated-Local-Video-Studio,Build Automated Local AI Video Studio,2026-10-23T06:11:57+00:00,2026-10-23T12:11:55.536205+00:00,"I am seeking an expert AI Systems Specialist / Technical Director to configure and optimize a high-performance local AI production server. The goal is to build an end-to-end automated pipeline for producing hyper-realistic AI mini-series featuring consistent realistic characters, lip-synced dialogues, cinematic editing, and automated multi-platform publishing (Instagram, TikTok, Facebook, along with NSFW variants for premium platforms).
+
+Server Hardware & Environment
+OS: Ubuntu 26.04 LTS
+CPU: Intel Core Ultra 9 285K (24 Cores / 24 Threads)
+GPU: NVIDIA GeForce RTX 5090 (32 GB VRAM, Driver 595.84, 575 W power limit)
+RAM: 60 GB System Memory
+Storage: 2 TB Samsung 9100 PRO NVMe SSD
+
+Key Responsibilities & Scope of Work
+Server Setup & Stack Configuration:
+
+Complete Ubuntu environment setup optimized for PyTorch, CUDA, and high-vram local inference.
+Deployment and tuning of ComfyUI, Open WebUI, and n8n.
+AI Character & Video Production Pipeline:
+Build advanced ComfyUI workflows leveraging SOTA open-source video/image models.
+Implement character consistency tools using LoRAs and IP-Adapter/ControlNet pipelines.
+Integrate lip-sync and dialogue tools (e.g., LivePortrait, MuseTalk, ElevenLabs",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,ad327ec7960ae33aa3948a54cc388e792a12936e7a5a9f9bbce95e731156f2da,2411,paid_project_request,"[""\\bn8n\\b"", ""API integration""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40782295,Freelancer,https://www.freelancer.com/projects/Make-com/Build-Email-Automation-MVP-BCcGuardDog,Build AI Email Automation MVP “BCcGuardDog”,2026-10-23T03:27:46+00:00,2026-10-23T12:11:56.321722+00:00,"Job Title: Low-Code/Backend Developer: Asynchronous AI Email Automation (Make.com + Node.js/APIs)
+
+Project Overview:
+I am looking for a talented automation and backend developer to build a lightweight MVP for an asynchronous, email-first administrative tool. 
+
+Crucially, this system has no web portal, app dashboard, or frontend user interface. It operates 100% via email forwarding, BCC, and automated asynchronous workflows. The user interface is strictly the inbox.
+
+Our Core Tech Stack:
+* Workflow/Orchestration: Make.com (or lightweight custom backend where appropriate)
+* Email Routing & Parsing: Postmark or SendGrid (Inbound webhooks handling attachments)
+* AI Brain: OpenAI or Anthropic API (Factual extraction & classification, temperature 0.2)
+* Database & Billing: Stripe API + a lightweight database layer (PostgreSQL or secure Airtable base)
+
+The 3 Core Asynchronous Workflows Required:
+1. Inbound Document Parsing: A webhook that catches forwarded emails, identifies user context, securely extracts text from an attached file (PDF/DOCX), passes it to an AI engine for analysis, and replies back to the user with a formatted report.
+2. Contextual Email Comparison: A webhook that liste",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,97f5bd905606a8512be3e6d32a7f14b69be32f585ada69bdad2a7869f0bbd1e3,2717,paid_project_request,"[""\\bmake\\.com\\b"", ""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40782067,Freelancer,https://www.freelancer.com/projects/ui-design/FORGEAI-Complete-Existing-MVP,FORGEAI – Complete Existing MVP of an Engineering Decision Intelligence Platform (Next.js + FastAPI),2026-10-22T23:58:32+00:00,2026-10-23T12:11:57.701548+00:00,"# Project Overview
+
+I am building **FORGEAI – Engineering Decision Intelligence (EDI)**, a B2B software platform designed to improve engineering workflow verification, quality control, evidence traceability, and work-package readiness in industrial infrastructure projects.
+
+The initial target use case is the **Hydro-Mechanical (H&M) department, specifically penstock fabrication and inspection workflows in pumped-storage hydropower projects**.
+
+An initial codebase and MVP foundation already exist. I am looking for an experienced full-stack developer to review the existing code, fix bugs and integration issues, complete the core workflows, and deliver a stable, demonstrable MVP. I do not want an unnecessary complete rewrite.
+
+## Existing Technology Stack
+
+- Frontend: Next.js, React, TypeScript
+- Backend: Python, FastAPI
+- Database: SQLAlchemy with SQLite in the current development setup
+- API integration: REST APIs
+- Existing modules include templates, a Rules Builder, work packages, verification, and related engineering workflow functionality.
+
+The freelancer must first inspect the existing codebase and propose a realistic implementation plan before making major architectural change",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,8e12e3d3cf7dabec9972ceb4e6d686aa5cda1268ba4c88e62be4993e2068628a,7079,paid_project_request,"[""\\bfastapi\\b"", ""API integration""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40782065,Freelancer,https://www.freelancer.com/projects/n8n/SEO-Autopilot-Setup,n8n SEO Autopilot Setup,2026-10-22T23:58:03+00:00,2026-10-23T12:11:55.557019+00:00,"I run a taxi company website built on Sanity CMS that already hosts about 100 location-focused pages. I now want to place the entire SEO / AEO / GEO workload on digital autopilot with n8n at the core.
+
+Scope of the first phase 
+– The initial workflows should concentrate on generating fresh, fully optimised content, turning it into Sanity drafts for my manual approval, then tracking how the new or updated pages perform in Google. Improving existing pages must be part of the same loop.
+
+What I expect the automation to do 
+1. Pull keyword, location and intent data, create new outlines or snippets, and push them into Sanity as draft documents. 
+2. Notify me when a draft is ready; on my approval, publish it and trigger a resubmit to Google Search Console. 
+3. Create quality backlinks from relevant websites with high DA/DR and low spam scores
+4. Record ranking changes, impressions and clicks for every page so I can see gains at a glance. 
+5. Lay the groundwork for later add-ons that will manage business listings, reviews and social accounts in a similar hands-off fashion.
+
+Technical stack 
+n8n will orchestrate everything, talking to the Sanity Content API and Google tools. If extra conne",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,326f0f6c5227543f0b9ea0d5f480c2645742d684cd91b42b3abebe5a067c41a7,1732,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40780885,Freelancer,https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780885,Complete SocioVik - AI Creative & Social Media SaaS -- 2,2026-10-22T08:15:40+00:00,2026-10-23T12:11:55.574017+00:00,"We need an experienced full-stack developer or team to complete our existing Bolt.new platform into an AI-powered SaaS for agencies, brands, and creators.
+
+Core workflow: Brief/prompt → AI creative generation or upload → captions → approval → scheduling/publishing → analytics.
+
+The platform must combine AI images, videos, and UGC with Publishing & Scheduling, Analytics & Reporting, Engagement, Review Generation, Collaboration, and White Label.
+
+Review the existing code and latest Bolt audit, preserve working features, and map all issues and requirements to an agreed delivery checklist.
+
+PHASE 1 — Fixes, Social Connections, Publishing & Analytics
+
+Priority: bug fixes → social connections → posting → scheduling → advanced publishing → reporting.
+
+Audit and fixes: Resolve existing frontend/backend bugs, authentication/Google login, roles, workspace isolation, database/build issues, security, media storage, existing AI workflows, credits, Razorpay billing, admin/CMS, and mobile defects. Verify scheduler/n8n workflows; establish staging, monitoring, and critical tests.
+
+Social connectors: Implement native APIs, a third-party connector, or a hybrid solution. Prioritize Facebook, Instagra",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 200.0 - 400.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,64af1db0c904e3ec485068ca82061937d13e718a945802270302004a6d250afb,5557,paid_project_request,"[""\\bn8n\\b"", ""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40780416,Freelancer,https://www.freelancer.com/projects/ai-automation/Orchestration-Agent-Setup-Codex-Claude,Ai Orchestration Agent Setup (Codex + Claude Code),2026-10-22T02:21:44+00:00,2026-10-23T12:11:55.655544+00:00,AI Automation Developer Needed — OpenHands / n8n Orchestration Setup (Codex + Claude Code),,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,28cfcbbc8cf2db35cc82d1cfa8d854954ee93ae45a36252a68c7f5d15a10cf10,90,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40779952,Freelancer,https://www.freelancer.com/projects/ai-agents/PerfGuard-Agent-Development,PerfGuard AI Agent Development,2026-10-21T18:10:30+00:00,2026-10-23T12:11:57.728986+00:00,"Here are the full details:
+
+What PerfGuard Agent does:
+
+Developer opens a GitHub PR
+PerfGuard automatically scans the changed code
+AI identifies performance risks (slow queries, memory leaks, N+1 problems)
+Posts analysis as PR comment with risk score
+Teams notification with findings
+
+
+1 (setup + GitHub):
+
+- Create Flask/FastAPI app
+- GitHub webhook to receive PR events
+- Extract changed files from PR
+
+(AI analysis):
+
+- Send code diff to OpenAI
+- Analyze for performance issues
+- Generate risk score + recommendations
+
+(output + demo):
+
+- Post results as GitHub PR comment
+- Send Teams notification
+- Live demo with real PR
+
+GitHub PR opened
+ ↓
+PerfGuard webhook triggered
+ ↓
+Scan changed files (code diff)
+ ↓
+AI analyzes performance risks
+ ↓
+Risk score: HIGH / MEDIUM / LOW
+ ↓
+Post comment on PR
+ ↓
+Teams notification
+ ↓
+HTML report",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",CAD 10.0 - 30.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,0a2cfa8a4dcd78a41ed914eed9b84aa4ccf38e4e92c952c330d9c691a21d7cd2,836,paid_project_request,"[""\\bfastapi\\b"", ""\\bwebhooks?\\b"", ""AI agents?""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40779763,Freelancer,https://www.freelancer.com/projects/n8n/WhatsApp-Auto-Messaging-Setup,n8n WhatsApp Auto-Messaging Setup,2026-10-21T15:51:28+00:00,2026-10-23T12:11:55.657544+00:00,"I need an n8n workflow that connects to my WhatsApp Business account and fires off automated messages without manual intervention. The goal is to handle three use-cases—promotions, time-sensitive notifications, and gentle reminders—while pulling in personalized user data so every chat feels 1-to-1 rather than a blast.
+
+Here is what I have in mind:
+
+• The trigger can be either a webhook, a schedule, or a call from an existing REST endpoint—whichever you feel is the cleanest way to pass user-specific variables such as name, order number, or appointment date into the workflow. 
+• n8n should then format the message, inject the variables, and hit the WhatsApp Business API (or your preferred gateway) to send it. 
+• I’d like a simple success/fail log so I can track delivery and catch any API errors quickly. 
+
+You’re free to suggest nodes, credentials handling, or helper services that keep the setup lightweight and secure. Once complete, I’ll need the .json export of the workflow plus a brief step-by-step so I can replicate it in another instance.
+
+If you have previous experience combining n8n with WhatsApp, especially for personalized campaigns, let’s talk details and timelines.
+
+Project:",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,c336cf5ed833452587701b9a870081e48aa5349480df4a76bd11d2f745606418,2029,paid_project_request,"[""\\bn8n\\b"", ""\\bwebhooks?\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40778969,Freelancer,https://www.freelancer.com/projects/software-development/Freelancer-Setup-Database-Leads-Otomasi,Freelancer Setup Database Leads & Otomasi Penjualan,2026-10-21T06:05:55+00:00,2026-10-23T12:11:55.671952+00:00,"Kami sedang mencari freelancer untuk membuat sistem database dan otomatisasi leads menggunakan platform no-code database berbasis PostgreSQL untuk menampung sekitar 100k–200k data. Lingkup pekerjaan mencakup pembuatan alur otomatisasi (n8n / Make) untuk penarikan data iklan, pembagian prospek ke tim sales, pencegahan duplikasi data, integrasi WhatsApp gateway, serta pengaturan hak akses pengguna.
+
+Budget, biaya, dan durasi pengerjaan akan dibahas once sudah clear on the scope",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,a6c883c047d7cd403b9411a6bc8b5a12a30c464d46815d05dae10f48cb56624a,480,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40778859,Freelancer,https://www.freelancer.com/projects/ai-agents/Agents-for-School-Automation,AI Agents for School Automation,2026-10-21T04:35:59+00:00,2026-10-23T12:11:57.735597+00:00,"I’m building a cloud-based platform that lets schools and colleges hand off routine academic and administrative work to practical AI agents. The first release will centre on AI agents and, more specifically, data-analysis agents that can crunch institutional data and surface insights educators can act on immediately. 
+
+Here is what I need from you: 
+• Architect and code the core agent framework so multiple institutions can be onboarded under one roof without any data leakage. 
+• Train and fine-tune the data-analysis agents to ingest grades, attendance records, and other common SIS/LMS exports, then return clear dashboards or API responses that teachers, administrators, and management can use day-to-day. 
+• Wrap everything in an intuitive web interface (or expose a clean REST/GraphQL layer) so non-technical staff can trigger, monitor, and interpret each agent’s output with minimal hand-holding. 
+• Provide deployment scripts, unit tests, and concise documentation so future agents—for example chatbots or scheduling assistants—can be plugged in effortlessly.
+
+I’m tech-agnostic on the exact stack, though Python with scalable frameworks such as FastAPI, LangChain, and either TensorFlow o",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 37500.0 - 75000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,0c4aaeea83157af4d3a9298d5a0a08c6c81e483a4afe22da818d11f54af5abd3,1391,paid_project_request,"[""\\bfastapi\\b"", ""AI agents?""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40777837,Freelancer,https://www.freelancer.com/projects/nextjs/Backend-API-Integration-for-Lead,Backend API Integration for Lead Intake & Authentication System,2026-10-20T13:15:45+00:00,2026-10-23T12:11:58.497091+00:00,"Project Overview:
+The project is a Next.js lending pre-qualification application built with TypeScript, Supabase Postgres, and Prisma. We need a developer to complete and secure the backend API integrations for lead intake and authentication.
+
+Tech Stack:
+
+Next.js (App Router) with TypeScript
+Supabase Postgres (Prisma ORM)
+NextAuth.js for authentication
+Vercel deployment
+Integration Tasks:
+
+1. Lead Intake Webhook Integration
+Complete the existing webhook endpoint at /api/webhooks/lead
+Ensure HMAC signature verification is working correctly
+Validate webhook payload with Zod schema
+Implement proper idempotency handling (prevent duplicate leads)
+Store leads in Supabase database via Prisma
+Return appropriate HTTP responses (200/202/422/401)
+
+2. Authentication System Setup
+Complete NextAuth.js configuration (currently basic setup in /src/lib/auth)
+Implement secure session management
+Set up organization-based multi-tenant authentication
+Create user login/logout functionality
+Implement password reset flow
+Add user invitation system for team members
+
+3. TidyCal Webhook Integration
+Secure the /api/webhooks/tidycal endpoint
+Implement webhook signature verification or token-based auth
+Parse b",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,63617de8480409f6243f84b095b9e0e06869800ea9aed5bcac7eaff1eb5cea88,1749,paid_project_request,"[""\\bwebhooks?\\b"", ""API integration""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40776493,Freelancer,https://www.freelancer.com/projects/automation/Automatizaci-administrativa-con-Make,Automatización administrativa con N8N/Make,2026-10-19T20:01:51+00:00,2026-10-23T12:11:55.674956+00:00,"Quiero delegar la construcción de automatizaciones que optimicen el día a día de mi clientes, principalmente en procesos administrativos y en la relación con sus clientes. 
+
+Mi idea es ir cerrando proyectos por flujo, con entregables claros:
+
+• Workflows listos para producción en n8n, Make u otra alternativa pactada. 
+• Documentación breve de cada escenario (activadores, APIs usadas, lógica y puntos de fallo). 
+• Pruebas de funcionamiento que permitan validar generación de reportes, reglas de correo y los disparadores de seguimiento/marketing sin intervención manual.
+
+Prefiero a alguien de Chile para facilitar las reuniones y la facturación, aunque la prioridad es la experiencia real construyendo integraciones sólidas. Si dominas Zapier, Integromat/Make, n8n o herramientas similares y puedes mostrar ejemplos donde hayas automatizado reportes, correos, aprobaciones y flujos de CRM, conversemos y pactemos el primer sprint.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,73803d6b562fe8badeb98bde336492a2bf72dbaa9658cfb10750b9e8664eea86,934,paid_project_request,"[""\\bn8n\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40776255,Freelancer,https://www.freelancer.com/projects/automation/Agent-Developer-Automation-Engineer,AI Agent Developer & Automation Engineer,2026-10-19T16:58:23+00:00,2026-10-23T12:11:55.681981+00:00,"WE’RE HIRING: AI Agent Developer & Automation Engineer
+
+We're looking for an experienced developer for a project-based engagement with a US-based client.
+
+We’re looking for someone who can build AI agents and automation systems to streamline business operations, including technician outreach, calls and emails, order intake, data entry, and reporting.
+
+What we’re looking for:
+- Experience building and deploying AI agents
+- Knowledge of Python and/or JavaScript, LLM APIs, and workflow automation tools such as n8n or Make
+- Experience with API integrations and business process automation
+- Ability to deliver a documented solution that the client can manage independently
+
+Remote | Project-Based | Independent Contractor
+
+Interested? Please include your portfolio, relevant project examples(proposals without proof of prior experience will not be acknowledged), your proposed pricing, and estimated timeline.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 25.0 - 50.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,c794c135ad2c580b880231e0a4b4985213836038e791aca51bb8df14976cb789,912,paid_project_request,"[""\\bn8n\\b"", ""workflow automation"", ""API integration"", ""AI agents?""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40775398,Freelancer,https://www.freelancer.com/projects/rest-api/GenAI-Python-Full-Stack-Developer,GenAI Python Full Stack Developer  -- 2,2026-10-19T06:17:28+00:00,2026-10-23T12:11:57.735597+00:00,"Required skills: Python, FastAPI, REST API development, Generative AI, LLM integration, prompt engineering, document and email processing, structured data extraction, PostgreSQL, SQLAlchemy, and Docker. Experience with agentic AI workflows, retrieval-augmented generation (RAG), Microsoft Graph email integration, Redis/Celery, Azure deployment, and human-in-the-loop validation is preferred.
+
+The solution should be modular, secure, scalable, and suitable for a proof of concept that can be developed within approximately six weeks.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,7be130e10c4efd7890ac3a8214b0319f90cdd1793370365d6ee4ed1adb0386cd,533,paid_project_request,"[""\\bfastapi\\b"", ""\\bRAG\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review
+FL-40775210,Freelancer,https://www.freelancer.com/projects/react-js/Intelligent-Document-Analysis-Platform,Intelligent AI/ML Document Analysis & QA Platform,2026-10-19T04:07:00+00:00,2026-10-23T12:11:57.745849+00:00,"# Build an AI-Powered Document Analysis & Q&A Platform (Python, LLM, RAG)
+
+**Project Type:** Fixed Price 
+**Budget:** $1,500 USD 
+**Timeline:** 3 Weeks 
+**Experience Level:** Expert
+
+### Project Description
+
+We are looking for an experienced AI/ML developer to build a web-based intelligent document analysis platform using Large Language Models (LLMs) and Retrieval-Augmented Generation (RAG).
+
+The application should allow users to upload PDF documents, ask questions in natural language, and receive accurate, context-aware answers based on the uploaded content.
+
+We want a functional MVP with clean, maintainable code and a user-friendly interface.
+
+### Core Requirements
+
+**1. Document Processing**
+- Upload and process text-based PDF documents.
+- Support up to 30 documents per workspace, with a maximum of 10 MB per document.
+- Extract, clean, and split document text into meaningful chunks.
+- Generate and store embeddings for semantic retrieval.
+
+**2. AI/ML Integration**
+- Integrate an LLM API such as OpenAI.
+- Implement a RAG pipeline using LangChain or LlamaIndex.
+- Use a vector database such as ChromaDB or FAISS.
+- Support semantic search and context-based question answering.
+- Displ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee"", ""brief_budget_conflicts_with_structured_listing_confirm_before_quoting""]",USD 250.0 - 750.0 (fixed),"[""$1,500"", ""$300"", ""$700"", ""$500""]",[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,754ead07add7268d4d25e6858691729da01fa40c5c1202751184b2f920929e6d,3696,paid_project_request,"[""\\bfastapi\\b"", ""\\bRAG\\b""]",,Freelancer structured listing fields; not an agreed contract,[],platform_application,active,Freelancer active-project API; see captured response receipt,Freelancer proposal route; published coordinates do not authorize off-platform contact,source_filtered_candidate_requires_human_ownership_and_eligibility_review

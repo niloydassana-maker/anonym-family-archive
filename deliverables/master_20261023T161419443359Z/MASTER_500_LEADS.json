@@ -1,0 +1,276 @@
+[
+  {
+    "lead_id": "JOBICY-156593",
+    "platform": "Jobicy",
+    "source_url": "https://jobicy.com/jobs/156593-senior-manager-software-engineering-ai",
+    "title": "NetDocuments: Senior Manager, Software Engineering - AI",
+    "created_at": "2026-10-23T12:30:20+00:00",
+    "captured_at": "2026-10-23T16:16:26.138999+00:00",
+    "brief_snippet": "NetDocuments is committed to providing an excellent candidate experience and will never ask you to engage in recruitment activity without phone, video, and in person meetings and communications from emails using the @netdocuments.com domain. If you have any concerns or questions about communications you have received, please send them to hrgroup@netdocuments.com so our team members can review.\n\n\nAbout NetDocuments\n\nAt NetDocuments, we're shaping the future of legal work. We believe legal professionals should spend less time searching for information and managing documents, and more time solving complex problems, serving clients, and delivering meaningful outcomes. That's why we're building technology that helps organizations work smarter, collaborate more effectively, and unlock the full value of their institutional knowledge.\n\nOur team is redefining what's possible for legal technology. NetDocuments is the trusted intelligent document management platform for legal professionals and the company behind the industry's first and only legal context graph—a breakthrough that gives legal professionals and AI a richer understanding of how matters, documents, people, and knowledge connect ",
+    "buyer_username": "",
+    "buyer_real_name": "",
+    "buyer_company": "NetDocuments",
+    "buyer_website": "",
+    "buyer_profile_url": "",
+    "buyer_location": "USA",
+    "can_direct_message": null,
+    "status": "review_required",
+    "review_flags": [
+      "aggregated_listing_not_employer_ownership_proof"
+    ],
+    "budget": "Not established",
+    "budget_mentions": [],
+    "email": [
+      "hrgroup@netdocuments.com",
+      "hrgroup@netdocuments.co"
+    ],
+    "linkedin": [],
+    "phone": [],
+    "whatsapp_number": [],
+    "whatsapp_links": [],
+    "contact_evidence": [
+      {
+        "kind": "email",
+        "value": "hrgroup@netdocuments.com",
+        "contact_evidence": "documents.com domain. If you have any concerns or questions about communications you have received, please send them to hrgroup@netdocuments.com so our team members can review.",
+        "contact_context": "  NetDocuments  is committed to providing an excellent candidate experience and will never ask you to engage in recruitment activity without phone, video, and in person meetings and communications from emails using the @netdocuments.com domain. If you have any concerns or questions about communications you have received, please send them to  hrgroup@netdocuments.com  so our team members can review.",
+        "purpose": "explicit_contact_context_not_ownership_verification",
+        "source_url": "https://jobicy.com/jobs/156593-senior-manager-software-engineering-ai",
+        "ownership": "publication_only_owner_not_independently_verified"
+      },
+      {
+        "kind": "email",
+        "value": "hrgroup@netdocuments.co",
+        "contact_evidence": "Explicit mailto link: mailto:hrgroup@netdocuments.co",
+        "contact_context": "  NetDocuments  is committed to providing an excellent candidate experience and will never ask you to engage in recruitment activity without phone, video, and in person meetings and communications from emails using the @netdocuments.com domain. If you have any concerns or questions about communications you have received, please send them to  hrgroup@netdocuments.com  so our team members can review.",
+        "purpose": "explicit_contact_context_not_ownership_verification",
+        "source_url": "https://jobicy.com/jobs/156593-senior-manager-software-engineering-ai",
+        "ownership": "publication_only_owner_not_independently_verified"
+      }
+    ],
+    "suppressed_values": 0,
+    "coordinate_count": 1,
+    "contact_value_count": 2,
+    "email_status": "published_candidate",
+    "linkedin_status": "not_found_in_scanned_content",
+    "phone_status": "out_of_requested_scope",
+    "whatsapp_number_status": "out_of_requested_scope",
+    "eligibility_location": "USA",
+    "rejected_coordinates": [],
+    "contact_kind": "published_direct_contact",
+    "contact_route": "Direct outreach via a published email or LinkedIn coordinate; ownership and permission require confirmation",
+    "listing_status": "active",
+    "listing_status_source": "https://jobicy.com/api/jobs/status?ids=156593%2C156558%2C156560%2C156466",
+    "verification_status": "source_filtered_candidate_requires_human_ownership_and_eligibility_review"
+  },
+  {
+    "lead_id": "JOBICY-156558",
+    "platform": "Jobicy",
+    "source_url": "https://jobicy.com/jobs/156558-senior-software-engineer-backend-4",
+    "title": "Customer.io: Senior Software Engineer, Backend",
+    "created_at": "2026-10-23T09:13:24+00:00",
+    "captured_at": "2026-10-23T16:16:26.803481+00:00",
+    "brief_snippet": "Hi, I’m Paul, VP of Engineering at Customer.io. We’re looking for experienced backend engineers who care deeply about reliability, performance, and scalability. You’ll design, build, and evolve the systems that power communication at massive scale - while helping us push the boundaries of what great engineering can look like.\nAbout Customer.io\n\nOver 9,000 companies - from scrappy startups to global brands - use our platform to send billions of emails, push notifications, in-app messages, and SMS every day. Customer.io powers automated communication that people actually want to receive. \n\nWe help teams send smarter, more relevant messages using real-time behavioral data. Under the hood: Go, React, Ember and AI help us ship fast and scale with confidence.\nWhat We Value\n\nOwnership\nYou own problems end to end. You move fast, act like an owner, and thrive in ambiguity. You've led complex projects before, whether officially or not, and you're ready to do it again.\n\nEngineers with product taste\n\nYou think like a user, not just an engineer. You care how your systems power real customer value - and how to make them better.\n\nA healthy skepticism for “the way things are done.”\n\nYou bring rigo",
+    "buyer_username": "",
+    "buyer_real_name": "",
+    "buyer_company": "Customer.io",
+    "buyer_website": "",
+    "buyer_profile_url": "",
+    "buyer_location": "EMEA",
+    "can_direct_message": null,
+    "status": "review_required",
+    "review_flags": [
+      "aggregated_listing_not_employer_ownership_proof"
+    ],
+    "budget": "Not established",
+    "budget_mentions": [],
+    "email": [
+      "jobs@customer.io"
+    ],
+    "linkedin": [],
+    "phone": [],
+    "whatsapp_number": [],
+    "whatsapp_links": [],
+    "contact_evidence": [
+      {
+        "kind": "email",
+        "value": "jobs@customer.io",
+        "contact_evidence": "omer.io letterhead. Please be vigilant in all of your job search activity, and if you have any questions please contact jobs@customer.io.",
+        "contact_context": "Our Process Zoom is the only video conference platform that we use, virtual interviews will be conducted using the video capability (i.e., not via the chat), and offers will be extended in writing on official  Customer.io  letterhead. Please be vigilant in all of your job search activity, and if you have any questions please contact jobs@customer.io.",
+        "purpose": "explicit_contact_context_not_ownership_verification",
+        "source_url": "https://jobicy.com/jobs/156558-senior-software-engineer-backend-4",
+        "ownership": "publication_only_owner_not_independently_verified"
+      }
+    ],
+    "suppressed_values": 0,
+    "coordinate_count": 1,
+    "contact_value_count": 1,
+    "email_status": "published_candidate",
+    "linkedin_status": "not_found_in_scanned_content",
+    "phone_status": "out_of_requested_scope",
+    "whatsapp_number_status": "out_of_requested_scope",
+    "eligibility_location": "EMEA",
+    "rejected_coordinates": [],
+    "contact_kind": "published_direct_contact",
+    "contact_route": "Direct outreach via a published email or LinkedIn coordinate; ownership and permission require confirmation",
+    "listing_status": "active",
+    "listing_status_source": "https://jobicy.com/api/jobs/status?ids=156593%2C156558%2C156560%2C156466",
+    "verification_status": "source_filtered_candidate_requires_human_ownership_and_eligibility_review"
+  },
+  {
+    "lead_id": "JOBICY-156466",
+    "platform": "Jobicy",
+    "source_url": "https://jobicy.com/jobs/156466-manager-software-test-automation",
+    "title": "Veracyte: Manager Software Test Automation",
+    "created_at": "2026-10-22T20:38:09+00:00",
+    "captured_at": "2026-10-23T16:16:33.195748+00:00",
+    "brief_snippet": "At Veracyte, we offer exciting career opportunities for those interested in joining a pioneering team that is committed to transforming cancer care for patients across the globe. Working at Veracyte enables our employees to not only make a meaningful impact on the lives of patients, but to also learn and grow within a purpose driven environment. This is what we call the Veracyte way – it’s about how we work together, guided by our values, to give clinicians the insights they need to help patients make life-changing decisions. \n\nOur Values:\n\n\nWe Seek A Better Way: We pursue bold ideas, embrace complexity, and keep pushing forward.\n\nWe Make It Happen: We act with urgency, deliver with excellence, and always find a way. \n\nWe Are Stronger Together: We engage with empathy, align around what's best for Veracyte, and celebrate as one team. \n\nWe Care Deeply: We show up with integrity, kindness, and respect for one another. \n\nThe Position:\n\nVeracyte is seeking an experienced Manager, Software Test Automation, to lead our Quality Engineering Platform team. This team's mission is to enable every product engineering team to own software quality by providing scalable automation frameworks, self",
+    "buyer_username": "",
+    "buyer_real_name": "",
+    "buyer_company": "Veracyte",
+    "buyer_website": "",
+    "buyer_profile_url": "",
+    "buyer_location": "USA",
+    "can_direct_message": null,
+    "status": "review_required",
+    "review_flags": [
+      "aggregated_listing_not_employer_ownership_proof"
+    ],
+    "budget": "Not established",
+    "budget_mentions": [],
+    "email": [
+      "careers@veracyte.com"
+    ],
+    "linkedin": [],
+    "phone": [],
+    "whatsapp_number": [],
+    "whatsapp_links": [],
+    "contact_evidence": [
+      {
+        "kind": "email",
+        "value": "careers@veracyte.com",
+        "contact_evidence": "dIn or other online job sites for any position at Veracyte, please exercise caution and promptly report any concerns to careers@veracyte.com",
+        "contact_context": "About Veracyte If you receive any suspicious alerts or communications through LinkedIn or other online job sites for any position at Veracyte, please exercise caution and promptly report any concerns to  careers@veracyte.com ",
+        "purpose": "explicit_contact_context_not_ownership_verification",
+        "source_url": "https://jobicy.com/jobs/156466-manager-software-test-automation",
+        "ownership": "publication_only_owner_not_independently_verified"
+      }
+    ],
+    "suppressed_values": 0,
+    "coordinate_count": 1,
+    "contact_value_count": 1,
+    "email_status": "published_candidate",
+    "linkedin_status": "not_found_in_scanned_content",
+    "phone_status": "out_of_requested_scope",
+    "whatsapp_number_status": "out_of_requested_scope",
+    "eligibility_location": "USA",
+    "rejected_coordinates": [],
+    "contact_kind": "published_direct_contact",
+    "contact_route": "Direct outreach via a published email or LinkedIn coordinate; ownership and permission require confirmation",
+    "listing_status": "active",
+    "listing_status_source": "https://jobicy.com/api/jobs/status?ids=156593%2C156558%2C156560%2C156466",
+    "verification_status": "source_filtered_candidate_requires_human_ownership_and_eligibility_review"
+  },
+  {
+    "lead_id": "JOBSPRESSO-163918",
+    "platform": "Jobspresso",
+    "source_url": "https://jobspresso.co/job/backend-software-engineer-python-postgres/",
+    "title": "Backend Software Engineer &#8211; Python/Postgres",
+    "created_at": "2026-10-22T15:23:25+00:00",
+    "captured_at": "2026-10-23T16:16:45.610275+00:00",
+    "brief_snippet": "Do you want to work for a mission-driven non-profit, writing software that will contribute to helping the livelihoods of millions of coffee farmers around the world? Enveritas is a 501(c)(3) non-profit and Y Combinator-backed startup looking to hire for our Engineering & Data Group. We are looking for a backend software engineer with a focus on python and PostgreSQL to join our EUDR engineering team on a remote/global, full-time basis. You can learn more about this job and our group at https://www.enveritas.org/jobs/backend-software-eng/\n\nWe’re a small team and every hire makes a large impact, so we’re careful and thorough when it comes to hiring, but we are actively considering candidates and moving them through the process as quickly as we can.\n\nAbout our engineering & data group\n\nWe are a quirky, talented, and humble group of about thirty people with diverse backgrounds, ranging from journalism to academia to international industry. We’re represented across the gender spectrum, with 36% of our Engineering and Data Group identifying as women and/or nonbinary. Several of us are parents, with more expecting.\n\nOur group builds software to collect, analyze, and report data about coff",
+    "buyer_username": "",
+    "buyer_real_name": "",
+    "buyer_company": "",
+    "buyer_website": "",
+    "buyer_profile_url": "",
+    "buyer_location": "",
+    "can_direct_message": null,
+    "status": "review_required",
+    "review_flags": [
+      "aggregated_listing_open_status_unconfirmed"
+    ],
+    "budget": "Not established",
+    "budget_mentions": [],
+    "email": [
+      "jobs@enveritas.org"
+    ],
+    "linkedin": [],
+    "phone": [],
+    "whatsapp_number": [],
+    "whatsapp_links": [],
+    "contact_evidence": [
+      {
+        "kind": "email",
+        "value": "jobs@enveritas.org",
+        "contact_evidence": "Please apply using our Greenhouse application form. Feel free to contact us at jobs@enveritas.org should you have any questions about the position or the interview process. Questions about this opportunity or process will not reflect negatively on your application.",
+        "contact_context": " Please apply using our Greenhouse application form. Feel free to contact us at  jobs@enveritas.org  should you have any questions about the position or the interview process. Questions about this opportunity or process will not reflect negatively on your application.",
+        "purpose": "explicit_contact_context_not_ownership_verification",
+        "source_url": "https://jobspresso.co/job/backend-software-engineer-python-postgres/",
+        "ownership": "publication_only_owner_not_independently_verified"
+      }
+    ],
+    "suppressed_values": 0,
+    "coordinate_count": 1,
+    "contact_value_count": 1,
+    "email_status": "published_candidate",
+    "linkedin_status": "not_found_in_scanned_content",
+    "phone_status": "out_of_requested_scope",
+    "whatsapp_number_status": "out_of_requested_scope",
+    "rejected_coordinates": [],
+    "contact_kind": "published_direct_contact",
+    "contact_route": "Direct outreach via a published email or LinkedIn coordinate; ownership and permission require confirmation",
+    "verification_status": "source_filtered_candidate_requires_human_ownership_and_eligibility_review"
+  },
+  {
+    "lead_id": "JOBSPRESSO-163726",
+    "platform": "Jobspresso",
+    "source_url": "https://jobspresso.co/job/software-engineer-infrastructure-self-managed-experience-smx/",
+    "title": "Software Engineer, Infrastructure &#8211; Self Managed Experience (SMX)",
+    "created_at": "2026-10-21T06:36:32+00:00",
+    "captured_at": "2026-10-23T16:16:45.882962+00:00",
+    "brief_snippet": "Camunda is the enterprise platform for agentic orchestration, enabling organizations to coordinate AI agents, people, and systems across complex, end-to-end business processes. With built-in governance, auditability, and human oversight, Camunda gives enterprises the control they need to move AI from pilots to production — safely and at scale. Trusted by over 700 organizations worldwide, including 9 of top 10 US banks, Camunda helps enterprises boost operational efficiency, accelerate time-to-value, and deliver better customer experiences.\n\nFully remote and global, we are in the middle of something bigger: transforming into an AI-first organisation, built on our own platform. We use Agentic AI to automate, orchestrate intelligent processes, and elevate human contribution across every team.\n\nNamed GP Bullhound’s Top 100 Next Unicorn list, 2025 Great Place to Work certified. Visionary in 2025 Gartner® Magic Quadrant™ for Business Orchestration and Automation Technologies. ranked 3rd in Flexa’s 2026 Most Flexible Companies, We’re growing fast and looking for top talent to join our team. If you want meaningful work, visible impact and put something genuinely rare on your CV, keep readi",
+    "buyer_username": "",
+    "buyer_real_name": "",
+    "buyer_company": "",
+    "buyer_website": "",
+    "buyer_profile_url": "",
+    "buyer_location": "",
+    "can_direct_message": null,
+    "status": "review_required",
+    "review_flags": [
+      "aggregated_listing_open_status_unconfirmed"
+    ],
+    "budget": "Not established",
+    "budget_mentions": [],
+    "email": [
+      "talent-operations@camunda.com"
+    ],
+    "linkedin": [],
+    "phone": [],
+    "whatsapp_number": [],
+    "whatsapp_links": [],
+    "contact_evidence": [
+      {
+        "kind": "email",
+        "value": "talent-operations@camunda.com",
+        "contact_evidence": "imply select ‘No’ when prompted during your application. You can also change your preferences at any time by contacting talent-operations@camunda.com.",
+        "contact_context": " To opt-out, simply select ‘No’ when prompted during your application. You can also change your preferences at any time by contacting talent-operations@camunda.com.",
+        "purpose": "explicit_contact_context_not_ownership_verification",
+        "source_url": "https://jobspresso.co/job/software-engineer-infrastructure-self-managed-experience-smx/",
+        "ownership": "publication_only_owner_not_independently_verified"
+      }
+    ],
+    "suppressed_values": 0,
+    "coordinate_count": 1,
+    "contact_value_count": 1,
+    "email_status": "published_candidate",
+    "linkedin_status": "not_found_in_scanned_content",
+    "phone_status": "out_of_requested_scope",
+    "whatsapp_number_status": "out_of_requested_scope",
+    "rejected_coordinates": [],
+    "contact_kind": "published_direct_contact",
+    "contact_route": "Direct outreach via a published email or LinkedIn coordinate; ownership and permission require confirmation",
+    "verification_status": "source_filtered_candidate_requires_human_ownership_and_eligibility_review"
+  }
+]

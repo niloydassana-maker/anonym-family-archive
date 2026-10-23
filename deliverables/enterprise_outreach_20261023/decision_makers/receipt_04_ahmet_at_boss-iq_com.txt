@@ -1,0 +1,31 @@
+TO: ahmet@boss-iq.com
+NAME: Ahmet Özdemir
+TITLE: Founder & CEO
+COMPANY: BOSS-IQ
+SUBJECT: Fractional CTO / Systems Architect — AI platform scaling & multi-tenant architecture
+MESSAGE-ID: <179277438108.14236.13243385450567435742@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK
+SENT_AT: 2026-10-23T16:53:03.143823+00:00
+SHA256_BODY: d6ed14843fec01350a4b5469fc38b21b8dc1daea8654942eb6da2ec2b7c6cac4
+
+BODY:
+Hi Ahmet,
+
+Saw your recent post regarding a CTO Partner and systems architecture leadership for BOSS-IQ's AI strategic-planning platform.
+
+I am an executive technology leader and systems architect with 22+ years of enterprise experience (NIT Silchar 2003 honours, former Director & CTO). I have designed and delivered full-stack enterprise cloud platforms, multi-tenant database partitioning, and resilient AI workflow engines across US, UK, and UAE corridors.
+
+For a strategic planning SaaS, the core architecture demands strict tenant isolation, scalable Python/PostgreSQL backends, deterministic business-rule evaluation, and robust role-based access controls (RBAC) so enterprise customers can safely deploy autonomous AI workflows.
+
+Relevant references:
+- Systems Architecture Catalog (118 private repos / 1.95M LOC): https://github.com/isearchxsolve/repo-catalog
+- Career & Executive Profile: https://www.linkedin.com/in/kunal-das-technologist/
+
+I engage via written technical roadmaps, architectural design documents, and asynchronous delivery milestones. If this aligns with BOSS-IQ's current growth phase, I can prepare an architectural blueprint for scaling your platform backend and agent pipeline.
+
+Best regards,
+
+Kunal Das
+Principal Systems Architect & Technology Leader
+Email: isearch.xsolve@gmail.com
+WhatsApp: +91 86172 16163

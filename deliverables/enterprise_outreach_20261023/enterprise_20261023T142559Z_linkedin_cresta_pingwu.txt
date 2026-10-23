@@ -1,0 +1,13 @@
+CHANNEL: LinkedIn DM
+TO: https://www.linkedin.com/in/pingwu
+COMPANY: Cresta
+ROLE: Customer Engineer APAC
+DRAFTED_AT: 2026-10-23T14:25:59.167108+00:00
+STATUS: READY_FOR_MANUAL_SEND
+
+MESSAGE:
+Hi Ping — saw the Customer Engineer, APAC opening at Cresta.
+
+22 years in enterprise AI systems architecture. I've worked in the exact intersection Cresta operates — real-time AI augmentation for customer-facing teams, conversation intelligence pipelines, and the enterprise deployment complexity that comes with United Airlines and Marriott-class accounts.
+
+APAC enterprise deployment experience in Singapore and UAE corridors. Would love to understand what the CE role owns post-sale. Worth a short chat?

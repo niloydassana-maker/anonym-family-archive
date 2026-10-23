@@ -1,0 +1,122 @@
+{
+  "captured_at_utc": "2026-10-23T12:59:47.285523+00:00",
+  "options": {
+    "sources": "discourse",
+    "contact_policy": "direct-only",
+    "direct_first": true,
+    "url": [],
+    "urls_file": null,
+    "limit": 50,
+    "days": 5,
+    "max_topics": 8,
+    "max_batches": 2,
+    "max_feed_pages": 1,
+    "max_requests": 40,
+    "delay": 0.1,
+    "per_query": 20,
+    "query": null,
+    "no_profiles": true,
+    "suppress_file": "D:\\anonym\\tools\\lead_hunter\\already_contacted.json",
+    "out": "D:\\anonym\\tools\\lead_hunter\\output",
+    "deliverables_dir": "D:\\anonym\\deliverables"
+  },
+  "retained_candidates": 0,
+  "unique_candidates_before_limit": 0,
+  "interrupted": false,
+  "leads_with_coordinate": {
+    "email": 0,
+    "linkedin": 0,
+    "phone": 0,
+    "whatsapp_number": 0
+  },
+  "errors": [
+    {
+      "stage": "forum_discovery",
+      "url": "https://community.botpress.com/latest.json?order=created&page=0",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "stage": "forum_discovery",
+      "url": "https://pipedream.com/community/latest.json?order=created&page=0",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    }
+  ],
+  "excluded": [
+    {
+      "url": "https://community.n8n.io/t/323862",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    }
+  ],
+  "http_attempts": 9,
+  "receipts": [
+    {
+      "url": "https://community.n8n.io/c/jobs/13.json?order=created&page=0",
+      "final_url": "https://community.n8n.io/c/jobs/13.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:59:14.960794+00:00",
+      "sha256": "7ceb69640261790eefa849757ad916bc6e1f898e09f51e92e26294464189cfe5",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125912556996Z\\evidence\\7ceb69640261790eefa849757ad916bc6e1f898e09f51e92e26294464189cfe5.bin"
+    },
+    {
+      "url": "https://community.make.com/c/74.json?order=created&page=0",
+      "final_url": "https://community.make.com/c/hire-a-pro/hire-help/74.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:59:18.030314+00:00",
+      "sha256": "b16bf99ffecac71bc3ce7a8c51644f138ebac8d4c46b8b97bad6d822d533d513",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125912556996Z\\evidence\\b16bf99ffecac71bc3ce7a8c51644f138ebac8d4c46b8b97bad6d822d533d513.bin"
+    },
+    {
+      "url": "https://discuss.frappe.io/c/jobs/24.json?order=created&page=0",
+      "final_url": "https://discuss.frappe.io/c/framework/app-development/24.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:59:25.830762+00:00",
+      "sha256": "2dc9bfa0110167a2a4aee18f719ff7896cd106ac33ce7dc0c3ceb1cde3225a93",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125912556996Z\\evidence\\2dc9bfa0110167a2a4aee18f719ff7896cd106ac33ce7dc0c3ceb1cde3225a93.bin"
+    },
+    {
+      "url": "https://community.directus.io/latest.json?order=created&page=0",
+      "final_url": "https://community.directus.com/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:59:31.805206+00:00",
+      "sha256": "5a2a38d1a9f9dc1a40b4943a84c94efa5d0e8c0a36e61f1778fbf2496d01f729",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125912556996Z\\evidence\\5a2a38d1a9f9dc1a40b4943a84c94efa5d0e8c0a36e61f1778fbf2496d01f729.bin"
+    },
+    {
+      "url": "https://community.botpress.com/latest.json?order=created&page=0",
+      "final_url": "https://discord.com/invite/botpress",
+      "fetched_at": "2026-10-23T12:59:35.029135+00:00",
+      "sha256": "9e21bb53b59b425829dff2cf5e11be4761aebea7948c71913bf54415703ebace",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125912556996Z\\evidence\\9e21bb53b59b425829dff2cf5e11be4761aebea7948c71913bf54415703ebace.bin"
+    },
+    {
+      "url": "https://community.weweb.io/latest.json?order=created&page=0",
+      "final_url": "https://community.weweb.io/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:59:38.145316+00:00",
+      "sha256": "81d2f167fb4f88f56f051d19d8d00eaf784ee9c041ef36ccccecea8840cb51bc",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125912556996Z\\evidence\\81d2f167fb4f88f56f051d19d8d00eaf784ee9c041ef36ccccecea8840cb51bc.bin"
+    },
+    {
+      "url": "https://pipedream.com/community/latest.json?order=created&page=0",
+      "final_url": "https://pipedream.com/docs",
+      "fetched_at": "2026-10-23T12:59:42.381605+00:00",
+      "sha256": "8a36c32bb7b569bc6d8fe950644c540236ddf2d9bf9126301b26c7281c709c9f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125912556996Z\\evidence\\8a36c32bb7b569bc6d8fe950644c540236ddf2d9bf9126301b26c7281c709c9f.bin"
+    },
+    {
+      "url": "https://forum.camunda.io/latest.json?order=created&page=0",
+      "final_url": "https://forum.camunda.io/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:59:46.003425+00:00",
+      "sha256": "e9a36639aa764b27f6804672ca6a23ae40af1f3de6b08086607eb8797c04af73",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125912556996Z\\evidence\\e9a36639aa764b27f6804672ca6a23ae40af1f3de6b08086607eb8797c04af73.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323862.json",
+      "final_url": "https://community.n8n.io/t/323862.json",
+      "fetched_at": "2026-10-23T12:59:47.250346+00:00",
+      "sha256": "c405daf1179c6e7b0afa2417be058183bc0728538b8ccbb918dc5abfc1a485c1",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125912556996Z\\evidence\\c405daf1179c6e7b0afa2417be058183bc0728538b8ccbb918dc5abfc1a485c1.bin"
+    }
+  ],
+  "quarantined": 0,
+  "rejected_coordinate_observations": 0,
+  "duplicate_observations": 0,
+  "verification_policy": "No automated ownership or zero-false-positive guarantee. OUTREACH_READY is empty until human verification."
+}

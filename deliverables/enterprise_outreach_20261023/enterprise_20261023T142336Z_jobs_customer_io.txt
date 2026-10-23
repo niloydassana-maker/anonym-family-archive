@@ -1,0 +1,16 @@
+TO: jobs@customer.io
+COMPANY: Customer.io
+SUBJECT: Distributed systems architect — 22 years backend at scale
+MESSAGE-ID: <179276541291.21600.8805351634858308563@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK  1792765417 a92af1059eb24-197ec59d692sm418356c88.17 - gsmtp
+SENT_AT: 2026-10-23T14:23:36.478384+00:00
+BODY:
+Hi Paul,
+
+Came across your post on Customer.io's engineering opening — the part about reliability and scalability at billions of messages per day is exactly the kind of problem I've spent 22 years solving.
+
+Background: NIT Silchar 2003, Director & CTO-level architect. I've designed and shipped distributed event-driven backends handling multi-million message volumes, Python microservices, PostgreSQL at scale, and real-time pipeline orchestration. Enterprise clients across US, UK, and UAE corridors.
+
+Happy to share specifics on the architecture patterns I'd bring. Is there a short screen call that works for your team?
+
+Kunal Das

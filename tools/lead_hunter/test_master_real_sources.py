@@ -56,6 +56,14 @@ class RealSourceRegressions(unittest.TestCase):
             run.args.suppressed = {'alvaro@wellbayt.com'}
             self.assertIsNone(master.process_topic(topic, 'https://community.n8n.io', run))
 
+    def test_topic_without_direct_coordinate_is_rejected(self):
+        topic = json.loads((ARCHIVE/'lead-make-114603.json').read_text('utf-8-sig'))
+        with TemporaryDirectory() as tmp:
+            run = master.Research(config(), Path(tmp))
+            lead = master.process_topic(topic, 'https://community.make.com', run)
+            self.assertIsNone(lead)
+            self.assertTrue(any('no_direct_contact_coordinate_found' in r for x in run.excluded for r in x['reasons']))
+
     def test_output_with_empty_results_is_valid(self):
         with TemporaryDirectory() as tmp:
             run = master.Research(config(), Path(tmp))

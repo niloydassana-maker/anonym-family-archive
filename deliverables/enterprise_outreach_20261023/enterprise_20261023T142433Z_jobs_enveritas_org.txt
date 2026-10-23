@@ -1,0 +1,16 @@
+TO: jobs@enveritas.org
+COMPANY: Enveritas
+SUBJECT: Python + Postgres backend architect — mission-driven engineering
+MESSAGE-ID: <179276546953.21600.11107567942709866766@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK  1792765473 a92af1059eb24-197ec59d692sm418356c88.17 - gsmtp
+SENT_AT: 2026-10-23T14:24:33.096254+00:00
+BODY:
+Hi,
+
+Your Backend Software Engineer role on the EUDR engineering team caught my eye — specifically the mission and the small-team, high-impact model.
+
+22 years in enterprise systems, strong Python and PostgreSQL background, and comfort operating as a senior individual contributor where each commit genuinely matters. I've designed data pipelines and APIs for compliance-heavy domains where schema integrity and audit traceability are as important as throughput.
+
+I've read through enveritas.org/jobs/backend-software-eng/ — happy to discuss how my background fits the specifics if you'd like to connect.
+
+Kunal Das

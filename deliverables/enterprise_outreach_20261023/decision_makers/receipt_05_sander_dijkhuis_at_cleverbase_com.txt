@@ -1,0 +1,31 @@
+TO: sander.dijkhuis@cleverbase.com
+NAME: Sander Dijkhuis
+TITLE: Co-Founder & CTO
+COMPANY: Cleverbase
+SUBJECT: High-assurance cryptographic systems & Go/PostgreSQL distributed architecture
+MESSAGE-ID: <179277438814.14236.15657865079560415762@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK
+SENT_AT: 2026-10-23T16:53:10.054310+00:00
+SHA256_BODY: 66b292fd9c1f2fd8a77c2f71024591de8a184545911a4bc022bf38e1bf5df606
+
+BODY:
+Hi Sander,
+
+Came across Cleverbase's engineering update regarding your high-assurance trust service platform, digital identity wallet, and eIDAS-compliant API systems.
+
+I am a 22-year enterprise systems architect (NIT Silchar 2003 honours, former Director & CTO) with deep experience in high-concurrency Go and Python backends, cryptographic audit logging (verifiable SHA-256 receipts), and high-reliability PostgreSQL architectures.
+
+Building QTSP-grade and digital identity infrastructure requires uncompromising rigor around cryptographic proof verification, zero-leak audit trails, and deterministic API contracts under heavy transaction volumes. My engineering principles are built entirely on verified cryptographic receipts and formal boundary validation.
+
+Credentials:
+- Verified Code Catalog (118 repositories / 1.95M LOC): https://github.com/isearchxsolve/repo-catalog
+- Executive Profile: https://www.linkedin.com/in/kunal-das-technologist/
+
+I collaborate through asynchronous written architectural briefs and formal systems specifications. If useful to your engineering roadmap, I would be glad to share an architectural review on high-throughput cryptographic event verification and distributed audit ledgers.
+
+Best regards,
+
+Kunal Das
+Principal Systems Architect & Technology Leader
+Email: isearch.xsolve@gmail.com
+WhatsApp: +91 86172 16163

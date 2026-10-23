@@ -1,0 +1,169 @@
+{
+  "captured_at_utc": "2026-10-23T12:58:59.050367+00:00",
+  "options": {
+    "sources": "all",
+    "contact_policy": "direct-only",
+    "direct_first": true,
+    "url": [],
+    "urls_file": null,
+    "limit": 100,
+    "days": 5,
+    "max_topics": 24,
+    "max_batches": 2,
+    "max_feed_pages": 1,
+    "max_requests": 90,
+    "delay": 0.5,
+    "per_query": 20,
+    "query": null,
+    "no_profiles": true,
+    "suppress_file": "D:\\anonym\\tools\\lead_hunter\\already_contacted.json",
+    "out": "D:\\anonym\\tools\\lead_hunter\\output",
+    "deliverables_dir": "D:\\anonym\\deliverables"
+  },
+  "retained_candidates": 0,
+  "unique_candidates_before_limit": 0,
+  "interrupted": false,
+  "leads_with_coordinate": {
+    "email": 0,
+    "linkedin": 0,
+    "phone": 0,
+    "whatsapp_number": 0
+  },
+  "errors": [
+    {
+      "stage": "forum_discovery",
+      "url": "https://community.botpress.com/latest.json?order=created&page=0",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "stage": "forum_discovery",
+      "url": "https://pipedream.com/community/latest.json?order=created&page=0",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    }
+  ],
+  "excluded": [
+    {
+      "url": "https://community.n8n.io/t/323862",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323860",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323364",
+      "reasons": [
+        "topic_marked_closed"
+      ]
+    }
+  ],
+  "http_attempts": 14,
+  "receipts": [
+    {
+      "url": "https://hn.algolia.com/api/v1/search_by_date?tags=story%2Cauthor_whoishiring&hitsPerPage=12",
+      "final_url": "https://hn.algolia.com/api/v1/search_by_date?tags=story%2Cauthor_whoishiring&hitsPerPage=12",
+      "fetched_at": "2026-10-23T12:58:15.279176+00:00",
+      "sha256": "ecfef4afb434e1cc1de126ef6044c5bfca88a48d51932d6603bbe4fd92fbabd9",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\ecfef4afb434e1cc1de126ef6044c5bfca88a48d51932d6603bbe4fd92fbabd9.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/49922569.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/49922569.json",
+      "fetched_at": "2026-10-23T12:58:16.462052+00:00",
+      "sha256": "ad1fc11a71c7a784b9a1256e679bc37166f8f1686ed2b4a875b29c942af1dba4",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\ad1fc11a71c7a784b9a1256e679bc37166f8f1686ed2b4a875b29c942af1dba4.bin"
+    },
+    {
+      "url": "https://hn.algolia.com/api/v1/search_by_date?tags=comment%2Cstory_49922569&numericFilters=created_at_i%3E1792328294&hitsPerPage=100&page=0",
+      "final_url": "https://hn.algolia.com/api/v1/search_by_date?tags=comment%2Cstory_49922569&numericFilters=created_at_i%3E1792328294&hitsPerPage=100&page=0",
+      "fetched_at": "2026-10-23T12:58:17.389548+00:00",
+      "sha256": "5b8a07a51eb02159b8ea294dcf43e04de31ab8598ace592cf354cb8398a5cc10",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\5b8a07a51eb02159b8ea294dcf43e04de31ab8598ace592cf354cb8398a5cc10.bin"
+    },
+    {
+      "url": "https://community.n8n.io/c/jobs/13.json?order=created&page=0",
+      "final_url": "https://community.n8n.io/c/jobs/13.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:58:19.756000+00:00",
+      "sha256": "7ceb69640261790eefa849757ad916bc6e1f898e09f51e92e26294464189cfe5",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\7ceb69640261790eefa849757ad916bc6e1f898e09f51e92e26294464189cfe5.bin"
+    },
+    {
+      "url": "https://community.make.com/c/74.json?order=created&page=0",
+      "final_url": "https://community.make.com/c/hire-a-pro/hire-help/74.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:58:22.445326+00:00",
+      "sha256": "b16bf99ffecac71bc3ce7a8c51644f138ebac8d4c46b8b97bad6d822d533d513",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\b16bf99ffecac71bc3ce7a8c51644f138ebac8d4c46b8b97bad6d822d533d513.bin"
+    },
+    {
+      "url": "https://discuss.frappe.io/c/jobs/24.json?order=created&page=0",
+      "final_url": "https://discuss.frappe.io/c/framework/app-development/24.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:58:32.916546+00:00",
+      "sha256": "2dc9bfa0110167a2a4aee18f719ff7896cd106ac33ce7dc0c3ceb1cde3225a93",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\2dc9bfa0110167a2a4aee18f719ff7896cd106ac33ce7dc0c3ceb1cde3225a93.bin"
+    },
+    {
+      "url": "https://community.directus.io/latest.json?order=created&page=0",
+      "final_url": "https://community.directus.com/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:58:39.579405+00:00",
+      "sha256": "5a2a38d1a9f9dc1a40b4943a84c94efa5d0e8c0a36e61f1778fbf2496d01f729",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\5a2a38d1a9f9dc1a40b4943a84c94efa5d0e8c0a36e61f1778fbf2496d01f729.bin"
+    },
+    {
+      "url": "https://community.botpress.com/latest.json?order=created&page=0",
+      "final_url": "https://discord.com/invite/botpress",
+      "fetched_at": "2026-10-23T12:58:43.255986+00:00",
+      "sha256": "15fd87f6e0b2f88654c0864ba9fddba1186787d0934a3016df0ba4512fda5f16",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\15fd87f6e0b2f88654c0864ba9fddba1186787d0934a3016df0ba4512fda5f16.bin"
+    },
+    {
+      "url": "https://community.weweb.io/latest.json?order=created&page=0",
+      "final_url": "https://community.weweb.io/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:58:46.451677+00:00",
+      "sha256": "81d2f167fb4f88f56f051d19d8d00eaf784ee9c041ef36ccccecea8840cb51bc",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\81d2f167fb4f88f56f051d19d8d00eaf784ee9c041ef36ccccecea8840cb51bc.bin"
+    },
+    {
+      "url": "https://pipedream.com/community/latest.json?order=created&page=0",
+      "final_url": "https://pipedream.com/docs",
+      "fetched_at": "2026-10-23T12:58:51.188465+00:00",
+      "sha256": "8a36c32bb7b569bc6d8fe950644c540236ddf2d9bf9126301b26c7281c709c9f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\8a36c32bb7b569bc6d8fe950644c540236ddf2d9bf9126301b26c7281c709c9f.bin"
+    },
+    {
+      "url": "https://forum.camunda.io/latest.json?order=created&page=0",
+      "final_url": "https://forum.camunda.io/latest.json?order=created&page=0",
+      "fetched_at": "2026-10-23T12:58:54.783983+00:00",
+      "sha256": "e9a36639aa764b27f6804672ca6a23ae40af1f3de6b08086607eb8797c04af73",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\e9a36639aa764b27f6804672ca6a23ae40af1f3de6b08086607eb8797c04af73.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323862.json",
+      "final_url": "https://community.n8n.io/t/323862.json",
+      "fetched_at": "2026-10-23T12:58:55.995304+00:00",
+      "sha256": "c405daf1179c6e7b0afa2417be058183bc0728538b8ccbb918dc5abfc1a485c1",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\c405daf1179c6e7b0afa2417be058183bc0728538b8ccbb918dc5abfc1a485c1.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323860.json",
+      "final_url": "https://community.n8n.io/t/323860.json",
+      "fetched_at": "2026-10-23T12:58:57.163039+00:00",
+      "sha256": "c01951f69ff08dd929e3636c7f33a00deffe40f4b6a6608b00b9ce6a33ffe813",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\c01951f69ff08dd929e3636c7f33a00deffe40f4b6a6608b00b9ce6a33ffe813.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323364.json",
+      "final_url": "https://community.n8n.io/t/323364.json",
+      "fetched_at": "2026-10-23T12:58:59.016331+00:00",
+      "sha256": "edcec8bb22a58386bae91d2ec0ad964db5f04a66c77bf533d829486d9b6257f1",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T125814008010Z\\evidence\\edcec8bb22a58386bae91d2ec0ad964db5f04a66c77bf533d829486d9b6257f1.bin"
+    }
+  ],
+  "quarantined": 0,
+  "rejected_coordinate_observations": 0,
+  "duplicate_observations": 0,
+  "verification_policy": "No automated ownership or zero-false-positive guarantee. OUTREACH_READY is empty until human verification."
+}

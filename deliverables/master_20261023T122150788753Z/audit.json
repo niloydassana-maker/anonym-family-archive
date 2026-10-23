@@ -1,0 +1,164 @@
+{
+  "captured_at_utc": "2026-10-23T12:22:08.491706+00:00",
+  "options": {
+    "sources": "all",
+    "contact_policy": "direct-only",
+    "direct_first": true,
+    "url": [],
+    "urls_file": null,
+    "limit": 500,
+    "days": 5,
+    "max_topics": 30,
+    "max_batches": 2,
+    "max_feed_pages": 10,
+    "max_requests": 600,
+    "delay": 0.5,
+    "per_query": 20,
+    "query": null,
+    "no_profiles": false,
+    "suppress_file": "D:\\anonym\\tools\\lead_hunter\\already_contacted.json",
+    "out": "D:\\anonym\\tools\\lead_hunter\\output",
+    "deliverables_dir": "D:\\anonym\\deliverables"
+  },
+  "retained_candidates": 0,
+  "unique_candidates_before_limit": 0,
+  "interrupted": false,
+  "leads_with_coordinate": {
+    "email": 0,
+    "linkedin": 0,
+    "phone": 0,
+    "whatsapp_number": 0
+  },
+  "errors": [],
+  "excluded": [
+    {
+      "url": "https://community.n8n.io/t/323862",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323860",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/323364",
+      "reasons": [
+        "buyer_already_contacted"
+      ]
+    },
+    {
+      "url": "https://community.n8n.io/t/322445",
+      "reasons": [
+        "no_direct_contact_coordinate_found"
+      ]
+    }
+  ],
+  "http_attempts": 14,
+  "receipts": [
+    {
+      "url": "https://hn.algolia.com/api/v1/search_by_date?tags=story%2Cauthor_whoishiring&hitsPerPage=12",
+      "final_url": "https://hn.algolia.com/api/v1/search_by_date?tags=story%2Cauthor_whoishiring&hitsPerPage=12",
+      "fetched_at": "2026-10-23T12:21:52.941161+00:00",
+      "sha256": "0cbc234872bd1c10c7e4895445a30c2682e2523c58e46f7ecbb630938f32109a",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\0cbc234872bd1c10c7e4895445a30c2682e2523c58e46f7ecbb630938f32109a.bin"
+    },
+    {
+      "url": "https://hacker-news.firebaseio.com/v0/item/49922569.json",
+      "final_url": "https://hacker-news.firebaseio.com/v0/item/49922569.json",
+      "fetched_at": "2026-10-23T12:21:53.852588+00:00",
+      "sha256": "9be4998a4a64f67590c5a0b99ef358aafb92a96b59d4613b441ea73e586057a4",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\9be4998a4a64f67590c5a0b99ef358aafb92a96b59d4613b441ea73e586057a4.bin"
+    },
+    {
+      "url": "https://hn.algolia.com/api/v1/search_by_date?tags=comment%2Cstory_49922569&numericFilters=created_at_i%3E1792326110&hitsPerPage=100&page=0",
+      "final_url": "https://hn.algolia.com/api/v1/search_by_date?tags=comment%2Cstory_49922569&numericFilters=created_at_i%3E1792326110&hitsPerPage=100&page=0",
+      "fetched_at": "2026-10-23T12:21:54.520274+00:00",
+      "sha256": "2e6af73f9460331e48c3847a32869c3765c19ba766b703bb33a10087caead133",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\2e6af73f9460331e48c3847a32869c3765c19ba766b703bb33a10087caead133.bin"
+    },
+    {
+      "url": "https://community.n8n.io/c/jobs/13.json?order=created",
+      "final_url": "https://community.n8n.io/c/jobs/13.json?order=created",
+      "fetched_at": "2026-10-23T12:21:56.624346+00:00",
+      "sha256": "7dc6f5a27395696aee28372b1c69bc781abe0b82ce499438d9e4149b1f7faf67",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\7dc6f5a27395696aee28372b1c69bc781abe0b82ce499438d9e4149b1f7faf67.bin"
+    },
+    {
+      "url": "https://community.make.com/c/74.json?order=created",
+      "final_url": "https://community.make.com/c/hire-a-pro/hire-help/74.json?order=created",
+      "fetched_at": "2026-10-23T12:21:59.003672+00:00",
+      "sha256": "bab0e5583da7e084a4697a020e0fd3f74157f0d6449085fcd99d91fb44a9b194",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\bab0e5583da7e084a4697a020e0fd3f74157f0d6449085fcd99d91fb44a9b194.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323862.json",
+      "final_url": "https://community.n8n.io/t/323862.json",
+      "fetched_at": "2026-10-23T12:22:00.141544+00:00",
+      "sha256": "107b783b8fc225af632c610cf86a89802a532645e654777bb4409efec2cc8656",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\107b783b8fc225af632c610cf86a89802a532645e654777bb4409efec2cc8656.bin"
+    },
+    {
+      "url": "https://community.n8n.io/u/Danish_Koul_14.json",
+      "final_url": "https://community.n8n.io/u/Danish_Koul_14.json",
+      "fetched_at": "2026-10-23T12:22:01.053655+00:00",
+      "sha256": "4a73891a376a567c12c0beccee8d8c92e318d1462bee7571148e730cf53fbca9",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\4a73891a376a567c12c0beccee8d8c92e318d1462bee7571148e730cf53fbca9.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323860.json",
+      "final_url": "https://community.n8n.io/t/323860.json",
+      "fetched_at": "2026-10-23T12:22:01.877824+00:00",
+      "sha256": "69164443db68e58735c3a07f3c055483ac562f8d4d82d216b49a402af9a4ac1f",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\69164443db68e58735c3a07f3c055483ac562f8d4d82d216b49a402af9a4ac1f.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323364.json",
+      "final_url": "https://community.n8n.io/t/323364.json",
+      "fetched_at": "2026-10-23T12:22:03.247963+00:00",
+      "sha256": "e49e67f2246c4efc67a6f7f572128320244239b2a86b7a41894577cc5bad68e3",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\e49e67f2246c4efc67a6f7f572128320244239b2a86b7a41894577cc5bad68e3.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/323364/posts.json?post_ids%5B%5D=604154&post_ids%5B%5D=604214&post_ids%5B%5D=604218&post_ids%5B%5D=604224&post_ids%5B%5D=604225&post_ids%5B%5D=604241&post_ids%5B%5D=604246&post_ids%5B%5D=604269&post_ids%5B%5D=604297&post_ids%5B%5D=604314&post_ids%5B%5D=604325&post_ids%5B%5D=604360&post_ids%5B%5D=604398&post_ids%5B%5D=604407&post_ids%5B%5D=604427&post_ids%5B%5D=604456&post_ids%5B%5D=604463&post_ids%5B%5D=604469&post_ids%5B%5D=604470",
+      "final_url": "https://community.n8n.io/t/323364/posts.json?post_ids%5B%5D=604154&post_ids%5B%5D=604214&post_ids%5B%5D=604218&post_ids%5B%5D=604224&post_ids%5B%5D=604225&post_ids%5B%5D=604241&post_ids%5B%5D=604246&post_ids%5B%5D=604269&post_ids%5B%5D=604297&post_ids%5B%5D=604314&post_ids%5B%5D=604325&post_ids%5B%5D=604360&post_ids%5B%5D=604398&post_ids%5B%5D=604407&post_ids%5B%5D=604427&post_ids%5B%5D=604456&post_ids%5B%5D=604463&post_ids%5B%5D=604469&post_ids%5B%5D=604470",
+      "fetched_at": "2026-10-23T12:22:04.488134+00:00",
+      "sha256": "5ad80fa3f2ba61aab2a2085c42f74a0abddff64e77e937c538cd5d18aed98714",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\5ad80fa3f2ba61aab2a2085c42f74a0abddff64e77e937c538cd5d18aed98714.bin"
+    },
+    {
+      "url": "https://community.n8n.io/u/Alvaro_Zapata.json",
+      "final_url": "https://community.n8n.io/u/Alvaro_Zapata.json",
+      "fetched_at": "2026-10-23T12:22:05.233528+00:00",
+      "sha256": "5a36866ec84c13251097c28bbdc004c5f20e606cebed9b7293b7cae2c2613eaf",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\5a36866ec84c13251097c28bbdc004c5f20e606cebed9b7293b7cae2c2613eaf.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/322445.json",
+      "final_url": "https://community.n8n.io/t/322445.json",
+      "fetched_at": "2026-10-23T12:22:06.527064+00:00",
+      "sha256": "574009e3680593f178830adbe46d3fc0d080f78e96c793840768d9f729eb21bf",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\574009e3680593f178830adbe46d3fc0d080f78e96c793840768d9f729eb21bf.bin"
+    },
+    {
+      "url": "https://community.n8n.io/t/322445/posts.json?post_ids%5B%5D=602841&post_ids%5B%5D=603129&post_ids%5B%5D=603131&post_ids%5B%5D=603146&post_ids%5B%5D=603218&post_ids%5B%5D=603256&post_ids%5B%5D=604083&post_ids%5B%5D=604499&post_ids%5B%5D=604500",
+      "final_url": "https://community.n8n.io/t/322445/posts.json?post_ids%5B%5D=602841&post_ids%5B%5D=603129&post_ids%5B%5D=603131&post_ids%5B%5D=603146&post_ids%5B%5D=603218&post_ids%5B%5D=603256&post_ids%5B%5D=604083&post_ids%5B%5D=604499&post_ids%5B%5D=604500",
+      "fetched_at": "2026-10-23T12:22:07.682000+00:00",
+      "sha256": "f6491cb506573ddbaf723ebf5f4f50e111fc8a604428360f8df6d92c9d3f6448",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\f6491cb506573ddbaf723ebf5f4f50e111fc8a604428360f8df6d92c9d3f6448.bin"
+    },
+    {
+      "url": "https://community.n8n.io/u/boston_young.json",
+      "final_url": "https://community.n8n.io/u/boston_young.json",
+      "fetched_at": "2026-10-23T12:22:08.482703+00:00",
+      "sha256": "014b7738aca64dda7ba14b4c4369fccd4507cf1edaad0f55f9600bc8c2a247f2",
+      "file": "D:\\anonym\\tools\\lead_hunter\\output\\master_20261023T122150788753Z\\evidence\\014b7738aca64dda7ba14b4c4369fccd4507cf1edaad0f55f9600bc8c2a247f2.bin"
+    }
+  ],
+  "quarantined": 0,
+  "rejected_coordinate_observations": 0,
+  "duplicate_observations": 0,
+  "verification_policy": "No automated ownership or zero-false-positive guarantee. OUTREACH_READY is empty until human verification."
+}

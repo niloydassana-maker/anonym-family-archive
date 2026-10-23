@@ -1,0 +1,28 @@
+RECEIPT — ENTERPRISE MASS DISPATCH
+Timestamp: 20261023T181633Z
+Recipient: amber.auslander@matterhaul.com
+Company: Matterhaul
+Role: Co-Founder & Head of Talent
+Subject: High-scale logistics data pipelines & routing engines — 22y systems architect
+Message-ID: <179277939374.22124.9586870643197501385@gmail.com>
+Status: 250 OK (Dispatched via smtp.gmail.com:587)
+SHA256: b4fb9fad069a75944e49c38cde676ba4ee2ef3f6247a8ef472d93f138dfff060
+==================================================
+BODY:
+Hi Amber,
+
+Saw Matterhaul's work in applied AI and logistics automation for real-time routing.
+
+Real-time telemetry ingestion and dynamic routing at scale require resilient asynchronous stream processing, sub-second geospatial indexing, and deterministic optimization models that don't choke under fleet data spikes.
+
+Over 22 years as a Principal Systems Architect (NIT Silchar Honours, former Director & CTO), I've engineered distributed logistics pipelines and real-time transit telemetry architectures (including live integration work with Singapore Land Transport Authority systems). Our published repo catalog encompasses 49 production repositories and 1.95M lines of verified code.
+
+We deliver turnkey, high-throughput data processing and routing pipelines containerized for immediate production integration.
+
+I work 100% asynchronously in writing—no meeting loops. Technical briefs, benchmarks, and production-ready containers delivered directly to engineering.
+
+Would value sharing our architectural framework for high-throughput logistics telemetry if useful.
+
+Written lane: isearch.xsolve@gmail.com / WhatsApp text +91 86172 16163
+
+Kunal

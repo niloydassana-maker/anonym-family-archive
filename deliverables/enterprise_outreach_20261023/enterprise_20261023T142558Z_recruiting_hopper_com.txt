@@ -1,0 +1,16 @@
+TO: recruiting@hopper.com
+COMPANY: Hopper
+SUBJECT: Conversational AI product leader — agentic travel assistant, voice + chat
+MESSAGE-ID: <179276555472.21600.15336112475445677135@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK  1792765559 a92af1059eb24-197ec59d692sm418356c88.17 - gsmtp
+SENT_AT: 2026-10-23T14:25:58.705727+00:00
+BODY:
+Hi,
+
+Coming across the Principal PM role for HTS Assist, Hopper's agentic travel assistant, made me stop — this is a precise intersection of what I find most interesting to build.
+
+My background is 22 years as a technology architect and product-engineering leader. I've designed and shipped AI-driven customer interaction systems across voice and chat channels, including agentic workflows handling complex transactional resolution — refunds, rebooking, escalation logic. I understand the product problems unique to voice: latency, turn-taking, when to escalate versus resolve autonomously.
+
+HTS Assist's scope — serving millions of travelers across large enterprise travel brands — is the kind of product challenge I want to be solving. Happy to share more.
+
+Kunal Das

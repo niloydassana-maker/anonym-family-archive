@@ -1,0 +1,24 @@
+RECEIPT — ENTERPRISE MASS DISPATCH
+Timestamp: 20261023T181641Z
+Recipient: scott.deakin@buoyant.io
+Company: Buoyant
+Role: Technical Lead
+Subject: Distributed systems & service mesh reliability — 22y backend architect
+Message-ID: <179277940190.22124.1385783223190289870@gmail.com>
+Status: 250 OK (Dispatched via smtp.gmail.com:587)
+SHA256: bc9cceeaadc6ea365d6899f7c5b2c914606559caf38e9453c58f2d9f6b4b25ce
+==================================================
+BODY:
+Hi Scott,
+
+Saw Buoyant's engineering focus on Linkerd, Kubernetes networking, and distributed systems reliability.
+
+Having spent 22 years designing and operating distributed event backends, microservice meshes, and resilient high-throughput infrastructure (NIT Silchar Honours, former Director & CTO), I deeply appreciate Linkerd's philosophy of lightweight, deterministic service mesh architecture.
+
+I've engineered distributed systems handling multi-million transaction loads, asynchronous telemetry streaming, and containerized orchestration across global cloud corridors. Our published catalog includes 49 production repos and 1.95M source lines.
+
+I work entirely asynchronously in writing. Would value reviewing any complex backend orchestration or reliability challenges your team is currently tackling.
+
+Written lane: isearch.xsolve@gmail.com / WhatsApp text +91 86172 16163
+
+Kunal

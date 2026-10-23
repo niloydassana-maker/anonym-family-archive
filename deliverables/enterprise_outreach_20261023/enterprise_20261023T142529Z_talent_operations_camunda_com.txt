@@ -1,0 +1,18 @@
+TO: talent-operations@camunda.com
+COMPANY: Camunda
+SUBJECT: Infrastructure engineer — enterprise agentic orchestration, Camunda self-managed
+MESSAGE-ID: <179276552642.21600.5673353692779497702@gmail.com>
+SMTP: MAIL 250 | RCPT 250 | DATA 250 2.0.0 OK  1792765530 a92af1059eb24-197ec59d692sm418356c88.17 - gsmtp
+SENT_AT: 2026-10-23T14:25:29.724980+00:00
+BODY:
+Hi,
+
+I'm reaching out about the Software Engineer, Infrastructure – Self Managed Experience role at Camunda.
+
+I've spent 22 years designing enterprise-grade orchestration infrastructure — Kubernetes, cloud-native deployments, operator patterns, and the kind of self-managed reliability that enterprise banks and regulated entities demand. The work Camunda is doing at the intersection of AI agents, process governance, and auditability is directly where I operate.
+
+The 9-of-10-US-banks customer base tells me exactly what the reliability and operational maturity bar looks like. I'm interested in contributing to that.
+
+Is the SMX team open to a short conversation this week?
+
+Kunal Das
