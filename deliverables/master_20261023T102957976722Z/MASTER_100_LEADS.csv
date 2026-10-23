@@ -1,0 +1,1909 @@
+﻿lead_id,platform,source_url,title,created_at,captured_at,brief_snippet,buyer_username,buyer_real_name,buyer_company,buyer_website,buyer_profile_url,buyer_location,can_direct_message,status,review_flags,budget,budget_mentions,email,linkedin,phone,whatsapp_number,whatsapp_links,contact_evidence,suppressed_values,coordinate_count,contact_value_count,email_status,linkedin_status,phone_status,whatsapp_number_status,buyer_id,contact_route,topic_closed
+FL-40773239,Freelancer,https://www.freelancer.com/projects/ai-chatbot/lead-generation-agent-for-forwarding,AI lead generation agent for my forwarding company- pilot project,2026-10-17T18:32:13+00:00,2026-10-23T10:32:40.987898+00:00,"Hello,
+
+I run a freight forwarding company in the UAE, specialising in import nomination logistics on China-to-UAE lanes and India to UAE lanes. I'm looking for a developer or agency to build an AI agent that helps us find and win new clients.
+
+What I want built (in phases):
+1. Lead discovery: finding UAE importers and China-side sourcing agents or forwarders who show import intent (trade directories, free zone listings, job posts, company websites).
+2. Enrichment and scoring: adding decision-maker contacts, then ranking leads 0-100 with an LLM based on product fit, volume signals and urgency.
+3. Outreach: personalized WhatsApp and email drafts (English, Arabic, Mandarin), with my approval before sending at first.
+4. Inbound bot: a WhatsApp assistant that qualifies enquiries (cargo type, CBM/weight, port, readiness date) and sends me a summary.
+5. CRM logging, so we can track replies and improve targeting.
+
+Preferred stack: n8n or Python, Claude API, WhatsApp Business API, HubSpot or Zoho. I'm open to your suggestions.
+
+I'd like to start with a 2-week pilot covering steps 1 and 2. To help me compare, please reply with:
+- One or two examples of similar B2B or lead-generation agents ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],"[""+971509979102""]",[],[],"[{""kind"": ""phone"", ""value"": ""+971509979102"", ""contact_evidence"": ""E data protection (PDPL) and WhatsApp opt-in rules\n\nThank you. I look forward to your reply.\n\nBest regards,\nAvinash\nCEO\n+971 509979102"", ""source_url"": ""https://www.freelancer.com/projects/ai-chatbot/lead-generation-agent-for-forwarding"", ""ownership"": ""author_published_candidate_review_required""}]",0,1,1,not_found_in_scanned_content,not_found_in_scanned_content,published_candidate,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782862,Freelancer,https://www.freelancer.com/projects/n8n/YouTube-Video-Producer-With-Automation,YouTube Video Producer With N8N Automation System Needed ,2026-10-23T10:30:16+00:00,2026-10-23T10:32:40.890422+00:00,"Hi,
+
+We’re looking for a long-term partner with a pre-built N8N youtube automation system, and experience running it, to support our team. This is not a one-time collaboration, but a partnership where we’ll promote the service and forward the orders to the partner(s) we select. 
+
+We produce custom animations and explainer videos and we want to start offering complete YouTube automation packages to our clients. Ideally, you already have a working N8N YouTube automation system and can operate it for us at low reseller prices.
+
+If you’re interested, please start your bid with “N8N” and answer these questions:
+1. Do you already have a working, pre-built n8n YouTube automation system? If so, tell us more about your system. 
+2. Can you operate the system for us at the following prices?
+• Channel setup – $10: Channel branding, logo, banner, intro, SEO and channel keywords.
+• 10 long videos + 10 Shorts – $50: Ideas, scripts, AI voice-over, visuals, editing, thumbnails, uploading and SEO.
+• 15 long videos + 15 Shorts – $75: Same complete service as above.
+4. Can your system handle the entire process, including branding, scripts, voice-over, visuals, subtitles, thumbnails, SEO and YouTube up",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782841,Freelancer,https://www.freelancer.com/projects/deep-learning/Computer-Vision-Research-Collaboration,AI Computer Vision Research Collaboration,2026-10-23T10:14:36+00:00,2026-10-23T10:32:42.091687+00:00,"Research Collaboration in Artificial Intelligence, Deep Learning & Computer Vision
+
+I am a specializing in Deep Learning, Image Processing, Artificial Intelligence, and Computer Vision. My research portfolio includes work related to SCI and Scopus-indexed publications, focusing on advanced AI architectures and real-world applications.
+
+I am looking to collaborate with experienced researchers, AI developers, and technical professionals who can contribute to innovative research projects in the following areas:
+
+Research Areas
+
+Deep Learning and Machine Learning
+
+Computer Vision and Image Processing
+
+YOLOv8, Faster R-CNN, Mask R-CNN, and object detection
+
+CNN–Transformer hybrid architectures and Swin Transformer
+
+AI-based weapon detection and intelligent surveillance
+
+Face Recognition, Crowd Analytics, and Anomaly Detection
+
+Image Segmentation, Feature Extraction, and Model Optimization
+
+Python, PyTorch, TensorFlow, and experimental implementation
+
+Required Support
+
+Development and implementation of deep learning models
+
+Research methodology and model architecture design
+
+Dataset preparation, preprocessing, and augmentation
+
+Model training, testing, and performance evaluation
+
+Compara",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782824,Freelancer,https://www.freelancer.com/projects/embedded-systems/PCB-Design-for-Industrial-ESP,"PCB Design for Industrial ESP32 I/O Controller (4-layer, isolated I/O and RS485)",2026-10-23T09:59:27+00:00,2026-10-23T10:32:43.579542+00:00,"I need an experienced PCB designer for an industrial controller board used in agricultural automation (greenhouse pumps, valves and sensors).
+
+Board summary:
+- ESP32 module (8 MB flash), USB-C programming
+- 24 V DC input with fuse, reverse-polarity and surge (TVS) protection
+- 8 × 24 V low-side outputs for external relay coils
+- 8 × 24 V opto-isolated inputs (2 with pulse counting up to 1 kHz)
+- 4 × 4–20 mA analog inputs, 16-bit
+- 1 × isolated RS485 (Modbus RTU)
+- Plug-in UART LoRa module (865–867 MHz)
+- Hardware watchdog, DIP switch, status LEDs
+- 4-layer, DIN-rail mounting, conformal coating
+
+IMPORTANT: Isolation of all field I/O and RS485 from the logic side is compulsory (isolated DC-DC, optocouplers, isolated RS485 transceiver, TVS). A non-isolated prototype already failed in the field.
+
+Deliverables:
+- Schematic (PDF + KiCad source)
+- PCB layout (KiCad source) and 3D view
+- Gerber, drill files, BOM with manufacturer part numbers, pick-and-place file
+- All files and rights belong to the client
+
+Payment by milestones: (1) schematic approved, (2) layout approved, (3) final Gerber + BOM.
+
+Requirements PDF and block diagram are attached. The detailed design brief (pin map, layout ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 37500.0 - 75000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782797,Freelancer,https://www.freelancer.com/projects/adobe-acrobat/PDF-Text-Table-Extraction,PDF Text & Table Extraction,2026-10-23T09:56:12+00:00,2026-10-23T10:32:43.583541+00:00,"I need the content of several PDF files transferred into a single, well-structured Excel workbook. Every bit of text and each table must be captured, then organised so that each source PDF lives on its own worksheet. 
+
+Accuracy is the priority—characters, line breaks and table cell alignment should mirror the original documents. If the PDFs contain scanned pages, please apply OCR before export so nothing is missed. 
+
+Deliverable 
+• One .xlsx file with a clearly named tab for every PDF, containing all extracted text and fully reconstructed tables.
+
+Please use whichever tools you trust—Adobe Acrobat, Python (Tabula, Camelot, pdfplumber), or another reliable workflow—as long as the final spreadsheet is clean and ready for analysis.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782815,Freelancer,https://www.freelancer.com/projects/full-stack-development/Upgrade-Criclive-for-Speed-Scale,Upgrade Criclive.in for Speed and Scale,2026-10-23T09:51:06+00:00,2026-10-23T10:32:45.136796+00:00,"Frontend & Backend Development and Optimization for CricLive.in
+
+I am looking for an experienced full-stack web developer to improve the frontend design, backend performance, and overall functionality of my cricket website, CricLive.in.
+
+Project Requirements
+
+- Frontend Improvements: Create a modern, professional, responsive UI/UX that works smoothly on mobile, tablet, and desktop.
+- Live Cricket Scores: Improve the live score system with fast, accurate updates and automatic refresh functionality.
+- Backend Optimization: Optimize server-side code, APIs, database queries, and overall website performance.
+- Live Match Pages: Improve scorecards, ball-by-ball commentary, match statistics, team details, and player profiles.
+- News Section: Enhance cricket news pages with attractive headlines, images, categories, and SEO-friendly URLs.
+- API Integration: Improve cricket API integration, data handling, error management, and update reliability.
+- Admin Panel: Improve the dashboard for managing cricket news, match commentary, teams, players, and website content.
+- Speed Optimization: Reduce page loading time and improve Core Web Vitals.
+- SEO Optimization: Improve technical SEO, structured ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 250000.0 - 500000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782812,Freelancer,https://www.freelancer.com/projects/ai-voiceover/Marathi-Hindi-Lip-Sync-Dub,Marathi to Hindi Lip-Sync Dub,2026-10-23T09:50:29+00:00,2026-10-23T10:32:42.099692+00:00,"I have a completed video in Marathi and I want an AI-generated Hindi version that feels identical. Your task is translate to the spoken dialogue: translate it into Hindi, keep the wording as close as possible to the original Marathi, and rebuild the soundtrack so the new voice tracks align perfectly with every mouth movement on screen. Also, translate the subtitles accordingly. 
+
+The Hindi voice must echo the tone, pitch, and general style of the on-camera speaker—almost as if it were the same person switching languages—rather than a generic announcer or studio voice. Translate the on-screen text or graphics; they must stay exactly as they appear in the source except for the hindi text. 
+
+Deliverables
+• Final video file (same resolution and frame rate as the source) with Hindi audio seamlessly blended and lip-sync accurate throughout. 
+. Translate the marathi subtitles, slide text into hindi (english words can stay unchanged)
+• Separate clean Hindi dialogue track (WAV or high-quality MP3) synced to timecode for archival use. 
+• A short note on the tools/models you used (e.g., RVC, ElevenLabs, HeyGen, Wav2Lip, or similar) so I can reproduce the workflow if needed.
+
+Acceptance Criter",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782800,Freelancer,https://www.freelancer.com/projects/mobile-app-testing/Teach-Mobile-App-Testing-Earnings,Teach Mobile App Testing Earnings,2026-10-23T09:45:43+00:00,2026-10-23T10:32:48.218213+00:00,"I want to start earning straight from my mobile by trying out new apps, watching any introductory videos they carry, and then sharing honest feedback. My interest is purely in mobile-based work—I do not plan to use a computer—and the task that excites me most is testing fresh apps and giving my opinion on their features, ease of use, bugs, and overall experience.
+
+Here is the help I need: 
+
+• A curated, up-to-date list of genuine apps or platforms that actually pay users for testing, rating, or watching short video content. 
+• Step-by-step guidance (video or written) in simple Hindi or easy English that shows how to sign up, verify identity, complete a test task, and withdraw earnings safely to a digital wallet or bank account. 
+• Tips on writing useful feedback so my responses are accepted quickly and I build a high-rating tester profile. 
+• At least one live walk-through session on Zoom, Google Meet, or WhatsApp where you demonstrate the full workflow on a phone screen. 
+• A quick-reference PDF or Google Doc I can return to whenever I need a refresher.
+
+Acceptance criteria 
+1. I can successfully register on a minimum of five recommended apps or sites and complete my first paid te",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782798,Freelancer,https://www.freelancer.com/projects/full-stack-development/Launch-MediBookHome-Web-Apps,Launch MediBookHome Web and Apps,2026-10-23T09:44:20+00:00,2026-10-23T10:32:45.144148+00:00,"Title: Full Stack Developer and Flutter Expert for MediBookHome
+
+Project Description
+
+We are looking for an experienced full stack developer with Flutter expertise to complete and launch our existing healthcare booking platform MediBookHome.
+
+Approximately 80 percent of the website is already developed. We need a developer to audit the existing code, fix bugs, complete missing features, test all workflows, develop two native Flutter applications for Android and iOS, and deploy the complete system.
+
+Existing Technology
+
+Next.js 14, React, TypeScript, Turborepo, pnpm, PostgreSQL, Prisma, Supabase, JWT, OTP, Vercel, GitHub Actions, Google Maps, payment gateway, and existing Admin and CRM modules.
+
+Scope of Work
+
+1. Website and Backend Audit
+
+Audit all pages, forms, APIs, and modules. Identify missing functionality, broken links, incorrect redirects, API failures, database errors, and incomplete workflows.
+
+Test form validation, authentication, permissions, and relevant HTTP errors including 400, 401, 403, 404, and 500 series errors. Provide an audit report with issues and recommended fixes.
+
+2. Complete Booking Workflow
+
+Test registration, login, OTP verification, patient details, add",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782778,Freelancer,https://www.freelancer.com/projects/wordpress/WooCommerce-Certificate-Portal,WooCommerce Certificate Portal Development,2026-10-23T09:31:44+00:00,2026-10-23T10:32:43.597879+00:00,"Custom WordPress WooCommerce Certificate Ordering and Management System in Dutch language
+
+Project type: Fixed price
+
+We need an experienced WordPress/WooCommerce developer to build a complete certificate ordering and management system within an existing WordPress website.
+
+The system must support three ordering methods:
+
+1. Public website: New customers order certificates online without an existing account.
+2. Customer dashboard: Existing customers and companies order certificates, manage employees and download certificates.
+3. Administrator dashboard: The administrator manually creates orders for customers contacting the business by telephone or email.
+
+All methods must use the same database, approval process, PDF generation, numbering system and expiration management.
+
+1. CERTIFICATE ORDERING
+
+Integrate with WooCommerce while preserving the existing website design.
+
+Customers must be able to select certificate types, quantities, enter personal details for each certificate holder, upload required documents and complete payment.
+
+Support individual and bulk orders. For example, a company ordering 10 certificates must be able to enter information for 10 different employees in one c",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 37500.0 - 75000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782754,Freelancer,https://www.freelancer.com/projects/web-development/GST-Billing-Website-App,GST Billing Website & App,2026-10-23T09:18:57+00:00,2026-10-23T10:32:48.222888+00:00,"I’m building a complete GST-compliant billing solution that works both as a responsive website and an Android APK. The platform must be multi-tenant because several independent businesses will run their own accounts under one roof, each with isolated data and branding.
+
+Core workflow
+• Create professional GST invoices that can be viewed, downloaded as PDF, or sent to a printer in a single click.
+• Track sales, purchase expenses, and automatically generate real-time GST reports (GSTR-1, GSTR-3B, etc.).
+• Maintain catalogs of products, customers, suppliers, and payment records with simple CRUD screens.
+
+Technical expectations
+• Modern tech stack you’re comfortable with (Laravel / Node / Django, React / Vue, or similar) paired with a robust relational database.
+• Secure multi-tenant architecture, role-based access, and GST fields hard-coded to Indian tax rules.
+• Clean, responsive UI and a lightweight Android APK (targeting Android 8+) built from the same codebase or a dedicated mobile framework such as Flutter / React Native.
+• Output invoices in standard A4 and thermal printer sizes; fonts and GST breakup must match govt guidelines.
+
+Deliverables
+1. Fully deployed web app (domain + ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782722,Freelancer,https://www.freelancer.com/projects/lead-generation/Verified-Contacts,"10,500 Verified AR Contacts",2026-10-23T08:54:53+00:00,2026-10-23T10:32:48.228886+00:00,"I’m launching a U.S. outreach campaign and need a clean, import-ready database of 10,500 freshly sourced Accounts Receivable contacts. Pull two AR decision makers from each company—roughly 5,250 firms—with a strong emphasis on the mid-sized bracket (51–250 employees) while still covering the full 5–1,000-employee range.
+
+Acceptable job titles include Accounts Receivable (any level), Accounts Receivable Clerk, Billing Coordinator / Specialist, Collections Analyst / Credit & Collections Specialist, Credit Control Officer, and Accounts Receivable Supervisor or Manager. Target industries are manufacturing, retail & e-commerce, logistics & transport, hospitality & tourism, real estate & property management, and professional & consulting services.
+
+For every contact capture only the essentials—full name, corporate email, and company name—so the sheet stays lean. All emails must be 100 % verified, free of catch-all and role accounts, and return a bounce rate under 2 % when I spot-test through NeverBounce or an equivalent tool.
+
+Deliverable 
+• One deduplicated CSV/XLSX file with exactly 10,500 rows that meet every criterion above.
+
+Acceptance criteria 
+• <2 % bounce rate after my validatio",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 10.0 - 30.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782730,Freelancer,https://www.freelancer.com/projects/flutter/Develop-Cross-Platform-Cricket-Live,Develop a Cross-Platform Cricket Live Score App Similar to Criclive.in Website ,2026-10-23T08:52:55+00:00,2026-10-23T10:32:45.154875+00:00,"I am looking for an experienced mobile app developer to build a cross-platform cricket application that closely matches the features, design, and functionality of my existing website, https://criclive.in.
+
+Key Requirements
+
+- Develop an app for both Android and iOS using Flutter or React Native.
+- Replicate the website's design, layout, branding, and core features as closely as possible.
+- Display live cricket scores, ball-by-ball commentary, match results, upcoming matches, and live match details.
+- Include cricket news, match schedules, team information, player profiles, and scorecards.
+- Integrate cricket APIs for real-time scores, match data, and news where required.
+- Build a fast, responsive, user-friendly interface with smooth navigation.
+- Include push notifications for live match updates, wickets, innings changes, and match results, where supported by the API.
+- Ensure the app works smoothly across different screen sizes and devices.
+- Implement appropriate caching, loading states, and error handling.
+- Support Google AdMob or other suitable advertising integrations for monetization.
+- Provide a backend or admin panel if required to manage news, content, and app settings.
+",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 250000.0 - 500000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782680,Freelancer,https://www.freelancer.com/projects/adobe-premiere-pro/Fast-Paced-Social-Clip-Editor,Fast-Paced Social Clip Editor,2026-10-23T08:15:14+00:00,2026-10-23T10:32:48.234887+00:00,"I need an editor who can take my raw footage and turn it into eye-catching Reels, TikToks, and YouTube Shorts. Every clip should feel fast, energetic, and scroll-stopping, with snappy cuts, on-beat music, dynamic text captions, and the kind of motion graphics and effects that keep viewers glued to the screen. You’ll get access to my raw vertical videos along with any reference material or branding assets I have; from there, you’ll shape the story, time the beats, add subtitles, and deliver polished files ready to upload to each platform. 
+
+If you work comfortably in tools like Adobe Premiere Pro, Final Cut, CapCut, or DaVinci Resolve, and you have a knack for matching trending sounds and effects, let’s talk. I’m mainly interested in short-form content, so please share links to samples that show your ability to keep the pace moving while still making the message clear. 
+
+Deliverables for each assignment:
+• Final 9:16 video file (mp4, 1080×1920) 
+• Project file with all assets properly organized 
+• Separate caption file (srt) or burned-in subtitles, depending on what fits best 
+
+Turnaround time and volume can be discussed, but I’m looking to establish an ongoing workflow where new cl",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",EUR 8.0 - 30.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782661,Freelancer,https://www.freelancer.com/projects/editing/Chaptered-Novel-Shivpur-Family-Saga,Chaptered Novel: Shivpur Family Saga,2026-10-23T08:00:34+00:00,2026-10-23T10:32:48.237889+00:00,"I have a heartfelt village tale sketched out and now I’m ready to see it grow into a full-length, chapter-by-chapter novel. The story opens in Shivpur, a lush and “very beautiful” village where two babies are born to families who are the closest of friends. As the children grow, life pulls them apart: one boy leaves for schooling in Bangalore while the girl’s family settles in Hyderabad. Twenty-two years later their paths cross again, setting the stage for an emotional family drama of separation, self-discovery, and reunion.
+
+What I need from you is the craft and structure to turn this premise into a compelling novel that moves naturally from childhood innocence to adult reconciliation. The core feeling I want the reader to experience is the aching, hopeful pull of family bonds stretched across distance and time.
+
+Here’s how I imagine the workflow:
+
+• Create an outline that divides the story into clear chapters, pacing the move from Shivpur to the cities, the parallel journeys of each family, and the eventual return.
+• Draft each chapter in sequence (Google Docs or Word), weaving in regional detail, cultural nuance, and believable dialogue.
+• Build tension around the years of separ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 750.0 - 1250.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782637,Freelancer,https://www.freelancer.com/projects/postgresql/Independent-PostgreSQL-Architecture,Independent PostgreSQL Architecture and Security Review — NDIS Software Prototype,2026-10-23T07:44:51+00:00,2026-10-23T10:32:45.164387+00:00,"Independent PostgreSQL Architecture and Security Review — NDIS Software Prototype
+
+I am the Director of an Australian NDIS provider developing Totally COS, a configurable, multi-tenant provider operating system. I need an experienced PostgreSQL architect/security specialist to independently review our proposed design and identify what must be completed before a controlled live pilot.
+
+Current stage
+
+We have database schema and migration designs, synthetic testing packages, and interactive prototypes covering participant onboarding, worker compliance, readiness approvals, an Action Centre and dashboard.
+
+The current connected prototype runs in browser memory. It is not yet a production application connected to PostgreSQL. PostgreSQL is the proposed operational database, subject to technical validation.
+
+The eventual platform will hold sensitive participant and worker information, including disability-related support plans, risk assessments, consent, representative authority, training and compliance evidence.
+
+Initial scope
+
+Please review the available architecture, SQL schemas, migrations, permissions and test materials, then assess:
+
+- Multi-tenant isolation, including Row Level Se",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",AUD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782625,Freelancer,https://www.freelancer.com/projects/mobile-app-development/Cross-Platform-Criclive-App-Development,Cross-Platform Criclive.in App Development + Complete Website SEO Optimization for Criclive.in Website ,2026-10-23T07:37:40+00:00,2026-10-23T10:32:45.175385+00:00,"Project Description
+
+I am looking for an experienced full-stack developer or development team to improve my existing cricket website, Criclive.in, and develop a high-quality cross-platform mobile application for Android and iOS.
+
+The goal is to build an app that closely matches the existing website's features and branding while improving the frontend UI/UX, backend performance, scalability, and overall user experience. I also need comprehensive SEO optimization to improve organic traffic, search engine rankings, and website visibility.
+
+1. Cross-Platform Mobile App Development
+
+- Develop a cross-platform application for Android and iOS using a suitable technology such as Flutter or React Native.
+- Replicate the essential features, design, content, and functionality of Criclive.in.
+- Integrate live cricket scores, ball-by-ball commentary, match schedules, results, points tables, team information, player profiles, and cricket news, wherever supported by the existing platform and data provider.
+- Implement push notifications for match updates, wickets, innings breaks, and match results.
+- Ensure fast loading, smooth navigation, responsive layouts, and a consistent user experience.
+- I",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1000000.0 - 2500000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782620,Freelancer,https://www.freelancer.com/projects/2d-animation/Educational-Animation-Video-Editor, Educational Animation Video Editor,2026-10-23T07:33:05+00:00,2026-10-23T10:32:48.243888+00:00,"Project Brief: Educational Animation Video Creator
+We are seeking a dedicated video editor/animator FOR LONG TERM to transform provided educational lecture recordings and textbook material into concept-focused animated videos.
+• Reference Benchmark: 
+• Visual Learning – Laws of Motion 3D Animation
+• https://www.youtube.com/watch?v=KtHqOtCVAvc
+• https://www.youtube.com/watch?v=jW2_H6-_72A
+NOTE- 2 D VIDEO ALSO OKAY NO ISSUE 
+Project Phases & Compensation
+1. Initial Test (2–4 Minutes)
+• Produce an initial 2 to 4 minute test cut to evaluate visual styling, text layout, and overall animation quality.
+• Work on the paid sample batch begins once this pilot receives formal approval.
+
+2. Paid Sample Phase (4 Videos)
+• Deliverable: 4 complete sample videos (10 to 20 minutes each).
+• Payout: ₹1,500 per video (Total: ₹6,000 for 4 videos).
+• Expert Review & Revisions: Subject-matter experts and learners will review each video. You must accommodate a minimum of 2 to a maximum of 4 rounds of revisions per sample video based on expert feedback.
+
+3. Bulk Project (200 to 400+ Videos)
+• After successful sign-off on the 4 samples, the project scales to ongoing production.
+• Volume: 200 to 400+ videos.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782608,Freelancer,https://www.freelancer.com/projects/telegram-api/Telegram-Paid-Channel-Bot-Setup,Telegram Paid Channel Bot Setup,2026-10-23T07:27:40+00:00,2026-10-23T10:32:45.186681+00:00,"I already run a public Telegram channel and now need a bot that handles the entire pay-wall flow for a second, members-only channel. Here’s exactly what I want it to do:
+
+• Collect payment exclusively through Telegram Stars. 
+• Upon successful payment, generate and deliver a unique, private invite link to the paid channel. 
+• Grant each buyer one-time, permanent access; no renewals or subscription logic is required. 
+• Operate hands-off after deployment, so I can focus on content while the bot manages entry.
+
+Please build, configure, and test the bot (Telegram Bot API, payments configuration, webhook or cloud function—use whichever stack you prefer) and provide clear instructions so I can adjust prices or links later. Speed matters: I’d like this running as soon as possible without compromising security or compliance with Telegram’s policies.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782607,Freelancer,https://www.freelancer.com/projects/content-strategy/YouTube-Recap-Channel-Growth,YouTube Recap Channel Growth,2026-10-23T07:26:53+00:00,2026-10-23T10:32:48.250880+00:00,"I run a movie-recap channel on YouTube and now need a complete, end-to-end growth plan. The channel is already live but it hasn’t been optimised or positioned for steady traffic, so I’m looking for someone who can treat it like a fresh project and map out everything required to scale views, watch-time, and subscribers.
+
+What I’m after 
+• A thorough audit of the current channel: on-page SEO, tags, playlists, audience retention stats, and competitor benchmarks. 
+• Keyword research and a bank of high-intent topics that fit movie recaps and can rank in both local (Pakistani/Urdu) and broader audiences. 
+• A 90-day content calendar with working titles, hook ideas, and story beats for each recap so production stays consistent. 
+• Metadata templates (titles, descriptions, tags) built from the keyword list and tested best practices. 
+• Thumbnail guidelines backed by CTR data and a simple A/B testing routine using TubeBuddy or VidIQ. 
+• A practical promotion strategy that connects the YouTube uploads to short-form cuts on TikTok and Facebook, leveraging each platform’s strengths to push viewers back to the main channel. 
+• Milestone targets for subscribers, average view duration, and RPM so",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 900.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782534,Freelancer,https://www.freelancer.com/projects/ai-video-editing/Photorealistic-Brand-Creation,Photorealistic AI Brand Ad Creation,2026-10-23T07:24:48+00:00,2026-10-23T10:32:42.135363+00:00,"The brief is simple: deliver a cinema-quality brand advertisement so lifelike that an average viewer can’t tell whether it was captured on set or conjured with pixels. I need a short piece (roughly 30–45 seconds) that shows real-looking people actively experiencing the product or service, not just glamour shots of the item itself. Think polished Super Bowl spot rather than a standard social clip—the kind of work that sparks the question, “Was that filmed with a crew?”
+
+Here’s how I picture the workflow. We align on a concise script and visual treatment, you leverage your preferred AI tools—Runway Gen-2, Sora-style pipelines, Unreal Engine with MetaHumans, whichever stack gives the highest fidelity—and then finish in Premiere, Resolve, or After Effects for color and sound. The final master must be 4K, 24 fps (or 30 fps if motion demands), broadcast-safe, and immediately ready for paid media placement.
+
+Because timing is critical, I’d like first look drafts within a few days of kickoff and final delivery as soon as humanly (or AI-ly) possible. 
+
+Deliverables 
+• Storyboard or animatic for approval 
+• 30–45 sec photorealistic ad in 4K (MP4 & ProRes) 
+• Separate social-media cutdown (≤1",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782597,Freelancer,https://www.freelancer.com/projects/email-marketing/Setup-Gmail-Bisnis-Menguntungkan,Setup Gmail Bisnis Menguntungkan,2026-10-23T07:20:14+00:00,2026-10-23T10:32:46.728985+00:00,"Saya ingin akun Gmail bisnis yang benar-benar siap pakai untuk membantu saya memperoleh pendapatan—mulai dari tampilan email yang lebih profesional hingga alur kirim-terima yang mendukung promosi produk maupun layanan. 
+
+Tugas utama meliputi: 
+• Mendaftarkan atau menghubungkan nama domain sesuai kebutuhan. 
+• Mengonfigurasi Google Workspace (Gmail, DNS, SPF, DKIM, DMARC) agar email masuk ke inbox, bukan spam. 
+• Menyiapkan struktur inbox, label, dan template sehingga proses follow-up calon pelanggan menjadi efisien. 
+• Memberikan panduan singkat tentang cara memanfaatkan fitur (filter, signature, autoresponder, dan integrasi sederhana dengan spreadsheet atau CRM) untuk mendorong penjualan. 
+
+Pekerjaan dianggap selesai ketika saya dapat: 
+1. Mengirim dan menerima email dari alamat ber-domain sendiri tanpa error. 
+2. Melihat skor deliverability yang baik pada alat pengecekan spam. 
+3. Menggunakan setidaknya satu template promosi siap kirim. 
+
+Silakan ajukan jika Anda berpengalaman meng-setup Google Workspace dan optimasi email marketing ringan.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782591,Freelancer,https://www.freelancer.com/projects/blockchain/Web-Developer-for-Finance-Assistant,Web3 Developer for Finance Assistant,2026-10-23T07:17:55+00:00,2026-10-23T10:32:45.192575+00:00,"Hiring: Experienced Blockchain / Web3 Developer for Client Project
+
+We are looking for a skilled Blockchain / Web3 Developer for a client project involving a Web3-powered personal finance assistant.
+
+We need someone with strong hands-on blockchain experience who can work with an existing codebase, understand the application architecture, and recommend meaningful technical improvements.
+
+Required Skills
+
+- Strong experience in blockchain and Web3 development.
+- Hands-on experience with smart contracts and EVM-compatible blockchains.
+- Proficiency in Solidity and tools such as Hardhat or Foundry.
+- Experience with ethers.js or viem, wallet connectivity, and blockchain API integrations.
+- Strong JavaScript/TypeScript and React skills.
+- Familiarity with backend development, APIs, and databases.
+- Ability to clone and run an existing GitHub repository, understand the codebase, and identify architectural improvements.
+- Good understanding of blockchain security and development best practices.
+- Strong communication skills and the ability to explain technical decisions clearly.
+
+Project & Engagement
+
+- Contract-based opportunity with potential for a six-month engagement.
+- Initial techni",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",GBP 3000.0 - 5000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40781727,Freelancer,https://www.freelancer.com/projects/legal-translation/Page-Legal-English-German-Translation,31-Page Legal English-German Translation,2026-10-23T07:07:57+00:00,2026-10-23T10:32:42.137805+00:00,"I have a 31-page legal document in PDF that must be rendered in flawless, standard German for Germany. The workflow starts with turning the PDF into an editable Microsoft Word file while preserving every heading, numbered clause and table exactly where it sits. From there, I need a 100 % human translation—no CAT memories, machine engines or generative AI—so the text reads naturally to a German-speaking lawyer or government official.
+
+Throughout the process, please translate every legal term into its accepted German equivalent yet leave all proper names exactly as they appear in English. Once the draft is complete, carry out a full proofread to catch typos, spacing issues, cross-references and pagination quirks. The final step is to convert the polished Word file back into a print-ready, high-resolution PDF that matches the original layout page for page.
+
+Deliverables 
+• 31-page Word document in German, fully formatted 
+• 31-page high-quality PDF in German mirroring the source design 
+
+I will review against the source to confirm that terminology, formatting, clause numbering and page breaks align perfectly. Native-level (C2) German mastery is essential, along with absolute discretio",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",EUR 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782568,Freelancer,https://www.freelancer.com/projects/business-development/Business-Development-Client-Success,Business Development & Client Success Specialist | Full-Time | Remote,2026-10-23T07:03:57+00:00,2026-10-23T10:32:46.734985+00:00,"INDONESIAN APPLICANTS ONLY. Applicants from the Philippines will also be considered. Please do not apply if you are based outside these two countries.
+
+We are Just Create It, an award-winning Australian digital agency specialising in Shopify website design and development, ecommerce optimisation, branding and graphic design.
+
+With over 1,000 completed projects and 700+ five-star reviews, we’re looking for a proactive, highly organised and sales-driven individual to join our growing remote team.
+
+This is a full-time, long-term position combining business development, lead generation, client communication and light project management.
+
+Key Responsibilities
+
+1. Lead Generation & Sales (50%)
+
+* Find relevant projects on Freelancer, Upwork, LinkedIn, Contra and Airtasker.
+* Research opportunities and prepare personalised, persuasive proposals.
+* Submit proposals through authorised accounts and platform-approved workflows.
+* Identify potential Shopify, ecommerce, branding and web development clients.
+* Conduct outbound prospecting and follow up with leads.
+* Qualify enquiries, discuss project requirements and help convert prospects into paying clients.
+* Attend sales calls and client mee",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",AUD 200.0 - 400.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782567,Freelancer,https://www.freelancer.com/projects/data-processing/Extend-Python-Gambio-Import,Extend Python Gambio Import,2026-10-23T07:02:30+00:00,2026-10-23T10:32:43.618563+00:00,"I already run a Python script that brings supplier data into my Gambio store. Now I need to fold in an other data feed that arrives as a CSV / Excel file / API. The job is straightforward: read the new file, map its columns, and merge or update every product in Gambio.
+
+Key points 
+• Source format: CSV or Excel (same logic should handle either). 
+• Data scope: all product information—prices, stock levels, names, descriptions, images, everything contained in the feed. 
+• Product matching: use the EAN / barcode from the file to locate the correct item in Gambio. 
+
+What I expect 
+1. Adapt the existing Python script rather than rewriting it. 
+2. Cleanly parse the file, handle encoding quirks, and ignore empty rows. 
+3. Update or insert products through the Gambio API or direct database calls—whichever the current script already employs—without breaking current functionality. 
+4. Log actions and flag mismatches (e.g., EAN not found) to a timestamped report. 
+5. Provide the updated script and a short README explaining any new config options or dependencies.
+
+You will have access to the current script, a sample supplier file, and test credentials for a staging shop. If you know Gambio int",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",EUR 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782563,Freelancer,https://www.freelancer.com/projects/full-stack-development/Optimize-Criclive-Website-SEO,Optimize Criclive.in Website SEO & Performance,2026-10-23T06:59:44+00:00,2026-10-23T10:32:45.192575+00:00,"SEO & Full-Stack Website Optimization for Criclive.in
+
+I am looking for an experienced Full-Stack Web Developer and SEO Specialist to improve my cricket website, Criclive.in, across frontend, backend, on-page SEO, off-page SEO, and technical SEO.
+
+Project Requirements
+
+1. Frontend Development & Optimization
+
+- Improve website design, UI/UX, navigation, and mobile responsiveness.
+- Optimize page loading speed and Core Web Vitals.
+- Improve the layout of cricket news, live scores, match schedules, team pages, and player profiles.
+- Ensure a clean, modern, user-friendly experience across mobile, tablet, and desktop.
+
+2. Backend Development & Optimization
+
+- Improve backend performance, database queries, and API integration.
+- Optimize live scores, cricket data, news publishing, and dynamic pages.
+- Fix bugs, improve code quality, and enhance website security.
+- Ensure the website can handle increased traffic efficiently.
+
+3. On-Page SEO
+
+- Optimize title tags, meta descriptions, headings, URLs, and internal linking.
+- Improve content structure and keyword targeting for cricket-related searches.
+- Implement relevant structured data/schema markup.
+- Optimize images, breadcrumbs, categor",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 500000.0 - 1000000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782559,Freelancer,https://www.freelancer.com/projects/wordpress/Build-Five-SEO-WordPress-Learning,Build Five SEO WordPress Learning Sites,2026-10-23T06:57:35+00:00,2026-10-23T10:32:42.148856+00:00,"Job Description
+
+We are looking for an experienced WordPress Website Developer to design and develop five professional, responsive, user-friendly, and SEO-friendly educational and technical content websites.
+
+The websites will focus on AI, Data Science, Data Analytics, Cybersecurity, and Cloud Computing. Each website should have a clear content structure, intuitive navigation, fast loading speed, mobile responsiveness, and a scalable architecture that supports future content publishing and organic search growth.
+
+The developer will be responsible for website design, WordPress development, page templates, navigation, category structures, technical SEO implementation, performance optimization, and essential website functionality.
+
+Websites to Be Developed
+
+AI Learning Zone – AI concepts, learning paths, AI tools, practical projects, and career guidance.
+
+Data Science Roadmap – Statistics, Python, SQL, data preparation, machine learning, and portfolio projects.
+
+Data Analytics Path – Excel, SQL, data analysis workflows, Power BI, dashboards, business intelligence, and reporting.
+
+HackLearnPro – Cybersecurity fundamentals, defensive security, authorized practice labs, security tools, a",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782556,Freelancer,https://www.freelancer.com/projects/video-conferencing/Remote-Closer-for-Vastu-Consultations,Remote Closer for Vastu Consultations,2026-10-23T06:56:35+00:00,2026-10-23T10:32:46.746987+00:00,"I’m looking for a confident closer who can jump straight onto the qualified leads my marketing team is already generating for our high-ticket Vastu consultations. Your job is simple yet crucial: meet prospects over video call, understand their pain points, present our tailored Vastu solution, and secure the booking on that same call.
+
+Because every lead has shown prior interest, this is a pure closing role—no cold outreach or prospecting. You’ll have access to our proven pitch deck, call flow, and case studies, along with ongoing support from me if you need objections handled or additional resources.
+
+What success looks like:
+• Same-day video calls booked and completed with each warm lead I send you. 
+• Clear, confident explanation of our Vastu methodology and results. 
+• Signed consultation agreements and payment collected before ending the call. 
+• Brief post-call notes logged in our CRM so I can track pipeline health.
+
+Tools you should already be comfortable with: Zoom (or similar), Google Workspace for scheduling, and any mainstream CRM. If you have experience selling other spiritual or high-ticket advisory services—especially astrology—that’s a bonus, but the immediate focus i",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782552,Freelancer,https://www.freelancer.com/projects/nextjs/Next-Website-Development-with-CMS,"Next.js Website Development with CMS, Calendly & HubSpot Integration",2026-10-23T06:53:57+00:00,2026-10-23T10:32:42.165853+00:00,"We are looking for an experienced full-stack developer to build a modern, responsive B2B website for an AI consulting business. The design should follow the visual direction of Reddit for Business while maintaining a distinct brand identity.
+
+The project requires strong Next.js development skills, CMS implementation, marketing integrations, SEO, and analytics.
+
+Scope of Work
+
+1. Website Development
+
+Build 8 primary pages: Home, AI Across Your Business, Industries & Use Cases, Integrations, Partners, Resources/Blog, About, and Book Your Free AI Discovery.
+
+Add privacy policy, terms, booking confirmation, and 404 pages.
+
+Use Next.js, TypeScript, reusable components, and server-side/static rendering.
+
+Ensure responsive design across desktop, tablet, and mobile.
+
+2. CMS and Blog
+
+Implement a suitable CMS such as Sanity or Payload.
+
+Create reusable blog listing, category, and article templates.
+
+Support tags, categories, and RSS.
+
+Prepare the site for 3–6 initial articles supplied by the client.
+
+3. Integrations Directory
+
+Build a searchable and filterable directory covering 180+ tools/platforms.
+
+Treat the directory as informational; live integrations with these platforms are not requi",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782550,Freelancer,https://www.freelancer.com/projects/project-management/Recruitment-Onboarding-Assistant,Recruitment & Onboarding HR Assistant,2026-10-23T06:49:28+00:00,2026-10-23T10:32:48.254886+00:00,"Our in-house recruitment team is expanding its operations across several European countries and I need reliable support to keep the process running smoothly. Your focus will be on two core activities:
+
+• Conducting structured, first-round interviews (video or phone) for entry- and mid-level vacancies in field technician roles. Using our ATS , Recruitee, you’ll screen applications, schedule calls, run competency-based interviews, coordinate interviews, and onboarding processes. 
+
+• Owning the onboarding workflow once a candidate accepts. That means preparing offer letters, collecting right-to-work documents, arranging equipment through IT, and coordinating their Day-1 agenda with line managers so every new colleague feels welcomed and productive from minute one.
+
+Success is measured by interview completion within 48 hours of assignment and a 100 % paperwork-ready status one week before each start date. Expect a steady flow of 8-10 hires per month; I’ll provide templates, access to our calendars, and a direct Slack channel for quick decisions.
+
+Fluency in both English and German is preferred but not required, familiarity with EU employment regulations and remote-first onboarding prac",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782545,Freelancer,https://www.freelancer.com/projects/python/Hybrid-Encryption-Blockchain-Storage,Hybrid Encryption Blockchain Storage Prototype,2026-10-23T06:42:40+00:00,2026-10-23T10:32:42.175855+00:00,"Project Title
+
+Basic University-Level Implementation of Hybrid Encryption with Blockchain for Secure Cloud Storage
+
+Project Description
+
+I am a university student working on a special research project titled “A Hybrid Encryption Model with Blockchain Integration for Secure Cloud Data Storage and Retrieval.”
+
+I am looking for a developer who can build a basic, working, university-level implementation based on my provided base research paper and extended-version project requirements.
+
+I do not need an advanced commercial application. I need a simple, understandable implementation that follows the algorithms and workflow in the research paper and can be demonstrated and explained during my university project evaluation.
+
+1. Strict Requirement — No AI Usage
+
+AI TOOLS ARE STRICTLY PROHIBITED FOR THIS PROJECT.
+
+- Do not use ChatGPT, GitHub Copilot, Gemini, Claude, or any other AI coding or content-generation tools.
+- Do not generate, rewrite, or complete code using AI.
+- All source code must be written manually by the developer from scratch.
+- Do not submit AI-generated explanations, documentation, diagrams, or reports.
+- Do not copy complete projects from GitHub or other sources.
+- The ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782543,Freelancer,https://www.freelancer.com/projects/postgresql/React-Python-Business-Dashboard,React & Python Business Dashboard,2026-10-23T06:40:49+00:00,2026-10-23T10:32:43.622568+00:00,"I need a full-stack web app built with React JS on the front end and Python on the back end that works seamlessly as both an internal website and a responsive PWA. The goal is a unified business dashboard that lets me oversee every operational area without bouncing between different tools. 
+
+What the platform must cover 
+• Customers, leads, and sales 
+• Staff, tasks, and schedules 
+• Stock, orders, and deliveries 
+
+Who will be logging in 
+• Business owners and managers 
+• Sales and customer-support staff 
+• Warehouse and delivery staff 
+
+
+
+
+
+
+
+Core requirements 
+– Clean React component architecture, state handled with Redux or Context, and charts/tables rendered with a proven library such as Recharts or Chart.js. 
+– Python API (FastAPI or Django REST is fine) that exposes secure endpoints, supports token-based authentication, and scales for future mobile apps. 
+– Role-based access so each user group only sees the modules they need. 
+– Realtime updates for inventory and task status, preferably via WebSockets. 
+– PostgreSQL (or another SQL engine) for structured data plus clear migrations and seed data. 
+– Dockerised dev/production setup and step-by-step deploy docs for a VPS or AWS ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782538,Freelancer,https://www.freelancer.com/projects/sales/Senior-Enterprise-eLearning-Sales,Senior Enterprise eLearning Sales Manager,2026-10-23T06:40:38+00:00,2026-10-23T10:32:46.752987+00:00,"Hiring: Senior Manager E-learning Sales 
+Company: Technoedge Learning Services India Pvt Ltd 
+Location: Pune (Baner) 
+Employment Type: Full Time (On-site) 
+Experience Required: 3 to 5 Years 
+About TechnoEdge 
+TechnoEdge Learning Services India Pvt Ltd is an enterprise learning company on a mission 
+to deliver innovative, customized, and outcome-driven learning solutions that move 
+organizations forward. We work with 185+ leading enterprises across industries, offering a 
+full-spectrum portfolio custom eLearning, digital learning content, corporate training, 
+microlearning, AI-powered media solutions, multilingual dubbing and localisation, and talent 
+development consulting. With 27,000+ professionals trained and 793+ domain trainers in 
+our network, we don't just build learning programs we build learning ecosystems. 
+The Role 
+TechnoEdge is looking for a senior enterprise sales professional to own new business 
+acquisition for our learning content and digital learning portfolio. 
+This is a pure new business role. You will prospect, engage, and close enterprise clients 
+independently — from first conversation to signed contract. No account farming. No team 
+management. Full revenue ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782530,Freelancer,https://www.freelancer.com/projects/web-development/Service-Marketplace-Website-Development,Service Marketplace Website Development,2026-10-23T06:34:10+00:00,2026-10-23T10:32:48.259238+00:00,"I need a full-featured website where independent professionals can create profiles and publish the services they offer—everything from one-off freelance gigs to bookable appointments. Before any service goes live, the seller must upload an ID or official business document; the system should hold their listings in review until I approve them from an admin panel.
+
+Once a service is visible, customers should be able to browse it and open an internal message thread with the seller so they can clarify details or negotiate before committing. No payment or calendar booking workflow is required at this stage; secure two-way messaging is the key customer action.
+
+Please build:
+
+• A responsive front end for browsing and searching services 
+• Seller dashboards for listing creation, document upload, and status tracking 
+• An admin dashboard to review documents and activate or reject sellers and their listings 
+• A private messaging module that ties each conversation to the relevant service listing 
+
+Feel free to recommend the best tech stack—Laravel, Node, Django, or another modern framework—as long as it supports future expansion to payments and scheduling. The finished product should be depl",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782528,Freelancer,https://www.freelancer.com/projects/b2b-marketing/Digital-Sales-Partner-Needed,B2B Digital Sales Partner Needed,2026-10-23T06:33:36+00:00,2026-10-23T10:32:43.626978+00:00,"Earn commission by bringing website and application development projects to us.
+
+WorldOnDeal Enterprise is looking for independent freelancers, sales partners, and business development professionals who can connect us with businesses that need digital solutions.
+
+Services you can refer
+
+Business websites and landing pages
+
+E-commerce websites and online stores
+
+Web applications and custom software
+
+Android and iOS mobile applications
+
+SaaS development and business automation
+
+AI chatbot and AI implementation services
+
+How it works
+
+Find businesses looking for website or software development.
+
+Introduce the potential client to WorldOnDeal Enterprise.
+
+Our team handles project discussions, quotations, development, and delivery.
+
+Earn your commission when we receive payment from the client.
+
+Commission
+
+Earn 10%–15% on eligible projects you refer.
+
+Higher commissions may be negotiated for partners who help close deals.
+
+No fixed salary, no joining fee, and flexible working hours.
+
+Who can apply?
+
+Freelancers, digital marketers, web designers, IT consultants, sales professionals, agency owners, and anyone with a network of business owners.
+
+Interested? Send us a message with your exper",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782508,Freelancer,https://www.freelancer.com/projects/cad-solidworks/Exact-STL-STEP-Conversion,Exact STL-to-STEP Conversion,2026-10-23T06:13:44+00:00,2026-10-23T10:32:48.261233+00:00,"I have a single STL part that now needs to live in my parametric workflow, so I’m looking for someone who can reproduce it as a solid STEP model. The brief is simple but precision-driven: the new CAD must be an exact geometric match to the current mesh, including every curve, fillet, and cavity. Please keep the topology watertight and organised into logical bodies so I can open it immediately in SolidWorks or Fusion without repair work. 
+
+Deliverable: one clean, fully solid STEP file that mirrors the STL one-to-one. If you’re comfortable with reverse-engineering from mesh data and have done tight-tolerance conversions before, you’ll find this a straightforward task. I’ll send the STL as soon as we start and will verify the finished file by overlaying it against the original mesh, so accuracy will be the key acceptance criterion.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",AUD 10.0 - 30.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782504,Freelancer,https://www.freelancer.com/projects/ai-video-editing/Build-Automated-Local-Video-Studio,Build Automated Local AI Video Studio,2026-10-23T06:11:57+00:00,2026-10-23T10:32:40.901454+00:00,"I am seeking an expert AI Systems Specialist / Technical Director to configure and optimize a high-performance local AI production server. The goal is to build an end-to-end automated pipeline for producing hyper-realistic AI mini-series featuring consistent realistic characters, lip-synced dialogues, cinematic editing, and automated multi-platform publishing (Instagram, TikTok, Facebook, along with NSFW variants for premium platforms).
+
+Server Hardware & Environment
+OS: Ubuntu 26.04 LTS
+CPU: Intel Core Ultra 9 285K (24 Cores / 24 Threads)
+GPU: NVIDIA GeForce RTX 5090 (32 GB VRAM, Driver 595.84, 575 W power limit)
+RAM: 60 GB System Memory
+Storage: 2 TB Samsung 9100 PRO NVMe SSD
+
+Key Responsibilities & Scope of Work
+Server Setup & Stack Configuration:
+
+Complete Ubuntu environment setup optimized for PyTorch, CUDA, and high-vram local inference.
+Deployment and tuning of ComfyUI, Open WebUI, and n8n.
+AI Character & Video Production Pipeline:
+Build advanced ComfyUI workflows leveraging SOTA open-source video/image models.
+Implement character consistency tools using LoRAs and IP-Adapter/ControlNet pipelines.
+Integrate lip-sync and dialogue tools (e.g., LivePortrait, MuseTalk, ElevenLabs",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782454,Freelancer,https://www.freelancer.com/projects/ai-chatbot/Full-Stack-Developer-Needed-for,Full-Stack Developer Needed for a Basic AI-Powered E-commerce Website,2026-10-23T05:40:56+00:00,2026-10-23T10:32:43.632123+00:00,"Project Description
+
+I’m looking for a full-stack developer to build a basic e-commerce website for my business with a few AI-powered features.
+
+The goal is to create a simple, modern, and user-friendly website where customers can browse products, search for items, and interact with an AI chatbot. I have a limited budget for the initial version, so I want to focus on the main features first and improve the website over time.
+
+I’m looking for someone who can suggest a suitable technology stack and deliver a working, basic version within the agreed budget.
+
+Key Requirements
+
+Develop a responsive e-commerce website.
+
+Create product listings and categories.
+
+Add basic product search and filtering.
+
+Implement a shopping cart.
+
+Create basic user registration and login.
+
+Integrate a simple AI chatbot using an existing AI API.
+
+Build a basic admin panel to manage products.
+
+Use Python with Flask or Django for the backend.
+
+Connect the frontend and backend using APIs.
+
+Test the main features and provide the source code.
+
+Required Skills
+
+Python and Flask or Django
+
+React.js or basic frontend development
+
+HTML, CSS, and JavaScript
+
+REST API integration
+
+Database management
+
+Basic AI chatbot ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 3000.0 - 4000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782427,Freelancer,https://www.freelancer.com/projects/microsoft-365/Microsoft-Power-Platform-Solutions,Microsoft 365 Power Platform Solutions Expert,2026-10-23T05:19:58+00:00,2026-10-23T10:32:43.638125+00:00,"Managed IT infrastructure and technical support across 17 locations, maintaining 99.9% uptime.
+ Administered Windows Server 2019, Active Directory, Group Policy, and backup systems.
+Designed and managed SharePoint Online solutions for secure document management, collaboration, and
+centralized file storage.
+ Implemented OneDrive for Business for cloud storage, synchronization, backup, and secure file sharing.
+ Developed Power Automate workflows for approvals, notifications, reminders, scheduled emails, and
+process automation.
+ Built IT and ERP Helpdesk Systems using Power Apps, Power Automate, and SharePoint, with automated
+routing, SLA tracking, escalations, approvals, and reporting.
+ Developed business applications using Power Apps, SharePoint, Power Automate, and Microsoft Copilot.
+ Designed an IT Asset Management System for asset tracking, allocation, lifecycle, warranty, and inventory
+management.
+ Built a Manpower Requisition (MRF) System with multi-level approvals and automated workflows.
+ Integrated Power Apps, SharePoint Online, and Microsoft 365 to deliver scalable business solutions.
+ Created interactive dashboards and KPI reports using Excel, SharePoint, and Micr",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782407,Freelancer,https://www.freelancer.com/projects/oracle-apex/Oracle-Freelancer,Oracle Freelancer,2026-10-23T05:02:15+00:00,2026-10-23T10:32:46.758989+00:00,"I am looking for an experienced Oracle Freelancer or Agency with strong expertise in Oracle CRM and Oracle Database, including handling complex business logic and advanced technical requirements.
+
+This is a long-term, ongoing engagement with consistent project opportunities.
+
+Only experienced freelancers or agencies with proven Oracle expertise should apply. Please share your portfolio, relevant project experience, and availability.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782373,Freelancer,https://www.freelancer.com/projects/administrative-support/Asistente-remoto-atenci-reclamos,Asistente remoto atención reclamos,2026-10-23T04:48:21+00:00,2026-10-23T10:32:46.760987+00:00,"Busco un asistente remoto que se encargue principalmente de la atención a clientes por WhatsApp y llamadas. La mayoría de las consultas serán reclamos, solicitudes de cambio y solución de problemas, por lo que necesito alguien con mucha empatía, paciencia y habilidad para explicar procesos de manera clara.
+
+Además de resolver las incidencias, requiero apoyo en:
+
+• Ingreso de datos y actualización de registros en hojas de cálculo o CRM. 
+• Investigación puntual de información necesaria para responder dudas o mejorar procesos. 
+• Tareas administrativas ligeras relacionadas con el seguimiento de cada caso.
+
+Qué espero de tu parte: 
+– Respuestas oportunas y cordiales dentro del horario acordado. 
+– Registro detallado de cada interacción (motivo, acciones tomadas y estado). 
+– Reporte diario de pendientes y avances. 
+– Propuestas para optimizar el flujo de atención cuando detectes áreas de mejora.
+
+Si ya manejas WhatsApp Business, hojas de cálculo (Google Sheets o Excel) y tienes buena redacción en español, me encantará conocer tu experiencia. Cuéntame ejemplos concretos de cómo has resuelto quejas o conflictos con clientes y qué herramientas utilizaste.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782375,Freelancer,https://www.freelancer.com/projects/streamlit/Development-Basic-Electronic,Development of a Basic Electronic Pharmaceutical Health Record System in Python (Streamlit + SQLite + LGPD Compliance),2026-10-23T04:39:48+00:00,2026-10-23T10:32:43.643124+00:00,"Development of a Basic Electronic Pharmaceutical Health Record System in Python (Streamlit + SQLite + LGPD Compliance)
+
+I am looking for a Python developer to create a simple, straightforward, and functional web-based Electronic Pharmaceutical Health Record (EHR) system for use in a clinical practice.
+
+The system must run via a local/browser-based interface (using Streamlit) and utilize an encrypted SQLite database to ensure compliance with the LGPD (Brazil’s General Data Protection Law).
+
+System Functional Requirements:
+
+1. Authentication (Login) Screen:
+- A simple login screen for the healthcare professional, featuring secure password hashing (using bcrypt).
+- Basic session locking/timeout functionality.
+
+2. Patient Registration and Search:
+- Registration form: Full name, CPF (Brazilian tax ID), date of birth, phone number, and notes/allergies.
+- Quick search for registered patients by name or CPF, with the ability to view their history of previous consultations.
+
+3. Clinical Progress Note Module (S.O.A.P.):
+- A consultation form structured according to the four components of the SOAP method:
+* Subjective (S): Patient’s account, complaints, and treatment adherence. 
+* Objective (",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+N8N-323862,n8n,https://community.n8n.io/t/323862,N8n Expert Needed: AI WhatsApp Support Agent (Hindi + English),2026-10-23T04:25:46.606000+00:00,2026-10-23T10:30:00.488383+00:00,"We’re a D2C wellness brand in India selling a digital product with a one-time payment. We get 50–100 customer queries a day on WhatsApp and email, and want an AI agent to handle most of them.
+
+What we want built
+
+
+An AI agent on WhatsApp Business that answers common questions (product, access, payments, refunds) in Hindi and English, using our FAQ and policy docs
+
+Order and payment lookup via Razorpay so the agent can confirm purchase status
+
+Refund requests logged to Google Sheets and routed to our team for approval
+
+Complex or unhappy conversations escalated to a human in Slack, with the full chat history
+
+The same agent handles incoming support emails (Gmail), with drafted replies for review
+
+A weekly report: query volume, top topics, resolution rate, escalations
+
+
+We’re open to a phased rollout, starting with steps 1–4.
+
+What we’re looking for
+
+
+Proven n8n experience with AI agents and RAG/knowledge-base setups
+
+Experience with WhatsApp Business Cloud API
+
+Clear documentation and handover
+
+
+To apply, please share:
+
+
+1–2 relevant n8n projects or portfolio links
+
+Your pricing model (hourly or fixed) and estimated cost for phase 1 and the full build
+
+Estimated timeline
+
+Monthly ma",Danish_Koul_14,Danish Koul,,,https://community.n8n.io/u/Danish_Koul_14,,False,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""forum_pm_unavailable_for_request_context""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-323860,n8n,https://community.n8n.io/t/323860,"N8n Expert Needed: AI Content Engine (Video → Multi-Channel Content, Hindi + English)",2026-10-23T04:24:11.510000+00:00,2026-10-23T10:30:03.535406+00:00,(topic deleted by author),Danish_Koul_14,Danish Koul,,,https://community.n8n.io/u/Danish_Koul_14,,False,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""forum_pm_unavailable_for_request_context""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+FL-40782330,Freelancer,https://www.freelancer.com/projects/google-analytics/Senior-SEO-Specialist-for-Growth,Senior SEO Specialist for Growth,2026-10-23T04:00:35+00:00,2026-10-23T10:32:43.652437+00:00,"# Hiring: Senior SEO Executive / SEO Specialist
+
+**Company:** Webgram IT Solution 
+**Website:** https://webgramitsolution.com 
+**Salary:** ₹35,000 per month 
+**Experience:** 3–5+ years 
+**Job Type:** Full-Time 
+**Location:** Delhi NCR
+
+### Job Brief
+
+Webgram IT Solution is looking for an experienced SEO Executive / SEO Specialist with strong expertise in Technical SEO, On-Page SEO, Off-Page SEO, Local SEO, AEO (Answer Engine Optimization), AIO (AI Optimization), and GEO (Generative Engine Optimization).
+
+The candidate must have hands-on experience improving Google rankings, increasing organic traffic, generating qualified leads, and independently managing SEO campaigns.
+
+### Key Responsibilities
+
+- **Technical SEO:** Website audits, crawlability, indexing, Core Web Vitals, schema markup, XML sitemaps, robots.txt, canonical tags, redirects, and JavaScript SEO.
+- **On-Page SEO:** Keyword research, search intent analysis, meta titles, meta descriptions, heading optimization, internal linking, and content optimization.
+- **Off-Page SEO:** Quality backlink building, digital PR, guest posting, competitor backlink analysis, and website authority building.
+- **Local SEO:** Google Business ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782295,Freelancer,https://www.freelancer.com/projects/Make-com/Build-Email-Automation-MVP-BCcGuardDog,Build AI Email Automation MVP “BCcGuardDog”,2026-10-23T03:27:46+00:00,2026-10-23T10:32:43.657959+00:00,"Job Title: Low-Code/Backend Developer: Asynchronous AI Email Automation (Make.com + Node.js/APIs)
+
+Project Overview:
+I am looking for a talented automation and backend developer to build a lightweight MVP for an asynchronous, email-first administrative tool. 
+
+Crucially, this system has no web portal, app dashboard, or frontend user interface. It operates 100% via email forwarding, BCC, and automated asynchronous workflows. The user interface is strictly the inbox.
+
+Our Core Tech Stack:
+* Workflow/Orchestration: Make.com (or lightweight custom backend where appropriate)
+* Email Routing & Parsing: Postmark or SendGrid (Inbound webhooks handling attachments)
+* AI Brain: OpenAI or Anthropic API (Factual extraction & classification, temperature 0.2)
+* Database & Billing: Stripe API + a lightweight database layer (PostgreSQL or secure Airtable base)
+
+The 3 Core Asynchronous Workflows Required:
+1. Inbound Document Parsing: A webhook that catches forwarded emails, identifies user context, securely extracts text from an attached file (PDF/DOCX), passes it to an AI engine for analysis, and replies back to the user with a formatted report.
+2. Contextual Email Comparison: A webhook that liste",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782287,Freelancer,https://www.freelancer.com/projects/chatbot-development/Asistente-FAQ-para-WhatsApp,Asistente FAQ para WhatsApp,2026-10-23T03:20:13+00:00,2026-10-23T10:32:43.662964+00:00,"Quiero poner en marcha un asistente virtual dentro de mi número de WhatsApp Business que se encargue exclusivamente de responder las preguntas frecuentes de mis clientes. El interés principal es que cualquier persona pueda consultar, en el mismo chat, qué productos tengo, su precio y si hay stock disponible en ese momento.
+
+Yo facilitaré un archivo actualizado con todo el catálogo: nombres, descripciones breves, precios y unidades disponibles. El bot tiene que leer esa fuente, interpretarla y contestar de forma clara cuando el usuario pregunte, por ejemplo, “¿Tienes el modelo X?” o “¿Cuánto cuesta el producto Y?”. Siempre debe basarse en la información que encuentre en el archivo y no inventar datos si algo no está listado.
+
+Además de entregar el bot funcionando dentro de WhatsApp (puede ser mediante la API oficial, Twilio, Meta Cloud o la solución que domines), necesito que me expliques cómo sustituir el archivo cada vez que renueve el inventario para que las respuestas sigan actualizadas. Una breve guía paso a paso es suficiente.
+
+Entrego:
+• Archivo CSV/Excel con el catálogo.
+
+Espero:
+• Chatbot activo en mi línea de WhatsApp Business. 
+• Integración lista para refrescar datos con",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782281,Freelancer,https://www.freelancer.com/projects/flutter/Job-Title-Build-MVP-Android,Job Title: Build an MVP Android App for Konverse – WhatsApp CRM,2026-10-23T03:14:53+00:00,2026-10-23T10:32:46.764983+00:00,"Job Title: Build an MVP Android App for Konverse – WhatsApp CRM
+
+Project Overview
+
+We have already developed the Konverse web portal, a WhatsApp CRM platform that helps businesses manage customer conversations, contacts and broadcasts.
+
+We are looking for an experienced mobile app developer to build a lightweight, functional Android MVP that integrates with our existing web platform and backend.
+
+Budget: ₹10,000–₹20,000 (fixed price)
+
+We want to start with a limited set of features and expand the app gradually as the business grows.
+
+Scope of Work
+
+1. Login and Authentication
+
+- Secure login using our existing authentication system or API.
+- Maintain user sessions securely.
+- Ensure users can access only their authorized workspace and data.
+
+2. Chat / Inbox
+
+- Display existing WhatsApp conversations.
+- View chat history and customer details.
+- Send and receive text messages.
+- Display supported media and attachments.
+- Support real-time updates or reliable message refresh.
+- Show message status where supported by the backend.
+
+3. Contacts
+
+- View existing contacts.
+- Search contacts by name or phone number.
+- Open contact profiles and associated conversations.
+- Add and edit contac",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 12500.0 - 37500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782264,Freelancer,https://www.freelancer.com/projects/python/Urgent-Smart-Organised-Generalist-needed,"Urgent: Smart, Organised Generalist VA needed (Marketing, Figma Design, Automation, Vibe Coding)",2026-10-23T02:55:58+00:00,2026-10-23T10:32:43.665963+00:00,"Highly versatile assistant needed for supporting multiple projects being setup, tested and launched as part of a new venture studio. Your primary focus will be marketing and automation tasks.
+
+You'll need to be:
+1. Highly organised - you do highly detailed spreadsheets and can run deep analysis work.
+2. Design - you are able to use design tools like Figma, Adobe Illustrator etc. Canva is NOT a proper design tool.
+3. Marketing tasks - you can undertake SEO/AEO, article writing and social media design and posting tasks
+4. Automation - you can assist with setting up marketing automations across social, content so have some familiarity with python
+5. Recruitment - you can assist with hiring and recruitment based tasks
+6. Basic bookkeeping - you can perform basic bookkeeping tasks in QBO
+
+You must have fluent written and spoken English. To be shortlisted please note:
+1. We are not using agencies - also 'autobidders' who do not read this job description will be removed.
+2. The hourly rate you bid, is the one we accept
+3. You will be required for a minimum of 15 hours (2-3 days per week) for a minimum 6 months
+4. AI is there to assist you, not do the work for you. If you don't have skills",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",AUD 2.0 - 8.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782246,Freelancer,https://www.freelancer.com/projects/autodesk/Complete-AutoCAD-Plant-Catalog-Package,Complete AutoCAD Plant 3D Catalog Package,2026-10-23T02:43:28+00:00,2026-10-23T10:32:43.674959+00:00,"I am looking for an experienced AutoCAD Plant 3D specialist to develop a complete, ready-to-use piping catalog and specifications covering all applicable pressure ratings from Class 150 to Class 2500, including Class 150, 300, 400, 600, 900, 1500 and 2500.
+
+Scope:
+
+Pipes, elbows, tees, reducers, branches and fittings
+Flanges (WN, SO, SW, THD, Blind, RF, RTJ)
+Gaskets (spiral wound, RTJ, flat, full face)
+Bolts, studs, nuts and fasteners with complete bolt reference data, sizes, lengths and specifications
+Valves (gate, globe, check, ball, butterfly, etc.)
+Standard pipe supports (shoes, clamps, guides, hangers, trunnions, U-bolts, stops, etc.)
+ASME-compatible dimensions, pressure ratings and connections
+Complete applicable size ranges for all components
+Required size range: 12"" to 24"" (DN300–DN600) for all applicable components
+
+Requirements:
+No Python scripts or custom scripting dependencies.
+Native Plant 3D components wherever possible.
+Complete, ready-to-use piping specifications for all applicable pressure classes.
+Preconfigured bolt sets and bolt references, including correct bolt quantities, diameters, lengths, materials and flange compatibility.
+Complete gasket and flange matchi",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",AUD 450.0 - 500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782245,Freelancer,https://www.freelancer.com/projects/rpa-development/UiPath-Web-Report-Automation,UiPath Web Report Automation,2026-10-23T02:42:07+00:00,2026-10-23T10:32:43.678959+00:00,"I need a UiPath workflow that signs in to our browser-based reporting site with a simple username/password, retrieves different reports, distills each one to the key metrics we track, and writes those figures into the existing cloud Excel workbooks that power our live dashboard. The robot must loop every five minutes, so solid scheduling through Orchestrator (or an equivalent trigger) and reliable exception handling are essential.
+
+Please build the solution in UiPath Studio, using standard browser automation (no client-side extensions that would block frequent runs) and the Office 365 / Excel Online activities for writing data. Each run should end with a short log entry confirming success or flagging any issues so we can intervene quickly.
+
+Deliverables:
+• Fully documented UiPath project (.xaml files, config) 
+• Credentials vault or secure string approach for the website login 
+• Orchestrator (or Windows Task) schedule set to a 5-minute interval 
+• Step-by-step guide for deployment and future maintenance 
+
+I’ll provide sample credentials, the report URLs, and a template of the cloud workbooks once we agree. Let me know your estimated turnaround time and any clarifying questions.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40782065,Freelancer,https://www.freelancer.com/projects/n8n/SEO-Autopilot-Setup,n8n SEO Autopilot Setup,2026-10-22T23:58:03+00:00,2026-10-23T10:32:40.908129+00:00,"I run a taxi company website built on Sanity CMS that already hosts about 100 location-focused pages. I now want to place the entire SEO / AEO / GEO workload on digital autopilot with n8n at the core.
+
+Scope of the first phase 
+– The initial workflows should concentrate on generating fresh, fully optimised content, turning it into Sanity drafts for my manual approval, then tracking how the new or updated pages perform in Google. Improving existing pages must be part of the same loop.
+
+What I expect the automation to do 
+1. Pull keyword, location and intent data, create new outlines or snippets, and push them into Sanity as draft documents. 
+2. Notify me when a draft is ready; on my approval, publish it and trigger a resubmit to Google Search Console. 
+3. Create quality backlinks from relevant websites with high DA/DR and low spam scores
+4. Record ranking changes, impressions and clicks for every page so I can see gains at a glance. 
+5. Lay the groundwork for later add-ons that will manage business listings, reviews and social accounts in a similar hands-off fashion.
+
+Technical stack 
+n8n will orchestrate everything, talking to the Sanity Content API and Google tools. If extra conne",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1500.0 - 12500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40781972,Freelancer,https://www.freelancer.com/projects/telemarketing/Telemarketer-Appointment-Setter-Base-Pay,B2B Telemarketer / Appointment Setter (Base Pay + Bonus | Marketing Agency | CASL and PIPEDA Compliant),2026-10-22T22:30:09+00:00,2026-10-23T10:32:46.716988+00:00,"B2B Telemarketer / Appointment Setter (Base Pay + Bonus | Marketing Agency | CASL & PIPEDA Compliant)
+
+We’re a growing Canadian marketing agency that helps businesses scale through Google Ads, Meta Ads (Facebook & Instagram), high-converting landing pages, ad creative, and full-funnel campaign management.
+
+We’re hiring a confident, experienced, and personable B2B telemarketer to connect with business owners, qualify prospects, and book sales appointments. You'll also support one of our clients in the medical aesthetics industry with lead follow-up, appointment booking, and B2B referral outreach.
+
+This is a remote, full-time role (160 hours/month) with base pay, performance bonuses, and long-term growth opportunities.
+
+We’re looking for someone who genuinely enjoys speaking with people, confidently handles cold calls, builds rapport naturally, and knows how to turn conversations into qualified appointments.
+
+>What We’re Looking For
+- Proven experience in B2B cold calling, telemarketing, or appointment setting.
+- Strong communication skills — able to build rapport quickly, ask thoughtful questions, and communicate value clearly.
+- Confidence speaking directly with business owners and",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",CAD 2.0 - 8.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40780885,Freelancer,https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780885,Complete SocioVik - AI Creative & Social Media SaaS -- 2,2026-10-22T08:15:40+00:00,2026-10-23T10:32:40.915043+00:00,"We need an experienced full-stack developer or team to complete our existing Bolt.new platform into an AI-powered SaaS for agencies, brands, and creators.
+
+Core workflow: Brief/prompt → AI creative generation or upload → captions → approval → scheduling/publishing → analytics.
+
+The platform must combine AI images, videos, and UGC with Publishing & Scheduling, Analytics & Reporting, Engagement, Review Generation, Collaboration, and White Label.
+
+Review the existing code and latest Bolt audit, preserve working features, and map all issues and requirements to an agreed delivery checklist.
+
+PHASE 1 — Fixes, Social Connections, Publishing & Analytics
+
+Priority: bug fixes → social connections → posting → scheduling → advanced publishing → reporting.
+
+Audit and fixes: Resolve existing frontend/backend bugs, authentication/Google login, roles, workspace isolation, database/build issues, security, media storage, existing AI workflows, credits, Razorpay billing, admin/CMS, and mobile defects. Verify scheduler/n8n workflows; establish staging, monitoring, and critical tests.
+
+Social connectors: Implement native APIs, a third-party connector, or a hybrid solution. Prioritize Facebook, Instagra",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 200.0 - 400.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40780884,Freelancer,https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media-40780884,Complete SocioVik - AI Creative & Social Media SaaS,2026-10-22T08:15:25+00:00,2026-10-23T10:32:40.930959+00:00,"We need an experienced full-stack developer or team to complete our existing Bolt.new platform into an AI-powered SaaS for agencies, brands, and creators.
+
+Core workflow: Brief/prompt → AI creative generation or upload → captions → approval → scheduling/publishing → analytics.
+
+The platform must combine AI images, videos, and UGC with Publishing & Scheduling, Analytics & Reporting, Engagement, Review Generation, Collaboration, and White Label.
+
+Review the existing code and latest Bolt audit, preserve working features, and map all issues and requirements to an agreed delivery checklist.
+
+PHASE 1 — Fixes, Social Connections, Publishing & Analytics
+
+Priority: bug fixes → social connections → posting → scheduling → advanced publishing → reporting.
+
+Audit and fixes: Resolve existing frontend/backend bugs, authentication/Google login, roles, workspace isolation, database/build issues, security, media storage, existing AI workflows, credits, Razorpay billing, admin/CMS, and mobile defects. Verify scheduler/n8n workflows; establish staging, monitoring, and critical tests.
+
+Social connectors: Implement native APIs, a third-party connector, or a hybrid solution. Prioritize Facebook, Instagra",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 200.0 - 400.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40780511,Freelancer,https://www.freelancer.com/projects/automation/Virtual-Assistant-Needed-for-Commercial,Virtual Assistant Needed for Commercial Realtor,2026-10-22T03:25:52+00:00,2026-10-23T10:32:40.942720+00:00,"I am a REALTOR and Commercial Specialist, serving Maryland, Washington DC, and the broader DMV. My practice covers leasing and acquisition across office, retail, and flex in the DMV, representing both landlords and tenants.
+
+I am looking for one dependable, long term virtual assistant who understands commercial real estate and can also run AI tools and automated workflows. This is not a data entry role. I need a proactive operator who can take ownership of systems, keep deals moving, and help me turn a busy pipeline into closed transactions.
+
+What you will do
+
+Transaction support
+
+Track active tenant rep, landlord rep, and acquisition deals from first inquiry to close
+Prepare property comparison tables, tour schedules, and requirement summaries
+Organize LOIs, lease abstracts, broker flyers, and deal documents
+Draft follow up emails to brokers, landlords, and clients for my review
+
+CRM and prospecting
+
+Clean and segment a large CRM database (BoldTrail) by industry, county, and property type
+Build targeted prospect lists of business owners, landlords, and investors
+Run and monitor outreach sequences and log all activity accurately
+
+AI and automation
+
+Build and maintain workflows in n",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40780416,Freelancer,https://www.freelancer.com/projects/ai-automation/Orchestration-Agent-Setup-Codex-Claude,Ai Orchestration Agent Setup (Codex + Claude Code),2026-10-22T02:21:44+00:00,2026-10-23T10:32:40.946712+00:00,AI Automation Developer Needed — OpenHands / n8n Orchestration Setup (Codex + Claude Code),,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40779763,Freelancer,https://www.freelancer.com/projects/n8n/WhatsApp-Auto-Messaging-Setup,n8n WhatsApp Auto-Messaging Setup,2026-10-21T15:51:28+00:00,2026-10-23T10:32:40.947717+00:00,"I need an n8n workflow that connects to my WhatsApp Business account and fires off automated messages without manual intervention. The goal is to handle three use-cases—promotions, time-sensitive notifications, and gentle reminders—while pulling in personalized user data so every chat feels 1-to-1 rather than a blast.
+
+Here is what I have in mind:
+
+• The trigger can be either a webhook, a schedule, or a call from an existing REST endpoint—whichever you feel is the cleanest way to pass user-specific variables such as name, order number, or appointment date into the workflow. 
+• n8n should then format the message, inject the variables, and hit the WhatsApp Business API (or your preferred gateway) to send it. 
+• I’d like a simple success/fail log so I can track delivery and catch any API errors quickly. 
+
+You’re free to suggest nodes, credentials handling, or helper services that keep the setup lightweight and secure. Once complete, I’ll need the .json export of the workflow plus a brief step-by-step so I can replicate it in another instance.
+
+If you have previous experience combining n8n with WhatsApp, especially for personalized campaigns, let’s talk details and timelines.
+
+Project:",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+N8N-323348,n8n,https://community.n8n.io/t/323348,Critique: Modular Small Electrical Contractor CRM Automation (Bland AI + n8n + FreshBooks),2026-10-21T12:26:24.003000+00:00,2026-10-23T10:30:11.292568+00:00,"Hi everyone,
+
+I’m a production n8n developer looking for feedback on a modular architecture I’m designing for a small electrical contractor CRM automation. I’d greatly appreciate your critique before I invest time building it.
+Architecture Overview (Conceptual Only)
+
+Bland AI receptionist webhooks → n8n orchestrator → customer/job/estimate history → FreshBooks API → task management → searchable/filterable records → human approvals → two-hour incremental build sessions
+
+The goal: automate lead intake, scheduling, estimating, and bookkeeping for a small electrical contracting business using n8n as the central orchestrator.
+My Current Plan
+
+
+Bland AI handles initial phone/web lead intake via webhooks
+
+n8n receives webhooks and orchestrates the workflow:
+
+
+Creates/updates customer records
+
+Generates estimates
+
+Syncs to FreshBooks (invoicing/accounting)
+
+Creates tasks in a task management system
+
+Maintains searchable/filterable job history
+
+Routes to human approval when needed
+
+
+
+Build in 2-hour incremental sessions to keep things manageable
+
+Questions for the Community
+
+I want to make this production-ready from the start. Specifically, I’d like your thoughts on:
+
+Reliability & Data Int",Spidev,,,,https://community.n8n.io/u/Spidev,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,False
+FL-40778969,Freelancer,https://www.freelancer.com/projects/software-development/Freelancer-Setup-Database-Leads-Otomasi,Freelancer Setup Database Leads & Otomasi Penjualan,2026-10-21T06:05:55+00:00,2026-10-23T10:32:40.953723+00:00,"Kami sedang mencari freelancer untuk membuat sistem database dan otomatisasi leads menggunakan platform no-code database berbasis PostgreSQL untuk menampung sekitar 100k–200k data. Lingkup pekerjaan mencakup pembuatan alur otomatisasi (n8n / Make) untuk penarikan data iklan, pembagian prospek ke tim sales, pencegahan duplikasi data, integrasi WhatsApp gateway, serta pengaturan hak akses pengguna.
+
+Budget, biaya, dan durasi pengerjaan akan dibahas once sudah clear on the scope",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40778097,Freelancer,https://www.freelancer.com/projects/php/Advanced-Telegram-Assistant-Using,Advanced Telegram Assistant Using n8n -- 2,2026-10-20T16:12:36+00:00,2026-10-23T10:32:40.954723+00:00,"Project Description:
+
+Designed and engineered an advanced, end-to-end automation pipeline utilizing n8n to build a smart Telegram assistant capable of processing user interactions dynamically.
+
+Key Workflow Features:
+
+Trigger & Input Handling: Listens to incoming user messages in real-time via a Telegram Trigger.
+
+Data Retrieval & Logging: Interacts with Google Sheets (Get row(s)) to fetch historical context or verify user data.
+
+Custom JavaScript Processing: Implements custom JS code nodes to format payloads, manipulate JSON data, and prepare contextual inputs.
+
+AI Integration: Connects via HTTP Request to the Google Gemini Generative AI API to generate intelligent, context-aware responses.
+
+Automated Multi-Channel Actions: Simultaneously dispatches the AI-generated reply back to the user via Telegram (Send a text message) while appending chat session details and activity logs into Google Sheets (Append row).
+
+Tech Stack:
+
+n 8 n Cloud | Telegram Bot API | Google Gemini API | Google Sheets API | JavaScript",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 10.0 - 30.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40776493,Freelancer,https://www.freelancer.com/projects/automation/Automatizaci-administrativa-con-Make,Automatización administrativa con N8N/Make,2026-10-19T20:01:51+00:00,2026-10-23T10:32:40.960377+00:00,"Quiero delegar la construcción de automatizaciones que optimicen el día a día de mi clientes, principalmente en procesos administrativos y en la relación con sus clientes. 
+
+Mi idea es ir cerrando proyectos por flujo, con entregables claros:
+
+• Workflows listos para producción en n8n, Make u otra alternativa pactada. 
+• Documentación breve de cada escenario (activadores, APIs usadas, lógica y puntos de fallo). 
+• Pruebas de funcionamiento que permitan validar generación de reportes, reglas de correo y los disparadores de seguimiento/marketing sin intervención manual.
+
+Prefiero a alguien de Chile para facilitar las reuniones y la facturación, aunque la prioridad es la experiencia real construyendo integraciones sólidas. Si dominas Zapier, Integromat/Make, n8n o herramientas similares y puedes mostrar ejemplos donde hayas automatizado reportes, correos, aprobaciones y flujos de CRM, conversemos y pactemos el primer sprint.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40776255,Freelancer,https://www.freelancer.com/projects/automation/Agent-Developer-Automation-Engineer,AI Agent Developer & Automation Engineer,2026-10-19T16:58:23+00:00,2026-10-23T10:32:40.963892+00:00,"WE’RE HIRING: AI Agent Developer & Automation Engineer
+
+We're looking for an experienced developer for a project-based engagement with a US-based client.
+
+We’re looking for someone who can build AI agents and automation systems to streamline business operations, including technician outreach, calls and emails, order intake, data entry, and reporting.
+
+What we’re looking for:
+- Experience building and deploying AI agents
+- Knowledge of Python and/or JavaScript, LLM APIs, and workflow automation tools such as n8n or Make
+- Experience with API integrations and business process automation
+- Ability to deliver a documented solution that the client can manage independently
+
+Remote | Project-Based | Independent Contractor
+
+Interested? Please include your portfolio, relevant project examples(proposals without proof of prior experience will not be acknowledged), your proposed pricing, and estimated timeline.",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 25.0 - 50.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+N8N-322866,n8n,https://community.n8n.io/t/322866,Have you paid for an independent RAG or chatbot evaluation? What was the experience like?,2026-10-19T14:11:46.981000+00:00,2026-10-23T10:30:15.703972+00:00,"I’m looking for firsthand experiences from people who hired someone to evaluate an existing document-based assistant, retrieval pipeline, or chatbot.
+
+If you’ve purchased this service:
+
+• What prompted you to hire an external evaluator?
+
+• How much did you pay? A range and currency are fine.
+
+• What did the evaluation include, and what did you receive?
+
+• What made it worth the money—or disappointing?
+
+• Did the findings change a release decision or lead to a specific improvement?
+
+• Where did you find the provider, and where did the actual negotiation happen? For example: Reddit → DM → video call, referral → email, or a freelance marketplace.
+
+I work on retrieval evaluations and want to understand the buyer’s experience. This thread is for learning from completed purchases; I won’t contact commenters with a sales pitch.
+
+No need to name the provider or share confidential information. Positive and negative experiences are equally useful.",lucas_brito1,,,,https://community.n8n.io/u/lucas_brito1,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,False
+FL-40775872,Freelancer,https://www.freelancer.com/projects/artificial-intelligence/Engaging-Corporate-Trainer-Needed,Engaging AI Corporate Trainer Needed,2026-10-19T11:45:07+00:00,2026-10-23T10:32:40.965894+00:00,"# Hiring: Technical AI Corporate Trainer — AI Tools, Automation & Business Use Cases
+
+**Company:** Aiexl. — An UPSKILLORS PRIVATE LIMITED Company
+**Project Type:** Freelance / Project-Based
+**Engagement:** Corporate Training Sessions and Workshop Development
+
+## About Aiexl.
+
+Aiexl. is an emerging EdTech and AI career development company focused on practical, industry-relevant learning and professional capability building.
+
+We are expanding into corporate AI training to help organizations understand, adopt, and effectively implement AI tools in their everyday business operations.
+
+We are looking for an experienced **Technical AI Corporate Trainer** who can design and deliver practical, engaging training sessions for corporate professionals, business teams, and organizations.
+
+## What We Are Looking For
+
+We need a trainer who understands both the technical capabilities of AI and its practical application in business environments.
+
+The ideal candidate should be able to explain complex concepts in simple terms, demonstrate tools live, and guide participants through hands-on exercises based on real corporate scenarios.
+
+### Key Responsibilities
+
+**1. AI Fundamentals for Business**
+
+* E",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 1000.0 - 5000.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+N8N-322628,n8n,https://community.n8n.io/t/322628,AI Hiring Signal Feed — daily AI hiring signals from 60 AI companies to Telegram,2026-10-19T02:43:58.561000+00:00,2026-10-23T10:30:20.716469+00:00,"Turn 60 AI companies’ job boards into a daily hiring-intelligence feed on Telegram.
+
+What it does
+
+Every morning this workflow pulls ~700 AI/ML job postings from 60 AI companies (via the AI/ML Jobs Scraper actor on Apify), filters for hot hiring signals, groups them by company, and sends one Telegram message per company.
+
+Hot signals = roles open 35+ days (stuck hiring), reposted jobs, or max salary $200k+.
+
+How it works (5 nodes)
+
+
+Schedule Trigger — daily 08:00
+
+Run AI Jobs Actor — pulls the full ~700 rows (filtering happens free inside n8n)
+
+Filter hot signals — Code node
+
+Group by company — Code node
+
+Telegram — one message per company
+
+
+You need
+
+
+Apify API token (actor costs ~$1.40/run on your own Apify account)
+
+Telegram bot token from @BotFather + your chat ID",kotaro001,,,,https://community.n8n.io/u/kotaro001,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Unclassified original-post amounts: $200k; $1.40,"[""$200k"", ""$1.40""]",[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,False
+N8N-322445,n8n,https://community.n8n.io/t/322445,"[HIRING] Shopify tracking + n8n specialist, part-time ongoing, $35/hr guaranteed + revenue share",2026-10-18T19:32:55.290000+00:00,2026-10-23T10:30:24.860317+00:00,"Hi all, I’m Boston. I run Young Automation Studio, a new agency on Upwork. We fix Shopify tracking (Meta Pixel / Conversions API duplicates, GA4 purchases), tune up Klaviyo, and build n8n automations for Shopify stores. From December we add lead-response and CRM automations for service businesses and agencies. We use AI heavily to scope, draft and prototype, so we need an expert to build it right, test it, and be the person clients talk to.
+
+What you’d do
+
+
+Deliver 72-hour Tracking Fix Sprints: Meta Pixel + Conversions API de-duplication (event_id), GA4 purchase events from Shopify Customer Events, and cleanup after Shopify retired Additional Scripts.
+
+Klaviyo health checks and flow tune-ups (abandoned checkout, browse, post-purchase, winback), plus deliverability basics (SPF, DKIM, DMARC).
+
+n8n builds for Shopify, and from December lead-response / CRM builds (GoHighLevel, HubSpot).
+
+Review AI-drafted workflows and our demos before clients see them.
+
+Own client calls: usually 1–3 short calls a week, scheduled within 24 hours. Everything else is written.
+
+Be the named specialist on our Upwork agency proposals, as a non-exclusive member. You keep your own profile and clients.
+
+
+Must ",boston_young,,,,https://community.n8n.io/u/boston_young,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]","Unclassified original-post amounts: $35; $45–65; $105,","[""$35"", ""$45–65"", ""$105,""]",[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+FL-40773530,Freelancer,https://www.freelancer.com/projects/nextjs/Building-PRESTIA-Full-stack-Next,Building PRESTIA AI: Full-stack Next.js,2026-10-18T00:48:40+00:00,2026-10-23T10:32:40.973892+00:00,"Hiring: Senior Full-Stack Next.js Developer
+PRESTIA AI — High-Conversion SaaS & Revenue Automation Platform
+
+Project Overview
+We are seeking a proven Senior Full-Stack Developer to build PRESTIA AI, a secure, scalable, high-conversion B2B SaaS platform serving the US, Gulf, and global markets.
+
+We prioritize technical expertise, payment security, conversion-focused UX, problem-solving, and reliable project delivery over coding speed alone.
+
+Contract: All-inclusive fixed price
+Timeline: 30 calendar days
+Warranty: 180 days of post-launch support
+Deployment: Owner-controlled accounts from day one
+
+Required outcome: A fully functional, tested, production-ready MVP
+
+1. Essential Skills & Qualifications
+Applicants must demonstrate proven practical experience in:
+1. Full-Stack Development
+Next.js 14+ App Router, React, TypeScript, and Tailwind CSS.
+Supabase authentication, database design, migrations, and Row Level Security (RLS).
+Secure server-side APIs, input validation, error handling, and rate limiting.
+
+2. Payment Systems & Billing Security — Critical Requirement
+Stripe Elements, Payment Intents, subscriptions, and secure payment flows.
+PayPal Vault or an equivalent supported billing",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40773425,Freelancer,https://www.freelancer.com/projects/n8n/Automate-WooCommerce-WhatsApp-Support,Automate WooCommerce & WhatsApp Support,2026-10-17T22:11:36+00:00,2026-10-23T10:32:40.984892+00:00,"I run a WooCommerce store and want the day-to-day tasks to look after themselves while customers chat with an AI on WhatsApp that always knows their order status and product details. I have chosen n8n as the orchestration layer and Dialogflow as the brain of the chatbot.
+
+Here is what I need built:
+
+• n8n workflows that pick up new WooCommerce orders, push them through my fulfilment steps, update inventory automatically, and trigger customer notifications at each key stage. 
+• A Dialogflow-powered agent connected to my WhatsApp Business account that can confidently answer order status inquiries, provide product information, and handle general customer support questions. 
+• Seamless data flow between WooCommerce, Dialogflow and WhatsApp so the bot can pull real-time stock and order details without manual syncing. 
+• Clear documentation or short Loom walkthrough showing me how to maintain and extend the workflows after delivery.
+
+Acceptance criteria 
+– Orders processed end-to-end in a test environment with correct stock deductions and status emails/WhatsApp messages firing. 
+– The WhatsApp bot returns accurate responses for the three scenarios above using live store data. 
+– All cred",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",INR 600.0 - 1500.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40773229,Freelancer,https://www.freelancer.com/projects/nextjs/PRESTIA-SaaS-Platform-Full-Stack,PRESTIA AI SaaS Platform Full-Stack Developer,2026-10-17T18:23:26+00:00,2026-10-23T10:32:40.992892+00:00,"​ Required: Senior Full-Stack Next.js Developer – High-Conversion SaaS Platform (PRESTIA AI)
+
+​Project Overview:
+
+We are building the core foundation (MVP & SaaS Tier) for PRESTIA AI Platform—a high-converting, scalable B2B AI Automation & Sales Engine targeting the US, Gulf, and global markets. We require a world-class Senior Full-Stack Developer to build a bulletproof, high-converting, and ultra-user-friendly SaaS platform built for self-funding and aggressive scaling.
+
+​Contract Type: All-inclusive Fixed Price – 30 Days – Final Delivery Deployed in Owner’s Accounts
+
+​Core Focus: Extreme Conversion (High-Conversion Funnels) + Maximum Ease of Use (UX/UI) + Production-Grade Payment Architecture
+
+​1. Key Strategic Pillars to Achieve in This Build
+
+​ Pillar 1: High-Conversion Engine (Built to Convert)
+
+​Dedicated High-Converting Landing Pages: Modular landing page architectures matching ad hooks directly to offers (Zero distraction, optimized for instant conversion).
+
+​High-Converting Funnel Mechanics: Multi-step conditional checkout, order bumps, one-click upsells/downsells, and immediate friction-free onboarding.
+
+​Live Social Proof & Demo Widgets: Interactive 60-second video demo ",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 30.0 - 250.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40773100,Freelancer,https://www.freelancer.com/projects/api/ElevenLabs-Voice-Pipeline-Fix-Multi,ElevenLabs Voice Pipeline Fix & Multi-Agent Build,2026-10-17T16:36:03+00:00,2026-10-23T10:32:41.001804+00:00,"I'm seeking an n8n AI Automation Expert to fix integration issues with the ElevenLabs Voice Pipeline and build a multi-agent system.
+
+Key requirements:
+- Fix integration failures with:
+ - API integration
+ - Database integration
+ - Third-party services: Google Speech-to-Text, Amazon Polly, Microsoft Azure Speech
+
+Ideal skills and experience:
+- Proficiency in n8n automation
+- Strong experience with ElevenLabs and voice pipelines
+- Expertise in API, database, and third-party service integrations
+- Familiarity with Google, Amazon, and Microsoft speech services",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",EUR 250.0 - 750.0 (fixed),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+FL-40772520,Freelancer,https://www.freelancer.com/projects/php/Complete-SocioVik-Creative-Social-Media,Complete SocioVik — AI Creative & Social Media SaaS,2026-10-17T08:03:12+00:00,2026-10-23T10:32:41.005803+00:00,"We need an experienced full-stack developer or team to complete our existing Bolt.new platform into an AI-powered SaaS for agencies, brands, and creators.
+
+Core workflow: Brief/prompt → AI creative generation or upload → captions → approval → scheduling/publishing → analytics.
+
+The platform must combine AI images, videos, and UGC with Publishing & Scheduling, Analytics & Reporting, Engagement, Review Generation, Collaboration, and White Label.
+
+Review the existing code and latest Bolt audit, preserve working features, and map all issues and requirements to an agreed delivery checklist.
+
+PHASE 1 — Fixes, Social Connections, Publishing & Analytics
+
+Priority: bug fixes → social connections → posting → scheduling → advanced publishing → reporting.
+
+Audit and fixes: Resolve existing frontend/backend bugs, authentication/Google login, roles, workspace isolation, database/build issues, security, media storage, existing AI workflows, credits, Razorpay billing, admin/CMS, and mobile defects. Verify scheduler/n8n workflows; establish staging, monitoring, and critical tests.
+
+Social connectors: Implement native APIs, a third-party connector, or a hybrid solution. Prioritize Facebook, Instagra",,,,,,,,review_required,"[""buyer_identity_and_territory_require_review"", ""api_active_status_not_award_or_payment_guarantee""]",USD 15.0 - 25.0 (hourly),[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Freelancer project proposal; keep communication/payment within platform rules,
+N8N-322016,n8n,https://community.n8n.io/t/322016,N8n + MirrorFly Developer for Video Conferencing Automation,2026-10-16T20:38:11.146000+00:00,2026-10-23T10:30:34.156337+00:00,"Hi everyone,
+
+I’m looking for an experienced automation developer who can help me build a video conferencing automation system using n8n + MirrorFly + API integrations.
+
+This is a paid freelance project with clear requirements and a defined scope.
+
+I’ll keep this as concise and technical as possible so you know exactly what’s involved.
+Project Overview
+
+I need to build an automated video conferencing workflow using n8n and MirrorFly that will:
+
+
+
+
+Create video meetings automatically based on predefined triggers.
+
+
+
+
+Generate meeting details and share them with participants.
+
+
+
+
+Schedule meetings using calendar integrations.
+
+
+
+
+Send meeting invitations and reminders through email or messaging services.
+
+
+
+
+Manage meeting related events through webhooks and APIs.
+
+
+
+
+(Optional add-on) Automate meeting recordings and post meeting notifications.
+
+
+
+All of this needs to run through n8n workflows, with MirrorFly providing the video conferencing capabilities.
+Core Requirements
+1. MirrorFly Video Conferencing Integration
+
+
+
+
+Integrate MirrorFly Video Call API and SDK.
+
+
+
+
+Create and manage video meetings through supported APIs.
+
+
+
+
+Generate or retrieve meeting joining details.
+
+
+
+
+Handle ",Shyamvijay,,,,https://community.n8n.io/u/Shyamvijay,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""partial_thread_later_updates_may_be_missing""]","Unclassified original-post amounts: £800; £1,000; £1,200","[""£800"", ""£1,000"", ""£1,200""]",[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-321905,n8n,https://community.n8n.io/t/321905,"Nearly three months building an automation platform with AI and no coding background. Looking for technical direction, help getting it finished, and advice on turning it into a service business",2026-10-16T20:22:14.262000+00:00,2026-10-23T10:30:39.406495+00:00,"Describe the problem/error/question
+
+What is the error message (if any)?
+Please share your workflow
+(Select the nodes on your canvas and use the keyboard shortcuts CMD+C/CTRL+C and CMD+V/CTRL+V to copy and paste the workflow.)
+
+Share the output returned by the last node
+
+Information on your n8n setup
+
+
+n8n version:
+
+Database (default: SQLite):
+
+n8n EXECUTIONS_PROCESS setting (default: own, main):
+
+Running n8n via (Docker, npm, n8n cloud, desktop app):
+
+Operating system:
+
+
+Nearly three months building an automation platform with AI and no coding background. Looking for technical direction, help getting it finished, and advice on turning it into a service business.
+
+Hey everyone. I’m looking for an honest outside perspective from developers, automation builders, technical founders, or anyone who has gone from building an internal tool to providing it as a paid service.
+
+I’ve spent close to three months building a business automation platform using ChatGPT and Claude. I have no formal coding background, no outside developer helping me, and no technical cofounder. I’m a “vibe coder,” but I’m trying to understand what I’m building and make responsible decisions about it.
+
+I know the ope",Markspooran,,,,https://community.n8n.io/u/Markspooran,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,False
+N8N-320146,n8n,https://community.n8n.io/t/320146,AI Marketing & n8n Automation Specialist for chill life — Potential Long-Term Partnership,2026-10-09T20:48:10.083000+00:00,2026-10-23T10:31:12.376083+00:00,"AI Marketing & n8n Automation Specialist for chill life — Potential Long-Term Partnership
+
+Hi, I’m Beth Levis, founder of chill life, a purpose-driven lifestyle brand.
+
+We believe happier people create healthier communities. Our apparel, products, and initiatives promote positivity, mental fitness, and meaningful real-life connection. Two key areas of our work are encouraging healthier youth sports culture and helping people take daily breaks from technology to be more present.
+
+I’m looking for an experienced AI marketing and automation specialist who can help translate this mission into consistent storytelling, audience growth, and measurable sales.
+
+What I’m looking to build
+
+A coordinated marketing system using n8n and AI tools such as Claude or OpenAI to:
+
+● Develop content grounded in our brand voice, values, and product offerings.
+
+● Create and repurpose social posts, video scripts, and email campaigns.
+
+● Manage a content calendar and approval process.
+
+● Connect relevant tools across our Shopify store, email marketing, and social channels.
+
+● Track performance and use those insights to improve campaigns.
+
+Preserving the authenticity of chill life’s message is essential. The",Chill-life,,,,https://community.n8n.io/u/Chill-life,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""partial_thread_later_updates_may_be_missing""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-319764,n8n,https://community.n8n.io/t/319764,Looking for a Technical Co-Founder / Partner AI Implementation Business,2026-10-08T14:53:20.679000+00:00,2026-10-23T10:31:22.461841+00:00,"I’m building Liftora AI — an AI implementation business focused on helping businesses adopt AI, automate processes, and build practical AI solutions that actually save time and money.
+
+I’m looking for a technical AI partnerto build this with me.
+What I’ll handle:
+
+
+Finding and onboarding clients
+
+Sales & business development
+
+Understanding client needs
+
+Managing client relationships
+
+Strategy, operations & the business side
+
+Growing the company
+
+What I’m looking for you to handle:
+
+
+AI/automation architecture
+
+Building and implementing AI solutions for clients
+
+Integrations, agents, workflows & automations
+
+Technical problem-solving
+
+Choosing the right AI tools and technologies
+
+Helping turn client requirements into working solutions
+
+
+You don’t need to be a “10x software engineer.” I’m looking for someone who understands AI deeply, is hands-on, can build, experiment and figure things out, and is excited about turning AI into real business solutions.
+
+This would be a partnership, not a traditional employee position. I’m looking for someone who wants to take ownership, build something from the ground up, and potentially grow this into a serious company.
+
+You should ideally be:
+
+
+ St",Liftora_AI,,,,https://community.n8n.io/u/Liftora_AI,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-319710,n8n,https://community.n8n.io/t/319710,Looking for an AI Automation Mentor — Open to Unpaid Internship,2026-10-08T11:37:17.711000+00:00,2026-10-23T10:31:25.710307+00:00,"I’m a Software Engineering graduate and currently building my career in AI Automation and n8n.
+
+I’ve completed my n8n courses and learned the fundamentals of workflow automation, APIs, webhooks, AI integrations, databases and related concepts. I’ve also built few projects.
+
+Now, I’m looking for an experienced AI Automation Engineer, n8n developer where I can learn by working on real projects.
+
+I’m specifically looking for something like an unpaid internship/apprenticeship, where I can:
+
+• Work on real client projects
+
+• Gain experience with testing, debugging, deployment, and maintenance
+
+• Get guidance and feedback from someone experienced
+
+• Contribute to the team while developing my skills
+
+I’m a beginner, but I’m serious about learning, willing to put in the work, and already have a portfolio that I can share.
+
+
+
+If you’re working in AI automation and are open to mentoring a beginner or taking on an unpaid intern, I’d really appreciate the opportunity.",Fatima_Shoaib,Fatima,,,https://community.n8n.io/u/Fatima_Shoaib,,False,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""forum_pm_unavailable_for_request_context""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,False
+N8N-319256,n8n,https://community.n8n.io/t/319256,Looking for n8n / AI Automation Specialist – Paid QA & Stress Testing,2026-10-06T21:10:54.225000+00:00,2026-10-23T10:31:31.908712+00:00,"Hi everyone,
+
+I’m looking for an experienced n8n specialist to review and stress-test several AI agents I’ve already built before I demonstrate them to paying clients.
+
+Stack includes n8n, Vapi, Twilio, ElevenLabs, OpenAI/Claude and APIs/webhooks.
+
+I’m looking for someone who can review existing workflows, identify bugs/failure points, test edge cases and error handling, check integrations and AI behaviour, and recommend/fix anything that isn’t client-ready.
+
+I’m not looking for the agents to be rebuilt from scratch.
+
+I’d like to start with one agent as a paid trial, with ongoing work available if we’re a good fit.
+
+If interested, please DM me with:
+
+
+Your location/time zone
+
+Your rate
+
+Relevant n8n/AI experience
+
+Any Vapi/Twilio/ElevenLabs experience
+
+Examples of similar work
+
+
+Thanks",cobasuyi,,,,https://community.n8n.io/u/cobasuyi,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""partial_thread_later_updates_may_be_missing""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-319139,n8n,https://community.n8n.io/t/319139,Looking for a B2B Lead Generation / Sales Partner for n8n & AI Automation – Revenue Share,2026-10-06T12:27:06.808000+00:00,2026-10-23T10:31:34.871882+00:00,"Hi everyone,
+
+I’m an independent n8n / AI automation builder based in Lithuania and I’m looking for a long-term lead generation / sales partner.
+
+I’m NOT looking for someone to build automations. I handle the technical side myself.
+
+What I need from a partner is:
+
+– identify businesses that may need automation
+
+– reach out to them by email / LinkedIn
+
+– have the initial conversation
+
+– confirm they have a real automation problem or need
+
+– gather basic context about what they want automated
+
+– introduce the qualified prospect to me by email/message
+
+From that point I handle everything else: technical discovery, pricing, implementation, revisions and delivery.
+
+I prefer client communication to continue primarily through email/chat rather than calls.
+
+I’m open to a performance-based model, for example 15–20% of collected project revenue for clients you source and qualify. Commission is paid after the client pays.
+
+Typical services include n8n workflows, AI integrations, APIs, CRM / Google Workspace automation, lead handling, email automation and other business process automation.
+
+I’m looking for someone who wants a genuine long-term partnership, not someone selling scraped lead list",Reidgardas_Zilinskas,Reidgardas Zilinskas,,,https://community.n8n.io/u/Reidgardas_Zilinskas,,False,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""forum_pm_unavailable_for_request_context""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-319118,n8n,https://community.n8n.io/t/319118,HIRING : Baserow Product specialist (German speaking)!,2026-10-06T07:54:26.499000+00:00,2026-10-23T10:31:37.903938+00:00,"Wir suchen einen deutschsprachigen Product Specialist bei Baserow!
+
+Du hast Erfahrung mit Baserow, Airtable, n8n, Make oder ähnlichen No-Code-/Automation/AI-Tools und arbeitest gerne direkt mit Kunden?
+
+Bei Baserow hilfst du Kunden dabei, ihre Prozesse in Datenbanken, Apps, Automatisierungen und AI-Workflows umzusetzen.
+
+Wir suchen jemanden mit:
+
+→ Fließendem Deutsch & Englisch
+
+→ No-Code-/Automation-Erfahrung
+
+→ Verständnis von Datenbanken und APIs
+
+→ Freude an Kundenprojekten und POCs
+
+ Remote in Europa
+
+ https://lnkd.in/erJCu-8C",omaes72,,,,https://community.n8n.io/u/omaes72,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-318894,n8n,https://community.n8n.io/t/318894,Create Your First n8n Custom Node in One Command (Part 2),2026-10-05T02:52:27.727000+00:00,2026-10-23T10:31:43.768703+00:00,"Create your first n8n custom node with n8n’s own scaffold command, npm create @n8n/node, and see it running inside n8n with hot reload. Part 2 of 10.
+
+Launch your n8n integration - NativeShip
+
+In this episode:
+
+
+What you need installed (Node.js, and nothing else)
+
+The scaffold’s questions, and why the package name must start with n8n-nodes-
+
+The files it creates, and the four that matter
+
+The n8n block in package.json: the first place to look when a node doesn’t show up
+
+npm run dev, and hot reload
+
+
+Chapters
+
+0:00 An empty folder
+
+0:35 What you need
+
+0:50 npm create @n8n/node
+
+1:44 The files it creates
+
+2:20 The n8n block in package.json
+
+2:48 npm run dev: your node in n8n
+
+3:14 Hot reload
+
+3:35 It is still the template
+
+3:48 What’s next
+
+The whole series: https://youtube.com/playlist?list=PLYkThRYZ5f5g&si=02jRVpLw554Tcyxu",bhavyshekhaliya,Bhavy Shekhaliya,,https://www.nativeship.io,https://community.n8n.io/u/bhavyshekhaliya,,False,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""forum_pm_unavailable_for_request_context""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,False
+N8N-318801,n8n,https://community.n8n.io/t/318801,Check saved Apify crawl timestamps before RAG ingestion in n8n,2026-10-04T20:15:50.949000+00:00,2026-10-23T10:31:46.797149+00:00,"Saved batch metadata passes through a recency policy check; passing batches return documents and failing batches return diagnostics.1920×1080 94.3 KB
+
+Replaying a saved crawler batch raises a practical question: do its supplied capture timestamps still meet your ingestion policy?
+
+I built an importable n8n example that checks those timestamps before forwarding documents to an ingestion step. It includes passing and blocked examples, with the authenticated HTTP path tested against Apify.
+
+Disclosure: I maintain the paid Apify Actor used in this example. The workflow download has no charge, but Actor execution can incur Apify charges. Review the current pricing before running it.
+
+Tutorial and workflow download
+What it does
+
+The workflow accepts one saved batch, prepares metadata, calls Dataset Recency & Evidence Gate, validates its report, then branches:
+
+
+Pass: return the original documents through Ready for ingestion.
+
+Fail: return diagnostics through Blocked batch diagnostics, with no document output.
+
+HTTP or invalid-report error: stop before either branch.
+
+
+All records must pass for that supplied batch to continue. A successful Actor run can still return a failed policy decisi",saim14,Saim,,,https://community.n8n.io/u/saim14,,False,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""forum_pm_unavailable_for_request_context""]",Unclassified original-post amounts: $0.05,"[""$0.05""]",[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,False
+N8N-318516,n8n,https://community.n8n.io/t/318516,Hiring Senior AI & Automation Operations Lead (n8n & Make Specialist) | Remote,2026-10-03T13:30:09.564000+00:00,2026-10-23T10:31:54.422197+00:00,"About the Role
+
+We are a Saudi-based AI & Digital Transformation Agency building end-to-end digital systems, WhatsApp AI engines, process automations, and CRM integrations for fast-growing businesses in the Arab world and MENA region.
+
+We are looking for a Hands-on AI & Operations Lead to help us build a fully AI-First operational hub. This is not a traditional PM role — we need a system builder, an automation architect, and a problem solver who loves turning complex operational bottlenecks into sleek, automated n8n & Make.com workflows.
+What You’ll Be Building & Managing
+
+
+
+
+AI-First Operations: Designing and deploying scalable workflows using n8n, LLM APIs (OpenAI, Claude, Gemini), and custom webhooks to eliminate repetitive internal tasks.
+
+
+
+
+WhatsApp AI Automations: Building advanced WhatsApp Business API flows integrated with CRMs and AI agents for client and internal operations.
+
+
+
+
+Content Engine Automations: Setting up end-to-end workflows for multi-channel content generation, scheduling, and asset creation (text, image, reel scripts/video inputs).
+
+
+
+
+Project & Delivery Management: Leading internal dev/design projects, managing freelancers, and ensuring deliverables meet ",Blumark_24,Blumark 24,,,https://community.n8n.io/u/Blumark_24,,False,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""partial_thread_later_updates_may_be_missing"", ""forum_pm_unavailable_for_request_context""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-318011,n8n,https://community.n8n.io/t/318011,"N8n Debug Helper Node, Powerful AI Keywords and More! EP 1: AI From the Frontlines!",2026-09-30T23:06:20.843000+00:00,2026-10-23T10:32:00.167056+00:00,Looking for everyone’s support with my new show that goes over a lot of AI nad ofcourse n8n!,SolomonChrist,Solomon Christ,,,https://community.n8n.io/u/SolomonChrist,,False,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""forum_pm_unavailable_for_request_context""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,False
+N8N-317073,n8n,https://community.n8n.io/t/317073,[HIRING] Multi-Agent B2B Lead Gen System | n8n + LangGraph | Energy Storage (Na/Li Battery),2026-09-28T05:23:36.357000+00:00,2026-10-23T10:32:16.841887+00:00,"We are Henan Zhuowei New Energy, a manufacturer selling sodium-ion & lithium-ion battery energy storage systems worldwide.
+
+We’re seeking an experienced AI Agent developer with deep expertise in n8n and LangGraph to build our multi-agent global lead acquisition system (Codex-style architecture).
+Project Scope: POC (2–4 weeks, fixed price)
+
+
+Automatically discover and enrich qualified B2B leads within the energy storage sector
+
+Build AI agents to research target company profiles and craft highly personalized outreach emails
+
+Develop end-to-end workflows in n8n, integrating LLMs and CRM
+
+Requirements
+
+
+Solid proven experience building production-ready agents with n8n, LangGraph or CrewAI
+
+Hands-on experience with B2B lead generation automation
+
+Only official APIs allowed. No unauthorized scraping.
+
+Deliverables: Exportable n8n workflow JSON, technical documentation, working demo
+
+Engagement Terms
+Fixed-price POC project, fully remote, project-based contract. This is not a full-time role.
+
+Please DM me with links or demos of your relevant past agent automation projects.
+
+中文备注：可以中文沟通，欢迎国内开发者私信。",zhuoweixinnengyan,,,,https://community.n8n.io/u/zhuoweixinnengyan,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""partial_thread_later_updates_may_be_missing""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-317002,n8n,https://community.n8n.io/t/317002,Help Needed: Building an AI-Powered Personalized Fitness Plan Automation with n8n + Google Forms + WhatsApp,2026-09-28T01:51:36.370000+00:00,2026-10-23T10:32:21.793061+00:00,"Hi everyone,
+
+I’m currently working on an AI-powered fitness automation using n8n, and I would appreciate some guidance from the community on how to design the workflow properly.
+
+The basic idea is to create an automated system where a user first fills out a Google Form with their personal fitness requirements. The form would collect information such as:
+
+
+
+
+Name
+
+
+
+
+Age
+
+
+
+
+Current weight
+
+
+
+
+Target weight
+
+
+
+
+Fitness goal
+
+
+
+
+General fitness
+
+
+
+
+Weight loss
+
+
+
+
+Weight gain
+
+
+
+
+Muscle building
+
+
+
+
+Other goals
+
+
+
+
+
+
+Current fitness level
+
+
+
+
+Type of workout they prefer
+
+
+
+
+Gym
+
+
+
+
+Home workout
+
+
+
+
+Outdoor workout
+
+
+
+
+
+
+Available workout time
+
+
+
+
+Dietary preferences
+
+
+
+
+Food preferences/restrictions
+
+
+
+
+Number of meals they prefer
+
+
+
+
+Any relevant limitations or conditions they want the system to consider
+
+
+Proposed n8n Workflow
+
+I’m thinking of building something like:
+
+Google Form → Google Sheets → n8n → AI → Personalized Fitness Plan → WhatsApp
+
+After the user submits the form, n8n would collect and process the information and send it to an AI model.
+
+The AI would then generate a personalized daily fitness plan, including:
+
+ Workout Plan
+
+
+
+
+Exercises for the day
+
+
+
+
+Sets and rep",Manish_Kasan,,,,https://community.n8n.io/u/Manish_Kasan,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-316907,n8n,https://community.n8n.io/t/316907,🚀 AI Automation / n8n Developer — Open to Remote Opportunities,2026-09-27T08:41:30.544000+00:00,2026-10-23T10:32:24.608728+00:00,"▶️ My workflow 3 - n8n - Neo 8_16_2026 6_00_49 PM1920×1078 141 KB
+
+
+
+⚠️ My workflow 3 - n8n - Neo 8_23_2026 1_57_38 PM1920×1078 114 KB
+
+Hey everyone! 
+
+I’m a beginner AI automation developer focused on building practical workflows with n8n, AI/LLM APIs, webhooks, REST APIs, CRM/Google Sheets integrations, and Python.
+
+I’m currently looking to work with an AI automation agency, startup, or business owner where I can contribute to real projects, learn from production environments, and grow into a strong automation engineer.
+
+ What I can work with:
+
+• n8n workflow automation
+
+• Webhooks & REST APIs
+
+• OpenAI / LLM integrations
+
+• AI classification & qualification
+
+• Lead routing and processing
+
+• Google Sheets / CRM workflows
+
+• Structured AI outputs
+
+• Conditional logic & branching
+
+• Human approval workflows
+
+• Notifications and automated follow-ups
+
+• Data extraction, transformation & validation
+
+• Basic Python
+
+• Testing, debugging and workflow troubleshooting
+
+ How I think about workflows:
+
+TRIGGER → INPUT/VALIDATION → PROCESSING → AI DECISION → TOOLS/API CALLS → CONDITIONAL LOGIC → HUMAN APPROVAL → ACTION → CRM/DATABASE → NOTIFICATION → LOGGING → ERROR HANDLING
+
+I’m not just int",Top_W,,,,https://community.n8n.io/u/Top_W,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-316792,n8n,https://community.n8n.io/t/316792,Looking for 1–2 n8n Builders for Long-Term Collaboration,2026-09-26T14:01:38.093000+00:00,2026-10-23T10:32:30.677212+00:00,"Hi everyone,
+
+I’m building a new AI automation agency focused on WhatsApp automation for service businesses.
+
+We’re starting from zero, with no existing clients or fixed monthly salary. I’m looking for 1–2 reliable n8n builders to work on a project basis as clients are acquired.
+
+What I’m looking for
+
+You should be comfortable with:
+
+
+n8n workflow development
+
+WhatsApp Business/API integrations
+
+AI/LLM integrations
+
+APIs and webhooks
+
+Google Sheets, CRMs, calendars and other business tools
+
+Lead qualification, follow-ups and booking workflows
+
+Human handoff/fallback logic
+
+Error handling, testing and troubleshooting
+
+Deployment, monitoring and maintenance
+
+Basic technical documentation
+
+
+Strong WhatsApp automation experience is especially valuable.
+
+Example projects
+
+
+WhatsApp AI lead qualification
+
+FAQ and customer-support bots
+
+Lead capture and CRM integration
+
+Appointment booking and rescheduling
+
+Automated follow-ups
+
+Human-agent handoff
+
+Notifications and internal alerts
+
+AI-powered business workflows
+
+
+Working arrangement
+
+This is project-based, not salaried:
+
+Client acquired → scope agreed → builder assigned → paid build/testing → deployment → maintenance if required
+
+I am n",Jyotirmoy_Das,,,,https://community.n8n.io/u/Jyotirmoy_Das,,,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""partial_thread_later_updates_may_be_missing""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
+N8N-316359,n8n,https://community.n8n.io/t/316359,Looking for an n8n Freelancer / Automation Builder,2026-09-25T15:00:21.415000+00:00,2026-10-23T10:32:38.371504+00:00,"I’m looking for an experienced n8n freelancer to help build WhatsApp automations for local service businesses, including real estate, salons, dealerships, hotels, and home-service companies.
+
+You’ll handle technical implementation while I manage clients, requirements, communication, and project management.
+
+Projects may include:
+
+
+WhatsApp chatbots
+
+Lead capture and qualification
+
+AI FAQ responses
+
+Human handoff
+
+Booking workflows
+
+CRM, Sheets, and database integrations
+
+Notifications, follow-ups, APIs, and webhooks
+
+
+You should have hands-on n8n experience, understand APIs, JSON, and webhooks, and be comfortable with WhatsApp Business and AI/LLM integrations. Reliability, clear communication, documentation, and maintainable workflows are essential.
+
+This starts as project-based freelance work, with potential for a long-term relationship. You’ll handle implementation, testing, documentation, and agreed fixes.
+
+To apply, send:
+
+
+Your n8n experience and years of use
+
+2–3 workflow examples
+
+WhatsApp/API and AI/LLM experience
+
+Pricing and weekly availability
+
+Timezone
+
+Interest in ongoing projects
+
+Portfolio, GitHub, screenshots, or other proof of work
+
+
+A small paid test project may c",Jyotirmoy,Jyotirmoy Das,,,https://community.n8n.io/u/Jyotirmoy,,False,review_required,"[""hiring_availability_unconfirmed"", ""buyer_territory_requires_review"", ""partial_thread_later_updates_may_be_missing"", ""forum_pm_unavailable_for_request_context""]",Not established,[],[],[],[],[],[],[],0,0,0,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,not_found_in_scanned_content,,Forum profile; messaging permission unconfirmed,True
