@@ -1,0 +1,31 @@
+RECEIPT — 24/7 DAEMON CYCLE #2
+Timestamp: 20261023T210625Z
+Recipient: joao.pedro@searchatlas.com
+Company: Search Atlas
+Subject: Distributed backend & event architecture — 22y veteran for Search Atlas
+Message-ID: <179278958504.2068.996052377331313626@gmail.com>
+Status: 250 OK (Dispatched via smtp.gmail.com:587)
+SHA256: a807dd7c37dc6736a769a25c182abca407a07c2305c8410c95124e78d4ebc884
+==================================================
+BODY:
+Hi Search Atlas team,
+
+Saw your engineering opening regarding Search Atlas's systems work.
+
+Over 22 years in enterprise systems architecture (NIT Silchar Honours, former Director & CTO, MCA DIN 10386590), I've designed and scaled high-throughput event backends, distributed data pipelines, and autonomous execution environments across global cloud corridors.
+
+Our complete engineering catalog of 125 production repositories and 1.95M lines of code is fully public for technical inspection:
+https://github.com/isearchxsolve
+
+Key open architectural references:
+- Sandboxed multi-agent execution with AST import gates (ASES v3.1): https://github.com/isearchxsolve/n8n-frellancing_advanced-ases_v3_1
+- Distributed API routing, rate-limiting & metering: https://github.com/isearchxsolve/omniroute-monetizer
+- High-throughput web crawling & data extraction pipelines: https://github.com/isearchxsolve/crawlee-engine
+
+I work entirely asynchronously in writing—zero meeting overhead. Clean architectural teardowns, benchmarked patches, and containerized Docker deployments delivered directly to your engineers.
+
+Happy to share a written architecture brief on your highest-priority pipeline bottleneck if of interest.
+
+Written lane: isearch.xsolve@gmail.com / WhatsApp text +91 86172 16163
+
+Kunal
