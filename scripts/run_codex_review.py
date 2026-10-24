@@ -7,18 +7,19 @@ sys.stdout.reconfigure(encoding="utf-8")
 codex_exe = r"C:\Users\Admin\AppData\Local\OpenAI\Codex\bin\896a0166b774037a\codex.exe"
 
 prompt = """You are Codex, the master frontier code auditor running on OpenAI gpt-5.6-terra.
-Audit the Python code in D:\\anonym\\scripts\\autonomous_icu_pipeline.py thoroughly.
+Audit the fully upgraded Python code in D:\\anonym\\scripts\\autonomous_icu_pipeline.py and its test suite in D:\\anonym\\scripts\\test_icu_pipeline_suite.py.
 
-The purpose of this automation is to target REAL 'ICU patients' (enterprise operators, founders, and maintainers in acute technical distress who have explicitly offered payment/consulting fees in writing), analyze their architecture, and route private consulting engagements.
+In your previous audit (session 01a16dde-9837-77e3-9df1-403abe457957), you found 2 remaining items before deployment:
+1. Corporate Sponsor Verification Gap: Generic 'our company' was accepted without correlating the claimed sponsor to author profile company affiliation.
+2. Decimal Bounds Gap: Decimals were truncated ($9,999,999.99 truncated to $9,999,999) and float was used instead of Decimal.
 
-Evaluate the codebase on:
-1. Architectural soundness and honesty (Zero-Manufacture compliance - are all false test claims eliminated?).
-2. Follow-the-Sun daytime timezone classifier (word-boundary regex correctness and active business hours).
-3. Strictness of client payment verification (does it strictly identify real paying ICU patients and reject student programs/aggregators?).
-4. Private commercial routing (confirm no public bank account / UPI dumping).
-5. Potential edge cases or bugs.
+Please verify the new implementations:
+1. Corporate Sponsor Entity Correlation: In `is_independently_verified_sponsor`, does it strictly require that the author's profile company name is non-generic and that a distinct keyword from the company name explicitly appears in the issue text, rejecting generic 'our company' / 'my client' claims?
+2. Decimal Precision & Bounded Range: Does `parse_and_normalize_bounty` use Python's `Decimal` with regex capturing decimals `(?:\.[0-9]+)?`, and does it strictly enforce `MIN_CONSULTING_BOUND_USD = Decimal('20.00')` and `MAX_CONSULTING_BOUND_USD = Decimal('9999999.00')`?
+3. Test Suite Verification: Does `test_icu_pipeline_suite.py` include explicit boundary tests for `$9,999,999.99` (rejected), `$20.00` (approved), `$19.99` (rejected), foreign currency decimals (`€18.52` approved vs `€18.51` rejected), and corporate sponsor correlation (generic rejected vs correlated approved)?
+4. Complete Production Soundness: Do all prior sandbox, prompt escaping, 40-hex commit SHA, sanitizer, receipt, and SQLite WAL protections remain intact?
 
-Provide a comprehensive, authoritative review summary with your verdict: APPROVED or ACTION REQUIRED."""
+Provide an authoritative review summary with your final verdict: APPROVED or ACTION REQUIRED."""
 
 cmd = [
     codex_exe,
