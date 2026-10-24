@@ -311,6 +311,42 @@ is_icu_low, reason_low = verify_genuine_icu_patient(
 assert not is_icu_low, "Expected $5 to be rejected as below consulting bounds."
 print("  ✓ Out-of-Bounds Currency ($5): Rejected as below $20 consulting bound.")
 
+# Postfix Currency Tests: 50$ (Henry00IS/ShapeEditor real-world pattern)
+is_icu_post_dollar, reason_post_dollar = verify_genuine_icu_patient(
+    title="[50$ Bounty] PolyBool can cause an editor crash on T-Junctions",
+    body="Editor crashes during mesh boolean operations in production. Will pay 50$ upon merge.",
+    author_comments=[],
+    labels=["bounty"],
+    repo="Henry00IS/ShapeEditor",
+    author_assoc="OWNER"
+)
+assert is_icu_post_dollar, f"Expected 50$ postfix currency to pass, got: {reason_post_dollar}"
+print("  ✓ Postfix Currency (50$ Bounty): Approved within consulting bounds.")
+
+# Postfix Currency Tests: 100 USD
+is_icu_post_usd, reason_post_usd = verify_genuine_icu_patient(
+    title="Production memory leak in websocket server",
+    body="Memory leak causes worker crash every 2 hours. Offering 100 USD for a clean fix.",
+    author_comments=[],
+    labels=["bounty"],
+    repo="myorg/websocket-server",
+    author_assoc="OWNER"
+)
+assert is_icu_post_usd, f"Expected 100 USD postfix currency to pass, got: {reason_post_usd}"
+print("  ✓ Postfix Currency (100 USD): Approved within consulting bounds.")
+
+# Postfix Currency Tests: 5$ Below Floor -> Reject
+is_icu_post_low, reason_post_low = verify_genuine_icu_patient(
+    title="[5$ Bounty] Small crash fix",
+    body="Will pay 5$ for fix.",
+    author_comments=[],
+    labels=["bounty"],
+    repo="myorg/app",
+    author_assoc="OWNER"
+)
+assert not is_icu_post_low, "Expected 5$ to be rejected as below $20 floor."
+print("  ✓ Postfix Currency Below Floor (5$): Rejected as below $20 consulting bound.")
+
 # Bare 'happy to pay' without numeric amount -> Reject
 is_icu_bare_pay, reason_bare_pay = verify_genuine_icu_patient(
     title="Production service crashing under load",

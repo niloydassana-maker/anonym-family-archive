@@ -268,20 +268,32 @@ MAX_CONSULTING_BOUND_USD = Decimal("9999999.00")
 
 def parse_and_normalize_bounty(text):
     """
-    Parses currency expressions including decimal fractions, normalizes them to USD equivalent
+    Parses currency expressions including decimal fractions (both prefix e.g. $50, USD 100
+    and postfix e.g. 50$, 100 USD, 500 USDC), normalizes them to USD equivalent
     using exact Decimal arithmetic (avoiding float precision and premature rounding bugs),
     and enforces consulting bounds against unrounded values:
     $20.00 to $9,999,999.00 USD equivalent.
     """
-    pattern = r"(?:^|[\s,;:(])(?P<symbol>\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed)\s*(?P<amount>(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+)?)\b"
+    pattern = (
+        r"(?:(?:^|[\s,;:(])(?P<symbol_pre>\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed)\s*(?P<amount_pre>(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+)?)\b)"
+        r"|"
+        r"(?:(?:\b|^)(?P<amount_post>(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+)?)\s*(?P<symbol_post>\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed)(?=[^a-zA-Z0-9]|$))"
+    )
     matches = list(re.finditer(pattern, text, re.IGNORECASE))
     if not matches:
         return False, False, None, Decimal("0.00"), "No numeric currency amount found"
 
     valid_amounts = []
     for m in matches:
-        sym = m.group("symbol").lower()
-        amt_raw = m.group("amount").replace(",", "")
+        if m.group("symbol_pre") and m.group("amount_pre"):
+            sym = m.group("symbol_pre").lower()
+            amt_raw = m.group("amount_pre").replace(",", "")
+        elif m.group("symbol_post") and m.group("amount_post"):
+            sym = m.group("symbol_post").lower()
+            amt_raw = m.group("amount_post").replace(",", "")
+        else:
+            continue
+
         try:
             raw_val = Decimal(amt_raw)
         except Exception:
