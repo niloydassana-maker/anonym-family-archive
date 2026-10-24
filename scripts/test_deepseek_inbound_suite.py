@@ -11,7 +11,9 @@ from deepseek_inbound_pipeline import (
     record_email_event,
     analyze_and_categorize_email,
     get_gmail_password,
-    get_tokenharbor_key
+    get_tokenharbor_key,
+    is_unreachable_recipient,
+    send_smtp_email
 )
 
 TEST_DB = r"D:\anonym\scratch\test_email_pipeline.db"
@@ -121,6 +123,30 @@ actionable = triage_result.get("actionable")
 print(f"  Live DeepSeek Classification: Category={cat} | Actionable={actionable}")
 assert cat in ["CLIENT_INQUIRY", "GITHUB_BOUNTY_UPDATE"], f"Expected CLIENT_INQUIRY, got {cat}"
 print("  ✓ DeepSeek Triage: Correctly identified high-intent client inquiry.")
+
+# ----------------------------------------------------------------
+# Test 5: Unreachable Recipient & Bounce Suppression Gate
+# ----------------------------------------------------------------
+print("\n[Test 5] Testing Unreachable Recipient & Bounce Suppression Gate...")
+
+# Test robot addresses
+assert is_unreachable_recipient("notifications@github.com"), "notifications@github.com should be marked unreachable"
+assert is_unreachable_recipient("reply@reply.github.com"), "reply.github.com should be marked unreachable"
+assert is_unreachable_recipient("noreply@github.com"), "noreply address should be marked unreachable"
+assert is_unreachable_recipient("postmaster@microsoft.com"), "postmaster should be marked unreachable"
+assert is_unreachable_recipient("mailer-daemon@googlemail.com"), "mailer-daemon should be marked unreachable"
+assert is_unreachable_recipient("jobalerts-noreply@linkedin.com"), "linkedin jobalert should be marked unreachable"
+
+# Test legitimate human addresses
+assert not is_unreachable_recipient("alex@fintechscale.io"), "Legitimate client should be reachable"
+assert not is_unreachable_recipient("founder@seedstage.ai"), "Legitimate client should be reachable"
+assert not is_unreachable_recipient("kunal.nit@gmail.com"), "Legitimate client should be reachable"
+print("  ✓ Unreachable Recipient Classification: 100% accurate.")
+
+# Test send_smtp_email fail-closed guard
+ok_fail, fail_msg = send_smtp_email("notifications@github.com", "Test", "Test body")
+assert not ok_fail and "no-reply robot" in fail_msg, f"Expected send_smtp_email to reject robot address, got: {fail_msg}"
+print("  ✓ SMTP Fail-Closed Guard: Blocked attempt to send to notifications@github.com.")
 
 print("\n==================================================")
 print("ALL DEEPSEEK INBOUND PIPELINE TESTS PASSED (100% GREEN)")

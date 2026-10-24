@@ -293,6 +293,27 @@ def synthesize_email_reply(from_addr, subject, body, summary):
 # -------------------------------------------------------------
 # 6. IMAP & SMTP COMMUNICATOR
 # -------------------------------------------------------------
+UNREACHABLE_RECIPIENT_PATTERNS = [
+    r"@notifications\.github\.com\b",
+    r"@reply\.github\.com\b",
+    r"@github\.com\b",
+    r"\b(?:noreply|no-reply|donotreply|do-not-reply)@",
+    r"\b(?:postmaster|mailer-daemon)@",
+    r"@(?:linkedin|freelancer|indeed|foundit|swooped|beehiiv)\.com\b",
+    r"@store-news\.amazon\.",
+    r"@microsoft\.com\b",
+    r"@googlemail\.com\b"
+]
+
+def is_unreachable_recipient(email_addr):
+    if not email_addr:
+        return True
+    addr = email_addr.strip().lower()
+    for pat in UNREACHABLE_RECIPIENT_PATTERNS:
+        if re.search(pat, addr, re.IGNORECASE):
+            return True
+    return False
+
 def decode_mime(s):
     if not s:
         return ""
@@ -324,6 +345,9 @@ def extract_body_text(msg):
     return body.strip()
 
 def send_smtp_email(to_addr, subject, body_text):
+    if is_unreachable_recipient(to_addr):
+        return False, f"Address '{to_addr}' is a no-reply robot/postmaster blackhole. Send aborted."
+
     pw = get_gmail_password()
     msg = MIMEMultipart()
     msg["From"] = f"Kunal Das <{CLIENT_EMAIL}>"
@@ -388,6 +412,13 @@ def run_inbound_cycle(live_mode=False, max_inspect=20):
             date_str = decode_mime(msg.get("Date"))
             body_text = extract_body_text(msg)
 
+            # 0. Immediate Drop of Postmaster, Mailer-Daemon, and Delivery Failure Bounces
+            if re.search(r"\b(?:postmaster|mailer-daemon)@", sender, re.IGNORECASE) or \
+               re.search(r"\b(?:Delivery has failed|Undeliverable|Failure Notice|Mail delivery failed)\b", subj, re.IGNORECASE):
+                print(f"🛑 [BOUNCE NOTICE DROPPED] UID {uid_str}: {subj[:60]}")
+                record_email_event(uid_str, sender, subj, date_str, "NOISE_OR_AUTOMATED", False, "", "", "BOUNCE_DROPPED")
+                continue
+
             print(f"\n📨 [NEW INBOUND DETECTED] UID: {uid_str}")
             print(f"From: {sender[:50]}")
             print(f"Subject: {subj[:80]}")
@@ -442,9 +473,34 @@ def run_inbound_cycle(live_mode=False, max_inspect=20):
                 record_email_event(uid_str, sender, subj, date_str, category, False, "", "", "OPPORTUNITY_SAVED")
                 continue
 
-            # 4. Actionable Client Inquiry or GitHub Bounty Thread
-            if category in ["CLIENT_INQUIRY", "GITHUB_BOUNTY_UPDATE"]:
-                print(f"⚡ [ENGAGEMENT CANDIDATE] Synthesizing grounded response via DeepSeek...")
+            # 4. GitHub Bounty Notification (Informational Tracker - NEVER email notifications@github.com)
+            if category == "GITHUB_BOUNTY_UPDATE":
+                print(f"📦 [GITHUB BOUNTY UPDATE LOGGED] {summary}")
+                packet_path = os.path.join(PACKETS_DIR, f"bounty_{uid_str}.json")
+                with open(packet_path, "w", encoding="utf-8") as pf:
+                    json.dump({
+                        "uid": uid_str,
+                        "type": "GITHUB_BOUNTY_UPDATE",
+                        "sender": sender,
+                        "subject": subj,
+                        "date": date_str,
+                        "summary": summary,
+                        "body_snippet": body_text[:1200],
+                        "logged_at": datetime.now(timezone.utc).isoformat()
+                    }, pf, indent=2)
+                record_email_event(uid_str, sender, subj, date_str, category, False, "", "", "BOUNTY_NOTIFICATION_LOGGED")
+                continue
+
+            # 5. Actionable Client Inquiry (Real Human Inbound)
+            if category == "CLIENT_INQUIRY":
+                match_email = re.search(r"[\w\.-]+@[\w\.-]+", sender)
+                to_email = match_email.group(0).lower() if match_email else ""
+                if not to_email or is_unreachable_recipient(to_email):
+                    print(f"🛑 [AUTOMATED SENDER DROPPED] Sender '{sender}' is not a reachable human. Suppressing engagement.")
+                    record_email_event(uid_str, sender, subj, date_str, category, False, "", "", "UNREACHABLE_SUPPRESSED")
+                    continue
+
+                print(f"⚡ [CLIENT ENGAGEMENT CANDIDATE] Synthesizing grounded response via DeepSeek...")
                 reply_draft = synthesize_email_reply(sender, subj, body_text, summary)
                 if not reply_draft:
                     print(f"❌ [ABORTED] DeepSeek response synthesis failed.")
@@ -460,7 +516,7 @@ def run_inbound_cycle(live_mode=False, max_inspect=20):
                 digest = hashlib.sha256(reply_draft.encode("utf-8")).hexdigest()
 
                 # Generate Candidate Packet
-                packet_path = os.path.join(PACKETS_DIR, f"inbound_{uid_str}.json")
+                packet_path = os.path.join(PACKETS_DIR, f"client_inquiry_{uid_str}.json")
                 packet = {
                     "uid": uid_str,
                     "sender": sender,
@@ -475,7 +531,7 @@ def run_inbound_cycle(live_mode=False, max_inspect=20):
                 with open(packet_path, "w", encoding="utf-8") as pf:
                     json.dump(packet, pf, indent=2)
 
-                print(f"📦 [EMAIL PACKET SAVED] {packet_path}")
+                print(f"📦 [CLIENT INQUIRY PACKET SAVED] {packet_path}")
                 print("\n--- [REPLY DRAFT PREVIEW] ---")
                 print(reply_draft[:800] + ("\n..." if len(reply_draft) > 800 else ""))
                 print("--- [END PREVIEW] ---\n")
@@ -484,14 +540,7 @@ def run_inbound_cycle(live_mode=False, max_inspect=20):
                     record_email_event(uid_str, sender, subj, date_str, category, True, reply_draft, digest, "PREVIEW_PACKET_CREATED")
                     continue
 
-                # LIVE SMTP ENGAGEMENT
-                # Extract clean recipient email address
-                match_email = re.search(r"[\w\.-]+@[\w\.-]+", sender)
-                if not match_email:
-                    print(f"❌ Could not extract valid recipient email from '{sender}'.")
-                    continue
-                to_email = match_email.group(0)
-
+                # LIVE SMTP ENGAGEMENT TO REAL HUMAN
                 ok_send, send_msg = send_smtp_email(to_email, subj, reply_draft)
                 if ok_send:
                     print(f"✅ [SMTP DELIVERED] Response sent to {to_email} (SHA-256: {digest[:16]}...)")
