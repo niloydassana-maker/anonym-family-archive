@@ -488,6 +488,10 @@ print("\n[Test 2] Testing Pre-Post Safety Sanitizer...")
 clean_payload = """### Technical Architecture & Feasibility Assessment
 1. Root Cause Analysis: Webhook routing collision on WABA endpoint.
 2. Remediation: Zero-touch webhook multiplexer.
+```python
+def handle_webhook(req):
+    return {"status": "ok"}
+```
 3. Test Strategy: Sandbox Meta App staging verification.
 4. Contact: isearch.xsolve@gmail.com"""
 safe_1, msg_1 = sanitize_and_validate_payload(clean_payload)
