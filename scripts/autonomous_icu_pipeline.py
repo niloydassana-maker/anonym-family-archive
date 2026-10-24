@@ -6,6 +6,7 @@ import time
 import re
 import sqlite3
 import hashlib
+import shlex
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
@@ -732,10 +733,10 @@ def sanitize_and_validate_payload(content):
 def get_issue_fast(repo, number):
     """
     Two-tier fetch:
-    1. Fast tier: body, author, title, labels, state, authorAssociation (0.8s, never times out)
+    1. Fast tier: body, author, title, labels, state (0.8s, never times out)
     2. Deep tier: comments fetched ONLY if body does not contain payment signal and technical context exists
     """
-    cmd = ["gh", "issue", "view", str(number), "--repo", repo, "--json", "body,author,title,labels,state,authorAssociation"]
+    cmd = ["gh", "issue", "view", str(number), "--repo", repo, "--json", "body,author,title,labels,state"]
     out, err, code = run_cmd(cmd, timeout=20)
     if code != 0 or not out:
         return None
@@ -749,9 +750,19 @@ def get_issue_fast(repo, number):
     if author_obj.get("is_bot") or str(author_obj.get("login", "")).startswith("app/"):
         return None
 
+    # Fetch authorAssociation reliably
+    author_login = author_obj.get("login", "")
+    repo_parts = repo.split("/")
+    if len(repo_parts) == 2 and repo_parts[0].lower() == str(author_login).lower():
+        data["authorAssociation"] = "OWNER"
+    else:
+        cmd_assoc = ["gh", "api", f"repos/{repo}/issues/{number}", "--jq", ".author_association"]
+        a_out, a_err, a_code = run_cmd(cmd_assoc, timeout=10)
+        data["authorAssociation"] = a_out.strip() if a_code == 0 and a_out else "NONE"
+
     # Check if author's body already has explicit payment
     body = data.get("body", "")
-    author = author_obj.get("login", "")
+    author = author_login
     author_comments = []
 
     combined_text = (data.get("title", "") + " " + (body or "")).lower()
@@ -925,9 +936,9 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
         release_claim(repo, number)
         return False
 
-def search_issues(query):
-    cmd = ["gh", "search", "issues", query, "--sort", "updated", "--limit", "10", "--json", "number,title,repository,url,labels,updatedAt"]
-    out, err, code = run_cmd(cmd, timeout=20)
+def search_issues(query, limit=100):
+    cmd = ["gh", "search", "issues"] + shlex.split(query) + ["--sort", "updated", "--limit", str(limit), "--json", "number,title,repository,url,labels,updatedAt"]
+    out, err, code = run_cmd(cmd, timeout=25)
     if code != 0 or not out:
         return []
     try:
@@ -996,15 +1007,34 @@ def run_pipeline_cycle(live_mode=False):
             total_processed += 1
 
     # Phase 2: Dynamic Search
+    # PRE-FILTER ALIGNMENT: Search queries strictly intersect Pain + Payment at the query layer
     print("\n--- PHASE 2: Dynamic Follow-the-Sun Daytime Search ---")
     dynamic_queries = [
-        f'"happy to pay" state:open',
-        f'"willing to pay" state:open',
-        f'"paid consulting" state:open',
-        f'"paid feasibility" state:open',
-        f'"pay for someone" state:open',
-        f'production "will pay" state:open',
-        f'solana "happy to pay" state:open'
+        # Explicit Bounty Label + Acute Technical Pain
+        'crash --label bounty --state open',
+        'deadlock --label bounty --state open',
+        '"memory leak" --label bounty --state open',
+        'panic --label bounty --state open',
+        'production --label bounty --state open',
+        'bug --label bounty --state open',
+        'fix --label bounty --state open',
+
+        # Bounty Keywords + Acute Pain
+        'bounty crash --state open',
+        'bounty deadlock --state open',
+        'bounty production --state open',
+        'bounty "memory leak" --state open',
+        'bounty panic --state open',
+
+        # Explicit Payment Intent + Acute Pain
+        '"will pay" crash --state open',
+        '"will pay" production --state open',
+        '"will pay" deadlock --state open',
+        '"willing to pay" crash --state open',
+
+        # Bounty + Numeric / Currency Indicators
+        'bounty "USDC" --state open',
+        'bounty "$" fix --state open'
     ]
 
     for q in dynamic_queries:
@@ -1025,10 +1055,12 @@ def run_pipeline_cycle(live_mode=False):
             issue_id = f"{repo}#{number}"
             already_done, cur_status = is_issue_claimed_or_delivered(repo, number)
             if already_done:
+                print(f"[SKIP] {issue_id} already in state '{cur_status}'.")
                 continue
 
             data = get_issue_fast(repo, number)
             if not data or data.get("state") != "OPEN":
+                print(f"[SKIP] {issue_id} is closed or unreachable.")
                 continue
 
             author = data.get("author", {}).get("login", "")
@@ -1039,11 +1071,13 @@ def run_pipeline_cycle(live_mode=False):
 
             is_icu, reason = verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc=author_assoc, author=author)
             if not is_icu:
+                print(f"[REJECT] {issue_id}: {reason}")
                 continue
 
             corridor_name, is_active, corridor_info = detect_author_corridor(author)
             # Fail-closed: Reject excluded, unapproved, or unknown corridors
             if corridor_name in ["Excluded Regional Market", "Unapproved Region", "Unknown Region"]:
+                print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
                 continue
 
             # Fail-closed: Strict business hours (no off-hours exceptions)
