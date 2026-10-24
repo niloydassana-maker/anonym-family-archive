@@ -552,16 +552,27 @@ print("  ✓ Unverified Third-Party Crypto Address: Caught and blocked.")
 # ----------------------------------------------------------------
 print("\n[Test 3] Testing Approved Corridor Engine & Cambridge Collision...")
 
-# Verify Cambridge MA vs Cambridge UK collision resolution
+# Verify Cambridge MA vs Cambridge UK collision resolution & Global Expansion
 sample_locations = [
     ("Bengaluru, India", "India Tech Hubs (IST)"),
     ("Singapore", "Singapore (SGT)"),
-    ("Dubai, UAE", "UAE (GST)"),
+    ("Dubai, UAE", "UAE & Gulf (GST)"),
     ("Cambridge, MA", "US East (EDT/EST)"),
     ("Cambridge, UK", "UK (BST/GMT)"),
     ("London, England", "UK (BST/GMT)"),
     ("Austin, Texas", "US Central (CDT/CST)"),
     ("San Francisco, CA", "US West (PDT/PST)"),
+    ("Munich, Germany", "Germany & DACH (CET/CEST)"),
+    ("Berlin, Deutschland", "Germany & DACH (CET/CEST)"),
+    ("Zurich, Switzerland", "Germany & DACH (CET/CEST)"),
+    ("Paris, France", "Western & Northern Europe (CET/CEST)"),
+    ("Amsterdam, Netherlands", "Western & Northern Europe (CET/CEST)"),
+    ("Stockholm, Sweden", "Western & Northern Europe (CET/CEST)"),
+    ("Nairobi, Kenya", "Kenya & East Africa (EAT)"),
+    ("Kigali, Rwanda", "Kenya & East Africa (EAT)"),
+    ("Lagos, Nigeria", "Nigeria & West/South Africa (WAT/SAST)"),
+    ("Toronto, Canada", "Canada (EST/PST)"),
+    ("Sydney, Australia", "Australia & NZ (AEST/NZST)"),
 ]
 
 for loc, expected_name in sample_locations:
@@ -572,6 +583,45 @@ for loc, expected_name in sample_locations:
             break
     assert matched == expected_name, f"Expected {expected_name} for '{loc}', got: {matched}"
 print("  ✓ Cambridge Collision Resolved: 'Cambridge, MA' -> US East | 'Cambridge, UK' -> UK.")
+print("  ✓ Global Corridor Expansion: Germany, Kenya, France, Netherlands, Nigeria, Canada, Australia validated.")
+
+# Test hard territory exclusions (Kolkata/WB, China, Pakistan)
+import autonomous_icu_pipeline
+
+original_get_profile = autonomous_icu_pipeline.get_author_profile
+
+# Test Kolkata Exclusion
+autonomous_icu_pipeline.get_author_profile = lambda u: {"location": "Kolkata, India", "company": "Local Agency"}
+c_name, is_act, reason = detect_author_corridor("kolkata_user")
+assert c_name == "Excluded Regional Market", f"Expected Excluded Regional Market for Kolkata, got {c_name}"
+print("  ✓ Hard Regional Exclusion: Kolkata/WB correctly excluded per zero-burn law.")
+
+# Test China Exclusion
+autonomous_icu_pipeline.get_author_profile = lambda u: {"location": "Beijing, China", "company": "Tencent"}
+c_name, is_act, reason = detect_author_corridor("china_user")
+assert c_name == "Excluded Territory", f"Expected Excluded Territory for China, got {c_name}"
+print("  ✓ Hard Territory Exclusion: China correctly excluded per mandate.")
+
+# Test Pakistan Exclusion
+autonomous_icu_pipeline.get_author_profile = lambda u: {"location": "Lahore, Pakistan", "company": "Software House"}
+c_name, is_act, reason = detect_author_corridor("pakistan_user")
+assert c_name == "Excluded Territory", f"Expected Excluded Territory for Pakistan, got {c_name}"
+print("  ✓ Hard Territory Exclusion: Pakistan correctly excluded per mandate.")
+
+# Test Approved Corridor via detect_author_corridor (Munich, Germany)
+autonomous_icu_pipeline.get_author_profile = lambda u: {"location": "Munich, Germany", "company": "BMW Group"}
+c_name, is_act, reason = detect_author_corridor("munich_user")
+assert c_name == "Germany & DACH (CET/CEST)", f"Expected Germany & DACH for Munich, got {c_name}"
+print("  ✓ Approved Author Corridor: Munich, Germany approved through detect_author_corridor.")
+
+# Test Approved Corridor via detect_author_corridor (Nairobi, Kenya)
+autonomous_icu_pipeline.get_author_profile = lambda u: {"location": "Nairobi, Kenya", "company": "Fintech Lab"}
+c_name, is_act, reason = detect_author_corridor("nairobi_user")
+assert c_name == "Kenya & East Africa (EAT)", f"Expected Kenya & East Africa for Nairobi, got {c_name}"
+print("  ✓ Approved Author Corridor: Nairobi, Kenya approved through detect_author_corridor.")
+
+# Restore original
+autonomous_icu_pipeline.get_author_profile = original_get_profile
 
 # Verify bare Cambridge is treated as ambiguous / unapproved (fail-closed)
 bare_cambridge = "cambridge"

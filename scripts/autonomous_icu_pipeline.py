@@ -174,13 +174,14 @@ def get_author_profile(username):
             return {}
     return {}
 
-# Approved enterprise corridors strictly per AGENTS.md:
-# Bengaluru, Hyderabad, Pune, Delhi-NCR, Singapore, US, UK, and UAE.
+# Approved enterprise corridors strictly per AGENTS.md and Baba's global expansion:
+# India Tech Hubs, Singapore, UAE, US (East, Central, West), UK, Germany & DACH,
+# Western/Northern Europe, Kenya & East Africa, Nigeria & West Africa, Canada, Australia/NZ.
 APPROVED_CORRIDOR_TZ_MAP = [
     {
         "name": "India Tech Hubs (IST)",
         "iana": "Asia/Kolkata",
-        "pattern": r"\b(bengaluru|bangalore|hyderabad|pune|delhi|gurgaon|gurugram|noida|ncr)\b"
+        "pattern": r"\b(bengaluru|bangalore|hyderabad|pune|delhi|gurgaon|gurugram|noida|ncr|mumbai|chennai)\b"
     },
     {
         "name": "Singapore (SGT)",
@@ -188,29 +189,59 @@ APPROVED_CORRIDOR_TZ_MAP = [
         "pattern": r"\b(singapore)\b"
     },
     {
-        "name": "UAE (GST)",
+        "name": "UAE & Gulf (GST)",
         "iana": "Asia/Dubai",
-        "pattern": r"\b(dubai|abu dhabi|uae|united arab emirates)\b"
+        "pattern": r"\b(dubai|abu dhabi|uae|united arab emirates|qatar|doha|saudi arabia|riyadh)\b"
     },
     {
         "name": "US East (EDT/EST)",
         "iana": "America/New_York",
-        "pattern": r"\b(cambridge[\s,]+(?:ma|massachusetts)|boston|new york|nyc|manhattan|brooklyn|new jersey|washington[\s,]+dc|reston|mclean|philadelphia|atlanta|miami)\b"
+        "pattern": r"\b(cambridge[\s,]+(?:ma|massachusetts)|boston|new york|nyc|manhattan|brooklyn|new jersey|washington[\s,]+dc|reston|mclean|philadelphia|atlanta|miami|north carolina|raleigh|charlotte|florida)\b"
     },
     {
         "name": "US Central (CDT/CST)",
         "iana": "America/Chicago",
-        "pattern": r"\b(chicago|austin|texas|dallas|houston|minneapolis)\b"
+        "pattern": r"\b(chicago|austin|texas|dallas|houston|minneapolis|illinois|wisconsin|colorado|denver)\b"
     },
     {
         "name": "US West (PDT/PST)",
         "iana": "America/Los_Angeles",
-        "pattern": r"\b(san francisco|bay area|silicon valley|seattle|san jose|palo alto|mountain view|sunnyvale|redmond|bellevue|los angeles|california)\b"
+        "pattern": r"\b(san francisco|bay area|silicon valley|seattle|san jose|palo alto|mountain view|sunnyvale|redmond|bellevue|los angeles|california|portland|oregon|washington|san diego)\b"
     },
     {
         "name": "UK (BST/GMT)",
         "iana": "Europe/London",
-        "pattern": r"\b(cambridge[\s,]+(?:uk|england|gb|great britain)|london|united kingdom|england|oxford|edinburgh)\b"
+        "pattern": r"\b(cambridge[\s,]+(?:uk|england|gb|great britain)|london|united kingdom|england|oxford|edinburgh|manchester|bristol)\b"
+    },
+    {
+        "name": "Germany & DACH (CET/CEST)",
+        "iana": "Europe/Berlin",
+        "pattern": r"\b(germany|deutschland|berlin|munich|münchen|frankfurt|hamburg|cologne|köln|stuttgart|switzerland|zurich|zürich|geneva|genève|basel|austria|vienna|wien)\b"
+    },
+    {
+        "name": "Western & Northern Europe (CET/CEST)",
+        "iana": "Europe/Paris",
+        "pattern": r"\b(france|paris|netherlands|holland|amsterdam|rotterdam|belgium|brussels|sweden|stockholm|norway|oslo|denmark|copenhagen|finland|helsinki|ireland|dublin|spain|madrid|barcelona|italy|milan|rome|estonia|tallinn)\b"
+    },
+    {
+        "name": "Kenya & East Africa (EAT)",
+        "iana": "Africa/Nairobi",
+        "pattern": r"\b(kenya|nairobi|mombasa|rwanda|kigali|uganda|kampala|tanzania|dar es salaam|ethiopia|addis ababa)\b"
+    },
+    {
+        "name": "Nigeria & West/South Africa (WAT/SAST)",
+        "iana": "Africa/Lagos",
+        "pattern": r"\b(nigeria|lagos|abuja|ghana|accra|south africa|johannesburg|cape town)\b"
+    },
+    {
+        "name": "Canada (EST/PST)",
+        "iana": "America/Toronto",
+        "pattern": r"\b(canada|toronto|vancouver|montreal|ottawa|waterloo|calgary|quebec|ontario|british columbia)\b"
+    },
+    {
+        "name": "Australia & NZ (AEST/NZST)",
+        "iana": "Australia/Sydney",
+        "pattern": r"\b(australia|sydney|melbourne|brisbane|canberra|perth|new zealand|auckland|wellington)\b"
     }
 ]
 
@@ -221,9 +252,13 @@ def detect_author_corridor(author):
     if not loc_str.strip():
         return "Unknown Region", False, "Unknown author location - fail-closed"
 
-    # Hard Territory Exclusion per AGENTS.md
-    if re.search(r"\b(kolkata|calcutta|west bengal)\b", loc_str):
+    # Hard Territory Exclusion per AGENTS.md zero-burn regional law
+    if re.search(r"\b(kolkata|calcutta|west bengal|howrah|durgapur|siliguri)\b", loc_str):
         return "Excluded Regional Market", False, "Kolkata/WB regional market excluded"
+
+    # Hard Territory Exclusion per Baba's direct mandate
+    if re.search(r"\b(china|beijing|shanghai|shenzhen|guangzhou|hangzhou|chengdu|wuhan|pakistan|karachi|lahore|islamabad|rawalpindi|faisalabad)\b", loc_str):
+        return "Excluded Territory", False, "China/Pakistan territory excluded per mandate"
 
     now_utc = datetime.now(timezone.utc)
 
@@ -676,7 +711,7 @@ Your response MUST follow this exact structure:
    (State that this implementation and test harness are complete and ready for immediate merge or branch PR. Settlement coordinates:
    - **DOOM L1 Address:** `doom14ac0e785bffabe0357cb522608cf88c80a33cd7f3f925757`
    - **Solana (USDC / USDT / SOL):** `2qi849TBq72XMpsp8PjR4YfegDEzc7BRFZaarwQ2tKgL`
-   - **PayPal / Base / Direct Invoicing:** `isearch.xsolve@gmail.com`)
+   - **Base Mainnet (USDC / wDOOM) & Invoicing:** `isearch.xsolve@gmail.com` (Corporate wire & milestone billing upon request))
 
 Strict rules:
 - Deliver working code and runnable tests immediately — not promises or future scoping.
