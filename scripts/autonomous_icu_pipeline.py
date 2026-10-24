@@ -594,6 +594,20 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     if _has_economic_scam_marker(full_text):
         return False, "Rejected by economic scam/lottery pattern"
 
+    # Filter out bot aggregators, scrapers, and mirror directories
+    aggregator_repos = r"\b(?:bounty[-_]plaza|bounty[-_]watcher|bounty[-_]arcade|bounty[-_]bot|devpool[-_]directory|mergeearn|clearsheet[-_]offers)\b"
+    if repo and re.search(aggregator_repos, repo, re.IGNORECASE):
+        return False, f"Rejected: repository '{repo}' is an aggregator/indexer, not an authoritative software host."
+
+    aggregator_body_patterns = [
+        r"###\s*(?:原始链接|平台|赏金平台)",
+        r"(?:source\s*url|platform\s*url)\s*:\s*https?://github\.com/",
+        r"bounties that were already open when the watcher started",
+    ]
+    for abp in aggregator_body_patterns:
+        if re.search(abp, full_text, re.IGNORECASE):
+            return False, f"Rejected: issue is an external aggregator scrape mirror ('{abp}')."
+
     has_amount, amount_in_bounds, raw_amount, usd_value, amount_reason = parse_and_normalize_bounty(full_text)
     platform_attested = _has_platform_bounty_marker(full_text)
     direct_payer = is_direct_payer(author, repo, full_text) if author else False
