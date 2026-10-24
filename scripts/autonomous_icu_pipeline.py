@@ -1267,6 +1267,22 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
         print(f"[SKIP] {issue_id} is already in state '{cur_status}'.")
         return False
 
+    # ZERO-TOKEN-WASTE GATE: Verify live eligibility BEFORE invoking model
+    if live_mode:
+        can_live, live_reason = verify_genuine_icu_patient(
+            title, body, author_comments, labels, repo,
+            author_assoc=author_assoc, author=author, live_delivery_mode=True
+        )
+        if not can_live:
+            print(f"📦 [REJECT/PRE-LLM] {issue_id}: Not eligible for live delivery ({live_reason}). Zero tokens spent.")
+            return False
+
+        # Atomic SQLite claim reservation BEFORE spending tokens
+        claimed = try_claim_issue(repo, number, title, author, corridor_info, reason)
+        if not claimed:
+            print(f"❌ [RACE DETECTED] {issue_id} was claimed concurrently by another worker. Zero tokens spent.")
+            return False
+
     print(f"\n🎯 [GENUINE ICU PATIENT ENGAGED] {issue_id}")
     print(f"Title: '{title}' by @{author}")
     print(f"Corridor: {corridor_info}")
@@ -1276,11 +1292,15 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
     proposal = generate_grounded_proposal(repo, title, body, author, author_comments)
     if not proposal:
         print(f"❌ [ABORTED] Model inference failed. Zero-Manufacture Law: No generic fallback posted.")
+        if live_mode:
+            release_claim(repo, number)
         return False
 
     is_safe, safety_msg = sanitize_and_validate_payload(proposal)
     if not is_safe:
         print(f"❌ [SECURITY GATE TRIGGERED] {safety_msg}. Proposal suppressed.")
+        if live_mode:
+            release_claim(repo, number)
         return False
 
     # Candidate Packet Generation
@@ -1308,22 +1328,6 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
         return True
 
     # LIVE WIRE TRANSMISSION
-    # Strict Live Gate per Frontier Audit: Requires maintainer authority and parsed, bounded amount
-    can_live, live_reason = verify_genuine_icu_patient(
-        title, body, author_comments, labels, repo,
-        author_assoc=author_assoc, author=author, live_delivery_mode=True
-    )
-    if not can_live:
-        print(f"📦 [ROUTED TO CANDIDATE PACKET] {live_reason}")
-        print(f"📦 [CANDIDATE PACKET CREATED] Saved to {packet_path}")
-        return False
-
-    # Atomic SQLite claim reservation
-    claimed = try_claim_issue(repo, number, title, author, corridor_info, reason)
-    if not claimed:
-        print(f"❌ [RACE DETECTED] {issue_id} was claimed concurrently by another worker. Aborting duplicate.")
-        return False
-
     print("Delivering authoritative assessment to GitHub issue via live wire POST...")
     # Invoke GitHub API directly via POST to capture the exact created comment object
     post_cmd = ["gh", "api", f"repos/{repo}/issues/{number}/comments", "-X", "POST", "-f", f"body={proposal}"]
@@ -1606,6 +1610,7 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         if (
             repo_lower.endswith(".github.io") or
             repo_lower.endswith(".gitlab.io") or
+            "bountyscout" in repo_lower or
             re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed)\b", repo_lower) or
             re.search(r"(?:每日信息流|信息流|日报|周报|资讯|快讯|每日精选)", title_lower) or
             re.search(r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list)\b", title_lower)
@@ -1618,6 +1623,11 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
             continue
         full_text = f"{title} {body} {repo}".lower()
         if _has_payment_negation(full_text) or _has_economic_scam_marker(full_text):
+            continue
+
+        # Zero-Token-Waste Gate: Pre-screen explicit bounty floor ($200+) right at query layer
+        has_bounty, in_bounds, raw_text, usd_val, _ = parse_and_normalize_bounty(title + " " + body)
+        if usd_val is not None and usd_val < Decimal("200.00"):
             continue
 
         filtered_items.append(it)
@@ -1711,26 +1721,34 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
         'bounty "hard" --state open',
         'bounty "complex" --state open',
 
-        # Tier 2: General High-Recall Bounties
-        'bounty --state open',
-        '"bounty:" --state open',
-        '"/bounty" --state open',
-        '"paid task" --state open',
-        '"paid issue" --state open',
-        '"will pay" --state open',
-        '"willing to pay" --state open',
-        '"reward:" --state open',
-        '"funded by" --state open',
-        'algora --state open',
-        'polar --state open',
-        'gitcoin --state open',
-        'bountysource --state open',
-        'opire --state open',
-        'USDC --state open',
-        'USDT --state open',
-        'label:bounty --state open',
-        'label:paid --state open',
-        'label:reward --state open',
+        # Tier 2: Explicit $200+ High-Ticket Bounties (Baba's Headroom Moat)
+        'bounty "$200" --state open',
+        'bounty "$250" --state open',
+        'bounty "$300" --state open',
+        'bounty "$400" --state open',
+        'bounty "$500" --state open',
+        'bounty "$600" --state open',
+        'bounty "$700" --state open',
+        'bounty "$750" --state open',
+        'bounty "$800" --state open',
+        'bounty "$1000" --state open',
+        'bounty "$1500" --state open',
+        'bounty "$2000" --state open',
+        'bounty "$2500" --state open',
+        'bounty "$3000" --state open',
+        'bounty "$5000" --state open',
+        'algora "$200" --state open',
+        'algora "$500" --state open',
+        'algora "$1000" --state open',
+        'polar "$200" --state open',
+        'polar "$500" --state open',
+        'polar "$1000" --state open',
+        'opire "$200" --state open',
+        'opire "$500" --state open',
+        'opire "$1000" --state open',
+        'label:bounty "$200" --state open',
+        'label:bounty "$500" --state open',
+        'label:bounty "$1000" --state open',
     ]
 
     for q in dynamic_queries:
