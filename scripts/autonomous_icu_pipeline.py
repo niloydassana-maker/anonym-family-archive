@@ -1014,10 +1014,12 @@ def extract_files_from_proposal(proposal):
     sections = re.split(r'\n(?=### )', proposal)
     extracted = []
     for sec in sections:
-        header_match = re.search(r'###\s+.*?\(`([^`]+)`', sec)
+        header_match = re.search(r'###[^\n`]*`([^`]+)`', sec)
         if not header_match:
             continue
         rel_path = header_match.group(1).strip()
+        if '.' not in rel_path and '/' not in rel_path and '\\' not in rel_path:
+            continue
         code_match = re.search(r'```(?:[a-zA-Z0-9_-]+)?\r?\n(.*?)```', sec, re.DOTALL)
         if not code_match:
             continue
@@ -1074,11 +1076,20 @@ def attempt_automated_pull_request(repo, number, title, proposal, live_mode=True
     run_cmd(["git", "-C", work_dir, "checkout", "-B", branch_name], timeout=15)
 
     # 6. Write extracted files
+    valid_files_written = 0
     for rel_path, code_body in extracted_files:
+        if rel_path.startswith(".github/workflows") or rel_path.startswith(".github\\workflows"):
+            print(f"  [AUTO-PR SKIP FILE] Omitting workflow file {rel_path} to comply with OAuth token scope.")
+            continue
         full_dest = os.path.join(work_dir, rel_path.replace("/", os.sep))
         os.makedirs(os.path.dirname(full_dest), exist_ok=True)
         with open(full_dest, "w", encoding="utf-8") as f:
             f.write(code_body)
+        valid_files_written += 1
+
+    if valid_files_written == 0:
+        print(f"  [AUTO-PR SKIP] No valid non-workflow files to commit for {repo}#{number}.")
+        return None
 
     # 7. Configure git user & commit
     run_cmd(["git", "-C", work_dir, "config", "user.name", "isearchxsolve"], timeout=10)
