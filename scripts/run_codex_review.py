@@ -7,19 +7,20 @@ sys.stdout.reconfigure(encoding="utf-8")
 codex_exe = r"C:\Users\Admin\AppData\Local\OpenAI\Codex\bin\896a0166b774037a\codex.exe"
 
 prompt = """You are Codex, the master frontier code auditor running on OpenAI gpt-5.6-terra.
-Audit the fully upgraded Python code in D:\\anonym\\scripts\\autonomous_icu_pipeline.py and its test suite in D:\\anonym\\scripts\\test_icu_pipeline_suite.py.
+Audit the upgraded Python code in D:\\anonym\\scripts\\autonomous_icu_pipeline.py and its test suite in D:\\anonym\\scripts\\test_icu_pipeline_suite.py.
 
-In your previous audit (session 01a16dde-9837-77e3-9df1-403abe457957), you found 2 remaining items before deployment:
-1. Corporate Sponsor Verification Gap: Generic 'our company' was accepted without correlating the claimed sponsor to author profile company affiliation.
-2. Decimal Bounds Gap: Decimals were truncated ($9,999,999.99 truncated to $9,999,999) and float was used instead of Decimal.
+In your previous audit (session 01a16e0d-6350-7ac1-8d8b-457a9c4df8d0), you confirmed the core implementations (sponsor correlation, Decimal precision, bounds, prior protections) were correct, and required:
+1. Fix discovery-gate calls: Add `author=author` to verify_genuine_icu_patient calls in Phase 1 and dynamic search so NONE-association corporate sponsors can reach profile correlation.
+2. Add integration test: Prove a correlated author_assoc="NONE" sponsor progresses through the discovery gate with author payload.
+3. Commit test suite: Track `scripts/test_icu_pipeline_suite.py` in git.
 
-Please verify the new implementations:
-1. Corporate Sponsor Entity Correlation: In `is_independently_verified_sponsor`, does it strictly require that the author's profile company name is non-generic and that a distinct keyword from the company name explicitly appears in the issue text, rejecting generic 'our company' / 'my client' claims?
-2. Decimal Precision & Bounded Range: Does `parse_and_normalize_bounty` use Python's `Decimal` with regex capturing decimals `(?:\.[0-9]+)?`, and does it strictly enforce `MIN_CONSULTING_BOUND_USD = Decimal('20.00')` and `MAX_CONSULTING_BOUND_USD = Decimal('9999999.00')`?
-3. Test Suite Verification: Does `test_icu_pipeline_suite.py` include explicit boundary tests for `$9,999,999.99` (rejected), `$20.00` (approved), `$19.99` (rejected), foreign currency decimals (`€18.52` approved vs `€18.51` rejected), and corporate sponsor correlation (generic rejected vs correlated approved)?
-4. Complete Production Soundness: Do all prior sandbox, prompt escaping, 40-hex commit SHA, sanitizer, receipt, and SQLite WAL protections remain intact?
+Please inspect:
+1. Are lines 929 and 989 in `autonomous_icu_pipeline.py` updated to pass `author=author` to `verify_genuine_icu_patient`?
+2. Does `test_icu_pipeline_suite.py` contain the discovery gate integration test (Test 4d) verifying that a correlated NONE-association sponsor passes discovery?
+3. Is `scripts/test_icu_pipeline_suite.py` committed and tracked in git?
+4. Is the code fully sound and ready for deployment in Candidate Packet mode?
 
-Provide an authoritative review summary with your final verdict: APPROVED or ACTION REQUIRED."""
+Provide your final authoritative verdict: APPROVED or ACTION REQUIRED."""
 
 cmd = [
     codex_exe,
