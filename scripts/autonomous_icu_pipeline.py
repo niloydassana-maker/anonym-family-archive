@@ -860,6 +860,12 @@ STRICT RULES:
                 if "\ntokens used\n" in raw_out:
                     raw_out = raw_out.split("\ntokens used\n", 1)[0]
                 return raw_out.strip()
+            else:
+                combined = (res.stderr or "") + " " + (res.stdout or "")
+                if any(w in combined.lower() for w in ["limit", "quota", "rate", "resets", "5h limit"]):
+                    print(f"  [Codex Headroom Notice] Rolling quota threshold detected: {combined.strip()[:140]}")
+                    print(f"  [Codex Backoff] Pausing for 15 minutes to allow 5h window to recharge...")
+                    time.sleep(900)
         except Exception as e:
             print(f"  [Codex Exec Notice] {e}")
 
