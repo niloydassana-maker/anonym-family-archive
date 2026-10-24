@@ -444,6 +444,30 @@ is_icu_8, reason_8 = verify_genuine_icu_patient(
 assert not is_icu_8, f"Expected False for board game FAQ, got: {reason_8}"
 print("  ✓ Board Game Ruleset: Rejected correctly.")
 
+# 12. Rejection: Blog / GitHub Pages & Chinese Daily Info Flow (Headroom Conservation)
+is_icu_digest_cn, reason_digest_cn = verify_genuine_icu_patient(
+    title="[每日信息流] 2024-08-07",
+    body="Startup raises $1,000,000 in seed round. AI models update summary.",
+    author_comments=[],
+    labels=[],
+    repo="ruohong2018/ruohong2018.github.io",
+    author_assoc="OWNER"
+)
+assert not is_icu_digest_cn, f"Expected False for Chinese daily stream on .github.io, got: {reason_digest_cn}"
+print("  ✓ Chinese Daily Stream & .github.io Blog: Rejected correctly.")
+
+# 13. Rejection: Bookmark / Picker Repo & Tech Digest
+is_icu_picker, reason_picker = verify_genuine_icu_patient(
+    title="Tech Weekly Digest #45",
+    body="Top github repositories this week. Founders paid $10k in bug bounties.",
+    author_comments=[],
+    labels=[],
+    repo="BruceFeIix/picker",
+    author_assoc="OWNER"
+)
+assert not is_icu_picker, f"Expected False for picker/digest repo, got: {reason_picker}"
+print("  ✓ Bookmark Picker & Weekly Digest: Rejected correctly.")
+
 # 12. Rejection: Payment Negations
 is_icu_9, reason_9 = verify_genuine_icu_patient(
     title="Production server crashing on startup with OOM",

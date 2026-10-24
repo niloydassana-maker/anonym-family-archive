@@ -615,6 +615,25 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     if repo and re.search(aggregator_repos, repo, re.IGNORECASE):
         return False, f"Rejected: repository '{repo}' is an aggregator/indexer, not an authoritative software host."
 
+    # Filter out static site blogs, newsletters, and bookmark aggregators
+    if repo:
+        repo_lower = repo.lower()
+        if (
+            repo_lower.endswith(".github.io") or 
+            repo_lower.endswith(".gitlab.io") or 
+            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed)\b", repo_lower)
+        ):
+            return False, f"Rejected: repository '{repo}' is a blog, static site, or newsletter archive."
+
+    # Filter out newsletter / daily digest / bookmark collection titles and content
+    digest_patterns = [
+        r"(?:每日信息流|信息流|日报|周报|资讯|快讯|每日精选)",
+        r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list)\b",
+    ]
+    for dp in digest_patterns:
+        if re.search(dp, full_text, re.IGNORECASE):
+            return False, f"Rejected: issue is a newsletter or reading digest ('{dp}'), not a software codebase task."
+
     aggregator_body_patterns = [
         r"###\s*(?:原始链接|平台|赏金平台)",
         r"(?:source\s*url|platform\s*url)\s*:\s*https?://github\.com/",
@@ -1579,6 +1598,18 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         # Baba Mandate: Neglect crowded issues altogether (reserve compute for uncrowded tickets <= 4 comments)
         comments_cnt = it.get("commentsCount", 0)
         if comments_cnt > 4:
+            continue
+
+        # Filter out static site blogs, newsletters, and bookmark aggregators at query layer
+        repo_lower = repo.lower()
+        title_lower = title.lower()
+        if (
+            repo_lower.endswith(".github.io") or
+            repo_lower.endswith(".gitlab.io") or
+            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed)\b", repo_lower) or
+            re.search(r"(?:每日信息流|信息流|日报|周报|资讯|快讯|每日精选)", title_lower) or
+            re.search(r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list)\b", title_lower)
+        ):
             continue
 
         # Keep only terminal/safety exclusions here per Codex audit.
