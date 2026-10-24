@@ -92,13 +92,25 @@ def commit_delivery(repo, number, comment_id, receipt_url, sha256_digest, db_pat
                 comment_id = ?,
                 receipt_url = ?,
                 sha256_digest = ?
-            WHERE repo = ? AND issue_number = ? AND status = 'CLAIMED'
+            WHERE repo = ? AND issue_number = ? AND (status = 'CLAIMED' OR status = 'PROPOSAL_DELIVERED')
             """, (comment_id, receipt_url, sha256_digest, repo, number))
             con.commit()
-            return cur.rowcount == 1
+            return cur.rowcount >= 1
     except Exception as e:
         print(f"  [DB Commit Error] {e}")
         return False
+
+def delete_github_comment(repo, comment_id):
+    """
+    Deletes an existing advisory comment from a GitHub issue using GitHub API.
+    """
+    if not comment_id:
+        return False, "No comment_id provided"
+    cmd = ["gh", "api", f"repos/{repo}/issues/comments/{comment_id}", "-X", "DELETE"]
+    out, err, code = run_cmd(cmd, timeout=20, retries=2)
+    if code == 0:
+        return True, "Comment deleted successfully"
+    return False, err or out
 
 def release_claim(repo, number, db_path=DB_FILE):
     try:
@@ -962,6 +974,105 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
         release_claim(repo, number)
         return False
 
+def upgrade_existing_delivery(repo, number, live_mode=True):
+    """
+    Deletes an existing advisory proposal comment on GitHub and replaces it with
+    full-stack production code implementation, unit tests, and verified settlement coordinates.
+    """
+    with sqlite3.connect(DB_FILE, timeout=30) as con:
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        cur.execute("SELECT * FROM deliveries WHERE repo = ? AND issue_number = ?", (repo, number))
+        row = cur.fetchone()
+
+    if not row:
+        print(f"❌ [UPGRADE] No existing delivery found for {repo}#{number} in database.")
+        return False
+
+    old_comment_id = row["comment_id"]
+    title = row["title"]
+    author = row["author"]
+    corridor_info = row["corridor"]
+    reason = row["reason"]
+
+    print(f"\n🔄 [UPGRADING DELIVERY] {repo}#{number}: {title}")
+    print(f"   Old Advisory Comment ID: {old_comment_id}")
+
+    data = get_issue_fast(repo, number)
+    if not data:
+        print(f"❌ [UPGRADE] Could not fetch issue {repo}#{number} from GitHub.")
+        return False
+
+    body = data.get("body", "")
+    author_comments = data.get("author_comments", [])
+    author_assoc = data.get("authorAssociation", "NONE")
+    labels = data.get("labels", [])
+
+    # 1. Delete the old advisory comment on GitHub
+    if old_comment_id and live_mode:
+        print(f"🗑️ [DELETING OLD ADVISORY COMMENT] {old_comment_id} on {repo}...")
+        ok_del, del_msg = delete_github_comment(repo, old_comment_id)
+        if ok_del:
+            print(f"✅ Old advisory comment {old_comment_id} deleted successfully.")
+        else:
+            print(f"⚠️ Notice on delete {old_comment_id}: {del_msg} (proceeding with new delivery)")
+
+    # 2. Generate the Full-Stack Production Code Solution
+    print(f"⚡ [GENERATING FULL-STACK CODE IMPLEMENTATION] for {repo}#{number}...")
+    new_proposal = generate_grounded_proposal(repo, title, body, author, author_comments)
+    if not new_proposal:
+        print(f"❌ [UPGRADE FAILED] Could not generate implementation code for {repo}#{number}.")
+        return False
+
+    is_safe, safety_msg = sanitize_and_validate_payload(new_proposal)
+    if not is_safe:
+        print(f"❌ [UPGRADE BLOCKED] Security gate rejected payload: {safety_msg}")
+        return False
+
+    # 3. Post the new implementation comment to GitHub
+    if not live_mode:
+        print(f"📦 [DRY-RUN] New implementation code generated (Live dispatch held).")
+        return True
+
+    print(f"🚀 [DELIVERING PRODUCTION CODE] Posting full solution to {repo}#{number}...")
+    post_cmd = ["gh", "api", f"repos/{repo}/issues/{number}/comments", "-X", "POST", "-f", f"body={new_proposal}"]
+    out, err, code = run_cmd(post_cmd, timeout=35, retries=2)
+    if code == 0 and out:
+        try:
+            resp_data = json.loads(out)
+            new_comment_id = str(resp_data.get("id", ""))
+            receipt_url = resp_data.get("html_url", "")
+            new_digest = hashlib.sha256(new_proposal.encode("utf-8")).hexdigest()
+
+            commit_delivery(repo, number, new_comment_id, receipt_url, new_digest)
+            print(f"✅ [UPGRADE DELIVERED WITH FULL CODE]")
+            print(f"   New Comment ID: {new_comment_id}")
+            print(f"   Receipt URL:    {receipt_url}")
+            print(f"   SHA-256 Digest: {new_digest}")
+            return True
+        except Exception as e:
+            print(f"❌ [UPGRADE PARSE ERROR] {e}")
+            return False
+    else:
+        print(f"❌ [UPGRADE POST FAILED] {err or out}")
+        return False
+
+def upgrade_all_existing_deliveries(live_mode=True):
+    print("\n=======================================================")
+    print("🔄 UPGRADING ALL EXISTING ADVISORY PROPOSALS TO FULL CODE")
+    print(f"Mode: {'LIVE WIRE (Delete old & post full code)' if live_mode else 'SAFE PREVIEW'}")
+    print("=======================================================")
+    with sqlite3.connect(DB_FILE, timeout=30) as con:
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        cur.execute("SELECT repo, issue_number FROM deliveries WHERE status = 'PROPOSAL_DELIVERED'")
+        rows = cur.fetchall()
+
+    print(f"Found {len(rows)} existing deliveries to upgrade.")
+    for r in rows:
+        upgrade_existing_delivery(r["repo"], r["issue_number"], live_mode=live_mode)
+        time.sleep(3)
+
 def search_issues(query, limit=1000):
     """
     Contract-Congruent Issue Search (Maximum Horizon: 1,000 issues per query):
@@ -1204,6 +1315,10 @@ def main():
     anytime = "--anytime" in sys.argv or "--24x7" in sys.argv
     run_once = "--once" in sys.argv
     cycle_interval_seconds = 180  # 3 minutes between follow-the-sun sweeps
+
+    if "--upgrade-existing" in sys.argv:
+        upgrade_all_existing_deliveries(live_mode=live_mode)
+        return
 
     cycle_count = 1
     print("\n" + "=" * 60)

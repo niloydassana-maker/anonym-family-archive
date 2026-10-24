@@ -706,6 +706,27 @@ print("  ✓ Zero Approved Contract: Zero approved candidates strictly yields 0 
 # Restore run_cmd
 autonomous_icu_pipeline.run_cmd = orig_run_cmd
 
+# ----------------------------------------------------------------
+# Test 6: Advisory Deletion & Implementation Upgrade Logic
+# ----------------------------------------------------------------
+print("\n[Test 6] Testing Advisory Deletion & Implementation Upgrade Logic...")
+
+from autonomous_icu_pipeline import delete_github_comment
+
+# 6a. Delete comment mock check
+autonomous_icu_pipeline.run_cmd = lambda cmd, timeout=20, retries=2: ("", "", 0)
+ok_del, msg_del = delete_github_comment("mock/repo", "1234567")
+assert ok_del, f"Expected successful delete, got: {msg_del}"
+print("  ✓ GitHub Comment Deletion: Verified delete request.")
+
+# 6b. Verify commit_delivery updates existing delivered row
+ok_upd = commit_delivery(test_repo, test_num, "new_comment_999", f"https://github.com/{test_repo}/issues/{test_num}#comment", "sha256_new_digest", db_path=TEST_DB)
+assert ok_upd, "Expected commit_delivery to update existing delivery row."
+print("  ✓ Delivery Upgrade Commit: Successfully updated SQLite store.")
+
+# Restore run_cmd
+autonomous_icu_pipeline.run_cmd = orig_run_cmd
+
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")
 print("==================================================")
