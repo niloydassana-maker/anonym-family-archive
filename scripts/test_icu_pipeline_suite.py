@@ -134,6 +134,63 @@ print("  ✓ Discovery Gate Integration: Correlated NONE-association sponsor pas
 # Restore profile lookup
 autonomous_icu_pipeline.get_author_profile = orig_get_profile
 
+# 4e. Direct Payer Gate: Solo founder filing on OWN repo with payment intent (NONE assoc) - APPROVED
+# Mock: author "solodev" owns repo "solodev/api-server", no company on profile
+autonomous_icu_pipeline.get_author_profile = lambda u: {} if u == "solodev" else {}
+is_icu_solo_founder, reason_solo = verify_genuine_icu_patient(
+    title="Production crash: API returning 502 on all endpoints",
+    body="My production API is down, losing customers every minute. Will pay $500 for emergency fix. DM me.",
+    author_comments=[],
+    labels=[],
+    repo="solodev/api-server",
+    author_assoc="NONE",
+    author="solodev"
+)
+assert is_icu_solo_founder, f"Expected solo founder on own repo with payment intent to be approved, got: {reason_solo}"
+print("  ✓ Direct Payer Gate: Solo founder on own repo with payment intent approved.")
+
+# 4f. Direct Payer Gate: Freelancer with PayPal/UPI signal on third-party repo (NONE assoc) - APPROVED
+is_icu_freelancer, reason_freelancer = verify_genuine_icu_patient(
+    title="Critical memory leak crashing production workers",
+    body="Our production workers keep crashing with OOM. Willing to pay $300 via PayPal for a fix. email me at dev@example.com",
+    author_comments=[],
+    labels=[],
+    repo="otherorg/worker-lib",
+    author_assoc="NONE",
+    author="solodev"
+)
+assert is_icu_freelancer, f"Expected freelancer with PayPal signal to be approved, got: {reason_freelancer}"
+print("  ✓ Direct Payer Gate: Freelancer with PayPal payment signal approved.")
+
+# 4g. Direct Payer Gate: NONE assoc, no payment signal, no repo ownership, no company - REJECTED
+is_icu_no_signal, reason_no_signal = verify_genuine_icu_patient(
+    title="Production timeout on database queries",
+    body="Database queries timing out in production. Will pay $200 for a fix.",
+    author_comments=[],
+    labels=[],
+    repo="otherorg/db-lib",
+    author_assoc="NONE",
+    author="randomuser123"
+)
+assert not is_icu_no_signal, "Expected NONE-assoc user without payment signal, repo ownership, or company to be rejected."
+print("  ✓ Direct Payer Gate: NONE-assoc without payment signal or repo ownership correctly rejected.")
+
+# 4h. Direct Payer Gate: Crypto payment signal - APPROVED
+is_icu_crypto, reason_crypto = verify_genuine_icu_patient(
+    title="Smart contract reverting on production mainnet",
+    body="Contract reverting all transactions on production. Offering $1,000 USDC bounty. Send to my ETH wallet.",
+    author_comments=[],
+    labels=[],
+    repo="otherorg/defi-protocol",
+    author_assoc="NONE",
+    author="solodev"
+)
+assert is_icu_crypto, f"Expected crypto payment signal to be approved, got: {reason_crypto}"
+print("  ✓ Direct Payer Gate: Crypto/USDC payment signal approved.")
+
+# Restore profile lookup
+autonomous_icu_pipeline.get_author_profile = orig_get_profile
+
 # 5. Demonstrated Maintainer with Explicit Budget Approved
 is_icu_owner, reason_owner = verify_genuine_icu_patient(
     title="Production outage: payment gateway deadlocked",

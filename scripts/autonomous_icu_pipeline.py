@@ -352,6 +352,56 @@ def is_independently_verified_sponsor(author, repo, full_author_text):
 
     return True
 
+
+# Direct payment signal patterns for solo founders / freelancers / indie devs
+DIRECT_PAYMENT_SIGNALS = [
+    r"\b(?:paypal|venmo|wise|transferwise|zelle|cashapp|cash\s*app)\b",
+    r"\b(?:upi|gpay|google\s*pay|phonepe|paytm)\b",
+    r"\b(?:dm\s+me|contact\s+me|reach\s+out|email\s+me|send\s+invoice)\b",
+    r"\b(?:my\s+email|my\s+paypal|my\s+wallet)\b",
+    r"\b(?:btc|eth|sol|usdc|usdt|crypto|bitcoin|ethereum|solana)\b",
+    r"\b(?:invoice|invoicing|freelance\s+rate|hourly\s+rate|per\s+hour)\b",
+]
+
+def is_direct_payer(author, repo, full_author_text):
+    """
+    Identifies solo founders, freelancers, and indie developers who can route
+    payment immediately without corporate procurement machinery:
+    1. Author must express explicit payment intent with a parsed amount.
+    2. Author must be the OWNER of the repo (solo founder filing on own project)
+       OR issue text must contain direct payment signals (PayPal, UPI, crypto,
+       'DM me', 'send invoice', personal email, etc.).
+    3. This gate is specifically for author_assoc="NONE" users who would otherwise
+       be rejected by the corporate sponsor correlation gate.
+    """
+    if not author:
+        return False
+
+    # Must have explicit payment language
+    has_payment_intent = bool(re.search(
+        r"\b(?:will pay|willing to pay|paying|happy to pay|can pay|ready to pay|i.?ll pay|offer|offering|bounty)\b",
+        full_author_text
+    ))
+    if not has_payment_intent:
+        return False
+
+    # Check if author owns the repo (solo founder / indie dev with their own production system)
+    repo_parts = repo.split("/")
+    if len(repo_parts) == 2 and repo_parts[0].lower() == author.lower():
+        return True
+
+    # Check for direct payment signals in the issue text
+    for sig in DIRECT_PAYMENT_SIGNALS:
+        if re.search(sig, full_author_text, re.IGNORECASE):
+            return True
+
+    # Check if author has public email on profile (can receive invoice directly)
+    profile = get_author_profile(author)
+    if profile.get("email"):
+        return True
+
+    return False
+
 def verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc="NONE", author=None, live_delivery_mode=False):
     """
     STRICT ZERO-MANUFACTURE ICU CRITICALITY VERIFICATION:
@@ -367,12 +417,13 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     full_author_text = (title + " " + (body or "") + " " + " ".join(author_comments)).lower()
     lr = repo.lower()
 
-    # 1. Enforce Strict Demonstrated Repository Authority / Independent Corporate Sponsor
+    # 1. Enforce Strict Demonstrated Repository Authority / Independent Corporate Sponsor / Direct Payer
     assoc = (author_assoc or "NONE").upper()
     is_maintainer = assoc in ["OWNER", "MEMBER", "COLLABORATOR"]
     is_verified_sponsor = is_independently_verified_sponsor(author, repo, full_author_text) if author else False
+    is_direct_pay = is_direct_payer(author, repo, full_author_text) if (author and not is_maintainer and not is_verified_sponsor) else False
 
-    if not is_maintainer and not is_verified_sponsor:
+    if not is_maintainer and not is_verified_sponsor and not is_direct_pay:
         return False, f"Lacks demonstrated repository authority (Association: {assoc}). CONTRIBUTOR and unverified external users rejected."
 
     # 2. Reject non-critical or triage labels
@@ -440,7 +491,7 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         else:
             return False, "Lacks explicit parsed currency amount within consulting bounds ($20 to $9,999,999 USD equivalent). Bare 'happy to pay' without amount rejected."
 
-    auth_desc = f"Authority: {assoc}" if is_maintainer else f"Verified Corporate Sponsor ({author})"
+    auth_desc = f"Authority: {assoc}" if is_maintainer else (f"Verified Corporate Sponsor ({author})" if is_verified_sponsor else f"Direct Payer ({author})")
     return True, f"Verified ICU client (Pain validated, Payment: '{payment_info}', {auth_desc})"
 
 # -------------------------------------------------------------
