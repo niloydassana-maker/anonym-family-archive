@@ -536,6 +536,17 @@ false_verification = clean_payload + "\nVerified on our reference environment wi
 assert not sanitize_and_validate_payload(false_verification)[0], "Expected false test verification claim caught."
 print("  ✓ False Test Verification Claim: Caught and blocked.")
 
+# Verified Settlement Coordinates (Approved DOOM L1 and Solana Addresses)
+payload_with_verified_settlement = clean_payload + "\n### Settlement Rails\n- DOOM L1: doom14ac0e785bffabe0357cb522608cf88c80a33cd7f3f925757\n- Solana: 2qi849TBq72XMpsp8PjR4YfegDEzc7BRFZaarwQ2tKgL\n- Email: isearch.xsolve@gmail.com"
+ok_settle, msg_settle = sanitize_and_validate_payload(payload_with_verified_settlement)
+assert ok_settle, f"Expected verified settlement addresses to pass, got: {msg_settle}"
+print("  ✓ Verified Settlement Rails (DOOM L1 + Solana): Approved and permitted.")
+
+# Unverified Random Solana Address Leak -> Caught and blocked
+unverified_sol = clean_payload + "\nSolana: 4DjveHyuryraFdV8o4HWMp5aWb8nkwLmhPqpe9bw3UZgL"
+assert not sanitize_and_validate_payload(unverified_sol)[0], "Expected unverified random Solana address to be blocked."
+print("  ✓ Unverified Third-Party Crypto Address: Caught and blocked.")
+
 # ----------------------------------------------------------------
 # Test 3: Approved Corridor & Timezone Validation
 # ----------------------------------------------------------------
