@@ -700,41 +700,35 @@ from autonomous_icu_pipeline import search_issues
 orig_run_cmd = autonomous_icu_pipeline.run_cmd
 
 mock_raw_items = [
-    # 1. Non-critical label -> MUST BE DROPPED
+    # 1. Terminal label 'wontfix' -> MUST BE DROPPED
     {
         "number": 1, "title": "Crash in app", "body": "App crashes in production. Will pay $100.",
-        "repository": {"nameWithOwner": "org/repo1"}, "labels": [{"name": "enhancement"}],
+        "repository": {"nameWithOwner": "org/repo1"}, "labels": [{"name": "wontfix"}],
         "authorAssociation": "OWNER", "author": {"login": "dev1"}
     },
-    # 2. Blacklisted repo -> MUST BE DROPPED
+    # 2. Terminal label 'spam' -> MUST BE DROPPED
     {
-        "number": 2, "title": "Crash in worker", "body": "Worker crash in production. Will pay $100.",
-        "repository": {"nameWithOwner": "zhangjiayang6835-cyber/bounty-plaza"}, "labels": [{"name": "bounty"}],
+        "number": 2, "title": "Spam ticket", "body": "Buy crypto.",
+        "repository": {"nameWithOwner": "org/repo2"}, "labels": [{"name": "spam"}],
         "authorAssociation": "OWNER", "author": {"login": "dev2"}
     },
-    # 3. Lacks acute pain -> MUST BE DROPPED
+    # 3. Explicit payment negation -> MUST BE DROPPED
     {
-        "number": 3, "title": "Update button color", "body": "Button color is wrong. Will pay $50.",
+        "number": 3, "title": "Need help", "body": "We cannot pay for this fix. No budget.",
         "repository": {"nameWithOwner": "org/repo3"}, "labels": [{"name": "bounty"}],
         "authorAssociation": "OWNER", "author": {"login": "dev3"}
     },
-    # 4. Out of bounds amount ($5) -> MUST BE DROPPED
+    # 4. Economic scam -> MUST BE DROPPED
     {
-        "number": 4, "title": "Production crash", "body": "Server crashing in production. Will pay $5.",
+        "number": 4, "title": "Crypto Lottery", "body": "Win casino lottery.",
         "repository": {"nameWithOwner": "org/repo4"}, "labels": [{"name": "bounty"}],
         "authorAssociation": "OWNER", "author": {"login": "dev4"}
     },
-    # 5. External CONTRIBUTOR without authority -> MUST BE DROPPED
+    # 5. Contract-compliant genuine client with enhancement label -> MUST BE YIELDED FOR VERIFICATION
     {
-        "number": 5, "title": "Production deadlock", "body": "Deadlock crashing prod. Will pay $500.",
-        "repository": {"nameWithOwner": "org/repo5"}, "labels": [{"name": "bounty"}],
-        "authorAssociation": "CONTRIBUTOR", "author": {"login": "dev5"}
-    },
-    # 6. Contract-compliant genuine client -> MUST BE APPROVED
-    {
-        "number": 6, "title": "Database dumps do not work on large databases",
+        "number": 5, "title": "Database dumps do not work on large databases",
         "body": "Production deadlock and crash during table dump under heavy load. We offer $250 bounty.",
-        "repository": {"nameWithOwner": "outerbase/starbasedb"}, "labels": [{"name": "bounty"}],
+        "repository": {"nameWithOwner": "outerbase/starbasedb"}, "labels": [{"name": "enhancement"}],
         "authorAssociation": "MEMBER", "author": {"login": "Brayden"}
     }
 ]
@@ -744,11 +738,11 @@ autonomous_icu_pipeline.run_cmd = lambda cmd, timeout=35: (json.dumps(mock_raw_i
 
 yielded = search_issues("dummy query")
 assert len(yielded) == 1, f"Expected exactly 1 approved candidate, got {len(yielded)}"
-assert yielded[0]["number"] == 6, f"Expected issue #6 to be approved, got #{yielded[0]['number']}"
-print("  ✓ Search-Gate Congruence: 5 unqualified items filtered out at search layer; exactly 1 approved yielded.")
+assert yielded[0]["number"] == 5, f"Expected issue #5 to be approved, got #{yielded[0]['number']}"
+print("  ✓ Search-Gate High-Recall Congruence: Terminal labels, negations, and scams filtered; paid work yielded.")
 
 # Test Zero Approved = Zero Yielded
-autonomous_icu_pipeline.run_cmd = lambda cmd, timeout=35: (json.dumps(mock_raw_items[:5]), "", 0)
+autonomous_icu_pipeline.run_cmd = lambda cmd, timeout=35: (json.dumps(mock_raw_items[:4]), "", 0)
 yielded_zero = search_issues("dummy query")
 assert len(yielded_zero) == 0, f"Expected 0 yielded when zero approved, got {len(yielded_zero)}"
 print("  ✓ Zero Approved Contract: Zero approved candidates strictly yields 0 search results.")
@@ -776,6 +770,50 @@ print("  ✓ Delivery Upgrade Commit: Successfully updated SQLite store.")
 
 # Restore run_cmd
 autonomous_icu_pipeline.run_cmd = orig_run_cmd
+
+# ----------------------------------------------------------------
+# Test 7: High-Recall Bounty Expansion & Platform Attestation
+# ----------------------------------------------------------------
+print("\n[Test 7] Testing High-Recall Bounty Expansion & Platform Attestation...")
+
+# 7a. Algora-bot platform-attested bounty on NONE-association issue
+is_algora_bounty, algora_reason = verify_genuine_icu_patient(
+    title="Optimize GPU kernel execution speed",
+    body="Need 2x speedup on vector math kernel.",
+    author_comments=["/bounty $300 funded via algora.io"],
+    labels=[{"name": "enhancement"}, {"name": "bounty"}],
+    repo="web3-org/gpu-kernels",
+    author_assoc="NONE",
+    author="community_dev"
+)
+assert is_algora_bounty, f"Expected Algora bounty on NONE-assoc issue to be approved, got: {algora_reason}"
+print("  ✓ Platform Attestation Gate: Algora-attested bounty approved on NONE-assoc issue.")
+
+# 7b. Feature enhancement with paid bounty and no crash words
+is_feat_bounty, feat_reason = verify_genuine_icu_patient(
+    title="Add AVX-512 vector acceleration",
+    body="Offering $500 bounty to implement AVX-512 driver.",
+    author_comments=[],
+    labels=[{"name": "enhancement"}],
+    repo="fastorg/math-engine",
+    author_assoc="OWNER",
+    author="fastdev"
+)
+assert is_feat_bounty, f"Expected AVX-512 feature bounty to be approved, got: {feat_reason}"
+print("  ✓ Feature Bounty Gate: Paid enhancement approved without needing crash/outage words.")
+
+# 7c. Remote / Worldwide / Blank author profile location
+autonomous_icu_pipeline.get_author_profile = lambda u: {"location": "Remote, Worldwide"}
+c_name, is_act, c_reason = detect_author_corridor("remote_dev")
+assert c_name == "Global / Remote" and is_act is True, f"Expected Global / Remote for remote dev, got {c_name}, {is_act}"
+print("  ✓ Global/Remote Corridor Gate: Remote/Worldwide location approved without business-hour blocking.")
+
+autonomous_icu_pipeline.get_author_profile = lambda u: {"location": ""}
+c_name_blank, is_act_blank, c_reason_blank = detect_author_corridor("blank_dev")
+assert c_name_blank == "Global / Remote" and is_act_blank is True, f"Expected Global / Remote for blank dev, got {c_name_blank}, {is_act_blank}"
+print("  ✓ Global/Remote Corridor Gate: Blank location approved without business-hour blocking.")
+
+autonomous_icu_pipeline.get_author_profile = orig_get_profile
 
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")

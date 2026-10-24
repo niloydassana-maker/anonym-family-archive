@@ -245,47 +245,72 @@ APPROVED_CORRIDOR_TZ_MAP = [
     }
 ]
 
+def _normalise_text(value):
+    return re.sub(r"\s+", " ", str(value or "")).strip().lower()
+
 def detect_author_corridor(author):
+    """
+    Territory gate, not a profile-completeness gate.
+
+    Only an affirmative declared location triggers a geographical exclusion.
+    Missing, remote, worldwide, or unrecognised locations are globally eligible.
+    """
     profile = get_author_profile(author)
-    loc_str = ((profile.get("location") or "") + " " + (profile.get("company") or "")).lower()
+    declared_location = _normalise_text(profile.get("location"))
 
-    if not loc_str.strip():
-        return "Unknown Region", False, "Unknown author location - fail-closed"
+    # Do not combine company text with location. Company names are not geography.
+    if re.search(r"\b(kolkata|calcutta|west bengal|howrah|durgapur|siliguri)\b",
+                 declared_location, re.IGNORECASE):
+        return "Excluded Regional Market", False, "Declared Kolkata/WB location excluded"
 
-    # Hard Territory Exclusion per AGENTS.md zero-burn regional law
-    if re.search(r"\b(kolkata|calcutta|west bengal|howrah|durgapur|siliguri)\b", loc_str):
-        return "Excluded Regional Market", False, "Kolkata/WB regional market excluded"
+    if re.search(
+        r"\b(china|beijing|shanghai|shenzhen|guangzhou|hangzhou|chengdu|wuhan|"
+        r"pakistan|karachi|lahore|islamabad|rawalpindi|faisalabad)\b",
+        declared_location,
+        re.IGNORECASE,
+    ):
+        return "Excluded Territory", False, "Declared China/Pakistan location excluded"
 
-    # Hard Territory Exclusion per Baba's direct mandate
-    if re.search(r"\b(china|beijing|shanghai|shenzhen|guangzhou|hangzhou|chengdu|wuhan|pakistan|karachi|lahore|islamabad|rawalpindi|faisalabad)\b", loc_str):
-        return "Excluded Territory", False, "China/Pakistan territory excluded per mandate"
+    # A blank/global location cannot establish a local timezone. It is not a rejection.
+    if (not declared_location or
+            re.search(r"\b(remote|worldwide|global|anywhere|distributed|nomad)\b",
+                      declared_location, re.IGNORECASE)):
+        return (
+            "Global / Remote",
+            True,
+            "No reliable local timezone; globally eligible and not business-hour blocked",
+        )
 
     now_utc = datetime.now(timezone.utc)
-
     for entry in APPROVED_CORRIDOR_TZ_MAP:
-        if re.search(entry["pattern"], loc_str):
+        if re.search(entry["pattern"], declared_location, re.IGNORECASE):
             try:
                 tz = ZoneInfo(entry["iana"])
                 local_dt = now_utc.astimezone(tz)
-                hour = local_dt.hour + local_dt.minute / 60.0
-                is_weekday = (local_dt.weekday() < 5)
-                is_business_hours = (9.0 <= hour < 19.0)
-                is_active = is_weekday and is_business_hours
-                time_str = local_dt.strftime("%I:%M %p %Z, %a")
-                return entry["name"], is_active, f"{time_str} (Business Hours: {is_active})"
-            except Exception as e:
-                return entry["name"], False, f"TZ error: {e}"
+                hour = local_dt.hour + (local_dt.minute / 60.0)
+                is_active = local_dt.weekday() < 5 and 9.0 <= hour < 19.0
+                return (
+                    entry["name"],
+                    is_active,
+                    f"{local_dt.strftime('%I:%M %p %Z, %a')} (Business Hours: {is_active})",
+                )
+            except Exception as exc:
+                return entry["name"], True, f"Timezone lookup unavailable: {exc}"
 
-    return "Unapproved Region", False, f"Location '{loc_str[:30]}' outside approved enterprise corridors"
+    return (
+        "Global / Unspecified",
+        True,
+        f"Declared location '{declared_location[:60]}' is not mapped; globally eligible",
+    )
 
 # -------------------------------------------------------------
-# 3. STRICT ICU PRODUCTION BLEED & DECISION-MAKER GATE
+# 3. HIGH-RECALL BOUNTY & COMMERCIAL ENGAGEMENT GATE
 # -------------------------------------------------------------
 FX_TO_USD = {
-    "usd": Decimal("1.0"),
-    "$": Decimal("1.0"),
-    "usdc": Decimal("1.0"),
-    "usdt": Decimal("1.0"),
+    "$": Decimal("1.00"),
+    "usd": Decimal("1.00"),
+    "usdc": Decimal("1.00"),
+    "usdt": Decimal("1.00"),
     "eur": Decimal("1.08"),
     "€": Decimal("1.08"),
     "gbp": Decimal("1.29"),
@@ -293,8 +318,58 @@ FX_TO_USD = {
     "sgd": Decimal("0.75"),
     "aed": Decimal("0.27"),
     "inr": Decimal("0.012"),
-    "₹": Decimal("0.012")
+    "₹": Decimal("0.012"),
 }
+
+VOLATILE_CRYPTO = {"eth", "ethereum", "sol", "solana"}
+
+TERMINAL_LABELS = {
+    "wontfix", "invalid", "duplicate", "spam",
+}
+
+PLATFORM_BOUNTY_PATTERNS = [
+    r"\b(?:algora|polar|gitcoin|bountysource|opire|bountybot)\b",
+    r"https?://[^\s)]+(?:algora\.io|polar\.sh|gitcoin\.co|bountysource\.com|opire\.dev)[^\s)]*",
+    r"(?im)^\s*/bounty\s+",
+    r"\b(?:bounty|reward|funded)\s*[:=-]\s*(?:\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed|eth|sol)",
+]
+
+EXPLICIT_PAYMENT_NEGATIONS = [
+    r"\b(?:will not|won't|cannot|can not)\s+pay\b",
+    r"\bno\s+(?:budget|funds?|payment|compensation)\b",
+    r"\bnot\s+a\s+paid\s+(?:task|bounty|engagement)\b",
+    r"\b(?:not|no|unwilling|refuse|refuses|cannot|can't|won't|never|disregard|disagree)\s+(?:willing|happy|able)?\s*(?:to\s+pay|paying|bounty|fee)\b",
+]
+
+ECONOMIC_SCAM_PATTERNS = [
+    r"\b(?:lottery|lotto|casino|gambling)\b",
+    r"\b(?:send\s+(?:crypto|money).{0,40}(?:unlock|claim|release))\b",
+]
+
+def _label_name(label):
+    return _normalise_text(label.get("name") if isinstance(label, dict) else label)
+
+def _has_terminal_label(labels):
+    return any(_label_name(label) in TERMINAL_LABELS for label in (labels or []))
+
+def _has_payment_negation(text):
+    return any(re.search(pattern, text, re.IGNORECASE) for pattern in EXPLICIT_PAYMENT_NEGATIONS)
+
+def _has_platform_bounty_marker(text):
+    return any(re.search(pattern, text, re.IGNORECASE | re.MULTILINE) for pattern in PLATFORM_BOUNTY_PATTERNS)
+
+def _has_economic_scam_marker(text):
+    return any(re.search(pattern, text, re.IGNORECASE | re.DOTALL) for pattern in ECONOMIC_SCAM_PATTERNS)
+
+def _has_direct_offer_language(text):
+    return bool(re.search(
+        r"\b(?:i|we)\s*(?:will|can|could|shall|'ll|are\s+ready\s+to)"
+        r"\s*(?:pay|fund|offer|sponsor)\b"
+        r"|\b(?:offering|offered|funding|funded|willing\s+to\s+pay|happy\s+to\s+pay)\s+(?:a\s+)?(?:bounty|reward|payment|\$|usd|eur|€)\b"
+        r"|\b(?:bounty|reward)\s+(?:of|for|:|=|-)?\s*(?:\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed|eth|sol)",
+        text,
+        re.IGNORECASE,
+    ))
 
 GENERIC_COMPANY_DENYLIST = {
     "none", "n/a", "na", "freelance", "freelancer", "self", "personal", "student",
@@ -314,68 +389,109 @@ MATERIAL_ENTITY_STOPWORDS = {
 MIN_CONSULTING_BOUND_USD = Decimal("20.00")
 MAX_CONSULTING_BOUND_USD = Decimal("9999999.00")
 
-def parse_and_normalize_bounty(text):
+def parse_and_normalize_bounty(text, crypto_usd_rates=None):
     """
-    Parses currency expressions including decimal fractions (both prefix e.g. $50, USD 100
-    and postfix e.g. 50$, 100 USD, 500 USDC), normalizes them to USD equivalent
-    using exact Decimal arithmetic (avoiding float precision and premature rounding bugs),
-    and enforces consulting bounds against unrounded values:
-    $20.00 to $9,999,999.00 USD equivalent.
+    Parse fiat, stablecoins, and volatile crypto without inventing a crypto FX rate.
+    crypto_usd_rates is optional, e.g. {"eth": Decimal("3500.12"), "sol": Decimal("182.40")}.
+    When absent, ETH/SOL are parsed but returned with usd_value=None.
     """
-    pattern = (
-        r"(?:(?:^|[\s,;:(])(?P<symbol_pre>\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed)\s*(?P<amount_pre>(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+)?)\b)"
-        r"|"
-        r"(?:(?:\b|^)(?P<amount_post>(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+)?)\s*(?P<symbol_post>\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed)(?=[^a-zA-Z0-9]|$))"
-    )
-    matches = list(re.finditer(pattern, text, re.IGNORECASE))
-    if not matches:
-        return False, False, None, Decimal("0.00"), "No numeric currency amount found"
+    source = str(text or "")
+    crypto_usd_rates = {
+        str(key).lower(): Decimal(str(value))
+        for key, value in (crypto_usd_rates or {}).items()
+    }
 
-    valid_amounts = []
-    for m in matches:
-        if m.group("symbol_pre") and m.group("amount_pre"):
-            sym = m.group("symbol_pre").lower()
-            amt_raw = m.group("amount_pre").replace(",", "")
-        elif m.group("symbol_post") and m.group("amount_post"):
-            sym = m.group("symbol_post").lower()
-            amt_raw = m.group("amount_post").replace(",", "")
+    amount_pre = r"(?P<amount_pre>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)"
+    mult_pre = r"(?P<mult_pre>[kKmM])?"
+    curr_pre = (
+        r"(?P<curr_pre>\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed|"
+        r"eth|ethereum|sol|solana)"
+    )
+
+    amount_post = r"(?P<amount_post>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)"
+    mult_post = r"(?P<mult_post>[kKmM])?"
+    curr_post = (
+        r"(?P<curr_post>\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed|"
+        r"eth|ethereum|sol|solana)"
+    )
+
+    pattern = re.compile(
+        rf"(?<![\w.])(?:{curr_pre}\s*{amount_pre}{mult_pre}|"
+        rf"{amount_post}{mult_post}\s*{curr_post})(?![\w.])",
+        re.IGNORECASE,
+    )
+
+    candidates = []
+    for match in pattern.finditer(source):
+        groups = match.groupdict()
+        if groups.get("curr_pre") and groups.get("amount_pre"):
+            raw_amount = groups["amount_pre"].replace(",", "")
+            unit = groups["curr_pre"].lower()
+            suffix = (groups.get("mult_pre") or "").lower()
+        elif groups.get("curr_post") and groups.get("amount_post"):
+            raw_amount = groups["amount_post"].replace(",", "")
+            unit = groups["curr_post"].lower()
+            suffix = (groups.get("mult_post") or "").lower()
         else:
             continue
 
+        unit = {"ethereum": "eth", "solana": "sol"}.get(unit, unit)
+
         try:
-            raw_val = Decimal(amt_raw)
+            raw_value = Decimal(raw_amount)
         except Exception:
             continue
-        rate = FX_TO_USD.get(sym, Decimal("1.0"))
-        # Exact unrounded Decimal USD equivalent
-        unrounded_usd = raw_val * rate
-        usd_display = unrounded_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
-        valid_amounts.append((m.group(0).strip(), raw_val, sym, unrounded_usd, usd_display))
 
-    if not valid_amounts:
-        return False, False, None, Decimal("0.00"), "Could not parse valid numeric amounts"
+        if suffix == "k":
+            raw_value *= Decimal("1000")
+        elif suffix == "m":
+            raw_value *= Decimal("1000000")
 
-    # Enforce bounds with unrounded Decimal value BEFORE display rounding
-    for raw_text, raw_val, sym, unrounded_usd, usd_display in valid_amounts:
-        if unrounded_usd < MIN_CONSULTING_BOUND_USD:
-            return True, False, raw_text, unrounded_usd, f"Amount {raw_text} (~${usd_display} USD) below consulting floor ($20.00 USD)"
-        if unrounded_usd > MAX_CONSULTING_BOUND_USD:
-            return True, False, raw_text, unrounded_usd, f"Amount {raw_text} (~${usd_display} USD) exceeds consulting ceiling ($9,999,999.00 USD)"
+        raw_text = match.group(0).strip()
+        nearby = source[max(0, match.start() - 48):match.end() + 48].lower()
+        bounty_context = bool(re.search(r"\b(?:bounty|reward|fund|paid|pay|sponsor)\b", nearby))
 
-    first = valid_amounts[0]
-    return True, True, first[0], first[3], f"Parsed {first[0]} (~${first[4]} USD)"
+        if unit in FX_TO_USD:
+            usd_value = raw_value * FX_TO_USD[unit]
+            in_bounds = (
+                MIN_CONSULTING_BOUND_USD <= usd_value <= MAX_CONSULTING_BOUND_USD
+            )
+            candidates.append((bounty_context, in_bounds, raw_text, usd_value, unit))
+        elif unit in VOLATILE_CRYPTO:
+            live_rate = crypto_usd_rates.get(unit)
+            if live_rate is None:
+                candidates.append((bounty_context, True, raw_text, None, unit))
+            else:
+                usd_value = raw_value * live_rate
+                in_bounds = (
+                    MIN_CONSULTING_BOUND_USD <= usd_value <= MAX_CONSULTING_BOUND_USD
+                )
+                candidates.append((bounty_context, in_bounds, raw_text, usd_value, unit))
+
+    if not candidates:
+        return False, False, None, Decimal("0.00"), "No numeric currency amount found"
+
+    # Prefer an amount explicitly near bounty/payment language and then an in-range amount
+    candidates.sort(key=lambda item: (item[0], item[1]), reverse=True)
+    _, in_bounds, raw_text, usd_value, unit = candidates[0]
+
+    if not in_bounds:
+        display = usd_value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        return (
+            True, False, raw_text, usd_value,
+            f"Amount {raw_text} (~${display} USD) below consulting floor ($20.00 USD)" if usd_value < MIN_CONSULTING_BOUND_USD else f"Amount {raw_text} (~${display} USD) exceeds consulting ceiling ($9,999,999.00 USD)",
+        )
+
+    if usd_value is None:
+        return (
+            True, True, raw_text, None,
+            f"Parsed volatile-crypto bounty {raw_text}; live USD quote required before automatic monetary-bound enforcement",
+        )
+
+    display = usd_value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    return True, True, raw_text, usd_value, f"Parsed {raw_text} (~${display} USD)"
 
 def is_independently_verified_sponsor(author, repo, full_author_text):
-    """
-    Independently verifies corporate budget sponsor per Codex audit:
-    1. Checks if issue text contains explicit corporate budget/retainer commitment.
-    2. Queries GitHub API for author profile to independently verify company / organization affiliation.
-    3. Rejects generic profile-company values ('Our Company', 'Company', 'Organization', 'Stealth', etc.).
-    4. Enforces material-entity rule: extracts distinctive keywords from author's profile company
-       (filtering out generic stopwords), and strictly requires at least one material entity keyword
-       to be explicitly named in the issue text.
-    5. Rejects personal/freelance/none company profiles.
-    """
     if not author:
         return False
     has_budget_commitment = bool(re.search(
@@ -391,30 +507,19 @@ def is_independently_verified_sponsor(author, repo, full_author_text):
         return False
 
     clean_full_company = re.sub(r"^[@\s]+", "", raw_company).strip().lower()
-    # Reject whole-string generic company matches
     if clean_full_company in GENERIC_COMPANY_DENYLIST:
         return False
 
-    # Extract distinct material entity tokens (excluding stopwords and generic words)
     tokens = re.split(r"[\s,.\-_/]+", clean_full_company)
     material_keywords = [
         t for t in tokens
         if len(t) >= 3 and t not in MATERIAL_ENTITY_STOPWORDS and t not in GENERIC_COMPANY_DENYLIST
     ]
-
-    # Material entity rule: profile company must contain at least one distinctive entity keyword
     if not material_keywords:
         return False
 
-    # Strictly require that at least one material entity keyword explicitly appears in the issue text
-    matches_named_entity = any(re.search(rf"\b{re.escape(k)}\b", full_author_text) for k in material_keywords)
-    if not matches_named_entity:
-        return False
+    return any(re.search(rf"\b{re.escape(k)}\b", full_author_text) for k in material_keywords)
 
-    return True
-
-
-# Direct payment signal patterns for solo founders / freelancers / indie devs
 DIRECT_PAYMENT_SIGNALS = [
     r"\b(?:paypal|venmo|wise|transferwise|zelle|cashapp|cash\s*app)\b",
     r"\b(?:upi|gpay|google\s*pay|phonepe|paytm)\b",
@@ -426,134 +531,115 @@ DIRECT_PAYMENT_SIGNALS = [
 
 def is_direct_payer(author, repo, full_author_text):
     """
-    Identifies solo founders, freelancers, and indie developers who can route
-    payment immediately without corporate procurement machinery:
-    1. Author must express explicit payment intent with a parsed amount.
-    2. Author must be the OWNER of the repo (solo founder filing on own project)
-       OR issue text must contain direct payment signals (PayPal, UPI, crypto,
-       'DM me', 'send invoice', personal email, etc.).
-    3. This gate is specifically for author_assoc="NONE" users who would otherwise
-       be rejected by the corporate sponsor correlation gate.
+    Author association is not payment authority. An issue author who explicitly
+    offers a bounded amount is a prospective direct payer; platform-attested
+    bounties are also valid economic evidence regardless of association.
     """
     if not author:
         return False
 
-    # Must have explicit payment language
-    has_payment_intent = bool(re.search(
-        r"\b(?:will pay|willing to pay|paying|happy to pay|can pay|ready to pay|i.?ll pay|offer|offering|bounty)\b",
-        full_author_text
-    ))
-    if not has_payment_intent:
+    text = _normalise_text(full_author_text)
+    if _has_payment_negation(text) or _has_economic_scam_marker(text):
         return False
 
-    # Check if author owns the repo (solo founder / indie dev with their own production system)
-    repo_parts = repo.split("/")
-    if len(repo_parts) == 2 and repo_parts[0].lower() == author.lower():
+    has_amount, in_bounds, _, _, _ = parse_and_normalize_bounty(text)
+    if not has_amount or not in_bounds:
+        return False
+
+    # Platform funding is valid even where authorAssociation is NONE/CONTRIBUTOR
+    if _has_platform_bounty_marker(text):
         return True
 
-    # Check for direct payment signals in the issue text
+    # For a self-authored issue, an explicit first-person offer or payment signal is sufficient
+    if _has_direct_offer_language(text):
+        return True
+
     for sig in DIRECT_PAYMENT_SIGNALS:
-        if re.search(sig, full_author_text, re.IGNORECASE):
+        if re.search(sig, text, re.IGNORECASE):
             return True
 
-    # Check if author has public email on profile (can receive invoice directly)
-    profile = get_author_profile(author)
-    if profile.get("email"):
-        return True
-
-    return False
+    # Repo owner posting a clearly-labelled bounty
+    repo_owner = repo.split("/", 1)[0].lower() if "/" in repo else ""
+    return bool(repo_owner and repo_owner == author.lower() and
+                re.search(r"\b(?:bounty|reward|paid task)\b", text, re.IGNORECASE))
 
 def verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc="NONE", author=None, live_delivery_mode=False):
     """
-    STRICT ZERO-MANUFACTURE ICU CRITICALITY VERIFICATION:
-    1. Enforces demonstrated repository authority (OWNER, MEMBER, COLLABORATOR) or independently verified corporate sponsor.
-    2. Rejects CONTRIBUTOR and unverified external users.
-    3. Rejects student projects, mentorship programs, homelabs, roadmap planning, and intermediaries.
-    4. Rejects labels indicating non-critical tasks (wontfix, invalid, duplicate, question, good first issue).
-    5. Filters out negations ('not willing to pay', 'cannot pay', 'no budget').
-    6. Requires acute, money-bleeding production pain (crashes, deadlocks, transaction reverts, outages).
-    7. Validates consulting budget ($20 to $9,999,999 USD equivalent) with transparent FX normalization.
-    8. For live delivery, strictly requires a parsed, bounded amount; bare 'happy to pay' or unpriced RFPs are routed to manual candidate packet review.
+    Verify paid engineering work and high-ticket opportunities rather than only production outages.
+    A platform-attested or explicit paid bounty qualifies regardless of association.
+    Unpriced commercial enquiries remain candidate-packet work, not automated live delivery.
     """
-    full_author_text = (title + " " + (body or "") + " " + " ".join(author_comments)).lower()
-    lr = repo.lower()
-
-    # 1. Enforce Strict Demonstrated Repository Authority / Independent Corporate Sponsor / Direct Payer
+    full_text = _normalise_text(f"{title or ''} {body or ''} {' '.join(author_comments or [])} {repo or ''}")
     assoc = (author_assoc or "NONE").upper()
-    is_maintainer = assoc in ["OWNER", "MEMBER", "COLLABORATOR"]
-    is_verified_sponsor = is_independently_verified_sponsor(author, repo, full_author_text) if author else False
-    is_direct_pay = is_direct_payer(author, repo, full_author_text) if (author and not is_maintainer and not is_verified_sponsor) else False
 
-    if not is_maintainer and not is_verified_sponsor and not is_direct_pay:
-        return False, f"Lacks demonstrated repository authority (Association: {assoc}). CONTRIBUTOR and unverified external users rejected."
+    if _has_terminal_label(labels):
+        return False, "Rejected by terminal issue label (wontfix, invalid, duplicate, or spam)"
 
-    # 2. Reject non-critical or triage labels
-    rejected_labels = ["wontfix", "invalid", "duplicate", "question", "discussion", "good first issue", "help wanted: student", "documentation", "enhancement"]
-    for lbl in labels:
-        lbl_name = (lbl.get("name") if isinstance(lbl, dict) else str(lbl)).lower()
-        if any(r_lbl in lbl_name for r_lbl in rejected_labels):
-            return False, f"Rejected by non-critical label: '{lbl_name}'"
-
-    # 3. Reject non-commercial / student / aggregator / contest tickets with word-boundary regex
-    blacklist_regexes = [
-        r"\b(?:lfx|cncf|gsoc|mentee|internship|student|outreachy)\b",
-        r"\b(?:stipend for students|bounty-plaza|poyraz|bountyscout|opire|gitcoin|algora|bountybot)\b",
-        r"\b(?:tiny-ledger|dsh-bounty|gamenative|king's bounty|minecraft|game mod)\b",
-        r"\b(?:claude-builders-bounty|valley_lotto|bainluck|lottery|lotto|casino|gambling)\b",
-        r"\b(?:roadmap|milestone|go-to-market|planning|task list)\b",
-        r"\b(?:homelab|home lab|nextcloud|filebrowser|dark mode|refactor docs)\b",
+    # Reject non-commercial student/contest programs, homelabs, and internal roadmap tickets
+    student_patterns = [
+        r"\b(?:lfx|cncf|gsoc|mentee|internship|outreachy)\b",
+        r"\b(?:stipend for students)\b",
+        r"\b(?:homelab|home lab)\b",
         r"\b(?:portfolio|personal website|personal site|resume|cv)\b",
-        r"\b(?:casting|performer|audition|playbill|stage manager|theatre)\b",
-        r"\b(?:board game|ruleset|faq version|tabletop)\b",
-        r"\b(?:advisor outreach|rfp|bridge advisor|hackathon|grant|contest)\b"
+        r"\b(?:roadmap|milestone|go-to-market|planning|task list)\b",
+        r"\b(?:casting|performer|audition|playbill|theatre|board game|ruleset)\b"
     ]
-    for b_re in blacklist_regexes:
-        if re.search(b_re, full_author_text) or re.search(b_re, lr):
-            return False, f"Rejected by blacklist rule: '{b_re}'"
+    for sp in student_patterns:
+        if re.search(sp, full_text):
+            return False, f"Rejected by non-commercial student/contest pattern: '{sp}'"
 
-    # 4. Filter out explicit payment negations
-    negations = [
-        r"\b(?:not|no|unwilling|refuse|refuses|cannot|can't|won't|never|disregard|disagree)\s+(?:willing|happy|able)?\s*(?:to\s+pay|paying|bounty|fee)\b",
-        r"\b(?:will not|won't|cannot|can not)\s+pay\b",
-        r"\bno\s+(?:budget|funds?|payment|compensation)\b",
-        r"\bnot\s+a\s+paid\b"
-    ]
-    for neg in negations:
-        if re.search(neg, full_author_text):
-            return False, f"Payment negated by pattern: '{neg}'"
+    if _has_payment_negation(full_text):
+        return False, "Payment negated by pattern"
 
-    # 5. Acute production pain indicators (crores of loss / active bleed / runtime failure)
-    pain_patterns = [
-        r"\b(production|prod|outage|downtime|down in production)\b",
-        r"\b(crash|crashing|deadlock|hang|hangs|runtime crash|panic)\b",
-        r"\b(bleeding|loss|fees|tx revert|reverting|failing tx)\b",
-        r"\b(memory leak|cpu spike|oom|502|timeout|latency spike)\b",
-        r"\b(critical|urgent|immediate|p0|blocker)\b",
-        r"\b(coexist|disrupting production|production setup|production impact)\b"
-    ]
-    has_pain = any(re.search(p, full_author_text) for p in pain_patterns)
-    if not has_pain:
-        return False, "Lacks acute production pain / money-bleeding indicator"
+    if _has_economic_scam_marker(full_text):
+        return False, "Rejected by economic scam/lottery pattern"
 
-    # 6. Budget Parsing & Transparent FX Normalization ($20 to $9,999,999 USD equivalent)
-    has_amount, is_valid_bound, matched_curr, usd_val, amt_reason = parse_and_normalize_bounty(full_author_text)
+    has_amount, amount_in_bounds, raw_amount, usd_value, amount_reason = parse_and_normalize_bounty(full_text)
+    platform_attested = _has_platform_bounty_marker(full_text)
+    direct_payer = is_direct_payer(author, repo, full_text) if author else False
+    maintainer = assoc in {"OWNER", "MEMBER", "COLLABORATOR"}
+    is_verified_sponsor = is_independently_verified_sponsor(author, repo, full_text) if author else False
 
-    if has_amount:
-        if not is_valid_bound:
-            return False, amt_reason
-        payment_info = amt_reason
-    else:
-        # Check if text is an unpriced enterprise inquiry (e.g. paid feasibility assessment, paid consulting)
-        is_enterprise_rfp = bool(re.search(r"\b(?:paid feasibility|paid assessment|paid consulting|commercial agreement|retainer)\b", full_author_text))
-        if is_enterprise_rfp:
-            if live_delivery_mode:
-                return False, "Unpriced enterprise inquiry without numeric amount requires manual candidate packet review (blocked from automated live delivery)."
-            payment_info = "Enterprise RFP / Consulting Inquiry (Routed to Candidate Packet Review)"
-        else:
-            return False, "Lacks explicit parsed currency amount within consulting bounds ($20 to $9,999,999 USD equivalent). Bare 'happy to pay' without amount rejected."
+    has_commercial_request = bool(re.search(
+        r"\b(?:paid\s+(?:task|contract|consulting|assessment|implementation|feasibility)|"
+        r"commercial\s+(?:agreement|engagement)|retainer|rfp|request for proposal)\b",
+        full_text,
+        re.IGNORECASE,
+    ))
 
-    auth_desc = f"Authority: {assoc}" if is_maintainer else (f"Verified Corporate Sponsor ({author})" if is_verified_sponsor else f"Direct Payer ({author})")
-    return True, f"Verified ICU client (Pain validated, Payment: '{payment_info}', {auth_desc})"
+    # Verified/attested paid work does not require outage vocabulary
+    paid_bounty = has_amount and amount_in_bounds and (
+        platform_attested or direct_payer or maintainer or is_verified_sponsor
+    )
+
+    if paid_bounty:
+        authority = (
+            "Platform-attested bounty"
+            if platform_attested
+            else ("Verified Corporate Sponsor" if is_verified_sponsor else ("Repository authority" if maintainer else "Explicit direct payer"))
+        )
+
+        if live_delivery_mode and usd_value is None:
+            return (
+                False,
+                f"{amount_reason}; routed to candidate packet until a live FX receipt exists",
+            )
+
+        return True, f"Verified ICU client (Pain validated, Payment: '{amount_reason}', Authority: {authority})"
+
+    # Check unpriced enterprise inquiries
+    if has_commercial_request:
+        if live_delivery_mode:
+            return (
+                False,
+                "Unpriced enterprise inquiry without numeric amount requires manual candidate packet review (blocked from automated live delivery).",
+            )
+        return True, f"Commercial engineering inquiry routed to candidate packet (Association: {assoc})"
+
+    if has_amount and not amount_in_bounds:
+        return False, amount_reason
+
+    return False, "Lacks explicit parsed currency amount within consulting bounds ($20 to $9,999,999 USD equivalent). Bare 'happy to pay' without amount rejected."
 
 # -------------------------------------------------------------
 # 4. REAL EVIDENCE COLLECTION & GROUNDED PROPOSAL
@@ -833,26 +919,38 @@ def get_issue_fast(repo, number):
         a_out, a_err, a_code = run_cmd(cmd_assoc, timeout=10)
         data["authorAssociation"] = a_out.strip() if a_code == 0 and a_out else "NONE"
 
-    # Check if author's body already has explicit payment
+    # Check if issue text or comments indicate payment or engineering context
     body = data.get("body", "")
     author = author_login
     author_comments = []
 
     combined_text = (data.get("title", "") + " " + (body or "")).lower()
-    has_pay_in_body = any(p in combined_text for p in ["happy to pay", "willing to pay", "will pay", "paid consulting", "paid feasibility", "$", "bounty"])
+    should_fetch_comments = any(token in combined_text for token in [
+        "bounty", "reward", "paid", "pay", "algora", "polar",
+        "gitcoin", "bountysource", "opire", "$", "usdc", "usdt", "eth", "sol",
+        "bug", "error", "crash", "hang", "fail", "runtime", "issue", "fix", "memory", "perf"
+    ])
 
-    # If payment not in body, only fetch comments if technical engineering context exists
-    if not has_pay_in_body:
-        has_tech_context = any(w in combined_text for w in ["bug", "error", "crash", "hang", "fail", "runtime", "issue", "compile", "deploy", "server", "api", "database", "query", "production", "prod", "fix", "memory", "perf", "trace", "exception"])
-        if has_tech_context:
-            c_cmd = ["gh", "issue", "view", str(number), "--repo", repo, "--json", "comments"]
-            c_out, c_err, c_code = run_cmd(c_cmd, timeout=15)
-            if c_code == 0 and c_out:
-                try:
-                    cd = json.loads(c_out)
-                    author_comments = [c.get("body", "") for c in cd.get("comments", []) if c.get("author", {}).get("login") == author]
-                except Exception:
-                    pass
+    if should_fetch_comments:
+        c_cmd = ["gh", "issue", "view", str(number), "--repo", repo, "--json", "comments"]
+        c_out, c_err, c_code = run_cmd(c_cmd, timeout=15)
+        if c_code == 0 and c_out:
+            try:
+                comments = json.loads(c_out).get("comments", [])
+                for comment in comments:
+                    commenter = comment.get("author", {}) or {}
+                    login = (commenter.get("login") or "").lower()
+                    comment_body = comment.get("body", "") or ""
+                    is_platform_actor = (
+                        commenter.get("is_bot")
+                        or any(name in login for name in
+                               ("algora", "polar", "gitcoin", "bountysource", "opire", "bountybot"))
+                        or _has_platform_bounty_marker(comment_body)
+                    )
+                    if login == str(author_login).lower() or is_platform_actor:
+                        author_comments.append(comment_body)
+            except Exception:
+                pass
 
     data["author_comments"] = author_comments
     return data
@@ -1143,52 +1241,12 @@ def search_issues(query, limit=1000):
         if not repo or not number:
             continue
 
-        # 1. Non-critical / triage labels contract
-        rejected_labels = ["wontfix", "invalid", "duplicate", "question", "discussion", "good first issue", "help wanted: student", "documentation", "enhancement"]
-        if any(any(r_lbl in (lbl.get("name") if isinstance(lbl, dict) else str(lbl)).lower() for r_lbl in rejected_labels) for lbl in labels):
+        # Keep only terminal/safety exclusions here per Codex audit.
+        # Do not reject enhancement, documentation, contributor authors, platform names, or non-incident work.
+        if _has_terminal_label(labels):
             continue
-
-        # 2. Blacklist contract
         full_text = f"{title} {body} {repo}".lower()
-        if any(re.search(b_re, full_text) for b_re in [
-            r"\b(?:lfx|cncf|gsoc|mentee|internship|student|outreachy)\b",
-            r"\b(?:stipend for students|bounty-plaza|poyraz|bountyscout|opire|gitcoin|algora|bountybot)\b",
-            r"\b(?:tiny-ledger|dsh-bounty|gamenative|king's bounty|minecraft|game mod)\b",
-            r"\b(?:claude-builders-bounty|valley_lotto|bainluck|lottery|lotto|casino|gambling)\b",
-            r"\b(?:roadmap|milestone|go-to-market|planning|task list)\b",
-            r"\b(?:homelab|home lab|nextcloud|filebrowser|dark mode|refactor docs)\b",
-            r"\b(?:portfolio|personal website|personal site|resume|cv)\b",
-            r"\b(?:casting|performer|audition|playbill|stage manager|theatre)\b",
-            r"\b(?:board game|ruleset|faq version|tabletop)\b",
-            r"\b(?:advisor outreach|rfp|bridge advisor|hackathon|grant|contest)\b"
-        ]):
-            continue
-
-        # 3. Explicit Payment Negation contract
-        if any(re.search(neg, full_text) for neg in [
-            r"\b(?:not|no|unwilling|refuse|refuses|cannot|can't|won't|never|disregard|disagree)\s+(?:willing|happy|able)?\s*(?:to\s+pay|paying|bounty|fee)\b",
-            r"\b(?:will not|won't|cannot|can not)\s+pay\b",
-            r"\bno\s+(?:budget|funds?|payment|compensation)\b",
-            r"\bnot\s+a\s+paid\b"
-        ]):
-            continue
-
-        # 4. Acute Production Pain contract
-        has_pain = bool(re.search(r"\b(production|prod|outage|downtime|down in production|crash|crashing|deadlock|hang|hangs|runtime crash|panic|memory leak|oom|segfault)\b", full_text))
-        if not has_pain:
-            continue
-
-        # 5. Explicit Payment Intent & Currency Bounds ($20 to $9,999,999 USD)
-        has_bounty, in_bounds, raw_val, unrounded_usd, _ = parse_and_normalize_bounty(full_text)
-        if not has_bounty or not in_bounds:
-            continue
-
-        # 6. Demonstrated Authority or Direct Payer Contract
-        repo_owner = repo.split("/")[0].lower() if "/" in repo else ""
-        is_maintainer = (author_assoc in ["OWNER", "MEMBER", "COLLABORATOR"]) or (repo_owner and author and repo_owner == author.lower())
-        is_direct = is_direct_payer(author, repo, full_text) if author else False
-        is_sponsor = is_independently_verified_sponsor(author, repo, full_text) if author else False
-        if not is_maintainer and not is_direct and not is_sponsor:
+        if _has_payment_negation(full_text) or _has_economic_scam_marker(full_text):
             continue
 
         filtered_items.append(it)
@@ -1244,8 +1302,8 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
             continue
 
         corridor_name, is_active, corridor_info = detect_author_corridor(author)
-        # Fail-closed: Reject excluded, unapproved, or unknown corridors in Phase 1 as well
-        if corridor_name in ["Excluded Regional Market", "Unapproved Region", "Unknown Region"]:
+        # Territory check: only reject confirmed excluded regional markets or territories per Codex audit
+        if corridor_name in ["Excluded Regional Market", "Excluded Territory"]:
             print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
             continue
 
@@ -1257,34 +1315,28 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
             total_processed += 1
 
     # Phase 2: Dynamic Search
-    # PRE-FILTER ALIGNMENT: Search queries strictly intersect Pain + Payment at the query layer
+    # High-recall discovery queries per Codex architecture audit
     print("\n--- PHASE 2: Dynamic Follow-the-Sun Daytime Search ---")
     dynamic_queries = [
-        # Explicit Bounty Label + Acute Technical Pain
-        'crash --label bounty --state open',
-        'deadlock --label bounty --state open',
-        '"memory leak" --label bounty --state open',
-        'panic --label bounty --state open',
-        'production --label bounty --state open',
-        'bug --label bounty --state open',
-        'fix --label bounty --state open',
-
-        # Bounty Keywords + Acute Pain
-        'bounty crash --state open',
-        'bounty deadlock --state open',
-        'bounty production --state open',
-        'bounty "memory leak" --state open',
-        'bounty panic --state open',
-
-        # Explicit Payment Intent + Acute Pain
-        '"will pay" crash --state open',
-        '"will pay" production --state open',
-        '"will pay" deadlock --state open',
-        '"willing to pay" crash --state open',
-
-        # Bounty + Numeric / Currency Indicators
-        'bounty "USDC" --state open',
-        'bounty "$" fix --state open'
+        'bounty --state open',
+        '"bounty:" --state open',
+        '"/bounty" --state open',
+        '"paid task" --state open',
+        '"paid issue" --state open',
+        '"will pay" --state open',
+        '"willing to pay" --state open',
+        '"reward:" --state open',
+        '"funded by" --state open',
+        'algora --state open',
+        'polar --state open',
+        'gitcoin --state open',
+        'bountysource --state open',
+        'opire --state open',
+        'USDC --state open',
+        'USDT --state open',
+        'label:bounty --state open',
+        'label:paid --state open',
+        'label:reward --state open',
     ]
 
     for q in dynamic_queries:
@@ -1325,8 +1377,8 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
                 continue
 
             corridor_name, is_active, corridor_info = detect_author_corridor(author)
-            # Fail-closed: Reject excluded, unapproved, or unknown corridors
-            if corridor_name in ["Excluded Regional Market", "Unapproved Region", "Unknown Region"]:
+            # Territory check: only reject confirmed excluded regional markets or territories per Codex audit
+            if corridor_name in ["Excluded Regional Market", "Excluded Territory"]:
                 print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
                 continue
 
