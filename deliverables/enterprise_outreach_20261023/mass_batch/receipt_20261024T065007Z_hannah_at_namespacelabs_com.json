@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T06:50:07.382797+00:00",
+  "recipient": "hannah@namespacelabs.com",
+  "company": "Namespace | San Francisco, CA / New York, NY / Zurich, Switzerland / Remote | Full-time | REMOTE or HYBRID |",
+  "subject": "Weekend architectural fix for Namespace \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "cc5800d747a588a783411baf52613a7879c738a7a41502dbc5e8192022d67e00",
+  "status": "DELIVERED_250_OK"
+}

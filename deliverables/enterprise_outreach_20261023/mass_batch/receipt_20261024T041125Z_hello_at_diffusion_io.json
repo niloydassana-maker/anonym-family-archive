@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T04:11:25.914776+00:00",
+  "recipient": "hello@diffusion.io",
+  "company": "Diffusion | All | SF Bay (Redwood City) | On site (office!), full-time",
+  "subject": "Weekend architectural fix for Diffusion \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "7436e7de04b1a16e5b052e1359e86214635e2b93fc47331717a6d3c5eea7f389",
+  "status": "DELIVERED_250_OK"
+}

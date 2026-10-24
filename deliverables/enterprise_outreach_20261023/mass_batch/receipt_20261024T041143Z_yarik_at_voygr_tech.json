@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T04:11:43.191818+00:00",
+  "recipient": "yarik@voygr.tech",
+  "company": "VOYGR (YC W26) | Founding Product Engineer | San Francisco | ONSITE | Full-time | $150K-$200K + 0.5%-2.0% equity",
+  "subject": "Weekend architectural fix for VOYGR (YC W26) \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "c892a8e44aac762277a79522bf29e69ae2384f1dc343be36ee4ee9b35d6422da",
+  "status": "DELIVERED_250_OK"
+}

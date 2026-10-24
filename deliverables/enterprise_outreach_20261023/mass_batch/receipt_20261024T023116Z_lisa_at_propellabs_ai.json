@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T02:31:16.110828+00:00",
+  "recipient": "lisa@propellabs.ai",
+  "company": "Propel Labs | Staff Full-Stack Engineer, Quality & Delivery | Remote (North America hours) | Full-time |",
+  "subject": "Weekend architectural fix for Propel Labs \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "187e38512866a2b8f17958710b253c903eb7de2fe4a9ef135297633d16c4b2b9",
+  "status": "DELIVERED_250_OK"
+}

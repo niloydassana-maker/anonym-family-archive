@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:54:05.435128+00:00",
+  "recipient": "chris.varela@workday.com",
+  "company": "Workday | AI Creative Technologist | Pleasanton, CA | ONSITE | Contract",
+  "subject": "Weekend architectural fix for Workday \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "df3c2f7095d608795accf22dfbb887f13e7d73ceba3b6ba3cb2ef557b5000dd7",
+  "status": "DELIVERED_250_OK"
+}

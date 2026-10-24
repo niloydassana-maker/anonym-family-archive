@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T02:46:52.668024+00:00",
+  "recipient": "wb@iceye.com",
+  "company": "ICEYE | Platform, DevOps and Observability Engineers (Senior/Staff) | Espoo, Finland / Berlin, Germany | HYBRID | Full-time (relocation support)",
+  "subject": "Weekend architectural fix for ICEYE \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "2790f8c4e03298b3ca6d7273983f6ec833d0d45e55e9d51cb92ba423d44c3040",
+  "status": "DELIVERED_250_OK"
+}

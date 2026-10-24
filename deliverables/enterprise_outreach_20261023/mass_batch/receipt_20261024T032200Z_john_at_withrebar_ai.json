@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:22:00.335216+00:00",
+  "recipient": "john@withrebar.ai",
+  "company": "Rebar | Software Engineers (Product, Applied AI, ML Infra, Data Platform) | ONSITE 5 days/week, New York City (union square area!) | Full-time | $150k\u2013$260k + equity |",
+  "subject": "Weekend architectural fix for Rebar \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "15740b934a8cdf3605ebd53eae3cad8e03713d75cd8f46c42c5f065680148156",
+  "status": "DELIVERED_250_OK"
+}

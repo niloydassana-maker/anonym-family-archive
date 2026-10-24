@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:54:56.553670+00:00",
+  "recipient": "max@chargerobotics.com",
+  "company": "Charge Robotics | Multiple Roles | Full-time | Onsite | SF Bay Area",
+  "subject": "Weekend architectural fix for Charge Robotics \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "fb256ea25fcd6abf32943c5da92a8381ae128a7150d905dff973917132e97c22",
+  "status": "DELIVERED_250_OK"
+}

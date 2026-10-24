@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:38:11.093797+00:00",
+  "recipient": "jnapoli+hn@cvector.com",
+  "company": "CVector | Software Engineers, Senior Research Engineer | New York City (FiDi) | ONSITE | Full-time | VISA SPONSORSHIP",
+  "subject": "Weekend architectural fix for CVector \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "6edbf80f1a1e54d0eb2c9e2f84eaea523383ea74035c4634d14a9f1a7ee0f48a",
+  "status": "DELIVERED_250_OK"
+}

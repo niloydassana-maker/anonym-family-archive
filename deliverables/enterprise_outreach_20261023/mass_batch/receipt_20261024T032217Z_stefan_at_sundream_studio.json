@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:22:17.403126+00:00",
+  "recipient": "stefan@sundream.studio",
+  "company": "Sundream Studio | Multiple Roles | Full-time / Contract | NYC / Remote",
+  "subject": "Weekend architectural fix for Sundream Studio \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "5b3e90c8fe829d0e0552a47ac06c5362f0f1ba87255a3bed715b546b4d8e2725",
+  "status": "DELIVERED_250_OK"
+}

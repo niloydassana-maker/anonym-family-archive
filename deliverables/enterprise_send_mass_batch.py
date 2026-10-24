@@ -95,7 +95,7 @@ Saw Matterhaul's work in applied AI and logistics automation for real-time routi
 
 Real-time telemetry ingestion and dynamic routing at scale require resilient asynchronous stream processing, sub-second geospatial indexing, and deterministic optimization models that don't choke under fleet data spikes.
 
-Over 22 years as a Principal Systems Architect (NIT Silchar Honours, former Director & CTO), I've engineered distributed logistics pipelines and real-time transit telemetry architectures (including live integration work with Singapore Land Transport Authority systems). Our published repo catalog encompasses 49 production repositories and 1.95M lines of verified code.
+Over 22 years as a Principal Systems Architect (NIT Silchar Honours, former Director & CTO), I've engineered distributed logistics pipelines and real-time transit telemetry architectures (including live integration work with Singapore Land Transport Authority systems). Our published repo catalog encompasses 125 production repositories and 1.95M lines of verified code.
 
 We deliver turnkey, high-throughput data processing and routing pipelines containerized for immediate production integration.
 
@@ -143,7 +143,7 @@ Saw Buoyant's engineering focus on Linkerd, Kubernetes networking, and distribut
 
 Having spent 22 years designing and operating distributed event backends, microservice meshes, and resilient high-throughput infrastructure (NIT Silchar Honours, former Director & CTO), I deeply appreciate Linkerd's philosophy of lightweight, deterministic service mesh architecture.
 
-I've engineered distributed systems handling multi-million transaction loads, asynchronous telemetry streaming, and containerized orchestration across global cloud corridors. Our published catalog includes 49 production repos and 1.95M source lines.
+I've engineered distributed systems handling multi-million transaction loads, asynchronous telemetry streaming, and containerized orchestration across global cloud corridors. Our published catalog includes 125 production repositories and 1.95M source lines.
 
 I work entirely asynchronously in writing. Would value reviewing any complex backend orchestration or reliability challenges your team is currently tackling.
 

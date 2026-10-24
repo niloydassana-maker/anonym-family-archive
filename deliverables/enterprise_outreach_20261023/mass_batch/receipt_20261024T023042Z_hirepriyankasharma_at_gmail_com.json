@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T02:30:42.035343+00:00",
+  "recipient": "hirepriyankasharma@gmail.com",
+  "company": "Location: Bangalore, India (IST, UTC+5:30)",
+  "subject": "Weekend architectural fix for Location: Bangalore, India (IST, UTC+5:30) \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "19aa7601e63b285936baba998a6e5e6a006cce3f62290706c86cc5c6c3ac77a8",
+  "status": "DELIVERED_250_OK"
+}

@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:55:14.707234+00:00",
+  "recipient": "hello+hnsales@toolhouse.ai",
+  "company": "Toolhouse AI | Head of AI Sales / AI Go To Market | SF, ATX, or REMOTE (US) | Full-time | $180k\u2013$250k OTE + Equity |",
+  "subject": "Weekend architectural fix for Toolhouse AI \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "aab344ada9fd1e009ea82bcf79e52b249e15aafb057abe6487ea700dd7d4b67f",
+  "status": "DELIVERED_250_OK"
+}

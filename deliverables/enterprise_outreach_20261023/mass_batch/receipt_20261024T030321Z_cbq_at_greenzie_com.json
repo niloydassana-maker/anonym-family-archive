@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:03:21.832218+00:00",
+  "recipient": "cbq@greenzie.com",
+  "company": "Greenzie | Robotics Software Engineer (Experienced, 3\u20136 yrs) | Atlanta, GA | ONSITE/HYBRID | Full-time |",
+  "subject": "Weekend architectural fix for Greenzie \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "e8e81bc40045dc8e6bad081752d245aa3eb0c0ef60f55fd7687b9e6e7ee15b54",
+  "status": "DELIVERED_250_OK"
+}

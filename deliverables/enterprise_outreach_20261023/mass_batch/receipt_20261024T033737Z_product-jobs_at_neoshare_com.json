@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:37:37.093800+00:00",
+  "recipient": "product-jobs@neoshare.com",
+  "company": "neoshare | Senior Product Engineers (AI) | Germany (Munich, Frankfurt, Berlin) | HYBRID (3+ days/week onsite) | Full-time |",
+  "subject": "Weekend architectural fix for neoshare \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "7249d35b23e32c85308bd12d5472cb3d9459b017c4b7371c627b9bd9517d20ed",
+  "status": "DELIVERED_250_OK"
+}

@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T02:47:44.109865+00:00",
+  "recipient": "tsaleh@coreweave.com",
+  "company": "CoreWeave | Specialist Field Engineers | full-time | hybrid, 3d/w commute to SF CA, Sunnyvale CA, or Bellevue WA",
+  "subject": "Weekend architectural fix for CoreWeave \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "82a742470d2fdd2cd4af62e8102a08bc74a2788e50f743f289fd949bffed71ba",
+  "status": "DELIVERED_250_OK"
+}

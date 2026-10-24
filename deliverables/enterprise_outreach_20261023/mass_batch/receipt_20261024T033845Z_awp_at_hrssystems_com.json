@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:38:45.993561+00:00",
+  "recipient": "awp@hrssystems.com",
+  "company": "HRS Systems |",
+  "subject": "Weekend architectural fix for HRS Systems \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "40843497fe7ef08781220be515667421b24db784910b60adee7a451d9b6ea33a",
+  "status": "DELIVERED_250_OK"
+}

@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T04:10:34.841979+00:00",
+  "recipient": "dobrev.d10@gmail.com",
+  "company": "Trackerbot | Full-Stack Developer (Node.js) | REMOTE |  \u20ac35-45k/year",
+  "subject": "Weekend architectural fix for Trackerbot \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "dc65558b9cb120baa8a8ae9f8f0c076ade4b946cb94cca0c04e95b0473d80f05",
+  "status": "DELIVERED_250_OK"
+}

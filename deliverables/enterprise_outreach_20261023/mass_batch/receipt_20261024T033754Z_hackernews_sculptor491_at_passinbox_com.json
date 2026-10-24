@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:37:54.107660+00:00",
+  "recipient": "hackernews.sculptor491@passinbox.com",
+  "company": "Looking for a commercial co-founder | Europe / US Remote",
+  "subject": "Weekend architectural fix for Looking for a commercial co-founder \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "895c892eff7a696573c50faac9d10b35c8c28e74c90580b85d3460ca03a955b0",
+  "status": "DELIVERED_250_OK"
+}

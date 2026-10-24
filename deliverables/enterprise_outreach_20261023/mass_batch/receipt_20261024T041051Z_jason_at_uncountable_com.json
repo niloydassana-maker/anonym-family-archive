@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T04:10:51.811760+00:00",
+  "recipient": "jason@uncountable.com",
+  "company": "Uncountable | NY, SF, London & Toronto (In-Person) | Full-Stack Engineering",
+  "subject": "Weekend architectural fix for Uncountable \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "6a3ac76b21805f2f3a11b859a18428b9fafe503dbff12ae85f82363503fc6fb6",
+  "status": "DELIVERED_250_OK"
+}

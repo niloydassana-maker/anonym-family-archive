@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T06:00:33.013476+00:00",
+  "recipient": "chris.zehner@fazeshift.com",
+  "company": "Fazeshift | Senior Software Engineer | San Francisco, CA | ONSITE (5 days/week) | Full-time | $200k\u2013$235k + equity",
+  "subject": "Weekend architectural fix for Fazeshift \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "bdf5e5104f9682a832b253c5496902638f1e9095d4156cfb4a24c13560480215",
+  "status": "DELIVERED_250_OK"
+}

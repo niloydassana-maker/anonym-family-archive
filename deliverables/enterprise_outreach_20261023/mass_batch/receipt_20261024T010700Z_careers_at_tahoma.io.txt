@@ -1,0 +1,31 @@
+RECEIPT — 24/7 DAEMON CYCLE #4
+Timestamp: 20261024T010700Z
+Recipient: careers@tahoma.io
+Company: Tahoma AI
+Subject: Distributed backend & event architecture — 22y veteran for Tahoma AI
+Message-ID: <179280402049.2068.2307423182221044004@gmail.com>
+Status: 250 OK (Dispatched via smtp.gmail.com:587)
+SHA256: 3f3e6d0e1722d5ee1d0c1df68eac486b1b07d99bdb63d52a913595c1d195a350
+==================================================
+BODY:
+Hi Tahoma AI team,
+
+Saw your engineering opening regarding Tahoma AI's systems work.
+
+Over 22 years in enterprise systems architecture (NIT Silchar Honours, former Director & CTO, MCA DIN 10386590), I've designed and scaled high-throughput event backends, distributed data pipelines, and autonomous execution environments across global cloud corridors.
+
+Our complete engineering catalog of 125 production repositories and 1.95M lines of code is fully public for technical inspection:
+https://github.com/isearchxsolve
+
+Key open architectural references:
+- Sandboxed multi-agent execution with AST import gates (ASES v3.1): https://github.com/isearchxsolve/n8n-frellancing_advanced-ases_v3_1
+- Distributed API routing, rate-limiting & metering: https://github.com/isearchxsolve/omniroute-monetizer
+- High-throughput web crawling & data extraction pipelines: https://github.com/isearchxsolve/crawlee-engine
+
+I work entirely asynchronously in writing—zero meeting overhead. Clean architectural teardowns, benchmarked patches, and containerized Docker deployments delivered directly to your engineers.
+
+Happy to share a written architecture brief on your highest-priority pipeline bottleneck if of interest.
+
+Written lane: isearch.xsolve@gmail.com / WhatsApp text +91 86172 16163
+
+Kunal

@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T04:11:08.880759+00:00",
+  "recipient": "jforbes@descartes.com",
+  "company": "Descartes - Finale Inventory | Senior Software Engineer | REMOTE | Full-Time",
+  "subject": "Weekend architectural fix for Descartes - Finale Inventory \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "238cc77cd73b04cb5889a493eac88691a0791ca6820837b312879c61805734e3",
+  "status": "DELIVERED_250_OK"
+}

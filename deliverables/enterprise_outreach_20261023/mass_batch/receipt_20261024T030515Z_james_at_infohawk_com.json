@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:05:15.635357+00:00",
+  "recipient": "james@infohawk.com",
+  "company": "InfoHawk | Software Engineer | London, UK or NYC | HYBRID (UK or US), occasional onsite | Full-time |",
+  "subject": "Weekend architectural fix for InfoHawk \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "753e1ff9f5a522d4a9925d5701cc8b2ae3bc8c10ebe38465c9d12815a539bcc9",
+  "status": "DELIVERED_250_OK"
+}

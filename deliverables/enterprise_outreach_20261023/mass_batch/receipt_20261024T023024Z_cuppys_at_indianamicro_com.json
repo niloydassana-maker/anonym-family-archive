@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T02:30:24.921715+00:00",
+  "recipient": "cuppys@indianamicro.com",
+  "company": "Indiana Microelectronics LLC | RF Engineer | West Lafayette, IN | ONSITE | Full-time | Relocation assistance available",
+  "subject": "Weekend architectural fix for Indiana Microelectronics LLC \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "b8da6aeca75438c397793b9e83d612dd4142305de400396e9fe390f114568338",
+  "status": "DELIVERED_250_OK"
+}

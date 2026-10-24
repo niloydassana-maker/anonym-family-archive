@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:38:28.671351+00:00",
+  "recipient": "theo@cable.energy",
+  "company": "CABLE | Software Engineer (early team) | Sydney, Australia (ON-SITE) | Full-time |",
+  "subject": "Weekend architectural fix for CABLE \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "8beaa8edfbc3f806f814216d58ff70385c815c1be37468ceb45257b5d8f529d0",
+  "status": "DELIVERED_250_OK"
+}

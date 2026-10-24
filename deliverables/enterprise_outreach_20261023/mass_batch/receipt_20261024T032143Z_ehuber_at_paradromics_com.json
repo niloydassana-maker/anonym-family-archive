@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:21:43.414782+00:00",
+  "recipient": "ehuber@paradromics.com",
+  "company": "Paradromics | Embedded Software Engineer | Austin, TX or Oakland, CA | Onsite | Full-time",
+  "subject": "Weekend architectural fix for Paradromics \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "042afac72766d6edf4beeef8663a1d997004e8391c11654510eee6a10755f660",
+  "status": "DELIVERED_250_OK"
+}

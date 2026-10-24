@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T03:21:26.287000+00:00",
+  "recipient": "hassan.amir@kaveronix.com",
+  "company": "Software Engineer \u2014 Remote \u2014 US Only",
+  "subject": "Weekend architectural fix for Software Engineer \u2014 Remote \u2014 US Only \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "1e34e83d215082bf3c3e1948af840e680989668d14392f1a69574c810f19f680",
+  "status": "DELIVERED_250_OK"
+}

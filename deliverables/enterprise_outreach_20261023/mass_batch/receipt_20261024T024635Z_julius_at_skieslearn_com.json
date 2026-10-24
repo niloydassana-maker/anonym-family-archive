@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T02:46:35.737193+00:00",
+  "recipient": "julius@skieslearn.com",
+  "company": "SKIES (Visual Choices AAC) | iOS Developer, embedded at the UCLA Kasari Lab | Los Angeles | ONSITE | Full-time, 6 months | $65k ($130k annualized)",
+  "subject": "Weekend architectural fix for SKIES (Visual Choices AAC) \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "a89f50d396d4b5d54d03c37d670fdfead855b49410f212919853bbcbdcb1badd",
+  "status": "DELIVERED_250_OK"
+}

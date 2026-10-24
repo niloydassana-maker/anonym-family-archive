@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-10-24T02:30:07.973914+00:00",
+  "recipient": "hello@irashtech.com",
+  "company": "Irash Tech | Business Development Manager (Freelance, Commission-only) | REMOTE (Worldwide) | Contract",
+  "subject": "Weekend architectural fix for Irash Tech \u2014 turnkey patch by Sunday",
+  "smtp_response_code": 250,
+  "smtp_response": "250 OK Delivered",
+  "body_sha256": "d02a689c89ebbe8bccb5ff411c76ba09b99ef05a7be903eb185de860cebd3cd5",
+  "status": "DELIVERED_250_OK"
+}
