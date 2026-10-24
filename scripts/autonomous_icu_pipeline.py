@@ -1502,6 +1502,45 @@ def upgrade_all_existing_deliveries(live_mode=True):
         upgrade_existing_delivery(r["repo"], r["issue_number"], live_mode=live_mode)
         time.sleep(3)
 
+HARDNESS_PATTERNS = [
+    r"\bhard\b", r"\bcomplex\b", r"\bconcurrency\b", r"\brace condition\b",
+    r"\bdeadlock\b", r"\bmemory leak\b", r"\bcorruption\b", r"\bconsensus\b",
+    r"\bcompiler\b", r"\bast\b", r"\bcryptography\b", r"\bzero-knowledge\b",
+    r"\bsvm\b", r"\bevm\b", r"\bkernel\b", r"\bdistributed\b", r"\blatency\b",
+    r"\bboundary\b", r"\binvariant\b", r"\bperformance\b", r"\bprotocol\b"
+]
+
+def score_hardness_and_competition(it):
+    """
+    Baba's Hardness Moat:
+    Prioritizes intellectually challenging tickets that scare away novices
+    and have near-zero competition (0-3 comments).
+    """
+    title = it.get("title", "") or ""
+    body = it.get("body", "") or ""
+    labels = [l.get("name", "") if isinstance(l, dict) else str(l) for l in it.get("labels", [])]
+    comments_count = it.get("commentsCount", 0)
+
+    score = 0
+    full_text = (title + " " + body + " " + " ".join(labels)).lower()
+
+    # Hardness keywords: +30 points each
+    for p in HARDNESS_PATTERNS:
+        if re.search(p, full_text):
+            score += 30
+
+    # Near-zero competition bonus (scared away competitors):
+    if comments_count == 0:
+        score += 80
+    elif comments_count <= 2:
+        score += 50
+    elif comments_count <= 5:
+        score += 25
+    elif comments_count > 15:
+        score -= 50
+
+    return score
+
 def search_issues(query, limit=1000, sort_by="created", order="desc"):
     """
     Contract-Congruent Issue Search (Maximum Horizon: 1,000 issues per query):
@@ -1552,8 +1591,10 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
 
         filtered_items.append(it)
 
-    # Prioritize candidates with <= 8 comments (zero/minimal competition) first, sorted by newest createdAt
-    filtered_items.sort(key=lambda x: (x.get("commentsCount", 0) <= 8, x.get("createdAt", "")), reverse=True)
+    # Prioritize candidates by Baba's Hardness Moat:
+    # 1. Hard, high-barrier tickets with <= 5 comments (highest score)
+    # 2. Freshness (newest createdAt)
+    filtered_items.sort(key=lambda x: (score_hardness_and_competition(x), x.get("createdAt", "")), reverse=True)
 
     return filtered_items
 
@@ -1622,6 +1663,24 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
     # High-recall discovery queries per Codex architecture audit
     print("\n--- PHASE 2: Dynamic Follow-the-Sun Daytime Search ---")
     dynamic_queries = [
+        # Tier 1: Baba's Hardness Moat — Deep Architecture & High-Barrier Bounties (Low Competitor Attempts)
+        'bounty "concurrency" --state open',
+        'bounty "race condition" --state open',
+        'bounty "memory leak" --state open',
+        'bounty "deadlock" --state open',
+        'bounty "compiler" --state open',
+        'bounty "consensus" --state open',
+        'bounty "distributed" --state open',
+        'bounty "zero-knowledge" --state open',
+        'bounty "smart contract" --state open',
+        'algora "hard" --state open',
+        'algora "concurrency" --state open',
+        'polar "hard" --state open',
+        'opire "hard" --state open',
+        'bounty "hard" --state open',
+        'bounty "complex" --state open',
+
+        # Tier 2: General High-Recall Bounties
         'bounty --state open',
         '"bounty:" --state open',
         '"/bounty" --state open',
