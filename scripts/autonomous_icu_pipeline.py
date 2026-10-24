@@ -1740,11 +1740,10 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
                 continue
 
             # Baba's Headroom Conservation Law: High-Ticket Complex Tasks Only
-            # Check parsed bounty value and complexity
+            # Strictly reject any bounty under $200 USD to preserve headroom for high-ticket contracts
             has_bounty, in_bounds, raw_text, usd_val, _ = parse_and_normalize_bounty(title + " " + body + " " + " ".join(author_comments))
-            is_complex = any(re.search(p, (title + " " + body).lower()) for p in HARDNESS_PATTERNS)
-            if usd_val is not None and Decimal("0.00") < usd_val < Decimal("150.00") and not is_complex:
-                print(f"[REJECT/HEADROOM] {issue_id}: Bounty ${usd_val} below $150 floor and lacks systems complexity. Preserving headroom for high-ticket tasks.")
+            if usd_val is not None and usd_val < Decimal("200.00"):
+                print(f"[REJECT/HEADROOM] {issue_id}: Bounty ${usd_val} below $200 high-ticket floor. Headroom reserved exclusively for high-ticket complex tasks.")
                 continue
 
             corridor_name, is_active, corridor_info = detect_author_corridor(author)
