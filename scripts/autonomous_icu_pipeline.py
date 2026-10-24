@@ -1534,10 +1534,10 @@ def score_hardness_and_competition(it):
         score += 80
     elif comments_count <= 2:
         score += 50
-    elif comments_count <= 5:
+    elif comments_count <= 4:
         score += 25
-    elif comments_count > 15:
-        score -= 50
+    elif comments_count > 4:
+        score -= 100
 
     return score
 
@@ -1576,9 +1576,9 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         if not repo or not number:
             continue
 
-        # Zero-competition filter: skip issues with > 25 comments (heavy dispute/chatter)
+        # Baba Mandate: Neglect crowded issues altogether (reserve compute for uncrowded tickets <= 4 comments)
         comments_cnt = it.get("commentsCount", 0)
-        if comments_cnt > 25:
+        if comments_cnt > 4:
             continue
 
         # Keep only terminal/safety exclusions here per Codex audit.
@@ -1737,6 +1737,14 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
             is_icu, reason = verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc=author_assoc, author=author)
             if not is_icu:
                 print(f"[REJECT] {issue_id}: {reason}")
+                continue
+
+            # Baba's Headroom Conservation Law: High-Ticket Complex Tasks Only
+            # Check parsed bounty value and complexity
+            has_bounty, in_bounds, raw_text, usd_val, _ = parse_and_normalize_bounty(title + " " + body + " " + " ".join(author_comments))
+            is_complex = any(re.search(p, (title + " " + body).lower()) for p in HARDNESS_PATTERNS)
+            if usd_val is not None and Decimal("0.00") < usd_val < Decimal("150.00") and not is_complex:
+                print(f"[REJECT/HEADROOM] {issue_id}: Bounty ${usd_val} below $150 floor and lacks systems complexity. Preserving headroom for high-ticket tasks.")
                 continue
 
             corridor_name, is_active, corridor_info = detect_author_corridor(author)
