@@ -819,6 +819,81 @@ print("  ✓ Global/Remote Corridor Gate: Blank location approved without busine
 
 autonomous_icu_pipeline.get_author_profile = orig_get_profile
 
+# -------------------------------------------------------------
+# 8. TEST AUTONOMOUS PULL REQUEST ENGINE
+# -------------------------------------------------------------
+print("\n[Test 8] Testing Autonomous Pull Request Engine...")
+
+sample_deliverable = """### 🛠️ Production Implementation & Technical Verification
+
+1. **Root Cause Analysis**:
+Identified buffer boundary mismatch in core parser.
+
+2. **Production-Grade Implementation Source Code**:
+
+### Production Source (`src/core/parser.js`)
+```javascript
+export function parsePayload(buf) {
+  if (!buf || buf.length === 0) throw new Error("Empty buffer");
+  return JSON.parse(buf.toString());
+}
+```
+
+### Test Suite (`test/parser.test.js`)
+```javascript
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { parsePayload } from "../src/core/parser.js";
+
+test("parses valid JSON buffer", () => {
+  assert.deepEqual(parsePayload(Buffer.from('{"ok":true}')), { ok: true });
+});
+```
+
+3. **Settlement Rails**:
+- DOOM L1: doom14ac0e785bffabe0357cb522608cf88c80a33cd7f3f925757
+- Solana: 2qi849TBq72XMpsp8PjR4YfegDEzc7BRFZaarwQ2tKgL
+"""
+
+extracted = autonomous_icu_pipeline.extract_files_from_proposal(sample_deliverable)
+assert len(extracted) == 2, f"Expected 2 extracted files, got {len(extracted)}"
+assert extracted[0][0] == "src/core/parser.js", f"Unexpected path: {extracted[0][0]}"
+assert "parsePayload" in extracted[0][1], "Expected code body in extracted[0]"
+assert extracted[1][0] == "test/parser.test.js", f"Unexpected path: {extracted[1][0]}"
+assert "parses valid JSON buffer" in extracted[1][1], "Expected test body in extracted[1]"
+print("  ✓ Proposal File Extraction: Successfully parsed source code and test files.")
+
+# Test database persistence of PR URL
+test_pr_url = "https://github.com/mock-org/mock-repo/pull/42"
+autonomous_icu_pipeline.try_claim_issue(
+    repo="mock-org/mock-repo",
+    number=101,
+    title="Test Parser",
+    author="testuser",
+    corridor="Global / Remote",
+    reason="Test",
+    db_path=TEST_DB
+)
+autonomous_icu_pipeline.commit_delivery(
+    repo="mock-org/mock-repo",
+    number=101,
+    comment_id="mock_cid",
+    receipt_url="https://github.com/mock-org/mock-repo/issues/101#comment",
+    sha256_digest="mock_digest",
+    pr_url=test_pr_url,
+    db_path=TEST_DB
+)
+autonomous_icu_pipeline.update_delivery_pr("mock-org/mock-repo", 101, test_pr_url, db_path=TEST_DB)
+with sqlite3.connect(TEST_DB) as test_con:
+    row = test_con.execute("SELECT pr_url FROM deliveries WHERE repo = ? AND issue_number = ?", ("mock-org/mock-repo", 101)).fetchone()
+    assert row and row[0] == test_pr_url, f"Expected PR URL persisted, got {row}"
+print("  ✓ PR URL DB Persistence: Successfully stored and retrieved pr_url in deliveries store.")
+
+# Test dry-run PR creation
+pr_dry_run = autonomous_icu_pipeline.attempt_automated_pull_request("mock-org/mock-repo", 101, "Fix Parser", sample_deliverable, live_mode=False)
+assert pr_dry_run is None, f"Expected dry-run PR to return None, got {pr_dry_run}"
+print("  ✓ PR Safety Gate: Dry-run safely holds network creation.")
+
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")
 print("==================================================")
