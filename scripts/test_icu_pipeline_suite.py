@@ -468,6 +468,32 @@ is_icu_picker, reason_picker = verify_genuine_icu_patient(
 assert not is_icu_picker, f"Expected False for picker/digest repo, got: {reason_picker}"
 print("  ✓ Bookmark Picker & Weekly Digest: Rejected correctly.")
 
+# 14. Rejection: Issue-First Repository without Maintainer 'approved' Label (UnitOneAI/SecuritySkills)
+is_icu_issue_first, reason_issue_first = verify_genuine_icu_patient(
+    title="[NEW SKILL] serverless-function-security",
+    body="Standard ($200). Preferred payment method: PayPal - https://paypal.me/user",
+    author_comments=[],
+    labels=[],
+    repo="UnitOneAI/SecuritySkills",
+    author_assoc="NONE",
+    author="JeremyZeng77"
+)
+assert not is_icu_issue_first, f"Expected False for unapproved issue-first repo, got: {reason_issue_first}"
+print("  ✓ Issue-First Repository (Unapproved): Rejected correctly.")
+
+# 15. Approval: Issue-First Repository WITH Maintainer 'approved' Label
+is_icu_approved_skill, reason_approved_skill = verify_genuine_icu_patient(
+    title="[NEW SKILL] serverless-function-security",
+    body="Standard ($200). Implement serverless security skill.",
+    author_comments=[],
+    labels=[{"name": "approved"}],
+    repo="UnitOneAI/SecuritySkills",
+    author_assoc="OWNER",
+    author="UnitOneAI"
+)
+assert is_icu_approved_skill, f"Expected True for approved skill, got: {reason_approved_skill}"
+print("  ✓ Issue-First Repository (Maintainer Approved): Approved correctly.")
+
 # 12. Rejection: Payment Negations
 is_icu_9, reason_9 = verify_genuine_icu_patient(
     title="Production server crashing on startup with OOM",

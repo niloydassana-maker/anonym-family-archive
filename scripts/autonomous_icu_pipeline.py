@@ -570,6 +570,12 @@ def is_direct_payer(author, repo, full_author_text):
     if _has_direct_offer_language(text):
         return True
 
+    # Contributor payee marker: author stating how they want to RECEIVE payment, not PAY it
+    if re.search(r"\b(?:preferred\s+payment\s+method|my\s+paypal|paypal\.me/)\b", text, re.IGNORECASE) and not re.search(r"\b(?:will\s+pay|willing\s+to\s+pay|paying\s+via)\b", text, re.IGNORECASE):
+        repo_owner = repo.split("/", 1)[0].lower() if "/" in repo else ""
+        if repo_owner != author.lower():
+            return False
+
     for sig in DIRECT_PAYMENT_SIGNALS:
         if re.search(sig, text, re.IGNORECASE):
             return True
@@ -633,6 +639,13 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     for dp in digest_patterns:
         if re.search(dp, full_text, re.IGNORECASE):
             return False, f"Rejected: issue is a newsletter or reading digest ('{dp}'), not a software codebase task."
+
+    # Repositories with strict Issue-First policy: require maintainer 'approved' label
+    issue_first_repos = ["unitoneai/securityskills", "expensify/app"]
+    if repo and any(ifr in repo.lower() for ifr in issue_first_repos):
+        label_names = [l.get("name", "").lower() if isinstance(l, dict) else str(l).lower() for l in (labels or [])]
+        if "approved" not in label_names:
+            return False, f"Rejected: repository '{repo}' enforces issue-first policy requiring maintainer 'approved' label."
 
     aggregator_body_patterns = [
         r"###\s*(?:原始链接|平台|赏金平台)",
