@@ -1036,7 +1036,7 @@ def search_issues(query, limit=1000):
 
     return filtered_items
 
-def run_pipeline_cycle(live_mode=False):
+def run_pipeline_cycle(live_mode=False, anytime=False):
     init_db()
     now_utc = datetime.now(timezone.utc)
     current_ist = now_utc.astimezone(ZoneInfo("Asia/Kolkata"))
@@ -1045,6 +1045,7 @@ def run_pipeline_cycle(live_mode=False):
     print(f"Standard: Zero-Manufacture, Grounded Analysis, Pre-Post Security Gate")
     print(f"Commercial Channel: {CLIENT_CONTACT_EMAIL}")
     print(f"Mode: {'LIVE WIRE (Autonomous Delivery)' if live_mode else 'CANDIDATE PACKET MODE (Safe Preview)'}")
+    print(f"Schedule Policy: {'24/7 ANYTIME (No Off-Hours Hold)' if anytime else 'Business Hours Gate'}")
     print(f"=======================================================")
 
     total_processed = 0
@@ -1089,7 +1090,7 @@ def run_pipeline_cycle(live_mode=False):
             print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
             continue
 
-        if live_mode and not is_active:
+        if live_mode and not is_active and not anytime:
             print(f"[HOLD] {issue_id} in sleeping/off-hours corridor ({corridor_info}). Holding for business hours.")
             continue
 
@@ -1170,9 +1171,9 @@ def run_pipeline_cycle(live_mode=False):
                 print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
                 continue
 
-            # Fail-closed: In live mode, enforce strict business hours (no off-hours exceptions)
+            # Fail-closed: In live mode, enforce strict business hours unless --anytime is set
             # In candidate packet mode, generate preview packet for review immediately
-            if live_mode and not is_active:
+            if live_mode and not is_active and not anytime:
                 print(f"[HOLD] {issue_id} in sleeping/off-hours corridor ({corridor_info}). Holding for business hours.")
                 continue
 
@@ -1187,6 +1188,7 @@ def run_pipeline_cycle(live_mode=False):
 
 def main():
     live_mode = "--live" in sys.argv
+    anytime = "--anytime" in sys.argv or "--24x7" in sys.argv
     run_once = "--once" in sys.argv
     cycle_interval_seconds = 180  # 3 minutes between follow-the-sun sweeps
 
@@ -1194,6 +1196,7 @@ def main():
     print("\n" + "=" * 60)
     print("⚡ AUTONOMOUS ICU PRODUCTION PIPELINE - 24/7 DAEMON ENGINE")
     print(f"Mode: {'LIVE WIRE (Autonomous Delivery)' if live_mode else 'CANDIDATE PACKET MODE (Safe Preview)'}")
+    print(f"Schedule Policy: {'24/7 ANYTIME (No Off-Hours Hold)' if anytime else 'Business Hours Gate'}")
     print(f"Search Horizon: 1,000 issues per query (Contract-Congruent)")
     print(f"Cycle Sweep Interval: {cycle_interval_seconds}s (Follow-the-Sun 24/7)")
     print("=" * 60 + "\n")
@@ -1201,7 +1204,7 @@ def main():
     while True:
         try:
             print(f"\n>>> [STARTING 24/7 CYCLE #{cycle_count}] <<<")
-            run_pipeline_cycle(live_mode=live_mode)
+            run_pipeline_cycle(live_mode=live_mode, anytime=anytime)
         except KeyboardInterrupt:
             print("\n[STOPPED] Received keyboard interrupt. Shutting down daemon gracefully.")
             break

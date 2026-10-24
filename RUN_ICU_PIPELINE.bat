@@ -9,6 +9,6 @@ echo  Horizon: 1,000 issues per query (Contract-Congruent)
 echo ========================================================
 echo.
 cd /d D:\anonym
-python scripts\autonomous_icu_pipeline.py
+python scripts\autonomous_icu_pipeline.py --live --anytime
 echo.
 pause
