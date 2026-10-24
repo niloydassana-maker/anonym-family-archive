@@ -156,7 +156,8 @@ def get_author_profile(username):
     out, err, code = run_cmd(cmd, timeout=15)
     if code == 0 and out:
         try:
-            return json.loads(out)
+            res = json.loads(out)
+            return res if isinstance(res, dict) else {}
         except Exception:
             return {}
     return {}
@@ -949,14 +950,91 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
         return False
 
 def search_issues(query, limit=100):
-    cmd = ["gh", "search", "issues"] + shlex.split(query) + ["--sort", "updated", "--limit", str(limit), "--json", "number,title,repository,url,labels,updatedAt"]
-    out, err, code = run_cmd(cmd, timeout=25)
+    """
+    Contract-Congruent Issue Search:
+    Enforces the exact same negative and positive contracts as the verification gates
+    at the search layer.
+    If an issue fails repository authority, carries non-critical labels, matches blacklist
+    rules, lacks acute production pain, or lacks explicit bounded currency ($20-$9,999,999 USD),
+    it is filtered out at search time. Zero approved candidates => Zero search results yielded.
+    """
+    cmd = ["gh", "search", "issues"] + shlex.split(query) + [
+        "--sort", "updated",
+        "--limit", str(limit),
+        "--json", "number,title,repository,url,labels,updatedAt,authorAssociation,body,author"
+    ]
+    out, err, code = run_cmd(cmd, timeout=35)
     if code != 0 or not out:
         return []
     try:
-        return json.loads(out)
+        raw_items = json.loads(out)
     except Exception:
         return []
+
+    filtered_items = []
+    for it in raw_items:
+        repo = it.get("repository", {}).get("nameWithOwner")
+        number = it.get("number")
+        title = it.get("title", "")
+        body = it.get("body", "") or ""
+        labels = it.get("labels", [])
+        author_assoc = (it.get("authorAssociation") or "NONE").upper()
+        author = (it.get("author") or {}).get("login", "")
+
+        if not repo or not number:
+            continue
+
+        # 1. Non-critical / triage labels contract
+        rejected_labels = ["wontfix", "invalid", "duplicate", "question", "discussion", "good first issue", "help wanted: student", "documentation", "enhancement"]
+        if any(any(r_lbl in (lbl.get("name") if isinstance(lbl, dict) else str(lbl)).lower() for r_lbl in rejected_labels) for lbl in labels):
+            continue
+
+        # 2. Blacklist contract
+        full_text = f"{title} {body} {repo}".lower()
+        if any(re.search(b_re, full_text) for b_re in [
+            r"\b(?:lfx|cncf|gsoc|mentee|internship|student|outreachy)\b",
+            r"\b(?:stipend for students|bounty-plaza|poyraz|bountyscout|opire|gitcoin|algora|bountybot)\b",
+            r"\b(?:tiny-ledger|dsh-bounty|gamenative|king's bounty|minecraft|game mod)\b",
+            r"\b(?:claude-builders-bounty|valley_lotto|bainluck|lottery|lotto|casino|gambling)\b",
+            r"\b(?:roadmap|milestone|go-to-market|planning|task list)\b",
+            r"\b(?:homelab|home lab|nextcloud|filebrowser|dark mode|refactor docs)\b",
+            r"\b(?:portfolio|personal website|personal site|resume|cv)\b",
+            r"\b(?:casting|performer|audition|playbill|stage manager|theatre)\b",
+            r"\b(?:board game|ruleset|faq version|tabletop)\b",
+            r"\b(?:advisor outreach|rfp|bridge advisor|hackathon|grant|contest)\b"
+        ]):
+            continue
+
+        # 3. Explicit Payment Negation contract
+        if any(re.search(neg, full_text) for neg in [
+            r"\b(?:not|no|unwilling|refuse|refuses|cannot|can't|won't|never|disregard|disagree)\s+(?:willing|happy|able)?\s*(?:to\s+pay|paying|bounty|fee)\b",
+            r"\b(?:will not|won't|cannot|can not)\s+pay\b",
+            r"\bno\s+(?:budget|funds?|payment|compensation)\b",
+            r"\bnot\s+a\s+paid\b"
+        ]):
+            continue
+
+        # 4. Acute Production Pain contract
+        has_pain = bool(re.search(r"\b(production|prod|outage|downtime|down in production|crash|crashing|deadlock|hang|hangs|runtime crash|panic|memory leak|oom|segfault)\b", full_text))
+        if not has_pain:
+            continue
+
+        # 5. Explicit Payment Intent & Currency Bounds ($20 to $9,999,999 USD)
+        has_bounty, in_bounds, raw_val, unrounded_usd, _ = parse_and_normalize_bounty(full_text)
+        if not has_bounty or not in_bounds:
+            continue
+
+        # 6. Demonstrated Authority or Direct Payer Contract
+        repo_owner = repo.split("/")[0].lower() if "/" in repo else ""
+        is_maintainer = (author_assoc in ["OWNER", "MEMBER", "COLLABORATOR"]) or (repo_owner and author and repo_owner == author.lower())
+        is_direct = is_direct_payer(author, repo, full_text) if author else False
+        is_sponsor = is_independently_verified_sponsor(author, repo, full_text) if author else False
+        if not is_maintainer and not is_direct and not is_sponsor:
+            continue
+
+        filtered_items.append(it)
+
+    return filtered_items
 
 def run_pipeline_cycle(live_mode=False):
     init_db()
@@ -1011,7 +1089,7 @@ def run_pipeline_cycle(live_mode=False):
             print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
             continue
 
-        if not is_active:
+        if live_mode and not is_active:
             print(f"[HOLD] {issue_id} in sleeping/off-hours corridor ({corridor_info}). Holding for business hours.")
             continue
 
@@ -1092,8 +1170,9 @@ def run_pipeline_cycle(live_mode=False):
                 print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
                 continue
 
-            # Fail-closed: Strict business hours (no off-hours exceptions)
-            if not is_active:
+            # Fail-closed: In live mode, enforce strict business hours (no off-hours exceptions)
+            # In candidate packet mode, generate preview packet for review immediately
+            if live_mode and not is_active:
                 print(f"[HOLD] {issue_id} in sleeping/off-hours corridor ({corridor_info}). Holding for business hours.")
                 continue
 

@@ -628,6 +628,73 @@ if os.path.exists(TEST_DB):
     except Exception:
         pass
 
+# ----------------------------------------------------------------
+# Test 5: Search-Gate Contract Congruence (Zero Approved = Zero in Search)
+# ----------------------------------------------------------------
+print("\n[Test 5] Testing Search-Gate Contract Congruence...")
+
+from autonomous_icu_pipeline import search_issues
+
+# Mock run_cmd to feed raw search results through search_issues
+orig_run_cmd = autonomous_icu_pipeline.run_cmd
+
+mock_raw_items = [
+    # 1. Non-critical label -> MUST BE DROPPED
+    {
+        "number": 1, "title": "Crash in app", "body": "App crashes in production. Will pay $100.",
+        "repository": {"nameWithOwner": "org/repo1"}, "labels": [{"name": "enhancement"}],
+        "authorAssociation": "OWNER", "author": {"login": "dev1"}
+    },
+    # 2. Blacklisted repo -> MUST BE DROPPED
+    {
+        "number": 2, "title": "Crash in worker", "body": "Worker crash in production. Will pay $100.",
+        "repository": {"nameWithOwner": "zhangjiayang6835-cyber/bounty-plaza"}, "labels": [{"name": "bounty"}],
+        "authorAssociation": "OWNER", "author": {"login": "dev2"}
+    },
+    # 3. Lacks acute pain -> MUST BE DROPPED
+    {
+        "number": 3, "title": "Update button color", "body": "Button color is wrong. Will pay $50.",
+        "repository": {"nameWithOwner": "org/repo3"}, "labels": [{"name": "bounty"}],
+        "authorAssociation": "OWNER", "author": {"login": "dev3"}
+    },
+    # 4. Out of bounds amount ($5) -> MUST BE DROPPED
+    {
+        "number": 4, "title": "Production crash", "body": "Server crashing in production. Will pay $5.",
+        "repository": {"nameWithOwner": "org/repo4"}, "labels": [{"name": "bounty"}],
+        "authorAssociation": "OWNER", "author": {"login": "dev4"}
+    },
+    # 5. External CONTRIBUTOR without authority -> MUST BE DROPPED
+    {
+        "number": 5, "title": "Production deadlock", "body": "Deadlock crashing prod. Will pay $500.",
+        "repository": {"nameWithOwner": "org/repo5"}, "labels": [{"name": "bounty"}],
+        "authorAssociation": "CONTRIBUTOR", "author": {"login": "dev5"}
+    },
+    # 6. Contract-compliant genuine client -> MUST BE APPROVED
+    {
+        "number": 6, "title": "Database dumps do not work on large databases",
+        "body": "Production deadlock and crash during table dump under heavy load. We offer $250 bounty.",
+        "repository": {"nameWithOwner": "outerbase/starbasedb"}, "labels": [{"name": "bounty"}],
+        "authorAssociation": "MEMBER", "author": {"login": "Brayden"}
+    }
+]
+
+import json
+autonomous_icu_pipeline.run_cmd = lambda cmd, timeout=35: (json.dumps(mock_raw_items), "", 0)
+
+yielded = search_issues("dummy query")
+assert len(yielded) == 1, f"Expected exactly 1 approved candidate, got {len(yielded)}"
+assert yielded[0]["number"] == 6, f"Expected issue #6 to be approved, got #{yielded[0]['number']}"
+print("  ✓ Search-Gate Congruence: 5 unqualified items filtered out at search layer; exactly 1 approved yielded.")
+
+# Test Zero Approved = Zero Yielded
+autonomous_icu_pipeline.run_cmd = lambda cmd, timeout=35: (json.dumps(mock_raw_items[:5]), "", 0)
+yielded_zero = search_issues("dummy query")
+assert len(yielded_zero) == 0, f"Expected 0 yielded when zero approved, got {len(yielded_zero)}"
+print("  ✓ Zero Approved Contract: Zero approved candidates strictly yields 0 search results.")
+
+# Restore run_cmd
+autonomous_icu_pipeline.run_cmd = orig_run_cmd
+
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")
 print("==================================================")
