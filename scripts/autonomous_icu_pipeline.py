@@ -949,9 +949,9 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
         release_claim(repo, number)
         return False
 
-def search_issues(query, limit=100):
+def search_issues(query, limit=1000):
     """
-    Contract-Congruent Issue Search:
+    Contract-Congruent Issue Search (Maximum Horizon: 1,000 issues per query):
     Enforces the exact same negative and positive contracts as the verification gates
     at the search layer.
     If an issue fails repository authority, carries non-critical labels, matches blacklist
@@ -963,7 +963,7 @@ def search_issues(query, limit=100):
         "--limit", str(limit),
         "--json", "number,title,repository,url,labels,updatedAt,authorAssociation,body,author"
     ]
-    out, err, code = run_cmd(cmd, timeout=35)
+    out, err, code = run_cmd(cmd, timeout=75)
     if code != 0 or not out:
         return []
     try:
@@ -1129,7 +1129,7 @@ def run_pipeline_cycle(live_mode=False):
 
     for q in dynamic_queries:
         print(f"\n[Search Query] {q}")
-        items = search_issues(q)
+        items = search_issues(q, limit=1000)
         print(f"Found {len(items)} candidates.")
 
         for it in items:
@@ -1179,13 +1179,43 @@ def run_pipeline_cycle(live_mode=False):
             if post_grounded_proposal(repo, number, title, author, url, body, author_comments, labels, reason, corridor_info, author_assoc=author_assoc, live_mode=live_mode):
                 total_processed += 1
 
+        time.sleep(2)
+
     print(f"\n=======================================================")
     print(f"[{datetime.now(timezone.utc).isoformat()}] PIPELINE CYCLE COMPLETE. Processed: {total_processed}")
     print(f"=======================================================")
 
 def main():
     live_mode = "--live" in sys.argv
-    run_pipeline_cycle(live_mode=live_mode)
+    run_once = "--once" in sys.argv
+    cycle_interval_seconds = 180  # 3 minutes between follow-the-sun sweeps
+
+    cycle_count = 1
+    print("\n" + "=" * 60)
+    print("⚡ AUTONOMOUS ICU PRODUCTION PIPELINE - 24/7 DAEMON ENGINE")
+    print(f"Mode: {'LIVE WIRE (Autonomous Delivery)' if live_mode else 'CANDIDATE PACKET MODE (Safe Preview)'}")
+    print(f"Search Horizon: 1,000 issues per query (Contract-Congruent)")
+    print(f"Cycle Sweep Interval: {cycle_interval_seconds}s (Follow-the-Sun 24/7)")
+    print("=" * 60 + "\n")
+
+    while True:
+        try:
+            print(f"\n>>> [STARTING 24/7 CYCLE #{cycle_count}] <<<")
+            run_pipeline_cycle(live_mode=live_mode)
+        except KeyboardInterrupt:
+            print("\n[STOPPED] Received keyboard interrupt. Shutting down daemon gracefully.")
+            break
+        except Exception as e:
+            print(f"\n❌ [CYCLE #{cycle_count} ERROR] {e}. Resuming in 60 seconds...")
+            time.sleep(60)
+
+        if run_once:
+            print("[ONCE MODE] Single cycle completed. Exiting.")
+            break
+
+        cycle_count += 1
+        print(f"\n⏳ Cycle #{cycle_count - 1} complete. Sleeping {cycle_interval_seconds}s before next follow-the-sun sweep...")
+        time.sleep(cycle_interval_seconds)
 
 if __name__ == "__main__":
     main()
