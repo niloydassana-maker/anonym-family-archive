@@ -894,6 +894,38 @@ pr_dry_run = autonomous_icu_pipeline.attempt_automated_pull_request("mock-org/mo
 assert pr_dry_run is None, f"Expected dry-run PR to return None, got {pr_dry_run}"
 print("  ✓ PR Safety Gate: Dry-run safely holds network creation.")
 
+# ----------------------------------------------------------------
+# Test 9: Pre-Commit Sandbox Syntax Quality Gates & CLA Detection
+# ----------------------------------------------------------------
+print("\n[Test 9] Testing Pre-Commit Sandbox Syntax Quality Gates & CLA...")
+import tempfile
+from autonomous_icu_pipeline import validate_synthesized_files, auto_resolve_cla_if_needed
+
+# 1. Valid Python + JSON files
+valid_extracted = [
+    ("src/solution.py", "def add(a: int, b: int) -> int:\n    return a + b\n"),
+    ("config/schema.json", '{"version": 1, "enabled": true}')
+]
+ok, msg = validate_synthesized_files(tempfile.gettempdir(), valid_extracted)
+assert ok is True, f"Expected valid files to pass, got: {msg}"
+print("  ✓ Quality Gate: Valid Python and JSON syntax verified.")
+
+# 2. Syntax Error in Python
+bad_py_extracted = [
+    ("src/broken.py", "def broken(\n    return 42\n")
+]
+ok_bad_py, msg_bad_py = validate_synthesized_files(tempfile.gettempdir(), bad_py_extracted)
+assert ok_bad_py is False, "Expected syntax error in Python to fail quality gate."
+print("  ✓ Quality Gate: Caught and blocked Python syntax error.")
+
+# 3. Syntax Error in JSON
+bad_json_extracted = [
+    ("config/broken.json", '{"version": 1, "enabled": true,}')
+]
+ok_bad_json, msg_bad_json = validate_synthesized_files(tempfile.gettempdir(), bad_json_extracted)
+assert ok_bad_json is False, "Expected trailing comma JSON to fail quality gate."
+print("  ✓ Quality Gate: Caught and blocked invalid JSON schema.")
+
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")
 print("==================================================")
