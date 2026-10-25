@@ -39,6 +39,7 @@ os.makedirs(SANDBOX_DIR, exist_ok=True)
 
 FLEET_DOOR = "https://omniroute-relay.omniroute-fleet-kd.workers.dev"
 FLEET_DOOR_TOKEN = "GOLD24"
+FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE"
 REMOTE_FLEET_MODE = False
 
 def get_dispatch_github_token() -> Optional[str]:
@@ -73,9 +74,9 @@ def dispatch_task_to_fleet(task_payload: dict) -> bool:
         print("[FLEET DISPATCH ERROR] GitHub credential unavailable; failing closed.", flush=True)
         return False
     try:
-        data = json.dumps({"body": "BOUNTY_TASK", "text": json.dumps(task_payload)}).encode("utf-8")
+        data = json.dumps({"body": FLEET_QUEUE_CHANNEL, "text": json.dumps(task_payload)}).encode("utf-8")
         req = urllib.request.Request(
-            f"{FLEET_DOOR}/say?body=BOUNTY_TASK&token={FLEET_DOOR_TOKEN}",
+            f"{FLEET_DOOR}/say?body={FLEET_QUEUE_CHANNEL}&token={FLEET_DOOR_TOKEN}",
             data=data,
             headers={"Content-Type": "application/json", "User-Agent": "laptop-bounty-dispatcher"}
         )
@@ -776,7 +777,7 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         r"\b(?:lfx|cncf|gsoc|mentee|internship|outreachy)\b",
         r"\b(?:stipend for students)\b",
         r"\b(?:homelab|home lab)\b",
-        r"\b(?:portfolio|personal website|personal site|resume|cv)\b",
+        r"\b(?:my portfolio|personal portfolio|my resume|my cv|curriculum vitae|student resume)\b",
         r"\b(?:roadmap\s+milestone\s+\d+/\d+|go-to-market(?:\s+planning)?|sustainable\s+unit\s+economics)\b",
         r"\b(?:\$|usd\s*)[\d,]+[kmb]?\+?\s*(?:tvl|volume|mcap|market\s+cap|valuation|arr|mrr)\b",
         r"\b(?:casting|performer|audition|playbill|theatre|board game|ruleset)\b",
@@ -821,14 +822,14 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
 
     # Reject roadmap, RFC, speculative design brainstorms, and unpaid policy discussions
     speculative_design_patterns = [
-        r"\[(?:roadmap|rfc|proposal|discussion|idea|spec)\]",
+        r"\[(?:roadmap|rfc|proposal|design|spec)\]",
         r"\b(?:design/roadmap\s+proposal\s+only|proposal\s+only|design\s+only)\b",
         r"\b(?:not\s+an\s+active\s+deduction|illustrative\s+defaults?|illustrative\s+scenario)\b",
         r"\b(?:pilot\s+economic\s+scenario|hypothetical\s+flow)\b",
     ]
     for sdp in speculative_design_patterns:
         if re.search(sdp, full_text, re.IGNORECASE):
-            return False, f"Rejected non-funded/speculative design proposal: '{sdp}'" 
+            return False, f"Rejected non-funded/speculative design proposal: '{sdp}'"
 
     if _has_payment_negation(full_text):
         return False, "Payment negated by pattern"
@@ -2912,7 +2913,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
 
     for q in dynamic_queries:
         print(f"\n[Search Query] {q}")
-        items = search_issues(q, limit=30)
+        items = search_issues(q, limit=100)
         print(f"Found {len(items)} candidates.")
 
         for it in items:

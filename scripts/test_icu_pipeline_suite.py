@@ -39,6 +39,7 @@ from tokenharbor_router import (
     READY,
     TokenHarborRouter,
 )
+import kaggle_engine_worker as kaggle_worker
 
 TEST_DB = r"D:\anonym\scratch\test_suite_isolated.db"
 
@@ -1656,6 +1657,26 @@ ok_rfc, reason_rfc = autonomous_icu_pipeline.verify_genuine_icu_patient(
     author_assoc="NONE"
 )
 assert not ok_rfc, "RFC speculative proposal must be rejected"
+for speculative_title, speculative_body in [
+    ("[PROPOSAL] Future storage", "This is an active-looking change request."),
+    ("[DESIGN] Future storage", "This is an active-looking change request."),
+    ("[SPEC] Future storage", "This is an active-looking change request."),
+    ("Future storage", "design/roadmap proposal only"),
+    ("Future storage", "proposal only"),
+    ("Future storage", "not an active deduction"),
+    ("Future storage", "illustrative defaults"),
+    ("Future storage", "pilot economic scenario"),
+]:
+    rejected, rejection_reason = autonomous_icu_pipeline.verify_genuine_icu_patient(
+        title=speculative_title,
+        body=speculative_body,
+        author_comments=[],
+        labels=[],
+        repo="some-org/some-repo",
+        author="architect",
+        author_assoc="NONE",
+    )
+    assert not rejected, f"Speculative ticket must be rejected: {speculative_title} / {speculative_body}: {rejection_reason}"
 print("  ✓ Speculative Design Gate: [ROADMAP], [RFC], and unpaid design proposals rejected cleanly.")
 
 # -------------------------------------------------------------
@@ -1697,6 +1718,30 @@ files_comment = autonomous_icu_pipeline.extract_files_from_proposal(proposal_fir
 assert len(files_comment) == 1, f"Expected 1 file from first-line comment, got {len(files_comment)}"
 assert files_comment[0][0] == "pkg/server/http.go"
 print("  ✓ Multi-Format Code Extraction Gate: Parentheses, backticks, and inline comments parsed correctly.")
+
+# ----------------------------------------------------------------
+# 16. TEST APPEND-ONLY FLEET LEDGER REPLAY & STALE-TASK GATES
+# ----------------------------------------------------------------
+print("\n[Test 16] Testing Append-Only Fleet Ledger Replay Gates...")
+roadmap_task = {
+    "task_id": "BT-test-MyZubster-Ecosystem_myzubster-1462",
+    "repo": "MyZubster-Ecosystem/myzubster",
+    "issue_number": 1462,
+    "title": "[ROADMAP] NFT creator revenue split -> MyZubster fee -> bounty treasury",
+    "body": "This is a design/roadmap proposal only with illustrative defaults.",
+}
+assert kaggle_worker.is_speculative_dispatch_task(roadmap_task), "Worker must reject a stale roadmap ledger task before claim"
+ordinary_task = dict(roadmap_task, title="Fix Rust unit test", body="Reproduce and fix the failing library unit test.")
+assert not kaggle_worker.is_speculative_dispatch_task(ordinary_task), "Ordinary implementation task must not match speculative filter"
+original_fetch_ledger_texts = kaggle_worker.fetch_ledger_texts
+try:
+    kaggle_worker.fetch_ledger_texts = lambda body: [
+        f"CLAIMED {ordinary_task['task_id']} by kaggle-engine-1",
+    ]
+    assert kaggle_worker.task_has_prior_fleet_claim(ordinary_task["task_id"]), "Prior immutable claim must block replay"
+finally:
+    kaggle_worker.fetch_ledger_texts = original_fetch_ledger_texts
+print("  ✓ Fleet Replay Gate: Stale roadmap and already-claimed ledger records block before model execution.")
 
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")

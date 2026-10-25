@@ -28,6 +28,9 @@ sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 
 DOOR = "https://omniroute-relay.omniroute-fleet-kd.workers.dev"
 DOOR_TOKEN = "GOLD24"
+FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE"
+FLEET_CLAIM_CHANNEL = "BOUNTY_FLEET_CLAIM"
+FLEET_RESULT_CHANNEL = "BOUNTY_FLEET_RESULT"
 ENGINE_ID = os.environ.get("ENGINE_ID", "kaggle-engine-unknown")
 ENGINE_INDEX = int(os.environ.get("ENGINE_INDEX", "1"))
 TOTAL_ENGINES = 5
@@ -233,7 +236,8 @@ class TokenHarborRouter:
         if not isinstance(payload, dict):
             return None
         try:
-            text = payload["choices"][0]["message"]["content"]
+            msg = payload["choices"][0]["message"]
+            text = msg.get("content") or msg.get("reasoning_content") or ""
         except (KeyError, IndexError, TypeError):
             return None
         return text.strip() if isinstance(text, str) and text.strip() else None
@@ -529,6 +533,12 @@ VERIFIED_SETTLEMENT_ADDRESSES = {
     "0x000000000000000000000000000000000000dead",
     "0x000000000000000000000000000000000000dEaD",
     "0x0000000000000000000000000000000000000001",
+    "11111111111111111111111111111111",
+    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+    "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    "SysvarRent111111111111111111111111111111111",
+    "ComputeBudget111111111111111111111111111111",
 }
 
 def generate_grounded_proposal(
@@ -1892,7 +1902,7 @@ def configure_task_github_auth(task: dict) -> bool:
     # command line, a task payload, or a persistent URL rewrite.
     return subprocess.run(["gh", "auth", "setup-git"], check=False).returncode == 0
 
-def door_say(text: str, body: str = "BOUNTY_RESULT"):
+def door_say(text: str, body: str = "BOUNTY_FLEET_RESULT"):
     try:
         data = json.dumps({"body": body, "text": text}).encode("utf-8")
         req = urllib.request.Request(
@@ -1908,7 +1918,7 @@ def door_say(text: str, body: str = "BOUNTY_RESULT"):
 
 def fetch_tasks(limit: int = 10) -> List[dict]:
     try:
-        url = f"{DOOR}/say?body=BOUNTY_TASK&token={DOOR_TOKEN}&limit={limit}"
+        url = f"{DOOR}/say?body={FLEET_QUEUE_CHANNEL}&token={DOOR_TOKEN}&limit={limit}"
         req = urllib.request.Request(url, headers={"User-Agent": "kaggle-engine"})
         with urllib.request.urlopen(req, timeout=15) as resp:
             data = json.loads(resp.read().decode("utf-8"))
@@ -1995,10 +2005,10 @@ def run_worker_loop():
 
                 processed_tasks.add(task_id)
                 print(f"\n⚡ [{ENGINE_ID}] CLAIMING TASK: {task_id} ({repo}#{number})", flush=True)
-                door_say(f"CLAIMED {task_id} by {ENGINE_ID}", body="BOUNTY_CLAIM")
+                door_say(f"CLAIMED {task_id} by {ENGINE_ID}", body=FLEET_CLAIM_CHANNEL)
 
                 if not configure_task_github_auth(task):
-                    door_say(f"FAILED {ENGINE_ID} dispatch task lacks a GitHub credential for {repo}#{number}", body="BOUNTY_RESULT")
+                    door_say(f"FAILED {ENGINE_ID} dispatch task lacks a GitHub credential for {repo}#{number}", body=FLEET_RESULT_CHANNEL)
                     continue
 
                 # The authoritative issue assessment belongs in the execution
@@ -2008,12 +2018,12 @@ def run_worker_loop():
                     diag_reason = get_last_generation_diagnostic()
                     door_say(
                         f"FAILED {ENGINE_ID} generation failed closed: {diag_reason} for {repo}#{number}",
-                        body="BOUNTY_RESULT",
+                        body=FLEET_RESULT_CHANNEL,
                     )
                     continue
                 proposal_safe, proposal_message = sanitize_and_validate_payload(proposal)
                 if not proposal_safe:
-                    door_say(f"FAILED {ENGINE_ID} assessment safety gate: {proposal_message[:120]} for {repo}#{number}", body="BOUNTY_RESULT")
+                    door_say(f"FAILED {ENGINE_ID} assessment safety gate: {proposal_message[:120]} for {repo}#{number}", body=FLEET_RESULT_CHANNEL)
                     continue
 
                 # Execute original Multi-Turn Iterative Verification Engine
@@ -2026,19 +2036,19 @@ def run_worker_loop():
                     # comment round-trips with a matching SHA-256 receipt.
                     receipt_ok = deliver_pr_receipt(repo, number, pr_url, proposal, title, author, corridor_info, reason)
                     if receipt_ok:
-                        door_say(f"SUCCESS {ENGINE_ID} opened verified PR and SHA-256 receipt: {pr_url} for {repo}#{number}", body="BOUNTY_RESULT")
+                        door_say(f"SUCCESS {ENGINE_ID} opened verified PR and SHA-256 receipt: {pr_url} for {repo}#{number}", body=FLEET_RESULT_CHANNEL)
                     else:
-                        door_say(f"FAILED {ENGINE_ID} PR exists but authoritative SHA-256 issue receipt failed: {pr_url} for {repo}#{number}", body="BOUNTY_RESULT")
+                        door_say(f"FAILED {ENGINE_ID} PR exists but authoritative SHA-256 issue receipt failed: {pr_url} for {repo}#{number}", body=FLEET_RESULT_CHANNEL)
                 else:
                     print(f"❌ [{ENGINE_ID}] Multi-turn verification did not produce green PR for {repo}#{number}", flush=True)
                     diagnostic = get_last_generation_diagnostic()
                     if diagnostic:
                         door_say(
                             f"FAILED {ENGINE_ID} generation failed closed: {diagnostic} for {repo}#{number}",
-                            body="BOUNTY_RESULT",
+                            body=FLEET_RESULT_CHANNEL,
                         )
                     else:
-                        door_say(f"FAILED {ENGINE_ID} verification failed for {repo}#{number}", body="BOUNTY_RESULT")
+                        door_say(f"FAILED {ENGINE_ID} verification failed for {repo}#{number}", body=FLEET_RESULT_CHANNEL)
 
             time.sleep(15)
         except Exception as e:

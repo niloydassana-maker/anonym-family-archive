@@ -13,7 +13,7 @@ SCRATCH_DIR.mkdir(parents=True, exist_ok=True)
 # credential, giving the fleet five independently scheduled Kaggle kernels.
 FLEET_ACCOUNTS = [
     {"engine": 1, "account": "isearchxsolve", "token_file": None},
-    {"engine": 2, "account": "n42888", "token_file": VAULT_DIR / "kaggle_token_2.txt"},
+    {"engine": 2, "account": "kkk3213", "token_file": VAULT_DIR / "kaggle_token_2.txt"},
     {"engine": 3, "account": "kunaldas3104", "token_file": VAULT_DIR / "kaggle_token_3.txt"},
     {"engine": 4, "account": "kdas19999", "token_file": VAULT_DIR / "kaggle_token_4.txt"},
     {"engine": 5, "account": "kunaldas3104", "token_file": VAULT_DIR / "kaggle_token_5.txt"},
@@ -62,7 +62,11 @@ def deploy_all_engines() -> list[dict]:
         engine_dir.mkdir(parents=True, exist_ok=True)
 
         # 1. Write worker.py with embedded ENGINE_ID (safely placed after __future__ import)
-        engine_id_line = f'import os\nos.environ["ENGINE_ID"] = "{account}-{engine_slug}"\nos.environ["ENGINE_INDEX"] = "{idx}"\n'
+        th_keys_path = Path(r"D:\anonym\vault\tokenharbor_keys.json")
+        th_keys_raw = th_keys_path.read_text(encoding="utf-8").strip() if th_keys_path.exists() else "[]"
+        th_keys_escaped = json.dumps(th_keys_raw)
+
+        engine_id_line = 'import os\n' + f'os.environ["ENGINE_ID"] = "{account}-{engine_slug}"\nos.environ["ENGINE_INDEX"] = "{idx}"\nos.environ["TOKENHARBOR_KEYS_JSON"] = ' + repr(th_keys_raw) + '\n'
         if "from __future__ import annotations" in worker_src:
             parts = worker_src.split("from __future__ import annotations", 1)
             worker_code = parts[0] + "from __future__ import annotations\n" + engine_id_line + parts[1]
