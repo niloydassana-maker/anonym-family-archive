@@ -366,11 +366,9 @@ TERMINAL_LABELS = {
 PLATFORM_BOUNTY_PATTERNS = [
     r"\b(?:algora\.io|polar\.sh|gitcoin\.co|bountysource\.com|opire\.dev|bountybot)\b",
     r"https?://[^\s)]+(?:algora\.io|polar\.sh|gitcoin\.co|bountysource\.com|opire\.dev)[^\s)]*",
-    r"(?im)^\s*/bounty\s+",
     r"\b(?:algora|polar|gitcoin|opire)\b.*?\b(?:bounty|reward|funding|pledge)\b",
     r"\b(?:bounty|reward|funding|pledge)\b.*?\b(?:polar|algora|gitcoin|opire)\b",
-    r"\b(?:pledged|funded)\b.*?\b(?:on|with|via)\s+polar\b",
-    r"\b(?:bounty|reward|funded)\s*[:=-]\s*(?:\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed|eth|sol)",
+    r"\b(?:pledged|funded)\b.*?\b(?:on|with|via)\s+(?:polar|algora|gitcoin|opire)\b",
 ]
 
 EXPLICIT_PAYMENT_NEGATIONS = [
@@ -404,8 +402,7 @@ def _has_direct_offer_language(text):
     return bool(re.search(
         r"\b(?:i|we)\s*(?:will|can|could|shall|'ll|are\s+ready\s+to)"
         r"\s*(?:pay|fund|offer|sponsor)\b"
-        r"|\b(?:offering|offered|funding|funded|willing\s+to\s+pay|happy\s+to\s+pay)\s+(?:a\s+)?(?:bounty|reward|payment|\$|usd|eur|€)\b"
-        r"|\b(?:bounty|reward)\s+(?:of|for|:|=|-)?\s*(?:\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed|eth|sol)",
+        r"|\b(?:offering|offered|funding|funded|willing\s+to\s+pay|happy\s+to\s+pay)\s+(?:a\s+)?(?:bounty|reward|payment|\$|usd|eur|€)\b",
         text,
         re.IGNORECASE,
     ))
@@ -633,7 +630,7 @@ def is_direct_payer(author, repo, full_author_text):
     # Repo owner posting an explicit bounty offer
     repo_owner = repo.split("/", 1)[0].lower() if "/" in repo else ""
     return bool(repo_owner and repo_owner == author.lower() and
-                (re.search(r"\b(?:bounty|reward|prize)\s*[:=-]?\s*(?:\$|usd|usdc|usdt|eur|€|gbp|inr|₹|sol|eth)", text, re.IGNORECASE) or
+                (re.search(r"(?:/bounty|\b(?:bounty|reward|prize)\s*[:=-]?)\s*(?:\$|usd|usdc|usdt|eur|€|gbp|inr|₹|sol|eth)", text, re.IGNORECASE) or
                  _has_direct_offer_language(text)))
 
 def verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc="NONE", author=None, live_delivery_mode=False):
@@ -664,6 +661,18 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         if re.search(sp, full_text):
             return False, f"Rejected by non-commercial student/contest pattern: '{sp}'"
 
+    # Reject exclusive author restrictions, honeypots, and recursive issue farms
+    exclusive_author_patterns = [
+        r"\b(?:limited\s+only\s+to\s+the\s+creator|only\s+(?:the\s+)?(?:issue\s+)?author\s+can\s+(?:attempt|solve|work)|only\s+the\s+creator\s+of\s+this\s+issue)\b",
+        r"\b(?:do\s+not\s+(?:submit|open)\s+(?:a\s+)?(?:pr|pull\s+request)|internal\s+only|team\s+only)\b",
+        r"\b(?:focus(?:ed)?\s+on\s+creating\s+more\s+issues|star\s+the\s+repository|recursive\s+issue)\b",
+        r"\b(?:refer(?:s|ence|ences)?\s+(?:to\s+)?(?:issue\s+)?#743)\b",
+        r"\b(?:opportunity\s+router|solution\s+preparation|ranked\s+opportunities)\b",
+    ]
+    for ep in exclusive_author_patterns:
+        if re.search(ep, full_text, re.IGNORECASE):
+            return False, f"Rejected by exclusive author or issue farm pattern: '{ep}'"
+
     if _has_payment_negation(full_text):
         return False, "Payment negated by pattern"
 
@@ -671,7 +680,11 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         return False, "Rejected by economic scam/lottery pattern"
 
     # Filter out bot aggregators, scrapers, and mirror directories
-    aggregator_repos = r"\b(?:bounty[-_]plaza|bounty[-_]watcher|bounty[-_]arcade|bounty[-_]bot|devpool[-_]directory|mergeearn|clearsheet[-_]offers)\b"
+    aggregator_repos = (
+        r"\b(?:bounty[-_]plaza|bounty[-_]watcher|bounty[-_]arcade|bounty[-_]bot|"
+        r"devpool[-_]directory|mergeearn|clearsheet[-_]offers|securebananalabs|"
+        r"oguzpoyrazyasin/poyraz|liubaining-louis/louis-os)\b"
+    )
     if repo and re.search(aggregator_repos, repo, re.IGNORECASE):
         return False, f"Rejected: repository '{repo}' is an aggregator/indexer, not an authoritative software host."
 
@@ -1537,11 +1550,13 @@ def upgrade_existing_delivery(repo, number, live_mode=True):
     new_proposal = generate_grounded_proposal(repo, title, body, author, author_comments)
     if not new_proposal:
         print(f"❌ [UPGRADE FAILED] Could not generate implementation code for {repo}#{number}.")
+        mark_issue_rejected(repo, number, "Could not generate implementation code")
         return False
 
     is_safe, safety_msg = sanitize_and_validate_payload(new_proposal)
     if not is_safe:
         print(f"❌ [UPGRADE BLOCKED] Security gate rejected payload: {safety_msg}")
+        mark_issue_rejected(repo, number, safety_msg)
         return False
 
     # 3. Post the new implementation comment to GitHub
@@ -1676,16 +1691,22 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         # Filter out static site blogs, newsletters, bookmark aggregators, and arxiv scrapers at query layer
         repo_lower = repo.lower()
         title_lower = title.lower()
+        issue_text_lower = f"{title} {body}".lower()
         if (
             repo_lower.endswith(".github.io") or
             repo_lower.endswith(".gitlab.io") or
             "bountyscout" in repo_lower or
             "arxiv" in repo_lower or
-            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed|arxiv)\b", repo_lower) or
+            "securebananalabs" in repo_lower or
+            "poyraz" in repo_lower or
+            "louis-os" in repo_lower or
+            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed|arxiv|bounty[-_]plaza|bounty[-_]arcade|bounty[-_]bot)\b", repo_lower) or
             re.search(r"(?:每日信息流|信息流|日报|周报|资讯|快讯|每日精选)", title_lower) or
             re.search(r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list|showing\s+new\s+listings)\b", title_lower) or
             re.search(r"\b(?:arxiv\s+daily|daily\s+arxiv|paper\s+digest|new\s+papers|daily\s+papers)\b", title_lower) or
-            re.search(r"\b(?:hackathon|hack\s+weekend|game\s+jam|prize\s+pool|demo\s+video|t&c\s+compliance|submission\s+checklist)\b", title_lower)
+            re.search(r"\b(?:hackathon|hack\s+weekend|game\s+jam|prize\s+pool|demo\s+video|t&c\s+compliance|submission\s+checklist)\b", title_lower) or
+            re.search(r"\b(?:opportunity\s+router|ranked\s+opportunities)\b", title_lower) or
+            re.search(r"\b(?:limited\s+only\s+to\s+the\s+creator|only\s+the\s+creator\s+of\s+this\s+issue|refer\s+to\s+issue\s+#743)\b", issue_text_lower)
         ):
             continue
 

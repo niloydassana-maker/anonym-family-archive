@@ -1075,6 +1075,39 @@ ok, reason = verify_genuine_icu_patient(
 assert ok is False and "student/contest pattern" in reason.lower(), f"Expected Metropolis hackathon rejection, got {ok}, {reason}"
 print("  ✓ Hackathon Gate: Metropolis hackathon T&C compliance ($250k prize pool) rejected correctly.")
 
+# 9. Honeypot & Issue Farm repo rejection (SecureBananaLabs/bug-bounty)
+ok, reason = verify_genuine_icu_patient(
+    title="fix(api): validate /api/payments payload before intent creation (ref #743)",
+    body="/bounty $700",
+    author_comments=[],
+    labels=[],
+    repo="SecureBananaLabs/bug-bounty",
+    author="dwaddle",
+    author_assoc="NONE"
+)
+assert ok is False and "aggregator" in reason.lower(), f"Expected SecureBananaLabs honeypot rejection, got {ok}, {reason}"
+print("  ✓ Issue Farm Gate: Honeypot repository SecureBananaLabs rejected correctly.")
+
+# 10. Exclusive author / self-solve restriction rejection
+ok, reason = verify_genuine_icu_patient(
+    title="[Bounty 80] POST /api/auth/login signs a valid token for any credentials — authentication bypass",
+    body="""This issue is limited only to the creator of this issue. This means that only the issue author can attempt to solve this issue. If you would like to work on it, please create another issue with the same contents and refer to issue #743 for more information.
+References #743.
+/bounty $780""",
+    author_comments=[],
+    labels=[],
+    repo="some-org/some-app",
+    author="dwaddle",
+    author_assoc="NONE"
+)
+assert ok is False and "exclusive author" in reason.lower(), f"Expected exclusive author rejection, got {ok}, {reason}"
+print("  ✓ Exclusive Author Gate: 'limited only to the creator' rejected correctly.")
+
+# 11. Non-owner bare /bounty command without platform attestation
+is_payer = is_direct_payer("dwaddle", "some-org/some-app", "POST /api/auth/login authentication bypass\n/bounty $780")
+assert is_payer is False, f"Expected non-owner bare /bounty to be rejected as direct payer, got {is_payer}"
+print("  ✓ Non-Owner Authority Gate: Non-owner bare /bounty without platform attestation rejected correctly.")
+
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")
 print("==================================================")
