@@ -412,9 +412,11 @@ def run_inbound_cycle(live_mode=False, max_inspect=20):
             date_str = decode_mime(msg.get("Date"))
             body_text = extract_body_text(msg)
 
-            # 0. Immediate Drop of Postmaster, Mailer-Daemon, and Delivery Failure Bounces
+            # 0. Immediate Drop of Postmaster, Mailer-Daemon, Delivery Failure Bounces, and Unfunded Academic Testbeds
             if re.search(r"\b(?:postmaster|mailer-daemon)@", sender, re.IGNORECASE) or \
-               re.search(r"\b(?:Delivery has failed|Undeliverable|Failure Notice|Mail delivery failed)\b", subj, re.IGNORECASE):
+               re.search(r"\b(?:Delivery has failed|Undeliverable|Failure Notice|Mail delivery failed)\b", subj, re.IGNORECASE) or \
+               re.search(r"microcredit-agent-testbed|scottonchain", subj + sender, re.IGNORECASE):
+                continue
                 print(f"🛑 [BOUNCE NOTICE DROPPED] UID {uid_str}: {subj[:60]}")
                 record_email_event(uid_str, sender, subj, date_str, "NOISE_OR_AUTOMATED", False, "", "", "BOUNCE_DROPPED")
                 continue

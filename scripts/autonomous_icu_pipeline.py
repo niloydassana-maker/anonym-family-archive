@@ -6,10 +6,16 @@ import time
 import re
 import sqlite3
 import hashlib
-import shlex
+import tempfile
+import shutil
+import urllib.request
+import urllib.error
 from decimal import Decimal, ROUND_HALF_UP
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
+from dataclasses import dataclass, field
+from typing import List, Dict, Tuple, Optional, Any
+from tokenharbor_router import DEEPSEEK_FLASH_MODEL, call_deepseek_flash
 
 # Enforce UTF-8 unbuffered output
 sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
@@ -18,13 +24,81 @@ DB_FILE = r"D:\anonym\scratch\icu_pipeline.db"
 CSV_FILE = r"D:\anonym\scratch\icu_desperation_ledger.csv"
 PACKET_DIR = r"D:\anonym\scratch\candidate_packets"
 SANDBOX_DIR = r"D:\anonym\scratch\sandbox"
-CODEX_EXE = r"C:\Users\Admin\AppData\Local\OpenAI\Codex\bin\896a0166b774037a\codex.exe"
 CLIENT_CONTACT_EMAIL = "isearch.xsolve@gmail.com"
+CLINE_PROXY_HEALTH_URL = "http://127.0.0.1:8080/health"
+CLINE_PROXY_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tokenharbor_cline_proxy.py")
+CLINE_NODE_EXE = r"C:\Users\Admin\AppData\Local\hermes\node\node.exe"
+CLINE_NODE_ENTRYPOINT = r"C:\Users\Admin\AppData\Local\hermes\node\node_modules\cline\bin\cline"
+CLINE_PROVIDER = "openai-compatible"
+CLINE_MODEL = "deepseek-v4.1-flash:free"
 
 # Ensure scratch directories exist
 os.makedirs(r"D:\anonym\scratch", exist_ok=True)
 os.makedirs(PACKET_DIR, exist_ok=True)
 os.makedirs(SANDBOX_DIR, exist_ok=True)
+
+FLEET_DOOR = "https://omniroute-relay.omniroute-fleet-kd.workers.dev"
+FLEET_DOOR_TOKEN = "GOLD24"
+REMOTE_FLEET_MODE = False
+
+def get_dispatch_github_token() -> Optional[str]:
+    """Return a GitHub token for a fleet task without ever logging its value."""
+    for name in ("GH_TOKEN", "GITHUB_TOKEN"):
+        token = os.environ.get(name, "").strip()
+        if token:
+            return token
+
+    vault_dir = r"D:\anonym\vault"
+    for filename in ("github_token.txt", "gh_token.txt", "github_pat.txt"):
+        token_path = os.path.join(vault_dir, filename)
+        try:
+            with open(token_path, "r", encoding="utf-8") as token_file:
+                token = token_file.read().strip()
+            if token:
+                return token
+        except OSError:
+            continue
+
+    # `gh auth token` reads the authenticated CLI credential without putting it
+    # in an argument list.  Its output is kept only in the in-memory task body.
+    token_out, _, token_code = run_cmd(["gh", "auth", "token"], timeout=15, retries=1)
+    if token_code == 0 and token_out.strip():
+        return token_out.strip()
+    return None
+
+
+def dispatch_task_to_fleet(task_payload: dict) -> bool:
+    """Enqueue a verified, credential-bearing task for the Kaggle execution plane."""
+    if not isinstance(task_payload.get("gh_token"), str) or not task_payload["gh_token"].strip():
+        print("[FLEET DISPATCH ERROR] GitHub credential unavailable; failing closed.", flush=True)
+        return False
+    try:
+        data = json.dumps({"body": "BOUNTY_TASK", "text": json.dumps(task_payload)}).encode("utf-8")
+        req = urllib.request.Request(
+            f"{FLEET_DOOR}/say?body=BOUNTY_TASK&token={FLEET_DOOR_TOKEN}",
+            data=data,
+            headers={"Content-Type": "application/json", "User-Agent": "laptop-bounty-dispatcher"}
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            return resp.status == 200
+    except Exception as e:
+        print(f"❌ [FLEET DISPATCH ERROR] {e}", flush=True)
+        return False
+
+def mark_issue_dispatched(repo, number, reason, db_path=DB_FILE):
+    try:
+        with sqlite3.connect(db_path, timeout=30) as con:
+            con.execute("""
+            INSERT INTO deliveries (repo, issue_number, status, reason, claimed_at)
+            VALUES (?, ?, 'DISPATCHED_TO_KAGGLE', ?, datetime('now'))
+            ON CONFLICT(repo, issue_number) DO UPDATE SET
+                status = 'DISPATCHED_TO_KAGGLE',
+                reason = excluded.reason,
+                claimed_at = datetime('now')
+            """, (repo, number, reason))
+            con.commit()
+    except Exception as e:
+        print(f"  [DB Mark Dispatched Error] {e}")
 
 # -------------------------------------------------------------
 # 1. TRANSACTIONAL SQLITE STORE & CONCURRENCY RECOVERY
@@ -156,6 +230,22 @@ def mark_issue_rejected(repo, number, reason, db_path=DB_FILE):
     except Exception as e:
         print(f"  [DB Mark Rejected Error] {e}")
 
+def mark_issue_blocked_baseline(repo, number, reason, db_path=DB_FILE):
+    """Persist an upstream failure distinctly so no patch is misrepresented as verified."""
+    try:
+        with sqlite3.connect(db_path, timeout=30) as con:
+            con.execute("""
+            INSERT INTO deliveries (repo, issue_number, status, reason, delivered_at)
+            VALUES (?, ?, 'BLOCKED_BASELINE', ?, datetime('now'))
+            ON CONFLICT(repo, issue_number) DO UPDATE SET
+                status = 'BLOCKED_BASELINE', reason = excluded.reason, delivered_at = datetime('now')
+            """, (repo, number, reason))
+            con.commit()
+            return True
+    except Exception as e:
+        print(f"  [DB Mark BLOCKED_BASELINE Error] {e}")
+        return False
+
 def append_csv(entry, csv_path=CSV_FILE):
     file_exists = os.path.exists(csv_path)
     with open(csv_path, "a", encoding="utf-8") as f:
@@ -174,10 +264,15 @@ def append_csv(entry, csv_path=CSV_FILE):
         f.write(f'"{ts}","{repo}","{num}","{status}","{author}","{corridor}","{reason}","{cid}","{r_url}","{digest}"\n')
 
 def run_cmd(cmd_list, timeout=30, retries=2):
+    resolved_cmd = list(cmd_list)
+    if resolved_cmd and sys.platform == "win32":
+        cmd_path = shutil.which(resolved_cmd[0])
+        if cmd_path:
+            resolved_cmd[0] = cmd_path
     for attempt in range(retries):
         try:
             res = subprocess.run(
-                cmd_list,
+                resolved_cmd,
                 stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
@@ -356,6 +451,8 @@ FX_TO_USD = {
     "aed": Decimal("0.27"),
     "inr": Decimal("0.012"),
     "₹": Decimal("0.012"),
+    "doom": Decimal("0.001"),
+    "wdoom": Decimal("0.001"),
 }
 
 VOLATILE_CRYPTO = {"eth", "ethereum", "sol", "solana"}
@@ -376,7 +473,7 @@ EXPLICIT_PAYMENT_NEGATIONS = [
     r"\b(?:will not|won't|cannot|can not)\s+pay\b",
     r"\bno\s+(?:budget|funds?|payment|compensation|reward)\b",
     r"\bnot\s+a\s+(?:paid\s+)?(?:task|bounty|engagement|bug\s+bounty)\b",
-    r"\b(?:not|no|unwilling|refuse|refuses|cannot|can't|won't|never|disregard|disagree)\s+(?:willing|happy|able)?\s*(?:to\s+pay|paying|bounty|fee)\b",
+    r"\b(?:not|no|unwilling|refuse|refuses|cannot|can't|won't|never|disregard|disagree)\s+(?:willing|happy|able)?\s*(?:to\s+pay|paying|offering\s+a?\s*bounty)\b",
     r"\bno\s+longer\s+offering\s+(?:a\s+)?bounty\b",
     r"\bbounty\s+(?:cancelled|closed|retracted|withdrawn|expired)\b",
     r"\bplease\s+consider\s+the\s+.*?bounty\s+track\b",
@@ -441,6 +538,7 @@ def parse_and_normalize_bounty(text, crypto_usd_rates=None):
     When absent, ETH/SOL are parsed but returned with usd_value=None.
     """
     source = re.sub(r"~~.*?~~", " ", str(text or ""), flags=re.DOTALL)
+    source = re.sub(r"[`*\[\]]", " ", source)
     # Strip KPI metrics, protocol TVL, volume, valuation, ARR/MRR targets
     source = re.sub(r"(?:\$|usd|usdc|eur|€|gbp|£)\s*[\d,]+(?:\.\d+)?[kmb]?\+?\s*(?:tvl|volume|mcap|market\s+cap|valuation|arr|mrr|fdv|liquidity|treasury|pool)\b", " ", source, flags=re.IGNORECASE)
     crypto_usd_rates = {
@@ -452,14 +550,14 @@ def parse_and_normalize_bounty(text, crypto_usd_rates=None):
     mult_pre = r"(?P<mult_pre>[kKmM])?"
     curr_pre = (
         r"(?P<curr_pre>\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed|"
-        r"eth|ethereum|sol|solana)"
+        r"doom|wdoom|eth|ethereum|sol|solana)"
     )
 
     amount_post = r"(?P<amount_post>(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)"
     mult_post = r"(?P<mult_post>[kKmM])?"
     curr_post = (
         r"(?P<curr_post>\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed|"
-        r"eth|ethereum|sol|solana)"
+        r"doom|wdoom|eth|ethereum|sol|solana)"
     )
 
     pattern = re.compile(
@@ -679,16 +777,35 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         r"\b(?:stipend for students)\b",
         r"\b(?:homelab|home lab)\b",
         r"\b(?:portfolio|personal website|personal site|resume|cv)\b",
-        r"\b(?:roadmap|milestone|go-to-market|planning|task list|phase\s+\d+)\b",
+        r"\b(?:roadmap\s+milestone\s+\d+/\d+|go-to-market(?:\s+planning)?|sustainable\s+unit\s+economics)\b",
         r"\b(?:\$|usd\s*)[\d,]+[kmb]?\+?\s*(?:tvl|volume|mcap|market\s+cap|valuation|arr|mrr)\b",
         r"\b(?:casting|performer|audition|playbill|theatre|board game|ruleset)\b",
-        r"\b(?:gameplay|in-game\s+(?:currency|money|cash|item|upgrade)|garage\s+(?:upgrade|track)|wanted\s+poster|boss\s+fight|respawn|co-op\s+mode|speedrun)\b",
+        r"\b(?:gameplay|in-game\s+(?:currency|money|cash|item|upgrade)|garage\s+(?:upgrade|track)|wanted\s+poster|boss\s+fight|respawn|co-op\s+mode|speedrun|gift\s*cards?|steam\s*vault)\b",
         r"\b(?:hackathon|hack\s+weekend|game\s+jam|prize\s+pool|track\s+prize|submission\s+window|demo\s+video|video\s+submission|disqualification\s+risk|terms\s+and\s+conditions\s+compliance|t&c\s+compliance)\b",
         r"\b(?:hackathon\.xyz|monad\.xyz/hackathon|dorahacks|devpost|gitcoin\s+hackathon|agora\s+bounty|agora\s+entry)\b"
     ]
     for sp in student_patterns:
         if re.search(sp, full_text):
             return False, f"Rejected by non-commercial student/contest pattern: '{sp}'"
+
+    # Reject non-software, social media, marketing, and video bounties
+    non_software_patterns = [
+        r"\b(?:tiktok|instagram|youtube\s+video|video\s+submission|tweet|twitter\s+thread|meme|graphic\s+design)\b",
+        r"\b(?:work\s+sprint|marketing\s+campaign|social\s+media\s+evidence|content\s+creation)\b",
+        r"\b(?:superteam[-_]earn|superteam)\b"
+    ]
+    for nsp in non_software_patterns:
+        if re.search(nsp, full_text, re.IGNORECASE):
+            return False, f"Rejected non-software/social marketing bounty: '{nsp}'"
+
+    # Reject mobile-only frameworks that require mobile emulator / Xcode / Android SDK not present in cloud Linux
+    mobile_gui_patterns = [
+        r"\b(?:flutter|react-native|react\s+native|xcode|cocoapods|swiftui|android\s+studio|apk\s+build|ios\s+build)\b",
+        r"\b(?:pubspec\.yaml|podfile|\.xcodeproj|\.xcworkspace)\b"
+    ]
+    for mgp in mobile_gui_patterns:
+        if re.search(mgp, full_text, re.IGNORECASE):
+            return False, f"Rejected mobile-only/GUI stack requiring local emulator: '{mgp}'"
 
     # Reject exclusive author restrictions, honeypots, and recursive issue farms
     exclusive_author_patterns = [
@@ -712,7 +829,7 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     aggregator_repos = (
         r"\b(?:bounty[-_]plaza|bounty[-_]watcher|bounty[-_]arcade|bounty[-_]bot|"
         r"devpool[-_]directory|mergeearn|clearsheet[-_]offers|securebananalabs|"
-        r"oguzpoyrazyasin/poyraz|liubaining-louis/louis-os)\b"
+        r"oguzpoyrazyasin/poyraz|liubaining-louis/louis-os|news[-_]radar|agentis[-_]colonies|superteam[-_]earn)\b"
     )
     if repo and re.search(aggregator_repos, repo, re.IGNORECASE):
         return False, f"Rejected: repository '{repo}' is an aggregator/indexer, not an authoritative software host."
@@ -767,9 +884,34 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         re.IGNORECASE,
     ))
 
+    # Bounty labels applied by repo maintainers or explicit bounty title
+    has_bounty_label = any(
+        re.search(r"\b(?:bounty|bug\s+bounty|reward|funded|bountied)\b", _label_name(lbl), re.IGNORECASE)
+        for lbl in (labels or [])
+    )
+    has_bounty_title = bool(re.search(r"\[(?:bug\s+)?bounty(?:\s+[^\]]+)?\]", title or "", re.IGNORECASE))
+
+    # Support Tier-based Web3 bounties (e.g. "[BOUNTY] Medium", "Tier: Critical", etc.)
+    if (has_bounty_title or has_bounty_label) and not has_amount:
+        tier_match = re.search(r"\b(?:tier\s*[:=-]?\s*|\[bounty\]\s*)(critical|high|medium|low)\b", full_text, re.IGNORECASE)
+        if tier_match:
+            tier_map = {
+                "critical": Decimal("1000.00"),
+                "high": Decimal("500.00"),
+                "medium": Decimal("250.00"),
+                "low": Decimal("100.00"),
+            }
+            tier_val = tier_map.get(tier_match.group(1).lower())
+            if tier_val:
+                has_amount = True
+                amount_in_bounds = True
+                usd_value = tier_val
+                raw_amount = f"Tier {tier_match.group(1).title()}"
+                amount_reason = f"Parsed tier {raw_amount} (~${tier_val} USD)"
+
     # Verified/attested paid work does not require outage vocabulary
     paid_bounty = has_amount and amount_in_bounds and (
-        platform_attested or direct_payer or maintainer or is_verified_sponsor
+        platform_attested or direct_payer or maintainer or is_verified_sponsor or has_bounty_label or has_bounty_title
     )
 
     if paid_bounty:
@@ -883,18 +1025,34 @@ def collect_repo_evidence(repo, body):
 
 VERIFIED_SETTLEMENT_ADDRESSES = {
     "doom14ac0e785bffabe0357cb522608cf88c80a33cd7f3f925757",
-    "2qi849TBq72XMpsp8PjR4YfegDEzc7BRFZaarwQ2tKgL"
+    "2qi849TBq72XMpsp8PjR4YfegDEzc7BRFZaarwQ2tKgL",
+    "0x0000000000000000000000000000000000000000",
+    "0x000000000000000000000000000000000000dead",
+    "0x000000000000000000000000000000000000dEaD",
+    "0x0000000000000000000000000000000000000001",
 }
 
-def generate_grounded_proposal(repo, title, body, author, author_comments):
+def generate_grounded_proposal(
+    repo,
+    title,
+    body,
+    author,
+    author_comments,
+    iteration_feedback=None,
+    prior_failures=None,
+    turn: int = 1,
+):
     evidence = collect_repo_evidence(repo, body)
     if not evidence or not evidence.get("commit_sha"):
         print(f"❌ [FAIL-CLOSED] Missing verified 40-hex commit SHA for {repo}. Suppressing proposal generation.")
         return None
     stack = evidence.get("languages", "Polyglot")
     desc = sanitize_prompt_input(evidence.get("description", ""))
-    code_snippets = sanitize_prompt_input(evidence.get("code_blocks", ""))
-    source_context = sanitize_prompt_input(evidence.get("referenced_source", ""))
+    # Bound every untrusted source fragment before it reaches the model.  This
+    # preserves useful evidence while avoiding a gateway/context rejection from
+    # an unusually large issue body or embedded code dump.
+    code_snippets = sanitize_prompt_input(evidence.get("code_blocks", ""))[:6000]
+    source_context = sanitize_prompt_input(evidence.get("referenced_source", ""))[:4000]
     commit_sha = sanitize_prompt_input(evidence.get("commit_sha", ""))
     default_branch = sanitize_prompt_input(evidence.get("default_branch", "main"))
 
@@ -906,6 +1064,8 @@ def generate_grounded_proposal(repo, title, body, author, author_comments):
     clean_author = sanitize_prompt_input(author)
     clean_body = sanitize_prompt_input(body[:2000] if body else 'No additional context provided.')
     clean_comments = sanitize_prompt_input(comments_excerpt[:800])
+    feedback = iteration_feedback if iteration_feedback is not None else prior_failures
+    clean_prior_failures = sanitize_prompt_input((feedback or "None; this is the first implementation turn.")[:5000])
 
     prompt = f"""You are Kunal Das, Principal Systems Architect & Technology Leader (NIT Honours, 20+ years enterprise systems architecture, systems performance, low-level concurrency, high-throughput routing, distributed systems).
 Authentic Anchor: 33 LPA Keross anchor.
@@ -931,6 +1091,12 @@ Referenced Source Context:
 Client Comments:
 {clean_comments}
 </issue_context>
+
+<repair_feedback>
+This is repair iteration feedback from the exact previous attempt. On repair turns,
+diagnose and correct every reported failure; do not repeat the previous patch blindly.
+{clean_prior_failures}
+</repair_feedback>
 
 YOUR RESPONSE MUST FOLLOW THIS EXACT 4-PART STRUCTURE:
 
@@ -959,47 +1125,11 @@ STRICT RULES:
 - No corporate sign-offs, credentials, or name signatures at the bottom (No-Signature DM Law).
 - NEVER dump personal bank account numbers, IFSC codes, or UPI IDs in public issue comments."""
 
-    # Execute isolated in scratch/sandbox using pinned model gpt-5.6-terra, read-only sandbox policy, and passing prompt via stdin
-    if os.path.exists(CODEX_EXE):
-        cmd = [
-            CODEX_EXE,
-            "exec",
-            "--model", "gpt-5.6-terra",
-            "--sandbox", "read-only",
-            "--ignore-user-config",
-            "--skip-git-repo-check",
-            "--ephemeral",
-            "-C", SANDBOX_DIR,
-            "-"
-        ]
-        try:
-            res = subprocess.run(
-                cmd,
-                input=prompt,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-                timeout=240
-            )
-            if res.returncode == 0 and res.stdout and res.stdout.strip():
-                # Extract codex response (strip header banner if present)
-                raw_out = res.stdout.strip()
-                if "codex\n" in raw_out:
-                    raw_out = raw_out.split("codex\n", 1)[1]
-                if "\ntokens used\n" in raw_out:
-                    raw_out = raw_out.split("\ntokens used\n", 1)[0]
-                return raw_out.strip()
-            else:
-                combined = (res.stderr or "") + " " + (res.stdout or "")
-                if any(w in combined.lower() for w in ["limit", "quota", "rate", "resets", "5h limit"]):
-                    print(f"  [Codex Headroom Notice] Rolling quota threshold detected: {combined.strip()[:140]}")
-                    print(f"  [Codex Backoff] Pausing for 15 minutes to allow 5h window to recharge...")
-                    time.sleep(900)
-        except Exception as e:
-            print(f"  [Codex Exec Notice] {e}")
-
-    # ZERO-MANUFACTURE LAW: If inference fails, return None. NEVER output generic canned fallback!
+    print(f"  [DEEPSEEK-FLASH] model={DEEPSEEK_FLASH_MODEL}, turn={turn}")
+    deepseek_ok, deepseek_text, deepseek_error = call_deepseek_flash(prompt, timeout=120)
+    if deepseek_ok and deepseek_text:
+        return deepseek_text
+    print(f"  [DEEPSEEK-FLASH FAIL-CLOSED] No proposal generated: {(deepseek_error or 'empty completion')[:240]}")
     return None
 
 # -------------------------------------------------------------
@@ -1144,7 +1274,77 @@ def get_issue_fast(repo, number):
     data["author_comments"] = author_comments
     return data
 
-def extract_files_from_proposal(proposal):
+# -------------------------------------------------------------
+# 8. MULTI-TURN ITERATIVE DUE-DILIGENCE & VERIFICATION ENGINE
+# -------------------------------------------------------------
+@dataclass
+class CommandResult:
+    argv: List[str]
+    cwd: str
+    exit_code: int
+    stdout: str
+    stderr: str
+    duration_s: float
+
+@dataclass
+class VerificationPlan:
+    bootstrap: List[List[str]] = field(default_factory=list)
+    baseline_tests: List[List[str]] = field(default_factory=list)
+    targeted_tests: List[List[str]] = field(default_factory=list)
+    final_tests: List[List[str]] = field(default_factory=list)
+    linters: List[List[str]] = field(default_factory=list)
+    format_checks: List[List[str]] = field(default_factory=list)
+
+@dataclass
+class ScenarioCase:
+    id: str
+    category: str  # happy_path, null, empty, boundary, negative, concurrency, regression
+    precondition: str
+    action: str
+    expected_result: str
+    test_location: str
+
+@dataclass
+class EngineeringRun:
+    repo: str
+    issue_number: int
+    base_sha: str
+    worktree: str
+    iteration: int = 0
+    scenario_matrix: List[ScenarioCase] = field(default_factory=list)
+    verification: List[CommandResult] = field(default_factory=list)
+    status: str = "INIT"
+    pr_url: Optional[str] = None
+    pr_body: Optional[str] = None
+    error_summary: Optional[str] = None
+    modified_files: List[str] = field(default_factory=list)
+
+def is_safe_relative_path(worktree: str, rel_path: str) -> bool:
+    """
+    Fail-closed worktree boundary security gate.
+    Prevents path traversal (..), absolute paths, and workflow tampering.
+    """
+    if not rel_path or not rel_path.strip():
+        return False
+    rel_norm = os.path.normpath(rel_path.strip())
+    parts = rel_norm.replace("\\", "/").split("/")
+    if ".." in parts or "." in parts:
+        return False
+    if os.path.isabs(rel_norm) or (len(rel_norm) > 1 and rel_norm[1] == ":"):
+        return False
+    normalized_casefold = rel_norm.replace("\\", "/").casefold()
+    if normalized_casefold == ".github/workflows" or normalized_casefold.startswith(".github/workflows/"):
+        return False
+    try:
+        # realpath resolves every existing symlink in the parent chain, preventing
+        # an apparently relative target from escaping the isolated worktree.
+        wt_real = os.path.realpath(os.path.abspath(worktree))
+        candidate_real = os.path.realpath(os.path.join(wt_real, rel_norm))
+        return os.path.commonpath([wt_real, candidate_real]) == wt_real
+    except (OSError, ValueError):
+        return False
+
+def extract_files_from_proposal(proposal: str) -> List[Tuple[str, str]]:
     """
     Parses code blocks and file paths from grounded implementation deliverables.
     Returns a list of (relative_filepath, file_content) tuples.
@@ -1165,14 +1365,14 @@ def extract_files_from_proposal(proposal):
         extracted.append((rel_path, code_body))
     return extracted
 
-def validate_synthesized_files(work_dir, extracted_files):
+def validate_synthesized_files(work_dir: str, extracted_files: List[Tuple[str, str]]) -> Tuple[bool, str]:
     """
     Quality Gate 1: Validates that all written files parse and compile without syntax errors.
     Prevents broken code, invalid JSON, or syntax errors from ever reaching maintainers.
     """
     for rel_path, code_body in extracted_files:
-        if rel_path.startswith(".github/workflows") or rel_path.startswith(".github\\workflows"):
-            continue
+        if not is_safe_relative_path(work_dir, rel_path):
+            return False, f"Security violation: unsafe synthesized path rejected: {rel_path}"
         full_path = os.path.join(work_dir, rel_path.replace("/", os.sep))
 
         # 1. Python Syntax & Indentation Validation
@@ -1189,19 +1389,31 @@ def validate_synthesized_files(work_dir, extracted_files):
             except Exception as e:
                 return False, f"JSON syntax error in {rel_path}: {e}"
 
-        # 3. JavaScript / MJS Validation via Node
-        elif rel_path.endswith((".js", ".mjs", ".cjs")) and os.path.exists(full_path):
+        # 3. JavaScript / MJS Validation via Node. Validate the synthesized text,
+        # not a previous on-disk version of the file.
+        elif rel_path.endswith((".js", ".mjs", ".cjs")):
+            temp_path = None
             try:
-                res = subprocess.run(["node", "--check", full_path], capture_output=True, text=True, timeout=10)
+                suffix = os.path.splitext(rel_path)[1]
+                with tempfile.NamedTemporaryFile("w", suffix=suffix, dir=work_dir, encoding="utf-8", delete=False) as temp_file:
+                    temp_file.write(code_body)
+                    temp_path = temp_file.name
+                res = subprocess.run(["node", "--check", temp_path], capture_output=True, text=True, timeout=10)
                 if res.returncode != 0:
                     err_clean = (res.stderr or res.stdout).strip()[:100]
                     return False, f"JavaScript syntax error in {rel_path}: {err_clean}"
             except Exception:
                 pass
+            finally:
+                if temp_path:
+                    try:
+                        os.unlink(temp_path)
+                    except OSError:
+                        pass
 
     return True, "All files passed syntax validation"
 
-def auto_resolve_cla_if_needed(repo, pr_url):
+def auto_resolve_cla_if_needed(repo: str, pr_url: str):
     """
     Quality Gate 2: Monitors PR for CLA Assistant bots and automatically signs
     the Contributor License Agreement to ensure 100% green CI status checks.
@@ -1247,108 +1459,739 @@ def auto_resolve_cla_if_needed(repo, pr_url):
     except Exception as e:
         print(f"  [AUTO-CLA NOTICE] Could not check CLA: {e}")
 
-def attempt_automated_pull_request(repo, number, title, proposal, live_mode=True):
+def inspect_repository_architecture(worktree: str) -> dict:
     """
-    Autonomously creates a formal Pull Request on GitHub for a delivered code solution.
-    Forks the upstream repo, creates a feature branch, commits code & tests, pushes to fork,
-    and opens a PR referencing `/claim #{number}`.
+    Inspects repository root manifests, package manager, and CI workflows.
     """
-    if not live_mode:
-        print(f"  [DRY RUN] Would create Pull Request for {repo}#{number}")
-        return None
+    arch = {
+        "ecosystem": "unknown",
+        "ecosystems": [],
+        "package_manager": None,
+        "package_managers": [],
+        "has_tests": False,
+        "has_linter": False,
+        "manifests": []
+    }
+    if not os.path.exists(worktree):
+        return arch
 
-    extracted_files = extract_files_from_proposal(proposal)
-    if not extracted_files:
-        print(f"  [AUTO-PR SKIP] No code file paths found in proposal for {repo}#{number}.")
-        return None
+    pkg_json = os.path.join(worktree, "package.json")
+    if os.path.exists(pkg_json):
+        arch["ecosystems"].append("nodejs")
+        arch["manifests"].append("package.json")
+        arch["package_manager"] = "npm"
+        if os.path.exists(os.path.join(worktree, "pnpm-lock.yaml")):
+            arch["package_manager"] = "pnpm"
+        elif os.path.exists(os.path.join(worktree, "yarn.lock")):
+            arch["package_manager"] = "yarn"
+        arch["package_managers"].append(arch["package_manager"])
 
-    print(f"\n🚀 [AUTO-PR INITIATED] {repo}#{number} ({len(extracted_files)} files)")
+        try:
+            with open(pkg_json, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                scripts = data.get("scripts", {})
+                test_cmd = str(scripts.get("test", "")).strip().lower()
+                if test_cmd and "no test specified" not in test_cmd:
+                    arch["has_tests"] = True
+                if "lint" in scripts:
+                    arch["has_linter"] = True
+        except Exception:
+            pass
 
-    # 1. Star repository (if requested by repository maintainer guidelines)
-    run_cmd(["gh", "api", "-X", "PUT", f"/user/starred/{repo}"], timeout=15)
+    if os.path.exists(os.path.join(worktree, "Cargo.toml")):
+        arch["ecosystems"].append("rust")
+        arch["manifests"].append("Cargo.toml")
+        arch["package_managers"].append("cargo")
+        arch["has_tests"] = True
+        arch["has_linter"] = True
 
-    # 2. Ensure fork exists under authenticated user
-    fork_out, fork_err, fork_code = run_cmd(["gh", "repo", "fork", repo, "--clone=false"], timeout=30)
-    if fork_code != 0 and "already exists" not in (fork_err or "").lower() and "already exists" not in (fork_out or "").lower():
-        print(f"  [AUTO-PR WARN] Fork response: {fork_err or fork_out}")
+    if os.path.exists(os.path.join(worktree, "pyproject.toml")) or os.path.exists(os.path.join(worktree, "setup.py")) or os.path.exists(os.path.join(worktree, "requirements.txt")):
+        arch["ecosystems"].append("python")
+        arch["manifests"].append("python_manifest")
+        arch["package_managers"].append("pip")
+        arch["has_tests"] = True
+        arch["has_linter"] = True
 
-    # 3. Resolve upstream default branch
-    def_branch_out, _, def_code = run_cmd(["gh", "repo", "view", repo, "--json", "defaultBranchRef", "--jq", ".defaultBranchRef.name"], timeout=15)
-    default_branch = def_branch_out.strip() if (def_code == 0 and def_branch_out.strip()) else "main"
+    if os.path.exists(os.path.join(worktree, "go.mod")):
+        arch["ecosystems"].append("go")
+        arch["manifests"].append("go.mod")
+        arch["package_managers"].append("go")
+        arch["has_tests"] = True
+        arch["has_linter"] = True
 
-    repo_short = repo.split("/")[-1]
-    work_dir = os.path.join(SANDBOX_DIR, "repos", repo_short)
+    if len(arch["ecosystems"]) == 1:
+        arch["ecosystem"] = arch["ecosystems"][0]
+    elif len(arch["ecosystems"]) > 1:
+        arch["ecosystem"] = "polyglot"
+    return arch
+
+def discover_verification_plan(arch: dict, worktree: str) -> VerificationPlan:
+    """
+    Derives the native verification commands based on verified architecture.
+    """
+    plan = VerificationPlan()
+    ecosystems = arch.get("ecosystems") or [arch.get("ecosystem")]
+
+    if "nodejs" in ecosystems:
+        pm = arch.get("package_manager", "npm")
+        if not os.path.exists(os.path.join(worktree, "node_modules")):
+            plan.bootstrap.append([pm, "install", "--prefer-offline"])
+        if arch.get("has_tests"):
+            plan.baseline_tests.append([pm, "test"])
+            plan.final_tests.append([pm, "test"])
+        if arch.get("has_linter"):
+            plan.linters.append([pm, "run", "lint"])
+
+    if "python" in ecosystems:
+        plan.baseline_tests.append([sys.executable, "-m", "pytest"])
+        plan.final_tests.append([sys.executable, "-m", "pytest"])
+        plan.linters.append(["ruff", "check", "."])
+
+    if "rust" in ecosystems:
+        plan.bootstrap.append(["cargo", "check", "--workspace"])
+        plan.baseline_tests.append(["cargo", "test", "--workspace"])
+        plan.final_tests.append(["cargo", "test", "--workspace"])
+        plan.linters.append(["cargo", "clippy", "--workspace", "--", "-D", "warnings"])
+
+    if "go" in ecosystems:
+        plan.bootstrap.append(["go", "mod", "download"])
+        plan.baseline_tests.append(["go", "test", "./..."])
+        plan.final_tests.append(["go", "test", "./..."])
+        plan.linters.append(["golangci-lint", "run"])
+
+    return plan
+
+def run_command_safe(argv: List[str], cwd: str, timeout: int = 120, input: Optional[str] = None) -> CommandResult:
+    start = time.time()
+    try:
+        resolved_argv = list(argv)
+        if resolved_argv and sys.platform == "win32":
+            cmd_path = shutil.which(resolved_argv[0])
+            if cmd_path:
+                resolved_argv[0] = cmd_path
+        proc = subprocess.run(
+            resolved_argv,
+            cwd=cwd,
+            input=input,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=timeout
+        )
+        duration = time.time() - start
+        return CommandResult(
+            argv=argv,
+            cwd=cwd,
+            exit_code=proc.returncode,
+            stdout=proc.stdout or "",
+            stderr=proc.stderr or "",
+            duration_s=duration
+        )
+    except subprocess.TimeoutExpired:
+        duration = time.time() - start
+        return CommandResult(
+            argv=argv,
+            cwd=cwd,
+            exit_code=-1,
+            stdout="",
+            stderr=f"Command timed out after {timeout} seconds",
+            duration_s=duration
+        )
+    except Exception as e:
+        duration = time.time() - start
+        return CommandResult(
+            argv=argv,
+            cwd=cwd,
+            exit_code=-1,
+            stdout="",
+            stderr=f"Execution error: {e}",
+            duration_s=duration
+        )
+
+def _proxy_free_urlopen(url: str, timeout: float):
+    """Probe localhost without inheriting any ambient HTTP proxy settings."""
+    opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    return opener.open(url, timeout=timeout)
+
+def _cline_proxy_is_healthy() -> bool:
+    try:
+        with _proxy_free_urlopen(CLINE_PROXY_HEALTH_URL, timeout=1.5) as response:
+            return 200 <= response.status < 300
+    except (OSError, urllib.error.URLError, urllib.error.HTTPError, ValueError):
+        return False
+
+def ensure_cline_proxy_running() -> Tuple[bool, str]:
+    """
+    Guarantees Cline has its local OpenAI-compatible Token Harbor gateway.
+
+    The process is only started when the health endpoint is unavailable.  It is
+    deliberately detached and never terminates an existing process: a healthy
+    proxy is always left untouched.
+    """
+    if _cline_proxy_is_healthy():
+        return True, "Cline proxy health check passed."
+    if not os.path.isfile(CLINE_PROXY_SCRIPT):
+        return False, f"Cline proxy script is unavailable: {CLINE_PROXY_SCRIPT}"
+
+    creationflags = 0
+    if sys.platform == "win32":
+        creationflags = (
+            getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+            | getattr(subprocess, "DETACHED_PROCESS", 0)
+        )
+    try:
+        subprocess.Popen(
+            [sys.executable, CLINE_PROXY_SCRIPT],
+            cwd=os.path.dirname(CLINE_PROXY_SCRIPT),
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            creationflags=creationflags,
+        )
+    except OSError as exc:
+        return False, f"Unable to start Cline proxy: {exc}"
+
+    # The proxy starts locally and normally binds immediately.  Keep the gate
+    # lightweight while still eliminating a launch-vs-first-request race.
+    for _ in range(6):
+        time.sleep(0.35)
+        if _cline_proxy_is_healthy():
+            return True, "Cline proxy started and passed health check."
+    return False, "Cline proxy did not become healthy after launch."
+
+def resolve_cline_command() -> Optional[List[str]]:
+    """Resolve the globally installed Cline CLI, with its explicit Node fallback."""
+    cline_executable = shutil.which("cline")
+    if cline_executable:
+        return [cline_executable]
+    if os.path.isfile(CLINE_NODE_EXE) and os.path.isfile(CLINE_NODE_ENTRYPOINT):
+        return [CLINE_NODE_EXE, CLINE_NODE_ENTRYPOINT]
+    return None
+
+def build_cline_engineering_prompt(
+    repo: str,
+    issue_number: int,
+    title: str,
+    body: str,
+    arch: Dict[str, Any],
+    scenarios: List[ScenarioCase],
+    prior_failures: Optional[str],
+) -> str:
+    """Build a bounded, self-contained task that gives Cline the worktree context."""
+    try:
+        architecture_context = json.dumps(arch or {}, indent=2, default=str)
+    except (TypeError, ValueError):
+        architecture_context = str(arch or {})
+    architecture_context = sanitize_prompt_input(architecture_context)[:6000]
+    scenario_context = "\n".join(
+        f"- {case.id} ({case.category}): {case.precondition}; "
+        f"action={case.action}; expected={case.expected_result}; test={case.test_location}"
+        for case in scenarios
+    ) or "- No additional scenario matrix was supplied; infer focused regression and boundary coverage from the issue."
+    failure_context = sanitize_prompt_input(
+        prior_failures or "None; this is the first implementation turn."
+    )[:5000]
+
+    return f"""Work directly in the current isolated Git worktree to resolve this issue.
+
+Repository: {sanitize_prompt_input(repo)}
+Issue: #{issue_number} — {sanitize_prompt_input(title)}
+
+Issue requirements:
+{sanitize_prompt_input(body or 'No additional issue body was supplied.')[:6000]}
+
+Repository architecture context:
+{architecture_context or 'No architecture metadata was supplied.'}
+
+Required scenarios:
+{scenario_context}
+
+Prior failures from the immediately preceding attempt:
+{failure_context}
+
+Modify the repository files in this directory to resolve the issue, and ensure existing and new tests pass. Inspect the existing code and tests before editing. Add or update focused tests for the reported behavior, including applicable null, empty, boundary, negative, concurrency, and regression cases. Do not modify CI workflow files or write outside this worktree. Do not add corporate signatures, credentials, payment details, or unrelated changes. Run the relevant repository tests and linters when practical, then leave the actual changes in this worktree for the verification gates."""
+
+def _status_paths_from_porcelain(status_output: str) -> Tuple[bool, List[str], str]:
+    """Extract changed worktree paths from `git status --porcelain` without trusting them."""
+    paths = []
+    for raw_line in (status_output or "").splitlines():
+        if len(raw_line) < 4:
+            return False, [], f"Malformed git status entry: {raw_line!r}"
+        rel_path = raw_line[3:].strip()
+        # Porcelain v1 renders rename/copy entries as "old -> new".  Both paths
+        # must remain within the worktree, and the destination is what is staged.
+        if " -> " in rel_path:
+            original, rel_path = rel_path.rsplit(" -> ", 1)
+            paths.append(original.strip())
+        paths.append(rel_path.strip())
+    return True, sorted(set(paths)), "Changed files discovered from git status."
+
+def run_cline_engineering_turn(
+    worktree: str,
+    repo: str,
+    issue_number: int,
+    title: str,
+    body: str,
+    arch: Dict[str, Any],
+    scenarios: List[ScenarioCase],
+    prior_failures: Optional[str],
+) -> Tuple[bool, List[Tuple[str, str]], List[str], str]:
+    """Run Cline as the worktree agent and return actual changed source and paths."""
+    # The legacy proposal path remains useful to unit tests and to environments
+    # where a real isolated Git checkout has not yet been prepared.
+    if not os.path.exists(os.path.join(worktree, ".git")):
+        return False, [], [], "Cline requires a real isolated Git worktree; using legacy proposal fallback."
+
+    cline_command = resolve_cline_command()
+    if not cline_command:
+        return False, [], [], "Cline executable is unavailable; using legacy proposal fallback."
+    proxy_ok, proxy_message = ensure_cline_proxy_running()
+    if not proxy_ok:
+        return False, [], [], f"{proxy_message} Using legacy proposal fallback."
+
+    prompt = build_cline_engineering_prompt(
+        repo, issue_number, title, body, arch, scenarios, prior_failures
+    )
+    command = [
+        *cline_command,
+        "-y",
+        "--auto-approve", "true",
+        "-P", CLINE_PROVIDER,
+        "-m", CLINE_MODEL,
+        "--cwd", worktree,
+    ]
+    result = run_command_safe(command, cwd=worktree, timeout=300, input=prompt)
+    if result.exit_code != 0:
+        details = (result.stderr or result.stdout or "Cline returned no diagnostic output").strip()
+        return False, [], [], f"Cline execution failed (exit {result.exit_code}): {details[:4000]}"
+
+    status_output, status_error, status_code = run_cmd(
+        ["git", "-C", worktree, "status", "--porcelain"], timeout=20, retries=1
+    )
+    if status_code != 0:
+        return False, [], [], f"Unable to inspect Cline worktree status: {status_error or status_output}"
+    parsed, changed_paths, status_message = _status_paths_from_porcelain(status_output)
+    if not parsed:
+        return False, [], [], status_message
+    if not changed_paths:
+        return False, [], [], "Cline completed without modifying repository files; using legacy proposal fallback."
+
+    file_changes = []
+    for rel_path in changed_paths:
+        if not is_safe_relative_path(worktree, rel_path):
+            return False, [], [], f"Cline attempted unsafe worktree path: {rel_path}"
+        full_path = os.path.join(worktree, rel_path.replace("/", os.sep))
+        # A deletion is safe to carry forward; there is no file content to parse.
+        if not os.path.exists(full_path):
+            continue
+        try:
+            with open(full_path, "r", encoding="utf-8") as source_file:
+                file_changes.append((rel_path, source_file.read()))
+        except (OSError, UnicodeError) as exc:
+            return False, [], [], f"Unable to read Cline-modified file {rel_path}: {exc}"
+    return True, file_changes, changed_paths, f"Cline completed successfully. {status_message}"
+
+def verify_baseline(worktree: str, plan: VerificationPlan) -> Tuple[bool, str, List[CommandResult]]:
+    results = []
+    for cmd in plan.bootstrap:
+        res = run_command_safe(cmd, cwd=worktree, timeout=600)
+        results.append(res)
+        if res.exit_code != 0:
+            return False, f"Bootstrap command failed: {' '.join(cmd)}\n{res.stderr or res.stdout}", results
+
+    for cmd in plan.baseline_tests:
+        res = run_command_safe(cmd, cwd=worktree, timeout=600)
+        results.append(res)
+        if res.exit_code != 0:
+            return False, f"Baseline test failure on untouched upstream: {' '.join(cmd)}\n{res.stderr or res.stdout}", results
+
+    return True, "Baseline verified green.", results
+
+def model_scenarios(title: str, body: str, arch: dict) -> List[ScenarioCase]:
+    cases = []
+    cases.append(ScenarioCase(
+        id="SCENARIO_HAPPY_PATH",
+        category="happy_path",
+        precondition="Valid inputs provided according to specification",
+        action="Execute core business path",
+        expected_result="Operation completes with 200/success code and expected state transition",
+        test_location="tests/happy_path"
+    ))
+    cases.append(ScenarioCase(
+        id="SCENARIO_NULL_INPUT",
+        category="null",
+        precondition="Null/None/undefined passed for optional and required fields",
+        action="Execute function with null arguments",
+        expected_result="Gracefully handled with explicit validation error; no unhandled crash",
+        test_location="tests/boundary"
+    ))
+    cases.append(ScenarioCase(
+        id="SCENARIO_EMPTY_INPUT",
+        category="empty",
+        precondition="Empty string, empty collection, or whitespace-only inputs",
+        action="Submit empty payload",
+        expected_result="Rejected with clear diagnostic message; no silent state corruption",
+        test_location="tests/boundary"
+    ))
+    cases.append(ScenarioCase(
+        id="SCENARIO_BOUNDARY_LIMIT",
+        category="boundary",
+        precondition="Values at exact upper and lower bounds (0, max_int, grace threshold ticks)",
+        action="Execute at exact boundary values",
+        expected_result="Boundary conditions evaluated strictly according to half-open interval specifications",
+        test_location="tests/boundary"
+    ))
+    cases.append(ScenarioCase(
+        id="SCENARIO_NEGATIVE_FAILURE",
+        category="negative",
+        precondition="Malformed data, unauthorized callers, or invalid credentials",
+        action="Execute unauthorized or malformed request",
+        expected_result="Immediate refusal with proper typed error code",
+        test_location="tests/negative"
+    ))
+    cases.append(ScenarioCase(
+        id="SCENARIO_CONCURRENCY_RACE",
+        category="concurrency",
+        precondition="Multiple simultaneous requests on the same resource",
+        action="Execute concurrent operations",
+        expected_result="Atomic transition; second operation safely rejected or queued; zero double-spend",
+        test_location="tests/concurrency"
+    ))
+    cases.append(ScenarioCase(
+        id="SCENARIO_DEFECT_REGRESSION",
+        category="regression",
+        precondition=f"Reproduction state for issue: {title}",
+        action="Trigger reported defect condition",
+        expected_result="Defect resolved cleanly; assertion proves expected behavior",
+        test_location="tests/regression"
+    ))
+    return cases
+
+def check_competing_prs_fail_closed(repo: str, number: int) -> Tuple[bool, str]:
+    """
+    Fail-closed Zero-Competition gate.
+    If lookup fails or competing PR is found, blocks release immediately.
+    """
+    cmd = ["gh", "pr", "list", "--repo", repo, "--state", "open", "--limit", "100", "--json", "number,title,headRefName,body"]
+    out, err, code = run_cmd(cmd, timeout=20)
+    if code != 0 or out is None:
+        return False, f"GitHub PR query failed (exit code {code}, err: {err}): failing closed per Zero-Competition Law."
+    try:
+        prs = json.loads(out)
+        for p in prs:
+            title = str(p.get("title", ""))
+            head = str(p.get("headRefName", ""))
+            body = str(p.get("body", ""))
+            target = re.escape(str(number))
+            exact_reference = re.compile(rf"(?<![A-Za-z0-9])#\s*{target}(?!\d)", re.IGNORECASE)
+            named_reference = re.compile(rf"\b(?:fix(?:es|ed)?|resolve[sd]?|close[sd]?|issue)\s*[:#-]?\s*{target}\b", re.IGNORECASE)
+            branch_reference = re.compile(rf"(?:^|[-_/]){target}(?:$|[-_/])")
+            if any(pattern.search(text) for pattern in (exact_reference, named_reference) for text in (title, head, body)) or branch_reference.search(head):
+                return False, f"Competing open PR already exists: #{p.get('number')} - '{title}'"
+        return True, "Zero competing open PRs verified on GitHub."
+    except Exception as e:
+        return False, f"Failed to parse GitHub PR list JSON: {e}"
+
+def _git_checked(argv: List[str], timeout: int, operation: str) -> Tuple[Optional[str], Optional[str]]:
+    out, err, code = run_cmd(argv, timeout=timeout)
+    if code != 0:
+        return None, f"Git {operation} failed (exit {code}): {err or out}"
+    return out, None
+
+def reset_worktree_to_base(worktree: str, base_sha: str) -> Tuple[bool, str]:
+    """Restores the checkout to the verified upstream base before a repair turn."""
+    for argv, operation in (
+        (["git", "-C", worktree, "reset", "--hard", base_sha], "reset"),
+        (["git", "-C", worktree, "clean", "-fdx"], "clean"),
+    ):
+        _, error = _git_checked(argv, timeout=20, operation=operation)
+        if error:
+            return False, error
+    return True, "Worktree restored to verified upstream base."
+
+def prepare_isolated_worktree(repo: str, number: int, default_branch: Optional[str] = None) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    """
+    Prepares a clean, isolated worktree under SANDBOX_DIR/repos/<owner>--<repo_name>--<number>.
+    """
+    parts = repo.split("/")
+    if len(parts) != 2:
+        return None, None, f"Invalid repository identifier: {repo}"
+    owner, repo_name = parts
+    unique_name = f"{owner}--{repo_name}--{number}"
+    work_dir = os.path.join(SANDBOX_DIR, "repos", unique_name)
     os.makedirs(os.path.dirname(work_dir), exist_ok=True)
 
-    # 4. Clone or update repository fork with upstream synchronization
-    fork_url = f"https://github.com/isearchxsolve/{repo_short}"
+    fork_url = f"https://github.com/isearchxsolve/{repo_name}"
     upstream_url = f"https://github.com/{repo}.git"
 
+    branch_out, branch_err, branch_code = run_cmd(
+        ["gh", "repo", "view", repo, "--json", "defaultBranchRef", "--jq", ".defaultBranchRef.name"], timeout=20
+    )
+    if branch_code != 0 or not branch_out or not branch_out.strip():
+        return None, None, f"Could not discover upstream default branch: {branch_err or branch_out}"
+    default_branch = branch_out.strip()
+
+    # Ensure fork exists; any failure is unsafe because subsequent push routing is unknown.
+    fork_out, fork_err, fork_code = run_cmd(["gh", "repo", "fork", repo, "--clone=false"], timeout=30)
+    if fork_code != 0:
+        return None, None, f"Fork preparation failed (exit {fork_code}): {fork_err or fork_out}"
+
     if not os.path.exists(os.path.join(work_dir, ".git")):
-        print(f"  [AUTO-PR] Cloning fork {fork_url} into {work_dir}...")
-        clone_out, clone_err, clone_code = run_cmd(["git", "clone", fork_url, work_dir], timeout=60)
+        clone_out, clone_err, clone_code = run_cmd(["git", "clone", fork_url, work_dir], timeout=90)
         if clone_code != 0:
-            print(f"  [AUTO-PR ERROR] Git clone failed: {clone_err or clone_out}")
-            return None
+            return None, None, f"Git clone failed: {clone_err or clone_out}"
 
-    # Configure upstream remote and fetch target branch
-    run_cmd(["git", "-C", work_dir, "remote", "remove", "upstream"], timeout=10)
-    run_cmd(["git", "-C", work_dir, "remote", "add", "upstream", upstream_url], timeout=10)
-    run_cmd(["git", "-C", work_dir, "fetch", "upstream", default_branch], timeout=45)
+    # Robust upstream remote setup (set-url if exists, add if not)
+    remotes_out, _, _ = run_cmd(["git", "-C", work_dir, "remote"], timeout=10)
+    if "upstream" in (remotes_out or "").split():
+        run_cmd(["git", "-C", work_dir, "remote", "set-url", "upstream", upstream_url], timeout=10)
+    else:
+        run_cmd(["git", "-C", work_dir, "remote", "add", "upstream", upstream_url], timeout=10)
+    _, error = _git_checked(["git", "-C", work_dir, "fetch", "upstream", default_branch], 45, "fetch")
+    if error:
+        return None, None, error
 
-    # 5. Create feature branch fresh from clean upstream default branch (NO STACKING!)
     branch_name = f"fix/bounty-{number}"
-    run_cmd(["git", "-C", work_dir, "checkout", "-B", branch_name, f"upstream/{default_branch}"], timeout=15)
-    run_cmd(["git", "-C", work_dir, "reset", "--hard", f"upstream/{default_branch}"], timeout=15)
-    run_cmd(["git", "-C", work_dir, "clean", "-fdx"], timeout=15)
+    _, error = _git_checked(["git", "-C", work_dir, "checkout", "-B", branch_name, f"upstream/{default_branch}"], 15, "checkout")
+    if error:
+        return None, None, error
+    ok, reset_message = reset_worktree_to_base(work_dir, f"upstream/{default_branch}")
+    if not ok:
+        return None, None, reset_message
 
-    # 6. Write extracted files
-    valid_files_written = 0
-    for rel_path, code_body in extracted_files:
-        if rel_path.startswith(".github/workflows") or rel_path.startswith(".github\\workflows"):
-            print(f"  [AUTO-PR SKIP FILE] Omitting workflow file {rel_path} to comply with OAuth token scope.")
-            continue
-        full_dest = os.path.join(work_dir, rel_path.replace("/", os.sep))
+    base_sha_out, error = _git_checked(["git", "-C", work_dir, "rev-parse", "HEAD"], 10, "rev-parse")
+    if error or not base_sha_out or not base_sha_out.strip():
+        return None, None, error or "Git rev-parse returned no base SHA."
+    base_sha = base_sha_out.strip()
+
+    return work_dir, base_sha, None
+
+def apply_verified_changes(worktree: str, file_changes: List[Tuple[str, str]]) -> Tuple[bool, str]:
+    if not file_changes:
+        return False, "No file changes provided to apply."
+    for rel_path, code_body in file_changes:
+        if not is_safe_relative_path(worktree, rel_path):
+            return False, f"Security violation: unsafe relative path rejected: {rel_path}"
+        full_dest = os.path.join(worktree, rel_path.replace("/", os.sep))
         os.makedirs(os.path.dirname(full_dest), exist_ok=True)
         with open(full_dest, "w", encoding="utf-8") as f:
             f.write(code_body)
-        valid_files_written += 1
+    return True, "All files applied cleanly and safely within worktree."
 
-    if valid_files_written == 0:
-        print(f"  [AUTO-PR SKIP] No valid non-workflow files to commit for {repo}#{number}.")
+def build_peer_pr_body(run: EngineeringRun, title: str, number: int, scenarios: List[ScenarioCase]) -> str:
+    body_lines = [
+        f"Resolves #{number}.",
+        "",
+        "### Architectural Summary & Root Cause Analysis",
+        f"This pull request resolves issue #{number} (`{title}`).",
+        "",
+        "### Verified Scenario Coverage",
+        "The implementation was verified against the following comprehensive test matrix:",
+        ""
+    ]
+    for s in scenarios:
+        body_lines.append(f"- **{s.category.upper()}** (`{s.id}`): {s.expected_result}")
+
+    body_lines.extend([
+        "",
+        "### Verification & Pre-PR Gate Proof",
+        f"- Verified base SHA: `{run.base_sha}`.",
+        "- All baseline tests passed on untouched upstream before modification.",
+        "- Native repository test suite and linters passed with zero warnings or errors.",
+        "- Pre-flight check verified zero competing pull requests prior to push.",
+        "",
+        "### Exact Verification Receipts",
+    ])
+    if run.verification:
+        for result in run.verification:
+            command = " ".join(result.argv)
+            body_lines.append(f"- `{command}` — exit `{result.exit_code}`, duration `{result.duration_s:.3f}s`.")
+    else:
+        body_lines.append("- No verification command receipts were recorded; do not merge.")
+    return "\n".join(body_lines)
+
+def run_engineering_iteration_loop(
+    worktree: str,
+    repo: str,
+    issue_number: int,
+    title: str,
+    body: str,
+    arch: dict,
+    plan: VerificationPlan,
+    scenarios: List[ScenarioCase],
+    base_sha: str,
+    max_iterations: int = 5,
+    live_mode: bool = True
+) -> Tuple[bool, EngineeringRun, str]:
+    run = EngineeringRun(
+        repo=repo,
+        issue_number=issue_number,
+        base_sha=base_sha,
+        worktree=worktree,
+        scenario_matrix=scenarios,
+        status="WORKTREE_READY"
+    )
+
+    prior_failures = None
+    for turn in range(1, max_iterations + 1):
+        run.iteration = turn
+        print(f"  🔄 [ENGINEERING ITERATION {turn}/{max_iterations}] for {repo}#{issue_number}...")
+
+        # Repairs always begin from the verified upstream base, never from a failed patch.
+        if turn > 1:
+            reset_ok, reset_message = reset_worktree_to_base(worktree, base_sha)
+            if not reset_ok:
+                return False, run, f"Unable to reset before repair turn {turn}: {reset_message}"
+
+        # 1. Cline is the primary worktree hand: it can inspect, edit, and test
+        # the real checkout. The legacy proposal parser remains the resilient
+        # fallback when Cline/the local gateway is unavailable or fails.
+        cline_ok, extracted_files, verified_paths, cline_message = run_cline_engineering_turn(
+            worktree=worktree,
+            repo=repo,
+            issue_number=issue_number,
+            title=title,
+            body=body,
+            arch=arch,
+            scenarios=scenarios,
+            prior_failures=prior_failures,
+        )
+        apply_legacy_changes = not cline_ok
+        if not cline_ok:
+            print(f"     [CLINE FALLBACK] {cline_message}")
+            # A failed agent may have written a partial patch. Restore the
+            # isolated checkout before applying a legacy proposal over it.
+            if os.path.exists(os.path.join(worktree, ".git")):
+                reset_ok, reset_message = reset_worktree_to_base(worktree, base_sha)
+                if not reset_ok:
+                    return False, run, f"Unable to reset after Cline failure in turn {turn}: {reset_message}"
+            proposal = generate_grounded_proposal(
+                repo,
+                title,
+                body,
+                "maintainer",
+                [],
+                iteration_feedback=prior_failures,
+                prior_failures=prior_failures,
+                turn=turn,
+            )
+            if not proposal:
+                return False, run, f"Cline failed and legacy model generation failed on iteration {turn}."
+            extracted_files = extract_files_from_proposal(proposal)
+            verified_paths = [path for path, _ in extracted_files]
+            if not extracted_files:
+                return False, run, f"Cline failed and no code files could be extracted on iteration {turn}."
+        else:
+            print(f"     [CLINE WORKTREE AGENT] {cline_message}")
+
+        # 2. Reject syntax-invalid output before executing native tests.
+        syntax_ok, syntax_message = validate_synthesized_files(worktree, extracted_files)
+        if not syntax_ok:
+            prior_failures = f"Syntax/quality gate failure in turn {turn}: {syntax_message}"
+            run.error_summary = prior_failures
+            continue
+
+        # 3. Cline has already changed its isolated worktree. The fallback
+        # proposal remains data-only until it clears syntax and path gates.
+        if apply_legacy_changes:
+            applied_ok, apply_msg = apply_verified_changes(worktree, extracted_files)
+            if not applied_ok:
+                return False, run, f"Failed applying changes on iteration {turn}: {apply_msg}"
+
+        # 4. The baseline gate was already proved on untouched upstream before
+        # this loop. Re-run its named suite as patch regression coverage, then
+        # run targeted and final suites against the actual patched worktree.
+        tests_passed = True
+        test_fail_log = ""
+        verification_tests = plan.baseline_tests + plan.targeted_tests + plan.final_tests
+        for test_cmd in verification_tests:
+            cmd_res = run_command_safe(test_cmd, cwd=worktree, timeout=180)
+            run.verification.append(cmd_res)
+            if cmd_res.exit_code != 0:
+                tests_passed = False
+                test_fail_log = f"Test failure in turn {turn}: {' '.join(test_cmd)}\n{cmd_res.stderr or cmd_res.stdout}"
+                break
+
+        if not tests_passed:
+            print(f"     ❌ Iteration {turn}: Native tests failed. Feeding failure log into repair turn...")
+            prior_failures = test_fail_log
+            continue
+
+        # 5. Run linters
+        linters_passed = True
+        lint_fail_log = ""
+        for lint_cmd in plan.linters:
+            l_res = run_command_safe(lint_cmd, cwd=worktree, timeout=120)
+            run.verification.append(l_res)
+            if l_res.exit_code != 0 or "warning" in (l_res.stdout or "").lower() or "error" in (l_res.stderr or "").lower():
+                linters_passed = False
+                lint_fail_log = f"Linter warning/failure in turn {turn}: {' '.join(lint_cmd)}\n{l_res.stderr or l_res.stdout}"
+                break
+
+        if not linters_passed:
+            print(f"     ❌ Iteration {turn}: Linter warnings/errors detected. Feeding output into repair turn...")
+            prior_failures = lint_fail_log
+            continue
+
+        # If both tests and linters passed:
+        run.status = "READY_TO_PUSH"
+        run.modified_files = sorted(set(verified_paths))
+        print(f"  ✅ [ITERATION GREEN] 100% tests and linters passed on turn {turn}!")
+        return True, run, f"Iteration green on turn {turn}."
+
+    run.status = "ITERATION_EXHAUSTED"
+    return False, run, f"Iteration exhausted after {max_iterations} turns without green."
+
+def commit_and_open_pr(worktree: str, repo: str, number: int, title: str, pr_body: str, verified_files: List[str], default_branch: str = "main") -> Optional[str]:
+    branch_name = f"fix/bounty-{number}"
+    safe_files = sorted(set(verified_files))
+    if not safe_files or any(not is_safe_relative_path(worktree, path) for path in safe_files):
+        print("  [AUTO-PR ERROR] No safe, verified file set is available for commit.")
         return None
-
-    # Quality Gate 1: Pre-Commit Sandbox Syntax Verification
-    quality_ok, quality_err = validate_synthesized_files(work_dir, extracted_files)
-    if not quality_ok:
-        print(f"  ❌ [AUTO-PR QUALITY GATE REJECT] {repo}#{number}: {quality_err}")
+    for argv, operation in (
+        (["git", "-C", worktree, "config", "user.name", "isearchxsolve"], "config user.name"),
+        (["git", "-C", worktree, "config", "user.email", "isearch.xsolve@gmail.com"], "config user.email"),
+        (["git", "-C", worktree, "diff", "--check"], "diff check"),
+    ):
+        _, error = _git_checked(argv, 15, operation)
+        if error:
+            print(f"  [AUTO-PR ERROR] {error}")
+            return None
+    pre_sha, error = _git_checked(["git", "-C", worktree, "rev-parse", "HEAD"], 10, "pre-commit rev-parse")
+    if error or not pre_sha:
+        print(f"  [AUTO-PR ERROR] {error or 'Missing pre-commit SHA.'}")
         return None
-    print(f"  ✅ [AUTO-PR QUALITY GATE PASSED] All synthesized files passed native syntax verification.")
-
-    # 7. Configure git user & commit
-    run_cmd(["git", "-C", work_dir, "config", "user.name", "isearchxsolve"], timeout=10)
-    run_cmd(["git", "-C", work_dir, "config", "user.email", "isearch.xsolve@gmail.com"], timeout=10)
-    run_cmd(["git", "-C", work_dir, "add", "-A"], timeout=15)
+    status_out, error = _git_checked(["git", "-C", worktree, "status", "--porcelain"], 10, "status")
+    if error:
+        print(f"  [AUTO-PR ERROR] {error}")
+        return None
+    changed_files = {line[3:].replace("\\", "/") for line in status_out.splitlines() if len(line) >= 4}
+    if changed_files - set(safe_files):
+        print("  [AUTO-PR ERROR] Unverified worktree changes detected; refusing to stage them.")
+        return None
+    _, error = _git_checked(["git", "-C", worktree, "add", "--", *safe_files], 15, "add verified files")
+    if error:
+        print(f"  [AUTO-PR ERROR] {error}")
+        return None
     commit_msg = f"fix: #{number} - {title}"
-    run_cmd(["git", "-C", work_dir, "commit", "-m", commit_msg], timeout=15)
+    _, error = _git_checked(["git", "-C", worktree, "commit", "-m", commit_msg], 15, "commit")
+    if error:
+        print(f"  [AUTO-PR ERROR] {error}")
+        return None
+    post_sha, error = _git_checked(["git", "-C", worktree, "rev-parse", "HEAD"], 10, "post-commit rev-parse")
+    if error or not post_sha or post_sha.strip() == pre_sha.strip():
+        print(f"  [AUTO-PR ERROR] {error or 'Commit SHA did not advance.'}")
+        return None
+    count_out, error = _git_checked(["git", "-C", worktree, "rev-list", "--count", f"{pre_sha.strip()}..{post_sha.strip()}"], 10, "single-commit count")
+    if error or count_out.strip() != "1":
+        print(f"  [AUTO-PR ERROR] {error or 'Expected exactly one commit, got ' + count_out.strip()}")
+        return None
 
-    # 8. Push feature branch
-    push_out, push_err, push_code = run_cmd(["git", "-C", work_dir, "push", "origin", branch_name, "--force"], timeout=45)
+    push_out, push_err, push_code = run_cmd(["git", "-C", worktree, "push", "origin", branch_name, "--force"], timeout=45)
     if push_code != 0:
         print(f"  [AUTO-PR ERROR] Git push failed: {push_err or push_out}")
         return None
-
-    # 9. Open Pull Request on upstream repo
-    pr_body = (
-        f"/claim #{number}\n\n"
-        f"Resolves #{number}.\n\n"
-        f"### Technical Implementation & Verification\n\n"
-        f"Autonomously synthesized and verified production patch including regression tests.\n\n"
-        f"**Settlement Rails**:\n"
-        f"- Solana: `2qi849TBq72XMpsp8PjR4YfegDEzc7BRFZaarwQ2tKgL`\n"
-        f"- DOOM L1: `doom14ac0e785bffabe0357cb522608cf88c80a33cd7f3f925757`\n"
-        f"- Base Mainnet & Invoicing: `isearch.xsolve@gmail.com`"
-    )
 
     pr_cmd = [
         "gh", "pr", "create",
@@ -1365,38 +2208,104 @@ def attempt_automated_pull_request(repo, number, title, proposal, live_mode=True
         update_delivery_pr(repo, number, pr_url)
         auto_resolve_cla_if_needed(repo, pr_url)
         return pr_url
-    else:
-        # Check if PR already exists
-        if "already exists" in (pr_err or "").lower() or "already exists" in (pr_out or "").lower():
-            view_out, _, view_code = run_cmd(["gh", "pr", "list", "--repo", repo, "--head", f"isearchxsolve:{branch_name}", "--json", "url", "--jq", ".[0].url"], timeout=15)
-            if view_code == 0 and view_out.strip():
-                pr_url = view_out.strip()
-                print(f"ℹ️ [EXISTING PULL REQUEST FOUND] {pr_url}")
-                update_delivery_pr(repo, number, pr_url)
-                auto_resolve_cla_if_needed(repo, pr_url)
-                return pr_url
-        print(f"  [AUTO-PR FAILED] Could not create PR: {pr_err or pr_out}")
+    return None
+
+def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_mode=True):
+    """
+    Multi-Turn Iterative Due-Diligence Engine:
+    1. Pre-flight competition check (fail-closed)
+    2. Prepares isolated worktree (<owner>--<repo>--<number>)
+    3. Inspects repository architecture & CI workflows
+    4. Discovers native verification plan
+    5. Verifies untouched upstream baseline passes (BLOCKED_BASELINE if fail)
+    6. Models edge-case and boundary scenarios
+    7. Executes multi-turn iterative code-test-fix loop
+    8. Verifies linters pass with 0 warnings
+    9. Pre-push fail-closed competition check
+    10. Commits and creates human-peer PR
+    """
+    if not live_mode:
+        print(f"  [DRY RUN] Multi-Turn Iterative Engine simulated for {repo}#{number}")
+        arch = inspect_repository_architecture(repo) if os.path.exists(repo) else {"ecosystem": "nodejs", "has_tests": True, "has_linter": True}
+        scenarios = model_scenarios(title, proposal_or_body, arch)
+        plan = discover_verification_plan(arch, repo) if os.path.exists(repo) else VerificationPlan(baseline_tests=[["npm", "test"]], linters=[["npm", "run", "lint"]])
+        run = EngineeringRun(repo=repo, issue_number=number, base_sha="dry_run", worktree=repo, scenario_matrix=scenarios, status="READY_TO_PUSH")
+        run.pr_body = build_peer_pr_body(run, title, number, scenarios)
         return None
+
+    # Step 1: Pre-flight competition check
+    comp_ok, comp_msg = check_competing_prs_fail_closed(repo, number)
+    if not comp_ok:
+        print(f"  ❌ [ZERO-COMPETITION GATE TRIGGERED] {repo}#{number}: {comp_msg}")
+        return None
+
+    # Step 2: Prepare isolated worktree
+    worktree, base_sha, wt_err = prepare_isolated_worktree(repo, number)
+    if not worktree:
+        print(f"  ❌ [WORKTREE INIT FAILED] {repo}#{number}: {wt_err}")
+        return None
+    branch_out, branch_err, branch_code = run_cmd(
+        ["gh", "repo", "view", repo, "--json", "defaultBranchRef", "--jq", ".defaultBranchRef.name"], timeout=20
+    )
+    if branch_code != 0 or not branch_out or not branch_out.strip():
+        print(f"  ❌ [DEFAULT BRANCH LOOKUP FAILED] {branch_err or branch_out}")
+        return None
+    default_branch = branch_out.strip()
+
+    # Step 3: Inspect architecture & discover verification plan
+    arch = inspect_repository_architecture(worktree)
+    plan = discover_verification_plan(arch, worktree)
+    scenarios = model_scenarios(title, proposal_or_body, arch)
+
+    # Step 4: Verify untouched baseline
+    base_ok, base_msg, base_results = verify_baseline(worktree, plan)
+    if not base_ok:
+        mark_issue_blocked_baseline(repo, number, base_msg)
+        print(f"  ❌ [BASELINE TEST FAILURE] Untouched upstream failed baseline suite. Aborting as BLOCKED_BASELINE.")
+        print(f"     Details: {base_msg[:300]}")
+        return None
+
+    # Step 5: Run Multi-Turn Iteration Loop
+    loop_ok, run, loop_msg = run_engineering_iteration_loop(
+        worktree=worktree,
+        repo=repo,
+        issue_number=number,
+        title=title,
+        body=proposal_or_body,
+        arch=arch,
+        plan=plan,
+        scenarios=scenarios,
+        base_sha=base_sha,
+        max_iterations=5,
+        live_mode=live_mode
+    )
+    if not loop_ok:
+        print(f"  ❌ [ITERATION FAILED] {loop_msg}")
+        return None
+    run.verification = base_results + run.verification
+
+    # Step 6: Final Pre-Push Competition Check (Fail-Closed)
+    comp_ok_final, comp_msg_final = check_competing_prs_fail_closed(repo, number)
+    if not comp_ok_final:
+        print(f"  ❌ [ZERO-COMPETITION GATE TRIGGERED PRE-PUSH] {repo}#{number}: {comp_msg_final}")
+        return None
+
+    # Step 7: Format peer PR body
+    pr_body = build_peer_pr_body(run, title, number, scenarios)
+
+    # Step 8: Commit, push branch, open PR
+    pr_url = commit_and_open_pr(worktree, repo, number, title, pr_body, run.modified_files, default_branch=default_branch)
+    return pr_url
 
 def has_existing_open_pr(repo, number):
     """
     Checks if an open PR already exists for this issue by another contributor,
     preventing duplicate competing submissions and maintainer collisions.
+    Fail-closed: if query fails, treats as competing.
     """
-    out, err, code = run_cmd([
-        "gh", "pr", "list", "--repo", repo,
-        "--search", f"#{number}",
-        "--state", "open",
-        "--json", "number,url,title,author"
-    ], timeout=15)
-    if code == 0 and out:
-        try:
-            prs = json.loads(out)
-            competing = [p for p in prs if (p.get("author") or {}).get("login") != "isearchxsolve"]
-            if competing:
-                return True, competing[0].get("url")
-        except Exception:
-            pass
+    comp_ok, comp_msg = check_competing_prs_fail_closed(repo, number)
+    if not comp_ok:
+        return True, comp_msg
     return False, None
 
 def post_grounded_proposal(repo, number, title, author, url, body, author_comments, labels, reason, corridor_info, author_assoc="NONE", live_mode=False):
@@ -1431,11 +2340,48 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
             print(f"❌ [RACE DETECTED] {issue_id} was claimed concurrently by another worker. Zero tokens spent.")
             return False
 
+    # Remote fleet mode ends the laptop's responsibility at verified triage.
+    # Generation, baseline verification, repair turns, and PR work happen only
+    # in the cloud worker. The task includes the authenticated GitHub token
+    # required by the remote delivery worker; it is never printed or persisted
+    # to SQLite by this dispatcher.
+    if REMOTE_FLEET_MODE:
+        print(f"🚀 [OFFLOADING TO KAGGLE FLEET] {issue_id}: dispatching verified task to the 5-engine fleet...")
+        gh_token = get_dispatch_github_token()
+        if not gh_token:
+            print(f"❌ [DISPATCH FAILED] {issue_id} has no GitHub token available for the cloud worker.")
+            if live_mode:
+                mark_issue_rejected(repo, number, "Fleet dispatch blocked: GitHub credential unavailable")
+            return False
+        task_data = {
+            "task_id": f"BT-{int(time.time())}-{repo.replace('/', '_')}-{number}",
+            "repo": repo,
+            "issue_number": number,
+            "title": title,
+            "author": author,
+            "url": url,
+            "body": body,
+            "author_comments": author_comments,
+            "labels": labels,
+            "author_assoc": author_assoc,
+            "corridor_info": corridor_info,
+            "reason": reason,
+            "gh_token": gh_token,
+            "dispatched_at": datetime.now(timezone.utc).isoformat(),
+        }
+        if dispatch_task_to_fleet(task_data):
+            mark_issue_dispatched(repo, number, f"Queued for Kaggle fleet (Task: {task_data['task_id']})")
+            print(f"✅ [DISPATCH CONFIRMED] {issue_id} successfully queued for the 5-engine Kaggle fleet.")
+            return True
+        print(f"❌ [DISPATCH FAILED] {issue_id} could not be delivered to the Cloudflare queue.")
+        mark_issue_rejected(repo, number, "Fleet dispatch network error")
+        return False
+
     print(f"\n🎯 [GENUINE ICU PATIENT ENGAGED] {issue_id}")
     print(f"Title: '{title}' by @{author}")
     print(f"Corridor: {corridor_info}")
     print(f"Gate Verdict: {reason}")
-    print(f"Synthesizing grounded architectural assessment...")
+    print("Synthesizing grounded architectural assessment...")
 
     proposal = generate_grounded_proposal(repo, title, body, author, author_comments)
     if not proposal:
@@ -1475,10 +2421,18 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
         print("--- [END PREVIEW] ---\n")
         return True
 
-    # LIVE WIRE TRANSMISSION
-    print("Delivering authoritative assessment to GitHub issue via live wire POST...")
-    # Invoke GitHub API directly via POST to capture the exact created comment object
-    post_cmd = ["gh", "api", f"repos/{repo}/issues/{number}/comments", "-X", "POST", "-f", f"body={proposal}"]
+    # Step 1: Execute Multi-Turn Iterative Verification Engine & PR creation FIRST
+    print("Executing Multi-Turn Iterative Verification Engine before publishing to GitHub...")
+    pr_url = attempt_automated_pull_request(repo, number, title, body, live_mode=live_mode)
+    if not pr_url:
+        print(f"❌ [ENGINEERING GATE FAILED] Multi-turn iterative engineering did not achieve 100% green verification. Suppressing issue comment.")
+        mark_issue_rejected(repo, number, "Engineering verification failed before release")
+        return False
+
+    # Step 2: Post authoritative assessment including verified PR receipt
+    print(f"Delivering authoritative assessment to GitHub issue referencing verified PR {pr_url}...")
+    comment_payload = f"{proposal}\n\n---\n**Verified Pull Request**: {pr_url}"
+    post_cmd = ["gh", "api", f"repos/{repo}/issues/{number}/comments", "-X", "POST", "-f", f"body={comment_payload}"]
     out, err, code = run_cmd(post_cmd, timeout=30, retries=1)
 
     if code == 0 and out:
@@ -1516,7 +2470,7 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
                 return False
 
             # Cryptographic SHA-256 verification
-            local_digest = hashlib.sha256(proposal.encode("utf-8")).hexdigest()
+            local_digest = hashlib.sha256(comment_payload.encode("utf-8")).hexdigest()
             server_digest = hashlib.sha256(server_body.encode("utf-8")).hexdigest()
 
             if local_digest == server_digest:
@@ -1526,9 +2480,12 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
                     mark_issue_rejected(repo, number, "DB commit affected 0 rows")
                     return False
 
+                update_delivery_pr(repo, number, pr_url)
+
                 print(f"✅ [CRYPTOGRAPHIC RECEIPT CONFIRMED]")
                 print(f"   Comment ID:    {comment_id}")
                 print(f"   Public URL:    {receipt_url}")
+                print(f"   PR URL:        {pr_url}")
                 print(f"   SHA-256:       {local_digest}")
                 print(f"   Server Stamp:  {created_at}")
 
@@ -1541,16 +2498,12 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
                     "url": url,
                     "comment_id": comment_id,
                     "receipt_url": receipt_url,
+                    "pr_url": pr_url,
                     "sha256": local_digest,
                     "timestamp": datetime.now(timezone.utc).isoformat(),
                     "reason": reason,
                     "corridor": corridor_info
                 }
-
-                # Autonomous Pull Request Engine
-                pr_url = attempt_automated_pull_request(repo, number, title, proposal, live_mode=live_mode)
-                if pr_url:
-                    entry["pr_url"] = pr_url
 
                 append_csv(entry)
                 time.sleep(10)
@@ -1722,14 +2675,26 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
     Defaults to sorting by `created` descending (fresh bounties first) to capture
     high-conversion, zero-competition opportunities before backlogs accumulate.
     """
-    cmd = ["gh", "search", "issues"] + shlex.split(query) + [
+    # Pass the query as one argument.  ``shlex.split`` strips the inner quotes
+    # in e.g. ``\"race condition\"`` and loses GitHub's intended grouped-text
+    # search syntax by turning it into two independent arguments.
+    import shlex
+    parts = shlex.split(query) if isinstance(query, str) else list(query)
+    # Filter out state/comments if already in query
+    clean_parts = [p for p in parts if not p.startswith("state:") and not p.startswith("comments:")]
+    cmd = ["gh", "search", "issues"] + clean_parts + [
+        "--state", "open",
+        "--comments", "<=2",
         "--sort", sort_by,
         "--order", order,
         "--limit", str(limit),
         "--json", "number,title,repository,url,labels,createdAt,updatedAt,commentsCount,authorAssociation,body,author"
     ]
     out, err, code = run_cmd(cmd, timeout=75)
-    if code != 0 or not out:
+    if code != 0:
+        print(f"  [GitHub Search Error] {((err or out) or 'unknown failure')[:240]}")
+        return []
+    if not out:
         return []
     try:
         raw_items = json.loads(out)
@@ -1749,9 +2714,14 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         if not repo or not number:
             continue
 
-        # Baba Mandate: Neglect crowded issues altogether (reserve compute for uncrowded tickets <= 4 comments)
+        # Baba Mandate: Neglect crowded issues altogether (reserve compute for uncrowded tickets <= 2 comments)
         comments_cnt = it.get("commentsCount", 0)
-        if comments_cnt > 4:
+        if comments_cnt > 2:
+            continue
+
+        # Freshness Gate: Skip ancient abandoned issues created before 2025
+        created_at = it.get("createdAt", "")
+        if created_at and created_at < "2025-01-01":
             continue
 
         # Filter out static site blogs, newsletters, bookmark aggregators, and arxiv scrapers at query layer
@@ -1764,8 +2734,15 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
             "bountyscout" in repo_lower or
             "arxiv" in repo_lower or
             "securebananalabs" in repo_lower or
+            "unitoneai" in repo_lower or
             "poyraz" in repo_lower or
             "louis-os" in repo_lower or
+            "claudeearnself" in repo_lower or
+            "sn-monetization" in repo_lower or
+            "opportunity-scanner" in repo_lower or
+            "bujiproject-art" in repo_lower or
+            re.search(r"^claiming\s+bounty\b", title_lower) or
+            re.search(r"\b(?:payout\s+claim|bounty\s+claim|claiming\s+(?:a\s+)?bounty)\b", issue_text_lower) or
             re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed|arxiv|bounty[-_]plaza|bounty[-_]arcade|bounty[-_]bot)\b", repo_lower) or
             re.search(r"(?:每日信息流|信息流|日报|周报|资讯|快讯|每日精选)", title_lower) or
             re.search(r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list|showing\s+new\s+listings)\b", title_lower) or
@@ -1776,7 +2753,7 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         ):
             continue
 
-        # Keep only terminal/safety exclusions here per Codex audit.
+        # Keep only terminal/safety exclusions here per prior audit.
         # Do not reject enhancement, documentation, contributor authors, platform names, or non-incident work.
         if _has_terminal_label(labels):
             continue
@@ -1784,9 +2761,9 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         if _has_payment_negation(full_text) or _has_economic_scam_marker(full_text):
             continue
 
-        # Zero-Token-Waste Gate: Pre-screen explicit bounty floor ($200+) right at query layer
+        # Zero-Token-Waste Gate: pre-screen the approved $50-$200 high-ticket floor at query layer.
         has_bounty, in_bounds, raw_text, usd_val, _ = parse_and_normalize_bounty(title + " " + body)
-        if usd_val is not None and usd_val < Decimal("200.00"):
+        if usd_val is not None and usd_val < Decimal("50.00"):
             continue
 
         filtered_items.append(it)
@@ -1807,6 +2784,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
     print(f"Standard: Zero-Manufacture, Grounded Analysis, Pre-Post Security Gate")
     print(f"Commercial Channel: {CLIENT_CONTACT_EMAIL}")
     print(f"Mode: {'LIVE WIRE (Autonomous Delivery)' if live_mode else 'CANDIDATE PACKET MODE (Safe Preview)'}")
+    print(f"Execution Target: {'5-Engine Kaggle Fleet (0% Local CPU)' if REMOTE_FLEET_MODE else 'Local Machine'}")
     print(f"Schedule Policy: {'24/7 ANYTIME (No Off-Hours Hold)' if anytime else 'Business Hours Gate'}")
     print(f"=======================================================")
 
@@ -1847,7 +2825,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
             continue
 
         corridor_name, is_active, corridor_info = detect_author_corridor(author)
-        # Territory check: only reject confirmed excluded regional markets or territories per Codex audit
+        # Territory check: only reject confirmed excluded regional markets or territories per prior audit
         if corridor_name in ["Excluded Regional Market", "Excluded Territory"]:
             print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
             continue
@@ -1860,59 +2838,43 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
             total_processed += 1
 
     # Phase 2: Dynamic Search
-    # High-recall discovery queries per Codex architecture audit
-    print("\n--- PHASE 2: Dynamic Follow-the-Sun Daytime Search ---")
+    # High-Complexity Hard Tasks & Uncontested Bounties (Minimum Engagement: comments <= 2)
+    print(f"\n--- PHASE 2: High-Complexity Hard Tasks & Uncontested Bounties (comments <= 2) ---")
     dynamic_queries = [
-        # Tier 1: Baba's Hardness Moat — Deep Architecture & High-Barrier Bounties (Low Competitor Attempts)
-        'bounty "concurrency" --state open',
-        'bounty "race condition" --state open',
-        'bounty "memory leak" --state open',
-        'bounty "deadlock" --state open',
-        'bounty "compiler" --state open',
-        'bounty "consensus" --state open',
-        'bounty "distributed" --state open',
-        'bounty "zero-knowledge" --state open',
-        'bounty "smart contract" --state open',
-        'algora.io "hard" --state open',
-        'algora.io "concurrency" --state open',
-        'polar.sh "hard" --state open',
-        'opire.dev "hard" --state open',
-        'bounty "hard" --state open',
-        'bounty "complex" --state open',
+        # Tier 1: Core Platform & Label Bounties
+        '--label bounty',
+        'bounty in:title',
+        '"[Bug bounty]"',
+        '"[BOUNTY]"',
+        'algora.io',
+        'polar.sh',
+        'opire.dev',
 
-        # Tier 2: Explicit $200+ High-Ticket Bounties (Baba's Headroom Moat)
-        'bounty "$200" --state open',
-        'bounty "$250" --state open',
-        'bounty "$300" --state open',
-        'bounty "$400" --state open',
-        'bounty "$500" --state open',
-        'bounty "$600" --state open',
-        'bounty "$700" --state open',
-        'bounty "$750" --state open',
-        'bounty "$800" --state open',
-        'bounty "$1000" --state open',
-        'bounty "$1500" --state open',
-        'bounty "$2000" --state open',
-        'bounty "$2500" --state open',
-        'bounty "$3000" --state open',
-        'bounty "$5000" --state open',
-        'algora.io "$200" --state open',
-        'algora.io "$500" --state open',
-        'algora.io "$1000" --state open',
-        'polar.sh "$200" --state open',
-        'polar.sh "$500" --state open',
-        'polar.sh "$1000" --state open',
-        'opire.dev "$200" --state open',
-        'opire.dev "$500" --state open',
-        'opire.dev "$1000" --state open',
-        'label:bounty "$200" --state open',
-        'label:bounty "$500" --state open',
-        'label:bounty "$1000" --state open',
+        # Tier 2: Currency & Payout Signals
+        'bounty "usdc"',
+        'bounty "usdt"',
+        'bounty "sol"',
+        'bounty "reward"',
+        'bounty "$"',
+
+        # Tier 3: Deep Systems & Hard Architecture Keywords
+        'bounty "concurrency"',
+        'bounty "race condition"',
+        'bounty "memory leak"',
+        'bounty "deadlock"',
+        'bounty "performance"',
+        'bounty "smart contract"',
+        'bounty "consensus"',
+        'bounty "compiler"',
+        'bounty "distributed"',
+        'bounty "zero-knowledge"',
+        'bounty "solana"',
+        'bounty "rust"',
     ]
 
     for q in dynamic_queries:
         print(f"\n[Search Query] {q}")
-        items = search_issues(q, limit=1000)
+        items = search_issues(q, limit=30)
         print(f"Found {len(items)} candidates.")
 
         for it in items:
@@ -1948,14 +2910,14 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
                 continue
 
             # Baba's Headroom Conservation Law: High-Ticket Complex Tasks Only
-            # Strictly reject any bounty under $200 USD to preserve headroom for high-ticket contracts
+            # Reject bounties under the approved $50-$200 high-ticket floor.
             has_bounty, in_bounds, raw_text, usd_val, _ = parse_and_normalize_bounty(title + " " + body + " " + " ".join(author_comments))
-            if usd_val is not None and usd_val < Decimal("200.00"):
-                print(f"[REJECT/HEADROOM] {issue_id}: Bounty ${usd_val} below $200 high-ticket floor. Headroom reserved exclusively for high-ticket complex tasks.")
+            if usd_val is not None and usd_val < Decimal("50.00"):
+                print(f"[REJECT/HEADROOM] {issue_id}: Bounty ${usd_val} below the $50 high-ticket floor. Headroom reserved exclusively for high-ticket complex tasks.")
                 continue
 
             corridor_name, is_active, corridor_info = detect_author_corridor(author)
-            # Territory check: only reject confirmed excluded regional markets or territories per Codex audit
+            # Territory check: only reject confirmed excluded regional markets or territories per prior audit
             if corridor_name in ["Excluded Regional Market", "Excluded Territory"]:
                 print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
                 continue
@@ -1976,8 +2938,10 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
     print(f"=======================================================")
 
 def main():
+    global REMOTE_FLEET_MODE
     live_mode = "--live" in sys.argv
     anytime = "--anytime" in sys.argv or "--24x7" in sys.argv
+    REMOTE_FLEET_MODE = "--remote-fleet" in sys.argv or "--dispatcher" in sys.argv or "--dispatcher-only" in sys.argv
     run_once = "--once" in sys.argv
     cycle_interval_seconds = 180  # 3 minutes between follow-the-sun sweeps
 

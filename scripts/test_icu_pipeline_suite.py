@@ -2,6 +2,9 @@ import sys
 import os
 import sqlite3
 import re
+import shutil
+import subprocess
+import tempfile
 
 # Add scripts directory to path
 sys.path.insert(0, r"D:\anonym\scripts")
@@ -15,7 +18,26 @@ from autonomous_icu_pipeline import (
     try_claim_issue,
     is_issue_claimed_or_delivered,
     commit_delivery,
-    release_claim
+    release_claim,
+    is_safe_relative_path,
+    model_scenarios,
+    inspect_repository_architecture,
+    discover_verification_plan,
+    verify_baseline,
+    check_competing_prs_fail_closed,
+    build_peer_pr_body,
+    run_command_safe,
+    VerificationPlan,
+    CommandResult,
+    ScenarioCase,
+    EngineeringRun
+)
+from tokenharbor_router import (
+    COOLDOWN,
+    DEEPSEEK_FLASH_MODEL,
+    DISABLED,
+    READY,
+    TokenHarborRouter,
 )
 
 TEST_DB = r"D:\anonym\scratch\test_suite_isolated.db"
@@ -1182,6 +1204,397 @@ ok, reason = verify_genuine_icu_patient(
 )
 assert ok is False, f"Expected roadmap Phase 4 / $1M TVL to be rejected, got {ok}, {reason}"
 print("  ✓ Roadmap TVL Gate: Protocol KPI metric ($1M+ TVL achieved) rejected correctly.")
+
+# ----------------------------------------------------------------
+# Test 11: Multi-Turn Iterative Due-Diligence Engine Integrity
+# ----------------------------------------------------------------
+print("\n[Test 11] Testing Multi-Turn Iterative Due-Diligence Engine Integrity...")
+
+# 11.1 Worktree boundary path security (fail-closed)
+mock_wt = r"D:\test_worktree"
+assert is_safe_relative_path(mock_wt, "src/core/app.py") is True
+assert is_safe_relative_path(mock_wt, "package.json") is True
+assert is_safe_relative_path(mock_wt, "tests/unit/test_calc.py") is True
+# Traversal rejections
+assert is_safe_relative_path(mock_wt, "../secret.env") is False
+assert is_safe_relative_path(mock_wt, "foo/../../bar.txt") is False
+# Absolute path rejections
+assert is_safe_relative_path(mock_wt, "/etc/passwd") is False
+assert is_safe_relative_path(mock_wt, "C:\\Windows\\system32\\cmd.exe") is False
+# CI/Workflow mutation rejection (security invariant)
+assert is_safe_relative_path(mock_wt, ".github/workflows/deploy.yml") is False
+assert is_safe_relative_path(mock_wt, ".github/workflows/ci.yaml") is False
+assert is_safe_relative_path(mock_wt, ".GitHub/Workflows/casing-bypass.yml") is False
+print("  ✓ Worktree Boundary Gate: Traversal, absolute paths, and workflow mutations blocked.")
+
+# Real symlink escape rejection: a path that lexically stays inside the worktree
+# must still fail when an existing directory link resolves outside it.
+symlink_root = tempfile.mkdtemp(prefix="test_icu_symlink_")
+try:
+    symlink_worktree = os.path.join(symlink_root, "worktree")
+    outside_dir = os.path.join(symlink_root, "outside")
+    os.makedirs(symlink_worktree)
+    os.makedirs(outside_dir)
+    link_dir = os.path.join(symlink_worktree, "linked")
+    try:
+        os.symlink(outside_dir, link_dir, target_is_directory=True)
+    except OSError:
+        # Standard Windows sessions may lack SeCreateSymbolicLinkPrivilege; an NTFS
+        # junction is the same escaping reparse-point threat and needs no privilege.
+        junction = subprocess.run(
+            ["cmd", "/c", "mklink", "/J", link_dir, outside_dir],
+            capture_output=True, text=True, check=False
+        )
+        assert junction.returncode == 0, junction.stderr or junction.stdout
+    assert is_safe_relative_path(symlink_worktree, "linked/escape.py") is False
+finally:
+    shutil.rmtree(symlink_root, ignore_errors=True)
+print("  ✓ Symlink Boundary Gate: Realpath escape through a directory link blocked.")
+
+# 11.2 Scenario matrix modeling (7 dimensions)
+scenarios = model_scenarios("Payment deadlock during concurrent checkout", "Handle concurrent webhook settlement", {})
+assert len(scenarios) == 7, f"Expected 7 scenario dimensions, got {len(scenarios)}"
+dims = {s.category for s in scenarios}
+expected_dims = {"happy_path", "null", "empty", "boundary", "negative", "concurrency", "regression"}
+assert dims == expected_dims, f"Scenario dimensions mismatch: {dims} vs {expected_dims}"
+for s in scenarios:
+    assert s.id, "Scenario missing id"
+    assert s.expected_result, "Scenario missing expected result"
+print("  ✓ Scenario Modeling: 7 rigorous test dimensions modeled (happy, null, empty, boundary, negative, concurrency, regression).")
+
+# 11.3 Peer PR description builder (zero-signature, zero-wallet, receipts verified)
+mock_run = EngineeringRun(
+    repo="fintech/payments",
+    issue_number=142,
+    base_sha="master",
+    worktree=mock_wt,
+    iteration=1,
+    status="VERIFIED"
+)
+mock_run.verification.append(CommandResult(["pytest", "-q"], mock_wt, 0, "", "", 1.25))
+pr_body = build_peer_pr_body(
+    run=mock_run,
+    title="Deadlock during concurrent webhook processing",
+    number=142,
+    scenarios=scenarios
+)
+assert "Resolves #142." in pr_body
+assert "### Architectural Summary & Root Cause Analysis" in pr_body
+assert "### Verified Scenario Coverage" in pr_body
+assert "SCENARIO_CONCURRENCY_RACE" in pr_body
+assert "Verified base SHA: `master`" in pr_body
+assert "pytest -q" in pr_body and "exit `0`" in pr_body and "duration `1.250s`" in pr_body
+# Law enforcement: ZERO signature, ZERO wallet spam
+assert "Kunal Das" not in pr_body
+assert "Director" not in pr_body
+assert "Best regards" not in pr_body
+assert "0x" not in pr_body
+assert "USDC" not in pr_body
+print("  ✓ Peer PR Builder: Generated pixel-perfect PR body with zero signatures, zero wallet spam, and exact test receipts.")
+
+# 11.4 Architecture inspection and verification plan discovery
+
+temp_workspace = tempfile.mkdtemp(prefix="test_repo_arch_")
+try:
+    # A) Node.js project
+    node_dir = os.path.join(temp_workspace, "node_app")
+    os.makedirs(node_dir)
+    with open(os.path.join(node_dir, "package.json"), "w", encoding="utf-8") as f:
+        f.write('{"name": "demo", "scripts": {"test": "jest", "lint": "eslint ."}}')
+    arch_node = inspect_repository_architecture(node_dir)
+    assert arch_node["ecosystem"] == "nodejs"
+    plan_node = discover_verification_plan(arch_node, node_dir)
+    assert ["npm", "test"] in plan_node.baseline_tests
+    assert ["npm", "run", "lint"] in plan_node.linters
+
+    # A2) Polyglot repository must retain every active ecosystem and all plans.
+    with open(os.path.join(node_dir, "pyproject.toml"), "w", encoding="utf-8") as f:
+        f.write('[project]\nname = "demo"\n')
+    with open(os.path.join(node_dir, "Cargo.toml"), "w", encoding="utf-8") as f:
+        f.write('[package]\nname = "demo"\nversion = "0.1.0"\n')
+    arch_poly = inspect_repository_architecture(node_dir)
+    assert arch_poly["ecosystem"] == "polyglot"
+    assert {"nodejs", "python", "rust"}.issubset(set(arch_poly["ecosystems"]))
+    plan_poly = discover_verification_plan(arch_poly, node_dir)
+    assert ["npm", "test"] in plan_poly.baseline_tests
+    assert any("pytest" in arg for cmd in plan_poly.baseline_tests for arg in cmd)
+    assert ["cargo", "test", "--workspace"] in plan_poly.baseline_tests
+
+    # B) Python project
+    py_dir = os.path.join(temp_workspace, "py_app")
+    os.makedirs(py_dir)
+    with open(os.path.join(py_dir, "pyproject.toml"), "w", encoding="utf-8") as f:
+        f.write('[project]\nname = "demo"\n')
+    arch_py = inspect_repository_architecture(py_dir)
+    assert arch_py["ecosystem"] == "python"
+    plan_py = discover_verification_plan(arch_py, py_dir)
+    assert any("pytest" in arg for cmd in plan_py.baseline_tests for arg in cmd)
+    assert any("ruff" in arg for cmd in plan_py.linters for arg in cmd)
+
+    # C) Rust project
+    rust_dir = os.path.join(temp_workspace, "rust_app")
+    os.makedirs(rust_dir)
+    with open(os.path.join(rust_dir, "Cargo.toml"), "w", encoding="utf-8") as f:
+        f.write('[package]\nname = "demo"\nversion = "0.1.0"\n')
+    arch_rust = inspect_repository_architecture(rust_dir)
+    assert arch_rust["ecosystem"] == "rust"
+    plan_rust = discover_verification_plan(arch_rust, rust_dir)
+    assert ["cargo", "test", "--workspace"] in plan_rust.baseline_tests
+    assert any("clippy" in arg for cmd in plan_rust.linters for arg in cmd)
+
+    # D) Go project
+    go_dir = os.path.join(temp_workspace, "go_app")
+    os.makedirs(go_dir)
+    with open(os.path.join(go_dir, "go.mod"), "w", encoding="utf-8") as f:
+        f.write('module demo\ngo 1.22\n')
+    arch_go = inspect_repository_architecture(go_dir)
+    assert arch_go["ecosystem"] == "go"
+    plan_go = discover_verification_plan(arch_go, go_dir)
+    assert ["go", "test", "./..."] in plan_go.baseline_tests
+    assert ["golangci-lint", "run"] in plan_go.linters
+finally:
+    shutil.rmtree(temp_workspace, ignore_errors=True)
+print("  ✓ Architecture & Plan Discovery: Node.js, Python, Rust, and Go manifests inspected and planned.")
+
+# 11.5 Baseline verification blocks broken upstream (fail-closed BLOCKED_BASELINE)
+broken_plan = VerificationPlan(baseline_tests=[[sys.executable, "-c", "import sys; sys.exit(1)"]])
+baseline_ok, baseline_msg, baseline_results = verify_baseline(r"D:\anonym", broken_plan)
+assert baseline_ok is False, "Expected failing baseline to block run"
+assert "Baseline test failure on untouched upstream" in baseline_msg
+assert len(baseline_results) == 1 and baseline_results[0].exit_code == 1
+assert autonomous_icu_pipeline.mark_issue_blocked_baseline("mock-org/baseline", 909, "upstream failed", db_path=TEST_DB)
+with sqlite3.connect(TEST_DB) as test_con:
+    blocked_status = test_con.execute("SELECT status FROM deliveries WHERE repo = ? AND issue_number = ?", ("mock-org/baseline", 909)).fetchone()
+assert blocked_status == ("BLOCKED_BASELINE",), f"Expected BLOCKED_BASELINE receipt, got {blocked_status}"
+print("  ✓ Baseline Gate: Broken upstream baseline test failure blocks PR pipeline (BLOCKED_BASELINE).")
+
+# 11.6 Fail-closed pre-push Zero-Competition gate
+orig_run_cmd = autonomous_icu_pipeline.run_cmd
+try:
+    # A) When open PR exists -> Blocked
+    autonomous_icu_pipeline.run_cmd = lambda cmd, timeout=30, retries=2: (
+        '[{"number": 99, "title": "unrelated", "headRefName": "topic", "body": "Resolves #101"}]', "", 0
+    )
+    ok, reason = check_competing_prs_fail_closed("org/repo", 101)
+    assert ok is False, "Expected competing PR to block"
+    assert "Competing open PR already exists" in reason
+
+    # B) When gh cli lookup fails -> Fails closed
+    autonomous_icu_pipeline.run_cmd = lambda cmd, timeout=30, retries=2: (
+        "", "GitHub API rate limit exceeded", 1
+    )
+    ok, reason = check_competing_prs_fail_closed("org/repo", 101)
+    assert ok is False, "Expected failed query to fail closed"
+    assert "failing closed per Zero-Competition Law" in reason
+
+    # C) When clean and zero competing PRs -> Approved
+    autonomous_icu_pipeline.run_cmd = lambda cmd, timeout=30, retries=2: (
+        "[]", "", 0
+    )
+    ok, reason = check_competing_prs_fail_closed("org/repo", 101)
+    assert ok is True, f"Expected clean repo to pass, got: {reason}"
+    assert "Zero competing open PRs verified" in reason
+finally:
+    autonomous_icu_pipeline.run_cmd = orig_run_cmd
+print("  ✓ Zero-Competition Gate: Pre-push lookup rejects open competing PRs and fails closed on query error.")
+
+# 11.7 Actual repair loop: syntax feedback, failed native test feedback, reset, then green repair.
+repair_dir = tempfile.mkdtemp(prefix="test_icu_repair_")
+original_generate = autonomous_icu_pipeline.generate_grounded_proposal
+original_run_safe = autonomous_icu_pipeline.run_command_safe
+original_reset = autonomous_icu_pipeline.reset_worktree_to_base
+proposal_feedback = []
+reset_calls = []
+proposals = iter([
+    "### Production Source `src/fixed.py`\n```python\ndef broken(\n```",
+    "### Production Source `src/fixed.py`\n```python\ndef repaired():\n    return 1\n```",
+    "### Production Source `src/fixed.py`\n```python\ndef repaired():\n    return 2\n```",
+])
+test_attempts = {"count": 0}
+try:
+    def fake_generate(*args, **kwargs):
+        proposal_feedback.append(kwargs.get("prior_failures"))
+        return next(proposals)
+    def fake_run_safe(argv, cwd, timeout=120):
+        if argv == ["native-test"]:
+            test_attempts["count"] += 1
+            failed = test_attempts["count"] == 1
+            return CommandResult(argv, cwd, 1 if failed else 0, "assertion failure: expected repaired behavior" if failed else "", "", 0.01)
+        return CommandResult(argv, cwd, 0, "", "", 0.01)
+    autonomous_icu_pipeline.generate_grounded_proposal = fake_generate
+    autonomous_icu_pipeline.run_command_safe = fake_run_safe
+    autonomous_icu_pipeline.reset_worktree_to_base = lambda wt, sha: (reset_calls.append((wt, sha)) or (True, "reset"))
+    repair_plan = VerificationPlan(final_tests=[["native-test"]], linters=[["native-lint"]])
+    repair_ok, repair_run, repair_message = autonomous_icu_pipeline.run_engineering_iteration_loop(
+        worktree=repair_dir, repo="org/repo", issue_number=77, title="Repair loop", body="body",
+        arch={}, plan=repair_plan, scenarios=[], base_sha="base-sha", max_iterations=3
+    )
+    assert repair_ok is True and repair_run.iteration == 3, repair_message
+    assert proposal_feedback[0] is None
+    assert "Syntax/quality gate failure" in proposal_feedback[1]
+    assert "Test failure in turn 2" in proposal_feedback[2]
+    assert reset_calls == [(repair_dir, "base-sha"), (repair_dir, "base-sha")]
+    assert repair_run.modified_files == ["src/fixed.py"]
+finally:
+    autonomous_icu_pipeline.generate_grounded_proposal = original_generate
+    autonomous_icu_pipeline.run_command_safe = original_run_safe
+    autonomous_icu_pipeline.reset_worktree_to_base = original_reset
+    shutil.rmtree(repair_dir, ignore_errors=True)
+print("  ✓ Repair Loop: Syntax/test evidence passed to turns 2-3 and each repair reset to base.")
+
+# 11.8 Default-branch discovery and every git setup command fail-closed.
+original_run_cmd = autonomous_icu_pipeline.run_cmd
+original_sandbox_dir = autonomous_icu_pipeline.SANDBOX_DIR
+git_calls = []
+worktree_parent = tempfile.mkdtemp(prefix="test_icu_worktree_")
+try:
+    autonomous_icu_pipeline.SANDBOX_DIR = worktree_parent
+    def fake_prepare_cmd(cmd, timeout=30, retries=2):
+        git_calls.append(cmd)
+        if cmd[:4] == ["gh", "repo", "view", "org/repo"]:
+            return "trunk\n", "", 0
+        if cmd[:3] == ["git", "-C", os.path.join(worktree_parent, "repos", "org--repo--78")] and cmd[-2:] == ["rev-parse", "HEAD"]:
+            return "abc123\n", "", 0
+        return "", "", 0
+    autonomous_icu_pipeline.run_cmd = fake_prepare_cmd
+    prepared_worktree, prepared_sha, prepared_error = autonomous_icu_pipeline.prepare_isolated_worktree("org/repo", 78)
+    assert prepared_error is None and prepared_sha == "abc123"
+    assert ["git", "-C", prepared_worktree, "fetch", "upstream", "trunk"] in git_calls
+    assert ["git", "-C", prepared_worktree, "checkout", "-B", "fix/bounty-78", "upstream/trunk"] in git_calls
+finally:
+    autonomous_icu_pipeline.run_cmd = original_run_cmd
+    autonomous_icu_pipeline.SANDBOX_DIR = original_sandbox_dir
+    shutil.rmtree(worktree_parent, ignore_errors=True)
+print("  ✓ Worktree Gate: Default branch discovered dynamically and checkout targets upstream/trunk.")
+
+# 11.9 Single-commit discipline stages only the verified files, never git add -A.
+commit_dir = tempfile.mkdtemp(prefix="test_icu_commit_")
+os.makedirs(os.path.join(commit_dir, "src"))
+with open(os.path.join(commit_dir, "src", "fixed.py"), "w", encoding="utf-8") as f:
+    f.write("print('fixed')\n")
+original_run_cmd = autonomous_icu_pipeline.run_cmd
+original_cla = autonomous_icu_pipeline.auto_resolve_cla_if_needed
+commit_calls = []
+sha_reads = iter(["a" * 40 + "\n", "b" * 40 + "\n"])
+try:
+    def fake_commit_cmd(cmd, timeout=30, retries=2):
+        commit_calls.append(cmd)
+        if cmd[-2:] == ["rev-parse", "HEAD"]:
+            return next(sha_reads), "", 0
+        if cmd[-2:] == ["status", "--porcelain"]:
+            return " M src/fixed.py\n", "", 0
+        if "rev-list" in cmd:
+            return "1\n", "", 0
+        if cmd[:3] == ["gh", "pr", "create"]:
+            return "https://github.com/org/repo/pull/88\n", "", 0
+        return "", "", 0
+    autonomous_icu_pipeline.run_cmd = fake_commit_cmd
+    autonomous_icu_pipeline.auto_resolve_cla_if_needed = lambda repo, url: None
+    pr_url = autonomous_icu_pipeline.commit_and_open_pr(
+        commit_dir, "org/repo", 88, "Fix", "body", ["src/fixed.py"], default_branch="trunk"
+    )
+    assert pr_url.endswith("/88")
+    assert ["git", "-C", commit_dir, "add", "--", "src/fixed.py"] in commit_calls
+    assert not any(cmd[-1:] == ["-A"] for cmd in commit_calls)
+    assert any("rev-list" in cmd and "--count" in cmd for cmd in commit_calls)
+finally:
+    autonomous_icu_pipeline.run_cmd = original_run_cmd
+    autonomous_icu_pipeline.auto_resolve_cla_if_needed = original_cla
+    shutil.rmtree(commit_dir, ignore_errors=True)
+print("  ✓ Commit Gate: Only verified paths staged and exact one-commit proof required.")
+
+# ----------------------------------------------------------------
+# Test 12: Tiered DeepSeek & Token Harbor Key Router
+# ----------------------------------------------------------------
+print("\n[Test 12] Testing Tiered DeepSeek & Token Harbor Key Router...")
+
+# 12.1 A 429 leases no second request on the same key, honors Retry-After,
+# and transparently reaches the next ready key.
+clock_now = [1_000.0]
+router_calls = []
+def rate_limit_then_success(api_key, payload, timeout):
+    router_calls.append(api_key)
+    if api_key == "test-key-a":
+        return 429, {"Retry-After": "30"}, {"error": {"message": "rate limited"}}
+    return 200, {}, {"choices": [{"message": {"content": "flash completion"}}]}
+
+router = TokenHarborRouter(
+    keys=["test-key-a", "test-key-b"],
+    transport=rate_limit_then_success,
+    clock=lambda: clock_now[0],
+    jitter=lambda: 0.0,
+)
+ok, text, model, err = router.call("implement the ordinary feature")
+assert ok is True and text == "flash completion" and model == DEEPSEEK_FLASH_MODEL and err is None
+assert router_calls == ["test-key-a", "test-key-b"], "429 must fail over to a different ready key"
+router_status = router.status()
+assert router_status["states"][COOLDOWN] == 1 and router_status["states"][READY] == 1
+assert router_status["cooldowns"][0]["remaining_seconds"] == 30.0
+clock_now[0] += 31.0
+assert router.status()["states"][READY] == 2, "Elapsed cooldown must restore key to READY"
+print("  ✓ Router State Gate: READY → LEASED → COOLDOWN → READY and 429 fallback verified.")
+
+# 12.2 Authentication failures disable only the rejected key and continue.
+def reject_first_key(api_key, payload, timeout):
+    if api_key == "bad-key":
+        return 401, {}, {"error": {"message": "invalid credential"}}
+    return 200, {}, {"choices": [{"message": {"content": "fallback completion"}}]}
+
+auth_router = TokenHarborRouter(keys=["bad-key", "good-key"], transport=reject_first_key)
+ok, text, _, err = auth_router.call("repair issue")
+assert ok is True and text == "fallback completion" and err is None
+assert auth_router.status()["states"][DISABLED] == 1
+print("  ✓ Router Auth Gate: 401 disables rejected key and uses the next key.")
+
+# 12.3 A transient transport timeout receives exactly one fallback attempt.
+network_calls = []
+def timeout_then_success(api_key, payload, timeout):
+    network_calls.append(api_key)
+    if len(network_calls) == 1:
+        raise TimeoutError("simulated timeout")
+    return 200, {}, {"choices": [{"message": {"content": "recovered completion"}}]}
+
+network_router = TokenHarborRouter(keys=["key-1", "key-2"], transport=timeout_then_success)
+ok, text, _, err = network_router.call("repair issue")
+assert ok is True and text == "recovered completion" and err is None and network_calls == ["key-1", "key-2"]
+print("  ✓ Router Network Gate: One timeout retry uses a fallback key.")
+
+# 12.4 DeepSeek handles full delivery pipeline; fail-closed cleanly on exhaustion per Zero-Manufacture Law
+original_collect_evidence = autonomous_icu_pipeline.collect_repo_evidence
+original_flash = autonomous_icu_pipeline.call_deepseek_flash
+try:
+    autonomous_icu_pipeline.collect_repo_evidence = lambda repo, body: {
+        "commit_sha": "a" * 40,
+        "languages": "Python",
+        "description": "fixture",
+        "code_blocks": "",
+        "referenced_source": "",
+        "default_branch": "main",
+    }
+    # Turn 1: DeepSeek serves ordinary work
+    autonomous_icu_pipeline.call_deepseek_flash = lambda prompt, system_prompt=None, timeout=120: (True, "flash proposal", None)
+    proposal = autonomous_icu_pipeline.generate_grounded_proposal(
+        "org/repo", "ordinary formatting", "rename helper", "maintainer", [], turn=1
+    )
+    assert proposal == "flash proposal", "DeepSeek Flash should serve ordinary first-turn work"
+
+    # Turn 2: DeepSeek serves repair turns directly without Codex failover
+    proposal_t2 = autonomous_icu_pipeline.generate_grounded_proposal(
+        "org/repo", "ordinary formatting", "rename helper", "maintainer", [], iteration_feedback="test failed", turn=2
+    )
+    assert proposal_t2 == "flash proposal", "DeepSeek Flash should handle iterative repair turns directly"
+
+    # Fail-closed gate: On exhaustion, pipeline cleanly returns None (Zero-Manufacture Law)
+    autonomous_icu_pipeline.call_deepseek_flash = lambda prompt, system_prompt=None, timeout=120: (False, "", "keys exhausted")
+    proposal_fail = autonomous_icu_pipeline.generate_grounded_proposal(
+        "org/repo", "ordinary formatting", "rename helper", "maintainer", [], turn=1
+    )
+    assert proposal_fail is None, "DeepSeek exhaustion must fail closed cleanly without manufacturing fake fallbacks"
+finally:
+    autonomous_icu_pipeline.collect_repo_evidence = original_collect_evidence
+    autonomous_icu_pipeline.call_deepseek_flash = original_flash
+print("  ✓ DeepSeek Full Pipeline Gate: DeepSeek handles generation, repairs, and fail-closed exhaustion verified.")
+
 
 
 
