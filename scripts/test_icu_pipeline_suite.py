@@ -1036,6 +1036,19 @@ is_payer = is_direct_payer("campbellarchiezh-debug", "paraloom-labs/paraloom-cor
 assert is_payer is False, f"Expected third-party contributor with Payout Address to be rejected as payee, got {is_payer}"
 print("  ✓ Contributor Payee Gate: Third-party bounty hunter with 'Payout Address' rejected as payee.")
 
+# 6. In-game virtual currency / game design rejection
+ok, reason = verify_genuine_icu_patient(
+    title="Progression after the garage is maxed: give players something to chase",
+    body="Five tracks at $500 + $1,500 + $4,000 come to $30,000 in garage upgrades. Wanted poster with run's bounty.",
+    author_comments=[],
+    labels=[],
+    repo="game-dev/car-chase",
+    author="game-dev",
+    author_assoc="OWNER"
+)
+assert ok is False and ("student/contest pattern" in reason.lower() or "gameplay" in reason.lower()), f"Expected game mechanics rejection, got {ok}, {reason}"
+print("  ✓ Game Design Gate: In-game virtual garage currency ($500) rejected correctly.")
+
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")
 print("==================================================")

@@ -626,10 +626,11 @@ def is_direct_payer(author, repo, full_author_text):
         if re.search(sig, text, re.IGNORECASE):
             return True
 
-    # Repo owner posting a clearly-labelled bounty
+    # Repo owner posting an explicit bounty offer
     repo_owner = repo.split("/", 1)[0].lower() if "/" in repo else ""
     return bool(repo_owner and repo_owner == author.lower() and
-                re.search(r"\b(?:bounty|reward|paid task)\b", text, re.IGNORECASE))
+                (re.search(r"\b(?:bounty|reward|prize)\s*[:=-]?\s*(?:\$|usd|usdc|usdt|eur|€|gbp|inr|₹|sol|eth)", text, re.IGNORECASE) or
+                 _has_direct_offer_language(text)))
 
 def verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc="NONE", author=None, live_delivery_mode=False):
     """
@@ -650,7 +651,8 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         r"\b(?:homelab|home lab)\b",
         r"\b(?:portfolio|personal website|personal site|resume|cv)\b",
         r"\b(?:roadmap|milestone|go-to-market|planning|task list)\b",
-        r"\b(?:casting|performer|audition|playbill|theatre|board game|ruleset)\b"
+        r"\b(?:casting|performer|audition|playbill|theatre|board game|ruleset)\b",
+        r"\b(?:gameplay|in-game\s+(?:currency|money|cash|item|upgrade)|garage\s+(?:upgrade|track)|wanted\s+poster|boss\s+fight|respawn|co-op\s+mode|speedrun)\b"
     ]
     for sp in student_patterns:
         if re.search(sp, full_text):
