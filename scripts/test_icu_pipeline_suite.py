@@ -548,6 +548,12 @@ safe_1, msg_1 = sanitize_and_validate_payload(clean_payload)
 assert safe_1, f"Expected clean payload to pass, got: {msg_1}"
 print("  ✓ Clean Proposal: Approved.")
 
+# Technical IDs (Meta WABA phone ID, comment ID, Unix timestamp) must NOT trigger bank leak
+payload_with_tech_ids = clean_payload + "\nMeta WABA Phone ID: 104928172948192\nMeta App ID: 123456789012345\nComment ID: 6392217766\nTimestamp: 1730000000000"
+safe_tech, msg_tech = sanitize_and_validate_payload(payload_with_tech_ids)
+assert safe_tech, f"Expected technical IDs payload to pass without false bank leak trigger, got: {msg_tech}"
+print("  ✓ Technical IDs (WABA Phone ID, App ID, Comment ID, Epoch Timestamp): Approved without false leak.")
+
 # Leaked Bank Account (Contiguous)
 leaked_bank = clean_payload + "\nAccount Number: 55505593812 Bank: Kotak Bank"
 assert not sanitize_and_validate_payload(leaked_bank)[0], "Expected contiguous account leak caught."

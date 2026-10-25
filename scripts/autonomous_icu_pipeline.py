@@ -1011,8 +1011,10 @@ def sanitize_and_validate_payload(content):
 
     # Strictly prohibit bank accounts, IFSC, IBAN, UPI IDs, API tokens, private keys
     hard_leak_patterns = [
-        r"\b\d{9,18}\b",                                    # Contiguous account numbers
-        r"\b\d{2,6}(?:[- ]\d{2,6}){2,5}\b",                 # Formatted card / account numbers
+        r"\b(?:account|acct|acc|a/c)\s*(?:no\.?|number|#)?\s*[:=-]?\s*\d{9,18}\b",
+        r"\b(?:bank|routing|account|acct|kotak|sbi|hdfc|icici|indusind|pnb|axis|uco)\b.{0,30}\b\d{9,18}\b",
+        r"\b(?:account|acct|acc|a/c)\s*(?:no\.?|number|#)?\s*[:=-]?\s*\d{2,6}(?:[- ]\d{2,6}){2,5}\b",
+        r"\b(?:4\d{3}|5[1-5]\d{2}|6011|3[47]\d{2})[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b",
         r"\b[A-Z]{4}0[A-Z0-9]{6}\b",                        # Indian IFSC codes
         r"\b[A-Z]{2}\d{2}[A-Z0-9]{11,30}\b",                # International IBANs
         r"\b[a-zA-Z0-9.\-_]+@(okhdfcbank|okaxis|oksbi|okicici|paytm|ybl|upi|ibl|axl|apl|barodampay|federal|yesbank|icici|hdfcbank|sbi|axisbank|kotak|postbank)\b", # UPI
