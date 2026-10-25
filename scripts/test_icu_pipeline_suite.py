@@ -1108,6 +1108,56 @@ is_payer = is_direct_payer("dwaddle", "some-org/some-app", "POST /api/auth/login
 assert is_payer is False, f"Expected non-owner bare /bounty to be rejected as direct payer, got {is_payer}"
 print("  ✓ Non-Owner Authority Gate: Non-owner bare /bounty without platform attestation rejected correctly.")
 
+# 12. Vendor audit pitch / proactive review solicitation rejection (HockeyPlaya48/RWAForge#5)
+ok, reason = verify_genuine_icu_patient(
+    title="Security Review: DistributionRouter Batch Overflow + RewardClaimer Merkle Front-Running",
+    body="""## 🔍 Proactive Security Review
+I perform independent smart contract security audits. I found issues worth your attention.
+### 💼 Offer
+I would be happy to perform a full audit of the contract suite for $500-$1,000. Contact: reach out directly.
+This is a proactive review, not a bug bounty submission. No reward expected for these findings.""",
+    author_comments=[],
+    labels=[],
+    repo="HockeyPlaya48/RWAForge",
+    author="hebridean-tech",
+    author_assoc="NONE"
+)
+assert ok is False and ("payment negated" in reason.lower() or "lacks explicit parsed" in reason.lower()), f"Expected vendor audit pitch rejection, got {ok}, {reason}"
+print("  ✓ Vendor Audit Pitch Gate: Proactive review pitch with 'no reward expected' rejected correctly.")
+
+# 13. Settlement Wallet payee rejection on third-party repos (paraloom-core#1158)
+payee_settlement_text = """
+## Severity
+**Medium ($500 USDC — Stage 1 On-Chain Bridge)**
+## Settlement Wallet (USDC Base / EVM — Mandatory Invariant)
+`0x8366bCe3a2D379Dec7656D7A67015789FaF999f20`
+"""
+is_payer = is_direct_payer("Skywalkingzulu1", "paraloom-labs/paraloom-core", payee_settlement_text)
+assert is_payer is False, f"Expected Settlement Wallet author to be rejected as payee, got {is_payer}"
+print("  ✓ Settlement Wallet Gate: Bug bounty reporter with 'Settlement Wallet' rejected as payee.")
+
+# 14. Strikethrough retracted bounty gate (telefuel/video_player_testbed#1)
+ok, reason = verify_genuine_icu_patient(
+    title="Sync audio and video for go-flutter-desktop video player plugin",
+    body="## Bounty Amount\n~~$2,000~~ (we are no longer offering a bounty for this).",
+    author_comments=[],
+    labels=[],
+    repo="telefuel/video_player_testbed",
+    author="MattNguyen",
+    author_assoc="OWNER"
+)
+assert ok is False, f"Expected strikethrough/retracted bounty to be rejected, got {ok}, {reason}"
+print("  ✓ Strikethrough Retraction Gate: Retracted '~~$2,000~~ (no longer offering)' rejected correctly.")
+
+# 15. Contributor bounty applicant pitch gate (limitlessprojects/Go-Hybrid#1594)
+applicant_patch_text = """
+Please consider the useful-improvements bounty track. I understand the $500 cycle pool is competitive and the maintainer decides qualification, rank and payout. If selected, USDC on Base or PayPal are my preferred options.
+"""
+is_payer = is_direct_payer("JRCage", "limitlessprojects/Go-Hybrid", applicant_patch_text)
+assert is_payer is False, f"Expected bounty applicant with 'preferred options' to be rejected as payee, got {is_payer}"
+print("  ✓ Bounty Applicant Gate: Contributor requesting bounty consideration rejected as payee.")
+
+
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")
 print("==================================================")

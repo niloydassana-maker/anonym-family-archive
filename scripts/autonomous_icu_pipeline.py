@@ -282,7 +282,8 @@ APPROVED_CORRIDOR_TZ_MAP = [
 ]
 
 def _normalise_text(value):
-    return re.sub(r"\s+", " ", str(value or "")).strip().lower()
+    val = re.sub(r"~~.*?~~", " ", str(value or ""), flags=re.DOTALL)
+    return re.sub(r"\s+", " ", val).strip().lower()
 
 def detect_author_corridor(author):
     """
@@ -373,9 +374,18 @@ PLATFORM_BOUNTY_PATTERNS = [
 
 EXPLICIT_PAYMENT_NEGATIONS = [
     r"\b(?:will not|won't|cannot|can not)\s+pay\b",
-    r"\bno\s+(?:budget|funds?|payment|compensation)\b",
-    r"\bnot\s+a\s+paid\s+(?:task|bounty|engagement)\b",
+    r"\bno\s+(?:budget|funds?|payment|compensation|reward)\b",
+    r"\bnot\s+a\s+(?:paid\s+)?(?:task|bounty|engagement|bug\s+bounty)\b",
     r"\b(?:not|no|unwilling|refuse|refuses|cannot|can't|won't|never|disregard|disagree)\s+(?:willing|happy|able)?\s*(?:to\s+pay|paying|bounty|fee)\b",
+    r"\bno\s+longer\s+offering\s+(?:a\s+)?bounty\b",
+    r"\bbounty\s+(?:cancelled|closed|retracted|withdrawn|expired)\b",
+    r"\bplease\s+consider\s+the\s+.*?bounty\s+track\b",
+    r"\bif\s+selected,?\s+(?:usdc|paypal|crypto)\b",
+    r"\bmy\s+preferred\s+options?\b",
+    r"\bpreferred\s+options?:\s*(?:usdc|paypal|crypto)\b",
+    r"\bno\s+reward\s+expected\b",
+    r"\bnot\s+a\s+bug\s+bounty\s+submission\b",
+    r"\bproactive\s+(?:security\s+)?review\b",
 ]
 
 ECONOMIC_SCAM_PATTERNS = [
@@ -400,9 +410,8 @@ def _has_economic_scam_marker(text):
 
 def _has_direct_offer_language(text):
     return bool(re.search(
-        r"\b(?:i|we)\s*(?:will|can|could|shall|'ll|are\s+ready\s+to)"
-        r"\s*(?:pay|fund|offer|sponsor)\b"
-        r"|\b(?:offering|offered|funding|funded|willing\s+to\s+pay|happy\s+to\s+pay)\s+(?:a\s+)?(?:bounty|reward|payment|\$|usd|eur|€)\b",
+        r"\b(?:i|we)?\s*(?:will|can|could|shall|'ll|are\s+ready\s+to)\s*(?:pay|fund|offer|sponsor)\b"
+        r"|\b(?:offering|offered|funding|funded|willing\s+to\s+pay|happy\s+to\s+pay|will\s+pay)\s+(?:a\s+)?(?:bounty|reward|payment|\$|usd|eur|€)\b",
         text,
         re.IGNORECASE,
     ))
@@ -431,7 +440,7 @@ def parse_and_normalize_bounty(text, crypto_usd_rates=None):
     crypto_usd_rates is optional, e.g. {"eth": Decimal("3500.12"), "sol": Decimal("182.40")}.
     When absent, ETH/SOL are parsed but returned with usd_value=None.
     """
-    source = str(text or "")
+    source = re.sub(r"~~.*?~~", " ", str(text or ""), flags=re.DOTALL)
     crypto_usd_rates = {
         str(key).lower(): Decimal(str(value))
         for key, value in (crypto_usd_rates or {}).items()
@@ -597,11 +606,25 @@ def is_direct_payer(author, repo, full_author_text):
     if not has_amount or not in_bounds:
         return False
 
+    # Vendor pitching services / audits to repository owner
+    vendor_pitch_patterns = [
+        r"\b(?:happy|willing|available)\s+to\s+(?:perform|conduct|do)\s+(?:a\s+)?(?:full\s+)?(?:audit|review|assessment)\s+(?:of|for)\b",
+        r"\b(?:proactive|independent)\s+(?:security\s+)?(?:review|audit)\b",
+        r"\bno\s+reward\s+expected\b",
+        r"\bnot\s+a\s+bug\s+bounty\s+submission\b",
+        r"\b(?:hire\s+me|my\s+rate|our\s+rate|audit\s+quote|consulting\s+fee)\b",
+    ]
+    for vp in vendor_pitch_patterns:
+        if re.search(vp, text, re.IGNORECASE):
+            return False
+
     # Contributor payee marker: author stating how they want to RECEIVE payment, not PAY it
     payee_pattern = (
         r"\b(?:payout\s+(?:address|wallet|account)|"
-        r"(?:my|solana|usdc|usdt|eth|btc)\s+wallet\s*[:=-]|"
-        r"preferred\s+payment\s+method|"
+        r"(?:settlement|my|solana|usdc|usdt|eth|btc)\s+wallet\s*[:=-]|"
+        r"preferred\s+(?:payment\s+method|options?)|"
+        r"please\s+consider\s+the\s+.*?bounty\s+track|"
+        r"if\s+selected\b|"
         r"my\s+paypal|paypal\.me/|"
         r"/claim\b|"
         r"submitted\s+(?:complete\s+)?fix\s+in\s+pr\b)"
@@ -619,12 +642,15 @@ def is_direct_payer(author, repo, full_author_text):
     if _has_platform_bounty_marker(text):
         return True
 
-    # For a self-authored issue, an explicit first-person offer or payment signal is sufficient
-    if _has_direct_offer_language(text):
-        return True
-
-    for sig in DIRECT_PAYMENT_SIGNALS:
-        if re.search(sig, text, re.IGNORECASE):
+    # For a self-authored issue, an explicit first-person offer is required
+    has_direct_offer = _has_direct_offer_language(text)
+    if has_direct_offer:
+        # Require either a specific payment method signal or maintainer ownership
+        for sig in DIRECT_PAYMENT_SIGNALS:
+            if re.search(sig, text, re.IGNORECASE):
+                return True
+        repo_owner = repo.split("/", 1)[0].lower() if "/" in repo else ""
+        if repo_owner and repo_owner == author.lower():
             return True
 
     # Repo owner posting an explicit bounty offer
@@ -1249,20 +1275,27 @@ def attempt_automated_pull_request(repo, number, title, proposal, live_mode=True
     work_dir = os.path.join(SANDBOX_DIR, "repos", repo_short)
     os.makedirs(os.path.dirname(work_dir), exist_ok=True)
 
-    # 4. Clone or update repository fork
+    # 4. Clone or update repository fork with upstream synchronization
     fork_url = f"https://github.com/isearchxsolve/{repo_short}"
+    upstream_url = f"https://github.com/{repo}.git"
+
     if not os.path.exists(os.path.join(work_dir, ".git")):
         print(f"  [AUTO-PR] Cloning fork {fork_url} into {work_dir}...")
-        clone_out, clone_err, clone_code = run_cmd(["git", "clone", "--depth", "1", fork_url, work_dir], timeout=60)
+        clone_out, clone_err, clone_code = run_cmd(["git", "clone", fork_url, work_dir], timeout=60)
         if clone_code != 0:
             print(f"  [AUTO-PR ERROR] Git clone failed: {clone_err or clone_out}")
             return None
-    else:
-        run_cmd(["git", "-C", work_dir, "fetch", "origin"], timeout=30)
 
-    # 5. Create feature branch
+    # Configure upstream remote and fetch target branch
+    run_cmd(["git", "-C", work_dir, "remote", "remove", "upstream"], timeout=10)
+    run_cmd(["git", "-C", work_dir, "remote", "add", "upstream", upstream_url], timeout=10)
+    run_cmd(["git", "-C", work_dir, "fetch", "upstream", default_branch], timeout=45)
+
+    # 5. Create feature branch fresh from clean upstream default branch (NO STACKING!)
     branch_name = f"fix/bounty-{number}"
-    run_cmd(["git", "-C", work_dir, "checkout", "-B", branch_name], timeout=15)
+    run_cmd(["git", "-C", work_dir, "checkout", "-B", branch_name, f"upstream/{default_branch}"], timeout=15)
+    run_cmd(["git", "-C", work_dir, "reset", "--hard", f"upstream/{default_branch}"], timeout=15)
+    run_cmd(["git", "-C", work_dir, "clean", "-fdx"], timeout=15)
 
     # 6. Write extracted files
     valid_files_written = 0
@@ -1340,6 +1373,27 @@ def attempt_automated_pull_request(repo, number, title, proposal, live_mode=True
         print(f"  [AUTO-PR FAILED] Could not create PR: {pr_err or pr_out}")
         return None
 
+def has_existing_open_pr(repo, number):
+    """
+    Checks if an open PR already exists for this issue by another contributor,
+    preventing duplicate competing submissions and maintainer collisions.
+    """
+    out, err, code = run_cmd([
+        "gh", "pr", "list", "--repo", repo,
+        "--search", f"#{number}",
+        "--state", "open",
+        "--json", "number,url,title,author"
+    ], timeout=15)
+    if code == 0 and out:
+        try:
+            prs = json.loads(out)
+            competing = [p for p in prs if (p.get("author") or {}).get("login") != "isearchxsolve"]
+            if competing:
+                return True, competing[0].get("url")
+        except Exception:
+            pass
+    return False, None
+
 def post_grounded_proposal(repo, number, title, author, url, body, author_comments, labels, reason, corridor_info, author_assoc="NONE", live_mode=False):
     issue_id = f"{repo}#{number}"
 
@@ -1357,6 +1411,13 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
         )
         if not can_live:
             print(f"📦 [REJECT/PRE-LLM] {issue_id}: Not eligible for live delivery ({live_reason}). Zero tokens spent.")
+            return False
+
+        # Competing PR check: if another contributor has already opened a PR for this issue, do not duplicate!
+        has_competing, competing_url = has_existing_open_pr(repo, number)
+        if has_competing:
+            print(f"📦 [REJECT/COMPETING] {issue_id}: Open PR {competing_url} already exists. Skipping duplicate attempt.")
+            mark_issue_rejected(repo, number, f"Competing PR already open: {competing_url}")
             return False
 
         # Atomic SQLite claim reservation BEFORE spending tokens
