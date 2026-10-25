@@ -136,6 +136,26 @@ def release_claim(repo, number, db_path=DB_FILE):
     except Exception:
         pass
 
+def mark_issue_rejected(repo, number, reason, db_path=DB_FILE):
+    """
+    Permanently records a security-suppressed or failed issue in the database
+    so the daemon NEVER repeats the attempt and NEVER burns tokens on it again.
+    """
+    try:
+        with sqlite3.connect(db_path, timeout=30) as con:
+            con.execute("""
+            INSERT INTO deliveries (repo, issue_number, status, reason, delivered_at)
+            VALUES (?, ?, 'REJECTED_SECURITY', ?, datetime('now'))
+            ON CONFLICT(repo, issue_number) DO UPDATE SET
+                status = 'REJECTED_SECURITY',
+                reason = excluded.reason,
+                delivered_at = datetime('now')
+            """, (repo, number, reason))
+            con.commit()
+            print(f"🔒 [LOCKED OUT] {repo}#{number} marked as REJECTED_SECURITY in ledger. Will never be retried.")
+    except Exception as e:
+        print(f"  [DB Mark Rejected Error] {e}")
+
 def append_csv(entry, csv_path=CSV_FILE):
     file_exists = os.path.exists(csv_path)
     with open(csv_path, "a", encoding="utf-8") as f:
@@ -1306,14 +1326,14 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
     if not proposal:
         print(f"❌ [ABORTED] Model inference failed. Zero-Manufacture Law: No generic fallback posted.")
         if live_mode:
-            release_claim(repo, number)
+            mark_issue_rejected(repo, number, "Model inference failed")
         return False
 
     is_safe, safety_msg = sanitize_and_validate_payload(proposal)
     if not is_safe:
         print(f"❌ [SECURITY GATE TRIGGERED] {safety_msg}. Proposal suppressed.")
         if live_mode:
-            release_claim(repo, number)
+            mark_issue_rejected(repo, number, safety_msg)
         return False
 
     # Candidate Packet Generation
