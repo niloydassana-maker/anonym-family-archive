@@ -1049,6 +1049,32 @@ ok, reason = verify_genuine_icu_patient(
 assert ok is False and ("student/contest pattern" in reason.lower() or "gameplay" in reason.lower()), f"Expected game mechanics rejection, got {ok}, {reason}"
 print("  ✓ Game Design Gate: In-game virtual garage currency ($500) rejected correctly.")
 
+# 7. Hackathon demo video & Agora entry rejection (matocard/matocard#104)
+ok, reason = verify_genuine_icu_patient(
+    title="app: passkey onboarding with Mera (required for the Agora bounty)",
+    body="@Lexirieru the Agora bounty ('Best Cross-Border Payments App on Monad', $10k) has a hard requirement. Submit a demo video (up to 2 mins) showing passkey onboarding. Submission closes 14 Oct.",
+    author_comments=[],
+    labels=[],
+    repo="matocard/matocard",
+    author="yeheskieltame",
+    author_assoc="COLLABORATOR"
+)
+assert ok is False and "student/contest pattern" in reason.lower(), f"Expected Agora hackathon rejection, got {ok}, {reason}"
+print("  ✓ Hackathon Gate: Agora hackathon entry & demo video ticket rejected correctly.")
+
+# 8. Hackathon T&C compliance & prize pool checklist rejection (mandaputtra/arteri#10)
+ok, reason = verify_genuine_icu_patient(
+    title="T&C compliance: AI disclosure, registration, demo video, eligibility",
+    body="Satisfy the Metropolis Hackathon Terms & Conditions as mandatory requirements. Prize pool is stated as $145,000 in T&C but $250,000+ on the website. Team registered on hackathon.monad.xyz.",
+    author_comments=[],
+    labels=[],
+    repo="mandaputtra/arteri",
+    author="mandaputtra",
+    author_assoc="OWNER"
+)
+assert ok is False and "student/contest pattern" in reason.lower(), f"Expected Metropolis hackathon rejection, got {ok}, {reason}"
+print("  ✓ Hackathon Gate: Metropolis hackathon T&C compliance ($250k prize pool) rejected correctly.")
+
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")
 print("==================================================")

@@ -614,6 +614,10 @@ def is_direct_payer(author, repo, full_author_text):
         if repo_owner != author.lower():
             return False
 
+    # Third-party contest / hackathon entry reference: "the XYZ bounty", "required for the Agora bounty", "prize pool"
+    if re.search(r"\b(?:the\s+[\w-]+\s+(?:bounty|hackathon)|required\s+for\s+the|submit\s+to\s+the|entering\s+the|entry\s+for|hackathon\s+(?:track|prize|bounty)|prize\s+pool)\b", text, re.IGNORECASE):
+        return False
+
     # Platform funding is valid even where authorAssociation is NONE/CONTRIBUTOR
     if _has_platform_bounty_marker(text):
         return True
@@ -652,7 +656,9 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         r"\b(?:portfolio|personal website|personal site|resume|cv)\b",
         r"\b(?:roadmap|milestone|go-to-market|planning|task list)\b",
         r"\b(?:casting|performer|audition|playbill|theatre|board game|ruleset)\b",
-        r"\b(?:gameplay|in-game\s+(?:currency|money|cash|item|upgrade)|garage\s+(?:upgrade|track)|wanted\s+poster|boss\s+fight|respawn|co-op\s+mode|speedrun)\b"
+        r"\b(?:gameplay|in-game\s+(?:currency|money|cash|item|upgrade)|garage\s+(?:upgrade|track)|wanted\s+poster|boss\s+fight|respawn|co-op\s+mode|speedrun)\b",
+        r"\b(?:hackathon|hack\s+weekend|game\s+jam|prize\s+pool|track\s+prize|submission\s+window|demo\s+video|video\s+submission|disqualification\s+risk|terms\s+and\s+conditions\s+compliance|t&c\s+compliance)\b",
+        r"\b(?:hackathon\.xyz|monad\.xyz/hackathon|dorahacks|devpost|gitcoin\s+hackathon|agora\s+bounty|agora\s+entry)\b"
     ]
     for sp in student_patterns:
         if re.search(sp, full_text):
@@ -1408,26 +1414,26 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
             # Hardened validation: check nonempty fields
             if not comment_id or not receipt_url or not created_at:
                 print(f"❌ [RECEIPT INVALID] Missing comment_id, receipt_url, or created_at in server response.")
-                release_claim(repo, number)
+                mark_issue_rejected(repo, number, "Receipt invalid: missing comment_id, receipt_url, or created_at")
                 return False
 
             # Exact target issue URL check (no pull bypass)
             expected_issue_path = f"/{repo}/issues/{number}#"
             if expected_issue_path not in receipt_url:
                 print(f"❌ [RECEIPT MISMATCH] Public URL does not match target issue: {receipt_url}")
-                release_claim(repo, number)
+                mark_issue_rejected(repo, number, f"Receipt URL mismatch: {receipt_url}")
                 return False
 
             # Fail-closed authenticated user verification
             gh_user_out, _, gh_user_code = run_cmd(["gh", "api", "user", "--jq", ".login"], timeout=10)
             if gh_user_code != 0 or not gh_user_out:
                 print(f"❌ [RECEIPT FAIL-CLOSED] Could not retrieve authenticated GitHub CLI user.")
-                release_claim(repo, number)
+                mark_issue_rejected(repo, number, "Could not retrieve authenticated GitHub CLI user")
                 return False
 
             if not server_author or server_author != gh_user_out:
                 print(f"❌ [AUTHOR MISMATCH] Comment author '{server_author}' does not match CLI user '{gh_user_out}'.")
-                release_claim(repo, number)
+                mark_issue_rejected(repo, number, f"Author mismatch: {server_author} vs {gh_user_out}")
                 return False
 
             # Cryptographic SHA-256 verification
@@ -1438,7 +1444,7 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
                 ok_db = commit_delivery(repo, number, comment_id, receipt_url, local_digest)
                 if not ok_db:
                     print(f"❌ [DB COMMIT FAILED] Database commit affected 0 rows.")
-                    release_claim(repo, number)
+                    mark_issue_rejected(repo, number, "DB commit affected 0 rows")
                     return False
 
                 print(f"✅ [CRYPTOGRAPHIC RECEIPT CONFIRMED]")
@@ -1471,16 +1477,16 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
                 time.sleep(10)
                 return True
             else:
-                print(f"❌ [DIGEST MISMATCH] Server body SHA-256 did not match sent proposal. Releasing claim.")
-                release_claim(repo, number)
+                print(f"❌ [DIGEST MISMATCH] Server body SHA-256 did not match sent proposal.")
+                mark_issue_rejected(repo, number, "Server body SHA-256 did not match sent proposal")
                 return False
         except Exception as e:
-            print(f"❌ [RECEIPT PARSE ERROR] {e}. Releasing claim.")
-            release_claim(repo, number)
+            print(f"❌ [RECEIPT PARSE ERROR] {e}.")
+            mark_issue_rejected(repo, number, f"Receipt parse error: {e}")
             return False
     else:
-        print(f"❌ [POST FAILED] Error posting to {issue_id}: {err}. Releasing claim.")
-        release_claim(repo, number)
+        print(f"❌ [POST FAILED] Error posting to {issue_id}: {err}.")
+        mark_issue_rejected(repo, number, f"Error posting: {err}")
         return False
 
 def upgrade_existing_delivery(repo, number, live_mode=True):
@@ -1678,7 +1684,8 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
             re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed|arxiv)\b", repo_lower) or
             re.search(r"(?:每日信息流|信息流|日报|周报|资讯|快讯|每日精选)", title_lower) or
             re.search(r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list|showing\s+new\s+listings)\b", title_lower) or
-            re.search(r"\b(?:arxiv\s+daily|daily\s+arxiv|paper\s+digest|new\s+papers|daily\s+papers)\b", title_lower)
+            re.search(r"\b(?:arxiv\s+daily|daily\s+arxiv|paper\s+digest|new\s+papers|daily\s+papers)\b", title_lower) or
+            re.search(r"\b(?:hackathon|hack\s+weekend|game\s+jam|prize\s+pool|demo\s+video|t&c\s+compliance|submission\s+checklist)\b", title_lower)
         ):
             continue
 
