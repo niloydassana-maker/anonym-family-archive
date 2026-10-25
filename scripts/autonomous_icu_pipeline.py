@@ -819,6 +819,17 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         if re.search(ep, full_text, re.IGNORECASE):
             return False, f"Rejected by exclusive author or issue farm pattern: '{ep}'"
 
+    # Reject roadmap, RFC, speculative design brainstorms, and unpaid policy discussions
+    speculative_design_patterns = [
+        r"\[(?:roadmap|rfc|proposal|discussion|idea|spec)\]",
+        r"\b(?:design/roadmap\s+proposal\s+only|proposal\s+only|design\s+only)\b",
+        r"\b(?:not\s+an\s+active\s+deduction|illustrative\s+defaults?|illustrative\s+scenario)\b",
+        r"\b(?:pilot\s+economic\s+scenario|hypothetical\s+flow)\b",
+    ]
+    for sdp in speculative_design_patterns:
+        if re.search(sdp, full_text, re.IGNORECASE):
+            return False, f"Rejected non-funded/speculative design proposal: '{sdp}'" 
+
     if _has_payment_negation(full_text):
         return False, "Payment negated by pattern"
 
@@ -1347,22 +1358,49 @@ def is_safe_relative_path(worktree: str, rel_path: str) -> bool:
 def extract_files_from_proposal(proposal: str) -> List[Tuple[str, str]]:
     """
     Parses code blocks and file paths from grounded implementation deliverables.
-    Returns a list of (relative_filepath, file_content) tuples.
+    Supports markdown headers (###), file labels (**File:**), and inline source comments.
     """
+    extracted: List[Tuple[str, str]] = []
+    seen_paths = set()
+
+    def add_file(path: str, code: str) -> None:
+        path = path.strip()
+        if path and path not in seen_paths:
+            seen_paths.add(path)
+            extracted.append((path, code))
+
+    # 1. Header forms: (path), (`path`), or a bare backtick path heading.
     sections = re.split(r'\n(?=### )', proposal)
-    extracted = []
     for sec in sections:
-        header_match = re.search(r'###[^\n`]*`([^`]+)`', sec)
-        if not header_match:
-            continue
-        rel_path = header_match.group(1).strip()
-        if '.' not in rel_path and '/' not in rel_path and '\\' not in rel_path:
-            continue
-        code_match = re.search(r'```(?:[a-zA-Z0-9_-]+)?\r?\n(.*?)```', sec, re.DOTALL)
-        if not code_match:
-            continue
-        code_body = code_match.group(1)
-        extracted.append((rel_path, code_body))
+        header_match = re.search(
+            r'^###.*?(?:\(\s*`?|\s+`)([a-zA-Z0-9_.\-/\\]+\.[A-Za-z0-9]+)`?\s*\)?',
+            sec,
+            re.MULTILINE,
+        )
+        if header_match:
+            rel_path = header_match.group(1).strip()
+            code_match = re.search(r'```(?:[a-zA-Z0-9_-]+)?\r?\n(.*?)```', sec, re.DOTALL)
+            if code_match:
+                add_file(rel_path, code_match.group(1))
+
+    # 2. Explicit labels may appear outside a heading and must coexist with
+    # heading-form files in a multi-file proposal.
+    file_blocks = re.findall(
+        r'(?:\*\*File:\*\*|\*\*File\*\*|File:|Path:)\s*`?([a-zA-Z0-9_.\-/\\]+\.[A-Za-z0-9]+)`?\s*\r?\n+```(?:[a-zA-Z0-9_-]+)?\r?\n(.*?)```',
+        proposal,
+        re.DOTALL,
+    )
+    for path, code in file_blocks:
+        add_file(path, code)
+
+    # 3. A code fence can identify itself with a first-line source comment.
+    code_blocks = re.findall(r'```(?:[a-zA-Z0-9_-]+)?\r?\n(.*?)```', proposal, re.DOTALL)
+    for code in code_blocks:
+        first_line = code.lstrip().splitlines()[0] if code.lstrip().splitlines() else ""
+        comment_match = re.match(r'^(?://|#)\s*([a-zA-Z0-9_.\-/\\]+\.[A-Za-z0-9]+)\s*$', first_line)
+        if comment_match:
+            add_file(comment_match.group(1), code)
+
     return extracted
 
 def validate_synthesized_files(work_dir: str, extracted_files: List[Tuple[str, str]]) -> Tuple[bool, str]:

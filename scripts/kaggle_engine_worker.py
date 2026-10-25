@@ -15,6 +15,8 @@ import hashlib
 import tempfile
 import urllib.request
 import urllib.error
+import urllib.parse
+import glob
 import subprocess
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime, timezone, timedelta
@@ -289,12 +291,18 @@ class TokenHarborRouter:
                 return False, "", DEEPSEEK_FLASH_MODEL, "Token Harbor returned no chat completion text."
             if status == 429:
                 self._cool_down(slot, headers)
-                last_error = self._error_text(response_payload, "Token Harbor rate limited the request.")
+                last_error = (
+                    "TokenHarbor router HTTP 429: "
+                    f"{self._error_text(response_payload, 'rate limited the request.')}"
+                )
                 continue
             if status in (401, 403):
                 self._disable(slot)
                 print(f"[TOKENHARBOR ALERT] Disabled one API key after HTTP {status}; attempting ready fallback.")
-                last_error = self._error_text(response_payload, "Token Harbor rejected an API key.")
+                last_error = (
+                    f"TokenHarbor router HTTP {status}: "
+                    f"{self._error_text(response_payload, 'rejected an API key.')}"
+                )
                 continue
             if 500 <= status < 600:
                 self._release_ready(slot)
@@ -321,6 +329,36 @@ class TokenHarborRouter:
 
 _default_router: Optional[TokenHarborRouter] = None
 _default_router_lock = threading.Lock()
+_last_generation_diagnostic = "generation did not start"
+
+
+def _set_generation_diagnostic(reason: str) -> None:
+    """Keep the closed-failure reason available to the worker receipt path.
+
+    The worker processes one task at a time, so a process-local value is enough
+    and avoids putting operational details into the task payload.
+    """
+    global _last_generation_diagnostic
+    _last_generation_diagnostic = reason[:300]
+
+
+def get_last_generation_diagnostic() -> str:
+    return _last_generation_diagnostic
+
+
+def _classify_generation_failure(error_message: Optional[str]) -> str:
+    """Return an actionable, credential-safe router failure category."""
+    message = (error_message or "").strip()
+    normalized = message.lower()
+    if "http 401" in normalized or "http 403" in normalized:
+        return "TokenHarbor router HTTP 401/403"
+    if "http 429" in normalized or "rate limit" in normalized:
+        return "TokenHarbor router HTTP 429"
+    if any(marker in normalized for marker in ("timeout", "timed out", "transient network", "urlerror")):
+        return "TokenHarbor router network timeout"
+    if any(marker in normalized for marker in ("no token harbor key", "key exhaustion", "requires exactly", "key file", "invalid key")):
+        return "TokenHarbor key exhaustion"
+    return f"TokenHarbor router failure: {message[:180] or 'empty completion'}"
 
 
 def _get_default_router() -> TokenHarborRouter:
@@ -406,57 +444,81 @@ def sanitize_prompt_input(text):
         escaped = re.sub(p, "[SANITIZED]", escaped)
     return escaped
 
-def collect_repo_evidence(repo, body):
-    evidence = {}
-    cmd = ["gh", "repo", "view", repo, "--json", "description,languages,defaultBranchRef"]
-    out, err, code = run_cmd(cmd, timeout=15)
-    default_branch = "main"
-    if code == 0 and out:
-        try:
-            rmeta = json.loads(out)
-            evidence["description"] = rmeta.get("description", "")
-            default_branch = rmeta.get("defaultBranchRef", {}).get("name") or "main"
-            raw_langs = rmeta.get("languages", [])
-            langs = []
-            if isinstance(raw_langs, list):
-                for l in raw_langs:
-                    if isinstance(l, dict) and "node" in l:
-                        langs.append(l["node"].get("name"))
-                    elif isinstance(l, dict) and "name" in l:
-                        langs.append(l["name"])
-            evidence["languages"] = ", ".join(filter(None, langs)) if langs else "Polyglot"
-        except Exception:
-            evidence["description"] = ""
-            evidence["languages"] = "Unknown"
+def _github_rest_json(url: str, token: str) -> Optional[dict]:
+    """Read one GitHub REST resource without involving the gh CLI.
 
-    evidence["default_branch"] = default_branch
-
-    # Get HEAD commit SHA - strictly require immutable 40-hex SHA (fail-closed, no branch fallback)
-    head_cmd = ["gh", "api", f"repos/{repo}/commits/HEAD", "--jq", ".sha"]
-    hout, herr, hcode = run_cmd(head_cmd, timeout=15)
-    clean_sha = hout.strip()
-    if hcode != 0 or not re.fullmatch(r"[0-9a-fA-F]{40}", clean_sha):
-        print(f"  [Evidence Error] Fail-closed: Could not verify 40-hex commit SHA for {repo} (got: '{clean_sha}').")
+    GitHub's API response is the authority for the immutable commit anchor.
+    Errors intentionally return no evidence so proposal generation fails closed.
+    """
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "User-Agent": "kaggle-engine-worker",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    try:
+        request_obj = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(request_obj, timeout=15) as response:
+            payload = json.loads(response.read().decode("utf-8", errors="replace"))
+        return payload if isinstance(payload, dict) else None
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, json.JSONDecodeError, OSError) as exc:
+        print(f"  [Evidence Error] GitHub REST lookup failed: {type(exc).__name__}: {exc}", flush=True)
         return None
-    commit_sha = clean_sha
+
+
+def collect_repo_evidence(repo, body):
+    """Collect immutable, REST-backed evidence for a single repository."""
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or ""
+    repo_path = urllib.parse.quote(str(repo).strip(), safe="/")
+    api_root = f"https://api.github.com/repos/{repo_path}"
+    evidence = {"description": "", "languages": "Polyglot", "default_branch": "main"}
+
+    metadata = _github_rest_json(api_root, token)
+    if metadata:
+        evidence["description"] = str(metadata.get("description") or "")
+        evidence["default_branch"] = str(metadata.get("default_branch") or "main")
+        language = metadata.get("language")
+        if isinstance(language, str) and language.strip():
+            evidence["languages"] = language.strip()
+
+    # This direct endpoint supplies the immutable object SHA.  Regex fallback
+    # tolerates harmless JSON-shape changes, but never accepts CLI output.
+    head_payload = _github_rest_json(f"{api_root}/commits/HEAD", token)
+    direct_sha = head_payload.get("sha") if head_payload else ""
+    fallback_text = json.dumps(head_payload, sort_keys=True) if head_payload else ""
+    sha_match = re.search(r"\b([0-9a-fA-F]{40})\b", str(direct_sha))
+    if not sha_match:
+        sha_match = re.search(r"\b([0-9a-fA-F]{40})\b", fallback_text)
+    if not sha_match:
+        print(f"  [Evidence Error] Fail-closed: missing verified 40-hex commit SHA for {repo}.", flush=True)
+        return None
+    commit_sha = sha_match.group(1).lower()
     evidence["commit_sha"] = commit_sha
 
     code_blocks = re.findall(r"```[\s\S]*?```", body or "")
     evidence["code_blocks"] = "\n".join(code_blocks[:3]) if code_blocks else "No inline code blocks provided."
 
-    # Look for referenced source files in body
-    referenced_files = re.findall(r"(?:src|lib|packages|apps|deploy|crates)/[\w\./\-_]+\.(?:ts|js|py|rs|go|jl|cpp|c|json|ya?ml)", body or "")
+    referenced_files = re.findall(
+        r"(?:src|lib|packages|apps|deploy|crates)/[\w./_-]+\.(?:ts|js|py|rs|go|jl|cpp|c|json|ya?ml)",
+        body or "",
+    )
     evidence["referenced_source"] = ""
     for rfile in referenced_files[:2]:
-        fcmd = ["gh", "api", f"repos/{repo}/contents/{rfile}?ref={commit_sha}", "--jq", ".content"]
-        fout, ferr, fcode = run_cmd(fcmd, timeout=15)
-        if fcode == 0 and fout:
-            try:
-                import base64
-                decoded = base64.b64decode(fout).decode("utf-8", errors="replace")
-                evidence["referenced_source"] += f"\n--- Referenced File: {rfile} (Branch: {default_branch}, Commit: {commit_sha[:7]}) ---\nURL: https://github.com/{repo}/blob/{commit_sha}/{rfile}\n{decoded[:1200]}\n"
-            except Exception:
-                pass
+        quoted_file = urllib.parse.quote(rfile, safe="/")
+        source_payload = _github_rest_json(f"{api_root}/contents/{quoted_file}?ref={commit_sha}", token)
+        encoded = source_payload.get("content") if source_payload else None
+        if not isinstance(encoded, str):
+            continue
+        try:
+            import base64
+            decoded = base64.b64decode(encoded).decode("utf-8", errors="replace")
+            evidence["referenced_source"] += (
+                f"\n--- Referenced File: {rfile} (Branch: {evidence['default_branch']}, Commit: {commit_sha[:7]}) ---"
+                f"\nURL: https://github.com/{repo}/blob/{commit_sha}/{rfile}\n{decoded[:1200]}\n"
+            )
+        except (ValueError, UnicodeError):
+            continue
 
     return evidence
 
@@ -481,6 +543,7 @@ def generate_grounded_proposal(
 ):
     evidence = collect_repo_evidence(repo, body)
     if not evidence or not evidence.get("commit_sha"):
+        _set_generation_diagnostic("missing verified 40-hex commit SHA")
         print(f"❌ [FAIL-CLOSED] Missing verified 40-hex commit SHA for {repo}. Suppressing proposal generation.")
         return None
     stack = evidence.get("languages", "Polyglot")
@@ -565,7 +628,9 @@ STRICT RULES:
     print(f"  [DEEPSEEK-FLASH] model={DEEPSEEK_FLASH_MODEL}, turn={turn}")
     deepseek_ok, deepseek_text, deepseek_error = call_deepseek_flash(prompt, timeout=120)
     if deepseek_ok and deepseek_text:
+        _set_generation_diagnostic("")
         return deepseek_text
+    _set_generation_diagnostic(_classify_generation_failure(deepseek_error))
     print(f"  [DEEPSEEK-FLASH FAIL-CLOSED] No proposal generated: {(deepseek_error or 'empty completion')[:240]}")
     return None
 
@@ -784,22 +849,49 @@ def is_safe_relative_path(worktree: str, rel_path: str) -> bool:
 def extract_files_from_proposal(proposal: str) -> List[Tuple[str, str]]:
     """
     Parses code blocks and file paths from grounded implementation deliverables.
-    Returns a list of (relative_filepath, file_content) tuples.
+    Supports markdown headers (###), file labels (**File:**), and inline source comments.
     """
+    extracted: List[Tuple[str, str]] = []
+    seen_paths = set()
+
+    def add_file(path: str, code: str) -> None:
+        path = path.strip()
+        if path and path not in seen_paths:
+            seen_paths.add(path)
+            extracted.append((path, code))
+
+    # 1. Header forms: (path), (`path`), or a bare backtick path heading.
     sections = re.split(r'\n(?=### )', proposal)
-    extracted = []
     for sec in sections:
-        header_match = re.search(r'###[^\n`]*`([^`]+)`', sec)
-        if not header_match:
-            continue
-        rel_path = header_match.group(1).strip()
-        if '.' not in rel_path and '/' not in rel_path and '\\' not in rel_path:
-            continue
-        code_match = re.search(r'```(?:[a-zA-Z0-9_-]+)?\r?\n(.*?)```', sec, re.DOTALL)
-        if not code_match:
-            continue
-        code_body = code_match.group(1)
-        extracted.append((rel_path, code_body))
+        header_match = re.search(
+            r'^###.*?(?:\(\s*`?|\s+`)([a-zA-Z0-9_.\-/\\]+\.[A-Za-z0-9]+)`?\s*\)?',
+            sec,
+            re.MULTILINE,
+        )
+        if header_match:
+            rel_path = header_match.group(1).strip()
+            code_match = re.search(r'```(?:[a-zA-Z0-9_-]+)?\r?\n(.*?)```', sec, re.DOTALL)
+            if code_match:
+                add_file(rel_path, code_match.group(1))
+
+    # 2. Explicit labels may appear outside a heading and must coexist with
+    # heading-form files in a multi-file proposal.
+    file_blocks = re.findall(
+        r'(?:\*\*File:\*\*|\*\*File\*\*|File:|Path:)\s*`?([a-zA-Z0-9_.\-/\\]+\.[A-Za-z0-9]+)`?\s*\r?\n+```(?:[a-zA-Z0-9_-]+)?\r?\n(.*?)```',
+        proposal,
+        re.DOTALL,
+    )
+    for path, code in file_blocks:
+        add_file(path, code)
+
+    # 3. A code fence can identify itself with a first-line source comment.
+    code_blocks = re.findall(r'```(?:[a-zA-Z0-9_-]+)?\r?\n(.*?)```', proposal, re.DOTALL)
+    for code in code_blocks:
+        first_line = code.lstrip().splitlines()[0] if code.lstrip().splitlines() else ""
+        comment_match = re.match(r'^(?://|#)\s*([a-zA-Z0-9_.\-/\\]+\.[A-Za-z0-9]+)\s*$', first_line)
+        if comment_match:
+            add_file(comment_match.group(1), code)
+
     return extracted
 
 def validate_synthesized_files(work_dir: str, extracted_files: List[Tuple[str, str]]) -> Tuple[bool, str]:
@@ -986,9 +1078,9 @@ def discover_verification_plan(arch: dict, worktree: str) -> VerificationPlan:
 
     if "rust" in ecosystems:
         plan.bootstrap.append(["cargo", "check", "--workspace"])
-        plan.baseline_tests.append(["cargo", "test", "--workspace"])
-        plan.final_tests.append(["cargo", "test", "--workspace"])
-        plan.linters.append(["cargo", "clippy", "--workspace", "--", "-D", "warnings"])
+        plan.baseline_tests.append(["cargo", "test", "--lib"])
+        plan.final_tests.append(["cargo", "test", "--lib"])
+        plan.linters.append(["cargo", "clippy", "--lib", "--", "-D", "warnings"])
 
     if "go" in ecosystems:
         plan.bootstrap.append(["go", "mod", "download"])
@@ -1496,7 +1588,12 @@ def run_engineering_iteration_loop(
             turn=turn,
         )
         if not proposal:
-            return False, run, f"DeepSeek Flash generation failed closed on iteration {turn}."
+            diagnostic = get_last_generation_diagnostic() or "unspecified generation failure"
+            return (
+                False,
+                run,
+                f"DeepSeek Flash generation failed closed on iteration {turn}: {diagnostic}.",
+            )
         extracted_files = extract_files_from_proposal(proposal)
         verified_paths = [path for path, _ in extracted_files]
         if not extracted_files:
@@ -1739,7 +1836,32 @@ def setup_kaggle_env():
             subprocess.run(["apt-get", "update", "-qq"], check=False)
             subprocess.run(["apt-get", "install", "-y", "-qq", "gh"], check=False)
 
-    # 2. Install Rust / Cargo toolchain if missing (for Solana zk-SNARKs and Rust bounties)
+    # 2. Always bootstrap the native Rust/C++ toolchain.  Kaggle base images
+    # vary, and bindgen/rocksdb require libclang even when `clang` already
+    # happens to be on PATH.
+    try:
+        print("[Init] Bootstrapping native C/C++ compiler and libclang headers...", flush=True)
+        subprocess.run(["apt-get", "update", "-qq"], check=False)
+        subprocess.run(
+            ["apt-get", "install", "-y", "-qq", "clang", "libclang-dev", "cmake", "mold", "build-essential"],
+            check=False,
+        )
+        libclang_candidates = (
+            glob.glob("/usr/lib/llvm-*/lib/libclang.so")
+            + glob.glob("/usr/lib/llvm-*/lib/libclang.so.*")
+            + glob.glob("/usr/lib/x86_64-linux-gnu/libclang.so")
+            + glob.glob("/usr/lib/x86_64-linux-gnu/libclang.so.*")
+        )
+        if libclang_candidates:
+            libclang_path = os.path.dirname(sorted(libclang_candidates)[0])
+            os.environ["LIBCLANG_PATH"] = libclang_path
+            print(f"[Init] LIBCLANG_PATH={libclang_path}", flush=True)
+        else:
+            print("[Init Warning] libclang was not found after bootstrap; Rust bindgen builds will fail closed.", flush=True)
+    except Exception as e:
+        print(f"[Init Warning] Native build tool bootstrap error: {e}", flush=True)
+
+    # 3. Install Rust / Cargo toolchain if missing (for Solana zk-SNARKs and Rust bounties)
     if not shutil.which("cargo"):
         try:
             print("[Init] Installing standalone Rust/Cargo toolchain...", flush=True)
@@ -1752,7 +1874,7 @@ def setup_kaggle_env():
         except Exception as e:
             print(f"[Init Warning] Failed to install Rust via rustup: {e}. Trying apt-get...", flush=True)
             subprocess.run(["apt-get", "update", "-qq"], check=False)
-            subprocess.run(["apt-get", "install", "-y", "-qq", "cargo", "rustc", "clang", "libclang-dev"], check=False)
+            subprocess.run(["apt-get", "install", "-y", "-qq", "cargo", "rustc"], check=False)
 
     # 3. Configure git identity
     subprocess.run(["git", "config", "--global", "user.name", "isearchxsolve"], check=False)
@@ -1865,8 +1987,8 @@ def run_worker_loop():
                 if task_id in processed_tasks:
                     continue
 
-                # Deterministic Modulo Sharding: 0 race conditions across the 5 engines!
-                task_hash = abs(hash(task_id))
+                # Deterministic Cryptographic Sharding: 0 cross-process or cross-machine drift!
+                task_hash = int(hashlib.sha256(task_id.encode("utf-8")).hexdigest()[:8], 16)
                 assigned_engine = (task_hash % TOTAL_ENGINES) + 1
                 if assigned_engine != ENGINE_INDEX:
                     continue  # Assigned to sibling engine in fleet
@@ -1883,7 +2005,11 @@ def run_worker_loop():
                 # half of the partition, so the laptop remains a dispatcher.
                 proposal = generate_grounded_proposal(repo, title, body, author, author_comments, turn=1)
                 if not proposal:
-                    door_say(f"FAILED {ENGINE_ID} DeepSeek generation failed closed for {repo}#{number}", body="BOUNTY_RESULT")
+                    diag_reason = get_last_generation_diagnostic()
+                    door_say(
+                        f"FAILED {ENGINE_ID} generation failed closed: {diag_reason} for {repo}#{number}",
+                        body="BOUNTY_RESULT",
+                    )
                     continue
                 proposal_safe, proposal_message = sanitize_and_validate_payload(proposal)
                 if not proposal_safe:
@@ -1905,7 +2031,14 @@ def run_worker_loop():
                         door_say(f"FAILED {ENGINE_ID} PR exists but authoritative SHA-256 issue receipt failed: {pr_url} for {repo}#{number}", body="BOUNTY_RESULT")
                 else:
                     print(f"❌ [{ENGINE_ID}] Multi-turn verification did not produce green PR for {repo}#{number}", flush=True)
-                    door_say(f"FAILED {ENGINE_ID} verification failed for {repo}#{number}", body="BOUNTY_RESULT")
+                    diagnostic = get_last_generation_diagnostic()
+                    if diagnostic:
+                        door_say(
+                            f"FAILED {ENGINE_ID} generation failed closed: {diagnostic} for {repo}#{number}",
+                            body="BOUNTY_RESULT",
+                        )
+                    else:
+                        door_say(f"FAILED {ENGINE_ID} verification failed for {repo}#{number}", body="BOUNTY_RESULT")
 
             time.sleep(15)
         except Exception as e:
