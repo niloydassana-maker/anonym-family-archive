@@ -364,9 +364,12 @@ TERMINAL_LABELS = {
 }
 
 PLATFORM_BOUNTY_PATTERNS = [
-    r"\b(?:algora|polar|gitcoin|bountysource|opire|bountybot)\b",
+    r"\b(?:algora\.io|polar\.sh|gitcoin\.co|bountysource\.com|opire\.dev|bountybot)\b",
     r"https?://[^\s)]+(?:algora\.io|polar\.sh|gitcoin\.co|bountysource\.com|opire\.dev)[^\s)]*",
     r"(?im)^\s*/bounty\s+",
+    r"\b(?:algora|polar|gitcoin|opire)\b.*?\b(?:bounty|reward|funding|pledge)\b",
+    r"\b(?:bounty|reward|funding|pledge)\b.*?\b(?:polar|algora|gitcoin|opire)\b",
+    r"\b(?:pledged|funded)\b.*?\b(?:on|with|via)\s+polar\b",
     r"\b(?:bounty|reward|funded)\s*[:=-]\s*(?:\$|usd|usdc|usdt|eur|€|gbp|£|inr|₹|sgd|aed|eth|sol)",
 ]
 
@@ -484,6 +487,21 @@ def parse_and_normalize_bounty(text, crypto_usd_rates=None):
             raw_value *= Decimal("1000000")
 
         raw_text = match.group(0).strip()
+
+        # Check for LaTeX / KaTeX math notation or scientific units
+        after_match = source[match.end():match.end() + 25]
+        before_match = source[max(0, match.start() - 25):match.start()]
+        # 1. Closing dollar math delimiter: e.g. `$500$` or `$500 $`
+        if unit == "$" and re.match(r"^\s*[$^_\\]", after_match):
+            continue
+        # 2. Physics / scientific units immediately following: e.g. `$500 \mu m`, `500 nm`, `500 GHz`, `500 pc`
+        sci_units_pattern = r"^\s*(?:\\mu\s*m|\\mum|nm|km|cm|mm|GHz|MHz|kHz|Hz|Jy|mJy|uJy|pc|kpc|Mpc|deg|arcsec|arcmin|K|Kelvin|eV|keV|MeV|GeV|TeV|M_sun|Msun|L_sun|R_sun|Gyr|Myr|yr|sec|ms|ns|dex|mag)\b"
+        if re.match(sci_units_pattern, after_match, re.IGNORECASE):
+            continue
+        # 3. Preceded by LaTeX math operators: e.g. `\sim $500` or `\pm`
+        if re.search(r"(?:\\lambda|\\nu|\\alpha|\\beta|\\sim|\\approx|\\pm|\\le|\\ge|\\times)\s*$", before_match):
+            continue
+
         nearby = source[max(0, match.start() - 48):match.end() + 48].lower()
         bounty_context = bool(re.search(r"\b(?:bounty|reward|fund|paid|pay|sponsor)\b", nearby))
 
@@ -582,6 +600,20 @@ def is_direct_payer(author, repo, full_author_text):
     if not has_amount or not in_bounds:
         return False
 
+    # Contributor payee marker: author stating how they want to RECEIVE payment, not PAY it
+    payee_pattern = (
+        r"\b(?:payout\s+(?:address|wallet|account)|"
+        r"(?:my|solana|usdc|usdt|eth|btc)\s+wallet\s*[:=-]|"
+        r"preferred\s+payment\s+method|"
+        r"my\s+paypal|paypal\.me/|"
+        r"/claim\b|"
+        r"submitted\s+(?:complete\s+)?fix\s+in\s+pr\b)"
+    )
+    if re.search(payee_pattern, text, re.IGNORECASE) and not re.search(r"\b(?:will\s+pay|willing\s+to\s+pay|paying\s+via)\b", text, re.IGNORECASE):
+        repo_owner = repo.split("/", 1)[0].lower() if "/" in repo else ""
+        if repo_owner != author.lower():
+            return False
+
     # Platform funding is valid even where authorAssociation is NONE/CONTRIBUTOR
     if _has_platform_bounty_marker(text):
         return True
@@ -589,12 +621,6 @@ def is_direct_payer(author, repo, full_author_text):
     # For a self-authored issue, an explicit first-person offer or payment signal is sufficient
     if _has_direct_offer_language(text):
         return True
-
-    # Contributor payee marker: author stating how they want to RECEIVE payment, not PAY it
-    if re.search(r"\b(?:preferred\s+payment\s+method|my\s+paypal|paypal\.me/)\b", text, re.IGNORECASE) and not re.search(r"\b(?:will\s+pay|willing\s+to\s+pay|paying\s+via)\b", text, re.IGNORECASE):
-        repo_owner = repo.split("/", 1)[0].lower() if "/" in repo else ""
-        if repo_owner != author.lower():
-            return False
 
     for sig in DIRECT_PAYMENT_SIGNALS:
         if re.search(sig, text, re.IGNORECASE):
@@ -641,24 +667,26 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     if repo and re.search(aggregator_repos, repo, re.IGNORECASE):
         return False, f"Rejected: repository '{repo}' is an aggregator/indexer, not an authoritative software host."
 
-    # Filter out static site blogs, newsletters, and bookmark aggregators
+    # Filter out static site blogs, newsletters, bookmark aggregators, and arxiv scrapers
     if repo:
         repo_lower = repo.lower()
         if (
             repo_lower.endswith(".github.io") or 
             repo_lower.endswith(".gitlab.io") or 
-            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed)\b", repo_lower)
+            "arxiv" in repo_lower or
+            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed|arxiv)\b", repo_lower)
         ):
-            return False, f"Rejected: repository '{repo}' is a blog, static site, or newsletter archive."
+            return False, f"Rejected: repository '{repo}' is a blog, static site, arxiv scraper, or newsletter archive."
 
     # Filter out newsletter / daily digest / bookmark collection titles and content
     digest_patterns = [
         r"(?:每日信息流|信息流|日报|周报|资讯|快讯|每日精选)",
-        r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list)\b",
+        r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list|showing\s+new\s+listings)\b",
+        r"\b(?:arxiv\s+daily|daily\s+arxiv|paper\s+digest|new\s+papers|daily\s+papers|astro-ph|cs\.[a-z]{2})\b",
     ]
     for dp in digest_patterns:
         if re.search(dp, full_text, re.IGNORECASE):
-            return False, f"Rejected: issue is a newsletter or reading digest ('{dp}'), not a software codebase task."
+            return False, f"Rejected: issue is a newsletter, paper digest, or reading list ('{dp}'), not a software codebase task."
 
     # Repositories with strict Issue-First policy: require maintainer 'approved' label
     issue_first_repos = ["unitoneai/securityskills", "expensify/app"]
@@ -1637,16 +1665,18 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         if comments_cnt > 4:
             continue
 
-        # Filter out static site blogs, newsletters, and bookmark aggregators at query layer
+        # Filter out static site blogs, newsletters, bookmark aggregators, and arxiv scrapers at query layer
         repo_lower = repo.lower()
         title_lower = title.lower()
         if (
             repo_lower.endswith(".github.io") or
             repo_lower.endswith(".gitlab.io") or
             "bountyscout" in repo_lower or
-            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed)\b", repo_lower) or
+            "arxiv" in repo_lower or
+            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed|arxiv)\b", repo_lower) or
             re.search(r"(?:每日信息流|信息流|日报|周报|资讯|快讯|每日精选)", title_lower) or
-            re.search(r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list)\b", title_lower)
+            re.search(r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list|showing\s+new\s+listings)\b", title_lower) or
+            re.search(r"\b(?:arxiv\s+daily|daily\s+arxiv|paper\s+digest|new\s+papers|daily\s+papers)\b", title_lower)
         ):
             continue
 
@@ -1747,10 +1777,10 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
         'bounty "distributed" --state open',
         'bounty "zero-knowledge" --state open',
         'bounty "smart contract" --state open',
-        'algora "hard" --state open',
-        'algora "concurrency" --state open',
-        'polar "hard" --state open',
-        'opire "hard" --state open',
+        'algora.io "hard" --state open',
+        'algora.io "concurrency" --state open',
+        'polar.sh "hard" --state open',
+        'opire.dev "hard" --state open',
         'bounty "hard" --state open',
         'bounty "complex" --state open',
 
@@ -1770,15 +1800,15 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
         'bounty "$2500" --state open',
         'bounty "$3000" --state open',
         'bounty "$5000" --state open',
-        'algora "$200" --state open',
-        'algora "$500" --state open',
-        'algora "$1000" --state open',
-        'polar "$200" --state open',
-        'polar "$500" --state open',
-        'polar "$1000" --state open',
-        'opire "$200" --state open',
-        'opire "$500" --state open',
-        'opire "$1000" --state open',
+        'algora.io "$200" --state open',
+        'algora.io "$500" --state open',
+        'algora.io "$1000" --state open',
+        'polar.sh "$200" --state open',
+        'polar.sh "$500" --state open',
+        'polar.sh "$1000" --state open',
+        'opire.dev "$200" --state open',
+        'opire.dev "$500" --state open',
+        'opire.dev "$1000" --state open',
         'label:bounty "$200" --state open',
         'label:bounty "$500" --state open',
         'label:bounty "$1000" --state open',

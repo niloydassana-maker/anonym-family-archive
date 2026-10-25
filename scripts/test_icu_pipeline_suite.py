@@ -976,6 +976,66 @@ ok_bad_json, msg_bad_json = validate_synthesized_files(tempfile.gettempdir(), ba
 assert ok_bad_json is False, "Expected trailing comma JSON to fail quality gate."
 print("  ✓ Quality Gate: Caught and blocked invalid JSON schema.")
 
+# ----------------------------------------------------------------
+# Test 10: ArXiv, LaTeX Math, Contributor Payee & Platform Pattern Gates
+# ----------------------------------------------------------------
+print("\n[Test 10] Testing ArXiv, LaTeX Math, Contributor Payee & Platform Pattern Gates...")
+from decimal import Decimal
+from autonomous_icu_pipeline import _has_platform_bounty_marker, is_direct_payer, parse_and_normalize_bounty
+
+# 1. ArXiv repo rejection
+ok, reason = verify_genuine_icu_patient(
+    title="Showing new listings for Tuesday, 2 June 2026",
+    body="Auto update Star Formation arxiv papers",
+    author_comments=[],
+    labels=[],
+    repo="LIAOGuangmao/ArXivDaily_StarFormation",
+    author="LIAOGuangmao",
+    author_assoc="OWNER"
+)
+assert ok is False and "arxiv" in reason.lower(), f"Expected ArXiv repo rejection, got {ok}, {reason}"
+print("  ✓ ArXiv Repo Gate: Scraper repo rejected correctly.")
+
+# 2. ArXiv daily listing title rejection
+ok, reason = verify_genuine_icu_patient(
+    title="Showing new listings for Tuesday, 2 June 2026",
+    body="List of 31 papers for today",
+    author_comments=[],
+    labels=[],
+    repo="some-org/papers",
+    author="researcher",
+    author_assoc="OWNER"
+)
+assert ok is False and "newsletter, paper digest" in reason.lower(), f"Expected listing title rejection, got {ok}, {reason}"
+print("  ✓ ArXiv Listing Title Gate: Automated paper digest title rejected correctly.")
+
+# 3. LaTeX math dollar rejection vs genuine bounty parsing
+has_amt, in_bounds, raw_text, val, _ = parse_and_normalize_bounty("at the wavelength of $500$ \\mu m and frequency $600$ GHz")
+assert has_amt is False or val == Decimal("0.00"), f"Expected LaTeX math to be rejected, got {has_amt}, {val}"
+print("  ✓ LaTeX Math Gate: '$500$ \\mu m' correctly rejected as scientific notation, not currency.")
+
+has_amt, in_bounds, raw_text, val, _ = parse_and_normalize_bounty("Offering $500 USD bounty for fixing this race condition")
+assert has_amt is True and val == Decimal("500.00"), f"Expected genuine $500 bounty to be parsed, got {has_amt}, {val}"
+print("  ✓ Bounty Parsing Gate: Genuine '$500 USD bounty' successfully parsed and normalized.")
+
+# 4. Platform bounty marker selectivity (Polar.sh vs Polar astrophysics)
+astronomy_text = "Analysis of polar coordinates and bipolar outflow in Centaurus A with Herschel"
+polar_bounty_text = "Funded via polar.sh with $500 bounty"
+assert _has_platform_bounty_marker(astronomy_text) is False, "Bare word 'polar' in astrophysics erroneously triggered platform bounty marker!"
+assert _has_platform_bounty_marker(polar_bounty_text) is True, "Expected polar.sh bounty to trigger platform bounty marker!"
+print("  ✓ Platform Bounty Pattern Gate: Polar.sh verified while bare physics word 'polar' safely ignored.")
+
+# 5. Contributor payee rejection on third-party repos
+payee_text = """
+### Summary
+- Severity: High ($400 USDC — Stage 1 On-Chain Bridge)
+- Payout Address: 3HLDkipdKmJKGjbgCD8moo3GyhEY4DWdZ7JAgSpMysHp
+/claim #1138
+"""
+is_payer = is_direct_payer("campbellarchiezh-debug", "paraloom-labs/paraloom-core", payee_text)
+assert is_payer is False, f"Expected third-party contributor with Payout Address to be rejected as payee, got {is_payer}"
+print("  ✓ Contributor Payee Gate: Third-party bounty hunter with 'Payout Address' rejected as payee.")
+
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")
 print("==================================================")
