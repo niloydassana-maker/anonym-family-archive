@@ -1157,6 +1157,27 @@ is_payer = is_direct_payer("JRCage", "limitlessprojects/Go-Hybrid", applicant_pa
 assert is_payer is False, f"Expected bounty applicant with 'preferred options' to be rejected as payee, got {is_payer}"
 print("  ✓ Bounty Applicant Gate: Contributor requesting bounty consideration rejected as payee.")
 
+# 16. Protocol TVL / Roadmap Phase Gate (PhucNguyen-Dev/fashion-design-ai-studio#4)
+roadmap_tvl_text = """
+# Blockchain NFT Marketplace & Web3 Integration
+## Objective
+Build a decentralized marketplace for digital fashion NFTs with multi-chain support.
+## Success Criteria
+- $1M+ TVL achieved
+"""
+ok, reason = verify_genuine_icu_patient(
+    title="⛓️ Phase 4: Blockchain NFT Marketplace & Web3 Integration",
+    body=roadmap_tvl_text,
+    author_comments=[],
+    labels=[],
+    repo="PhucNguyen-Dev/fashion-design-ai-studio",
+    author="PhucNguyen-Dev",
+    author_assoc="OWNER"
+)
+assert ok is False, f"Expected roadmap Phase 4 / $1M TVL to be rejected, got {ok}, {reason}"
+print("  ✓ Roadmap TVL Gate: Protocol KPI metric ($1M+ TVL achieved) rejected correctly.")
+
+
 
 print("\n==================================================")
 print("ALL ICU PIPELINE INTEGRITY TESTS PASSED (100% GREEN)")

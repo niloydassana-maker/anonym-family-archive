@@ -441,6 +441,8 @@ def parse_and_normalize_bounty(text, crypto_usd_rates=None):
     When absent, ETH/SOL are parsed but returned with usd_value=None.
     """
     source = re.sub(r"~~.*?~~", " ", str(text or ""), flags=re.DOTALL)
+    # Strip KPI metrics, protocol TVL, volume, valuation, ARR/MRR targets
+    source = re.sub(r"(?:\$|usd|usdc|eur|€|gbp|£)\s*[\d,]+(?:\.\d+)?[kmb]?\+?\s*(?:tvl|volume|mcap|market\s+cap|valuation|arr|mrr|fdv|liquidity|treasury|pool)\b", " ", source, flags=re.IGNORECASE)
     crypto_usd_rates = {
         str(key).lower(): Decimal(str(value))
         for key, value in (crypto_usd_rates or {}).items()
@@ -677,7 +679,8 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         r"\b(?:stipend for students)\b",
         r"\b(?:homelab|home lab)\b",
         r"\b(?:portfolio|personal website|personal site|resume|cv)\b",
-        r"\b(?:roadmap|milestone|go-to-market|planning|task list)\b",
+        r"\b(?:roadmap|milestone|go-to-market|planning|task list|phase\s+\d+)\b",
+        r"\b(?:\$|usd\s*)[\d,]+[kmb]?\+?\s*(?:tvl|volume|mcap|market\s+cap|valuation|arr|mrr)\b",
         r"\b(?:casting|performer|audition|playbill|theatre|board game|ruleset)\b",
         r"\b(?:gameplay|in-game\s+(?:currency|money|cash|item|upgrade)|garage\s+(?:upgrade|track)|wanted\s+poster|boss\s+fight|respawn|co-op\s+mode|speedrun)\b",
         r"\b(?:hackathon|hack\s+weekend|game\s+jam|prize\s+pool|track\s+prize|submission\s+window|demo\s+video|video\s+submission|disqualification\s+risk|terms\s+and\s+conditions\s+compliance|t&c\s+compliance)\b",
