@@ -42,6 +42,9 @@ def non_engineering_dispatch_reason(task: dict) -> str:
         r'\b(?:pre-session\s+instructions|paste\s+everything\s+verbatim|complete\s+pre-session)\b', body, re.I
     ):
         return 'submission demands disclosure of private agent instructions'
+    if re.search(r'<!DOCTYPE\s+html|<html(?:\s+lang=[^>]+)?>|<head>[\s\S]*?<body', body, re.I):
+        if not re.search(r'https?://[^\s)]+(?:algora\.io|polar\.sh|gitcoin\.co|opire\.dev)', body, re.I):
+            return 'raw HTML source code dump or prototype template; embedded mock amounts are not authoritative bounty funding'
     return ''
 
 _HARD_FAILURE = re.compile(
@@ -49,7 +52,8 @@ _HARD_FAILURE = re.compile(
     r"FAILED_NO_TEST_VERIFICATION|no native test commands|"
     r"competing (?:pull request|pr)|open (?:pull request|pr) already|"
     r"PR exists|receipt failed|HTTP\s*404|repository not found|"
-    r"not a software|non-software|speculative|roadmap|bot/discussion mirror",
+    r"not a software|non-software|speculative|roadmap|bot/discussion mirror|"
+    r"raw HTML source code dump",
     re.IGNORECASE,
 )
 _PERMANENT_FAILURE = re.compile(

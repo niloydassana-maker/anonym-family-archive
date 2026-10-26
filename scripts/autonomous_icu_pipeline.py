@@ -627,14 +627,26 @@ MATERIAL_ENTITY_STOPWORDS = {
 MIN_CONSULTING_BOUND_USD = Decimal("20.00")
 MAX_CONSULTING_BOUND_USD = Decimal("9999999.00")
 
+def strip_markup_and_code(text: str) -> str:
+    """Strip code blocks, inline code, and HTML tags/comments so mock code/UI is not parsed as bounty funding."""
+    source = re.sub(r"~~.*?~~", " ", str(text or ""), flags=re.DOTALL)
+    source = re.sub(r"```[\s\S]*?```", " ", source)
+    source = re.sub(r"`[^`]*`", " ", source)
+    source = re.sub(r"<!--[\s\S]*?-->", " ", source)
+    source = re.sub(r"<style[\s\S]*?</style>", " ", source, flags=re.IGNORECASE)
+    source = re.sub(r"<script[\s\S]*?</script>", " ", source, flags=re.IGNORECASE)
+    source = re.sub(r"<[^>]+>", " ", source)
+    source = re.sub(r"[*\\[\\]]", " ", source)
+    return source
+
+
 def parse_and_normalize_bounty(text, crypto_usd_rates=None):
     """
     Parse fiat, stablecoins, and volatile crypto without inventing a crypto FX rate.
     crypto_usd_rates is optional, e.g. {"eth": Decimal("3500.12"), "sol": Decimal("182.40")}.
     When absent, ETH/SOL are parsed but returned with usd_value=None.
     """
-    source = re.sub(r"~~.*?~~", " ", str(text or ""), flags=re.DOTALL)
-    source = re.sub(r"[`*\[\]]", " ", source)
+    source = strip_markup_and_code(text)
     # Strip KPI metrics, protocol TVL, volume, valuation, ARR/MRR targets
     source = re.sub(r"(?:\$|usd|usdc|eur|€|gbp|£)\s*[\d,]+(?:\.\d+)?[kmb]?\+?\s*(?:tvl|volume|mcap|market\s+cap|valuation|arr|mrr|fdv|liquidity|treasury|pool)\b", " ", source, flags=re.IGNORECASE)
     crypto_usd_rates = {
@@ -794,7 +806,8 @@ def is_direct_payer(author, repo, full_author_text):
     if not author:
         return False
 
-    text = _normalise_text(full_author_text)
+    cleaned_author_text = strip_markup_and_code(full_author_text)
+    text = _normalise_text(cleaned_author_text)
     if _has_payment_negation(text) or _has_economic_scam_marker(text):
         return False
 
@@ -1027,7 +1040,7 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
 
     # Support Tier-based Web3 bounties (e.g. "[BOUNTY] Medium", "Tier: Critical", etc.)
     if (has_bounty_title or has_bounty_label) and not has_amount:
-        tier_match = re.search(r"\b(?:tier\s*[:=-]?\s*|\[bounty\]\s*)(critical|high|medium|low)\b", full_text, re.IGNORECASE)
+        tier_match = re.search(r"(?:\btier\s*[:=-]?\s*|\[bounty\]\s*|\bbounty\s*[:=-]?\s*)(critical|high|medium|low)\b", full_text, re.IGNORECASE)
         if tier_match:
             tier_map = {
                 "critical": Decimal("1000.00"),
@@ -1044,8 +1057,13 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
                 amount_reason = f"Parsed tier {raw_amount} (~${tier_val} USD)"
 
     # Verified/attested paid work does not require outage vocabulary
+    maintainer_offer = maintainer and (
+        _has_direct_offer_language(full_text) or has_bounty_title or has_bounty_label or
+        bool(re.search(r"\b(?:bounty|reward|prize)\b", full_text, re.IGNORECASE))
+    )
+
     paid_bounty = has_amount and amount_in_bounds and (
-        platform_attested or direct_payer or maintainer or is_verified_sponsor or has_bounty_label or has_bounty_title
+        platform_attested or direct_payer or maintainer_offer or is_verified_sponsor or has_bounty_label or has_bounty_title
     )
 
     if paid_bounty:
@@ -3177,6 +3195,30 @@ def discovery_query_schedule(queries, search_limit=1000, fresh_limit=30):
             yield 'backlog', query, search_limit
 
 
+def get_fleet_queue_depth() -> int:
+    """Return count of active pending tasks in fleet queue vs completed tasks."""
+    try:
+        fleet_db = Path(r"D:\anonym\war-log\fleet-ledger.sqlite3")
+        if not fleet_db.exists():
+            return 0
+        with sqlite3.connect(fleet_db, timeout=5) as con:
+            cur = con.cursor()
+            now_epoch = time.time()
+            cur.execute(
+                "SELECT COUNT(*) FROM fleet_events WHERE channel = 'BOUNTY_FLEET_QUEUE_V2' AND CAST(at AS REAL) > ?",
+                (now_epoch - 7200,),
+            )
+            queued = cur.fetchone()[0]
+            cur.execute(
+                "SELECT COUNT(*) FROM fleet_events WHERE channel IN ('BOUNTY_FLEET_RESULT') AND CAST(at AS REAL) > ?",
+                (now_epoch - 7200,),
+            )
+            finished = cur.fetchone()[0]
+            return max(0, queued - finished)
+    except Exception:
+        return 0
+
+
 def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_limit=0):
     # Direct callers retain the single-pass API; the daemon CLI enables the
     # fresh-first schedule explicitly below. Both modes retain the full horizon.
@@ -3264,16 +3306,33 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
         'algora.io',
         'polar.sh',
         'opire.dev',
+        'bountycaster',
+        'replit.com/bounties',
         'bounty "usdc"',
+        'bounty "usdt"',
         'bounty "$"',
         '"[Bug bounty]"',
         '"[BOUNTY]"',
         'bounty in:title',
 
-        # Tier 2: Currency & Payout Signals
-        'bounty "usdt"',
+        # Tier 2: Currency & Explicit Offer Signals
+        'bounty "will pay"',
+        'bounty "willing to pay"',
+        'bounty "offering"',
+        '"paid bounty"',
+        '"issue bounty"',
+        '"bounty reward"',
         'bounty "reward"',
+        'bounty "sol"',
+        'bounty "eth"',
+        'bounty "dai"',
+        'bounty "usd"',
+        'bounty "inr"',
+        'bounty "eur"',
         '--label bounty',
+        '--label "bug bounty"',
+        '--label "paid bounty"',
+        '--label "funded"',
 
         # Tier 3: Deep Systems & Hard Architecture Keywords
         'bounty "concurrency"',
@@ -3286,8 +3345,17 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
         'bounty "compiler"',
         'bounty "distributed"',
         'bounty "zero-knowledge"',
+        'bounty "database"',
+        'bounty "cache"',
+        'bounty "websocket"',
+        'bounty "security"',
         'bounty "solana"',
         'bounty "rust"',
+        'bounty "golang"',
+        'bounty "python"',
+        'bounty "typescript"',
+        'bounty "backend"',
+        'bounty "api"',
     ]
 
     current_pass = None
@@ -3427,8 +3495,12 @@ def main(argv=None):
             break
 
         cycle_count += 1
-        print(f"\n⏳ Cycle #{cycle_count - 1} complete. Sleeping {cycle_interval_seconds}s before next follow-the-sun sweep...")
-        time.sleep(cycle_interval_seconds)
+        fleet_pending = get_fleet_queue_depth() if REMOTE_FLEET_MODE else 3
+        # Accelerate discovery sweep to 30s when the fleet queue has fewer than 2 pending tasks
+        sleep_seconds = 30 if fleet_pending < 2 else cycle_interval_seconds
+        pacing_mode = f"STARVED FLEET (fast sweep {sleep_seconds}s)" if fleet_pending < 2 else f"NORMAL ({sleep_seconds}s)"
+        print(f"\n⏳ Cycle #{cycle_count - 1} complete (Fleet pending tasks: {fleet_pending} -> {pacing_mode}). Sleeping {sleep_seconds}s before next sweep...", flush=True)
+        time.sleep(sleep_seconds)
 
 if __name__ == "__main__":
     sys.exit(main())
