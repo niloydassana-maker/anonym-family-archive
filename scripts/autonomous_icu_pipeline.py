@@ -7,6 +7,7 @@ import re
 import sqlite3
 from contextlib import closing
 import hashlib
+import uuid
 import tempfile
 import shutil
 import urllib.request
@@ -1838,7 +1839,7 @@ Repository: {sanitize_prompt_input(repo)}
 Issue: #{issue_number} — {sanitize_prompt_input(title)}
 
 Issue requirements:
-{sanitize_prompt_input(body or 'No additional issue body was supplied.')[:6000]}
+{sanitize_prompt_input(body or 'No additional issue body was supplied.')}
 
 Repository architecture context:
 {architecture_context or 'No architecture metadata was supplied.'}
@@ -1854,6 +1855,20 @@ Modify the repository files in this directory to resolve the issue, and ensure e
 def _status_paths_from_porcelain(status_output: str) -> Tuple[bool, List[str], str]:
     """Extract changed worktree paths from `git status --porcelain` without trusting them."""
     paths = []
+    if "\0" in (status_output or ""):
+        entries = iter(status_output.split("\0"))
+        for entry in entries:
+            if not entry:
+                continue
+            if len(entry) < 4 or entry[2] != " ":
+                return False, [], f"Malformed git status entry: {entry!r}"
+            paths.append(entry[3:])
+            if "R" in entry[:2] or "C" in entry[:2]:
+                original = next(entries, "")
+                if not original:
+                    return False, [], "Missing rename/copy source in git status."
+                paths.append(original)
+        return True, sorted(set(paths)), "Changed files discovered from NUL-delimited git status."
     for raw_line in (status_output or "").splitlines():
         if len(raw_line) < 4:
             return False, [], f"Malformed git status entry: {raw_line!r}"
@@ -1865,6 +1880,44 @@ def _status_paths_from_porcelain(status_output: str) -> Tuple[bool, List[str], s
             paths.append(original.strip())
         paths.append(rel_path.strip())
     return True, sorted(set(paths)), "Changed files discovered from git status."
+
+def preserve_cline_edits(worktree: str) -> str:
+    """Retain recoverable bytes before a failed agent/collector checkout is reset."""
+    import zipfile
+    backup_dir = os.path.join(PACKET_DIR, "cline-recovery")
+    os.makedirs(backup_dir, exist_ok=True)
+    destination = os.path.join(backup_dir, f"{uuid.uuid4().hex}.zip")
+    patch = subprocess.run(["git", "-C", worktree, "diff", "--binary", "HEAD"],
+                           capture_output=True, check=True, timeout=30).stdout
+    untracked = subprocess.run(["git", "-C", worktree, "ls-files", "--others", "--exclude-standard", "-z"],
+                               capture_output=True, check=True, timeout=30).stdout
+    tracked = subprocess.run(["git", "-C", worktree, "diff", "--name-only", "-z", "HEAD"],
+                             capture_output=True, check=True, timeout=30).stdout
+    with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED) as backup:
+        backup.writestr("tracked.patch", patch)
+        for raw_path in tracked.split(b"\0"):
+            if not raw_path:
+                continue
+            rel_path = os.fsdecode(raw_path)
+            if not is_safe_relative_path(worktree, rel_path):
+                raise ValueError(f"Unsafe recovery path: {rel_path}")
+            full_path = os.path.join(worktree, rel_path)
+            if os.path.isfile(full_path):
+                backup.write(full_path, "tracked/" + rel_path.replace("\\", "/"))
+        for raw_path in untracked.split(b"\0"):
+            if not raw_path:
+                continue
+            rel_path = os.fsdecode(raw_path)
+            if not is_safe_relative_path(worktree, rel_path):
+                raise ValueError(f"Unsafe recovery path: {rel_path}")
+            full_path = os.path.join(worktree, rel_path)
+            if not os.path.isfile(full_path):
+                raise ValueError(f"Recovery path is not a regular file: {rel_path}")
+            backup.write(full_path, "untracked/" + rel_path.replace("\\", "/"))
+    with open(destination, "rb") as saved:
+        digest = hashlib.sha256(saved.read()).hexdigest()
+    return f"{destination} sha256={digest}"
+
 
 def run_cline_engineering_turn(
     worktree: str,
@@ -1906,7 +1959,7 @@ def run_cline_engineering_turn(
         return False, [], [], f"Cline execution failed (exit {result.exit_code}): {details[:4000]}"
 
     status_output, status_error, status_code = run_cmd(
-        ["git", "-C", worktree, "status", "--porcelain"], timeout=20, retries=1
+        ["git", "-C", worktree, "status", "--porcelain", "--untracked-files=all", "-z"], timeout=20, retries=1
     )
     if status_code != 0:
         return False, [], [], f"Unable to inspect Cline worktree status: {status_error or status_output}"
@@ -2199,6 +2252,12 @@ def run_engineering_iteration_loop(
         apply_legacy_changes = not cline_ok
         if not cline_ok:
             print(f"     [CLINE FALLBACK] {cline_message}")
+            if os.path.exists(os.path.join(worktree, ".git")):
+                try:
+                    recovery_receipt = preserve_cline_edits(worktree)
+                    print(f"     [CLINE EDITS PRESERVED] {recovery_receipt}")
+                except Exception as exc:
+                    return False, run, f"Cline failed; checkout retained at {worktree} because recovery backup failed: {exc}"
             # A failed agent may have written a partial patch. Restore the
             # isolated checkout before applying a legacy proposal over it.
             if os.path.exists(os.path.join(worktree, ".git")):
@@ -2301,11 +2360,15 @@ def commit_and_open_pr(worktree: str, repo: str, number: int, title: str, pr_bod
     if error or not pre_sha:
         print(f"  [AUTO-PR ERROR] {error or 'Missing pre-commit SHA.'}")
         return None
-    status_out, error = _git_checked(["git", "-C", worktree, "status", "--porcelain"], 10, "status")
+    status_out, error = _git_checked(["git", "-C", worktree, "status", "--porcelain", "--untracked-files=all", "-z"], 10, "status")
     if error:
         print(f"  [AUTO-PR ERROR] {error}")
         return None
-    changed_files = {line[3:].replace("\\", "/") for line in status_out.splitlines() if len(line) >= 4}
+    parsed, status_paths, status_message = _status_paths_from_porcelain(status_out)
+    if not parsed:
+        print(f"  [AUTO-PR ERROR] {status_message}")
+        return None
+    changed_files = {path.replace("\\", "/") for path in status_paths}
     if changed_files - set(safe_files):
         print("  [AUTO-PR ERROR] Unverified worktree changes detected; refusing to stage them.")
         return None

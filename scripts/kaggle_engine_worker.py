@@ -1958,7 +1958,7 @@ Repository: {sanitize_prompt_input(repo)}
 Issue: #{issue_number} — {sanitize_prompt_input(title)}
 
 Issue requirements:
-{sanitize_prompt_input(body or 'No additional issue body was supplied.')[:6000]}
+{sanitize_prompt_input(body or 'No additional issue body was supplied.')}
 
 Repository architecture context:
 {architecture_context or 'No architecture metadata was supplied.'}
@@ -1969,11 +1969,25 @@ Required scenarios:
 Prior failures from the immediately preceding attempt:
 {failure_context}
 
-Modify the repository files in this directory to resolve the issue, and ensure existing and new tests pass. Inspect the existing code and tests before editing. Add or update focused tests for the reported behavior, including applicable null, empty, boundary, negative, concurrency, and regression cases. Do not modify CI workflow files or write outside this worktree. Do not add corporate signatures, credentials, payment details, or unrelated changes. Do not run compilers, test suites, or linters; the worker will execute the discovered native commands under bounded, logged deadlines after your edits. Leave all source and test edits in this worktree for those gates."""
+Modify the repository files in this directory to resolve the issue, and ensure existing and new tests pass. Inspect the existing code and tests before editing. Add or update focused tests for the reported behavior, including applicable null, empty, boundary, negative, concurrency, and regression cases. Do not modify CI workflow files or write outside this worktree. Do not add corporate signatures, credentials, payment details, or unrelated changes. Run the relevant repository tests and linters when practical, then leave the actual changes in this worktree for the verification gates."""
 
 def _status_paths_from_porcelain(status_output: str) -> Tuple[bool, List[str], str]:
     """Extract changed worktree paths from `git status --porcelain` without trusting them."""
     paths = []
+    if "\0" in (status_output or ""):
+        entries = iter(status_output.split("\0"))
+        for entry in entries:
+            if not entry:
+                continue
+            if len(entry) < 4 or entry[2] != " ":
+                return False, [], f"Malformed git status entry: {entry!r}"
+            paths.append(entry[3:])
+            if "R" in entry[:2] or "C" in entry[:2]:
+                original = next(entries, "")
+                if not original:
+                    return False, [], "Missing rename/copy source in git status."
+                paths.append(original)
+        return True, sorted(set(paths)), "Changed files discovered from NUL-delimited git status."
     for raw_line in (status_output or "").splitlines():
         if len(raw_line) < 4:
             return False, [], f"Malformed git status entry: {raw_line!r}"
@@ -1985,6 +1999,49 @@ def _status_paths_from_porcelain(status_output: str) -> Tuple[bool, List[str], s
             paths.append(original.strip())
         paths.append(rel_path.strip())
     return True, sorted(set(paths)), "Changed files discovered from git status."
+
+def preserve_cline_edits(worktree: str) -> str:
+    """Retain recoverable bytes before a failed agent/collector checkout is reset."""
+    import zipfile
+    backup_dir = os.path.join(PACKET_DIR, "cline-recovery")
+    os.makedirs(backup_dir, exist_ok=True)
+    destination = os.path.join(backup_dir, f"{uuid.uuid4().hex}.zip")
+    patch = subprocess.run(["git", "-C", worktree, "diff", "--binary", "HEAD"],
+                           capture_output=True, check=True, timeout=30).stdout
+    untracked = subprocess.run(["git", "-C", worktree, "ls-files", "--others", "--exclude-standard", "-z"],
+                               capture_output=True, check=True, timeout=30).stdout
+    tracked = subprocess.run(["git", "-C", worktree, "diff", "--name-only", "-z", "HEAD"],
+                             capture_output=True, check=True, timeout=30).stdout
+    with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED) as backup:
+        backup.writestr("tracked.patch", patch)
+        for raw_path in tracked.split(b"\0"):
+            if not raw_path:
+                continue
+            rel_path = os.fsdecode(raw_path)
+            if not is_safe_relative_path(worktree, rel_path):
+                raise ValueError(f"Unsafe recovery path: {rel_path}")
+            full_path = os.path.join(worktree, rel_path)
+            if os.path.isfile(full_path):
+                backup.write(full_path, "tracked/" + rel_path.replace("\\", "/"))
+        for raw_path in untracked.split(b"\0"):
+            if not raw_path:
+                continue
+            rel_path = os.fsdecode(raw_path)
+            if not is_safe_relative_path(worktree, rel_path):
+                raise ValueError(f"Unsafe recovery path: {rel_path}")
+            full_path = os.path.join(worktree, rel_path)
+            if not os.path.isfile(full_path):
+                raise ValueError(f"Recovery path is not a regular file: {rel_path}")
+            backup.write(full_path, "untracked/" + rel_path.replace("\\", "/"))
+    with open(destination, "rb") as saved:
+        digest = hashlib.sha256(saved.read()).hexdigest()
+    return f"{destination} sha256={digest}"
+
+
+def cline_turn_timeout_seconds(ecosystems: Optional[List[str]] = None) -> int:
+    """Give every Cline engineering turn the same bounded 60-minute runway."""
+    return 3600
+
 
 def run_cline_engineering_turn(
     worktree: str,
@@ -2014,7 +2071,7 @@ def run_cline_engineering_turn(
     )
     command = cline_worktree_command(worktree, prompt)
     ecosystems = arch.get('ecosystems') or [arch.get('ecosystem')]
-    turn_timeout = 3600 if 'rust' in ecosystems else 900
+    turn_timeout = cline_turn_timeout_seconds(ecosystems)
     _command_log(f'CLINE_TURN START repo={repo} issue={issue_number} timeout={turn_timeout}s')
     cline_started = time.monotonic()
     result = run_command_safe(command, cwd=worktree, timeout=turn_timeout)
@@ -2027,7 +2084,7 @@ def run_cline_engineering_turn(
         return False, [], [], f"Cline execution failed (exit {result.exit_code}): {details[:4000]}"
 
     status_output, status_error, status_code = run_cmd(
-        ["git", "-C", worktree, "status", "--porcelain"], timeout=20, retries=1
+        ["git", "-C", worktree, "status", "--porcelain", "--untracked-files=all", "-z"], timeout=20, retries=1
     )
     if status_code != 0:
         return False, [], [], f"Unable to inspect Cline worktree status: {status_error or status_output}"
@@ -2368,6 +2425,11 @@ def run_engineering_iteration_loop(
             print(f"     [CLINE PRIMARY] {cline_message}")
         else:
             print(f"     [CLINE FAIL-CLOSED] {cline_message}")
+            try:
+                recovery_receipt = preserve_cline_edits(worktree)
+                print(f"     [CLINE EDITS PRESERVED] {recovery_receipt}")
+            except Exception as exc:
+                return False, run, f"Cline failed; checkout retained at {worktree} because recovery backup failed: {exc}"
             # A failed Cline run can have left partial edits; reset them before
             # closing the attempt.
             reset_ok, reset_message = reset_worktree_to_base(worktree, base_sha)
@@ -2525,11 +2587,15 @@ def commit_and_open_pr(
     if error or not pre_sha:
         fail(error or "Missing pre-commit SHA.")
         return None
-    status_out, error = _git_checked(["git", "-C", worktree, "status", "--porcelain"], 10, "status")
+    status_out, error = _git_checked(["git", "-C", worktree, "status", "--porcelain", "--untracked-files=all", "-z"], 10, "status")
     if error:
         fail(error)
         return None
-    changed_files = {line[3:].replace("\\", "/") for line in status_out.splitlines() if len(line) >= 4}
+    parsed, status_paths, status_message = _status_paths_from_porcelain(status_out)
+    if not parsed:
+        fail(status_message)
+        return None
+    changed_files = {path.replace("\\", "/") for path in status_paths}
     unverified_files = sorted(changed_files - set(safe_files))
     if unverified_files:
         fail(
@@ -2753,10 +2819,46 @@ def _run_init_command(argv: List[str], label: str, timeout: int) -> bool:
     return True
 
 
+NODE_LTS_VERSION = "22.23.4"
+NODE_LTS_SHA256 = "1805bcd35e6815559bd2eb97db438d3fdb0eb3a5e6a977b7c1badca76337e9ce"
+
+
+def ensure_supported_node():
+    """Use the pinned Node 22 LTS runtime before npm, Corepack, or Cline."""
+    global CLINE_NODE_EXE
+    node = shutil.which("node")
+    if node:
+        probe = subprocess.run([node, "--version"], capture_output=True, text=True, timeout=15)
+        if probe.returncode == 0 and probe.stdout.strip() == f"v{NODE_LTS_VERSION}":
+            CLINE_NODE_EXE = node
+            return node
+    archive = f"/tmp/node-v{NODE_LTS_VERSION}-linux-x64.tar.xz"
+    install_dir = f"/tmp/fleet-node-{NODE_LTS_VERSION}"
+    _download_init_file(
+        f"https://nodejs.org/dist/v{NODE_LTS_VERSION}/node-v{NODE_LTS_VERSION}-linux-x64.tar.xz",
+        archive, timeout=120,
+    )
+    with open(archive, "rb") as downloaded:
+        digest = hashlib.file_digest(downloaded, "sha256").hexdigest()
+    if digest != NODE_LTS_SHA256:
+        raise RuntimeError("Node 22 LTS archive checksum mismatch; bootstrap refused.")
+    os.makedirs(install_dir, exist_ok=True)
+    subprocess.run(["tar", "-xJf", archive, "-C", install_dir, "--strip-components=1"],
+                   check=True, timeout=60)
+    os.environ["PATH"] = os.path.join(install_dir, "bin") + os.pathsep + os.environ.get("PATH", "")
+    CLINE_NODE_EXE = shutil.which("node") or ""
+    probe = subprocess.run([CLINE_NODE_EXE, "--version"], capture_output=True, text=True, timeout=15)
+    if probe.returncode != 0 or probe.stdout.strip() != f"v{NODE_LTS_VERSION}":
+        raise RuntimeError("Node 22 LTS runtime verification failed.")
+    print(f"[Init] Verified Node {probe.stdout.strip()} at {CLINE_NODE_EXE}", flush=True)
+    return CLINE_NODE_EXE
+
+
 def setup_kaggle_env():
     global SANDBOX_DIR, PACKET_DIR
     os.makedirs(SANDBOX_DIR, exist_ok=True)
     os.makedirs(PACKET_DIR, exist_ok=True)
+    ensure_supported_node()
 
     # 1. Install or locate gh CLI
     if not shutil.which("gh"):

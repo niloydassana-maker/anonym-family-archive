@@ -7,7 +7,7 @@ import time
 from dataclasses import dataclass
 
 MAX_EXECUTION_ATTEMPTS = 3
-RECOVERY_RELEASE = '2026-10-26-dispatch-integrity-r5'
+RECOVERY_RELEASE = '2026-10-26-partition-repair-r7'
 CLAIM_LEASE_SECONDS = 30 * 60
 CLAIM_HEARTBEAT_SECONDS = 60
 FLEET_LEASE_CHANNEL = 'BOUNTY_FLEET_LEASE'
@@ -56,7 +56,8 @@ _TRANSIENT_FAILURE = re.compile(
     r"HTTP(?:\s+Error)?\s*(?:401|408|429|500|502|503|504)\b|rate.?limit|"
     r"key exhaustion|no ready .*key|model is unavailable|"
     r"model unavailable|claim lease lost|ledger .*unavailable|"
-    r"Git add verified files failed.*pathspec ['\"]ackage-lock\.json['\"] did not match any files",
+    r"Git add verified files failed.*pathspec ['\"]ackage-lock\.json['\"] did not match any files|"
+    r"Unable to read Cline-modified file tests/regression/: \[Errno 21\] Is a directory",
     re.IGNORECASE,
 )
 
@@ -71,7 +72,7 @@ def is_retryable_failure(reason: str) -> bool:
 def is_repaired_infrastructure_failure(reason: str) -> bool:
     """Only the controller faults repaired in this release may be authorized."""
     return not _HARD_FAILURE.search(reason or '') and bool(re.search(
-        r're-authenticate your Cline account|Cline execution failed.*Command timed out after (?:900|3600) seconds',
+        r're-authenticate your Cline account|Cline execution failed.*Command timed out after (?:900|2400|3600) seconds',
         reason or '', re.IGNORECASE,
     ))
 
