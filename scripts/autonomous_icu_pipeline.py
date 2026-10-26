@@ -3164,7 +3164,22 @@ def sync_fleet_results_to_local_db(db_path=DB_FILE):
     except Exception as e:
         print(f"  [Fleet Sync Notice] {e}", flush=True)
 
-def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000):
+def discovery_query_schedule(queries, search_limit=1000, fresh_limit=30):
+    """Visit every query's newest window before revisiting full backlogs."""
+    if not 1 <= search_limit <= 1000 or not 0 <= fresh_limit <= 1000:
+        raise ValueError('Discovery limits must be within the GitHub search horizon.')
+    queries = tuple(queries)
+    if fresh_limit:
+        for query in queries:
+            yield 'fresh', query, min(fresh_limit, search_limit)
+    if not fresh_limit or search_limit > fresh_limit:
+        for query in queries:
+            yield 'backlog', query, search_limit
+
+
+def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_limit=0):
+    # Direct callers retain the single-pass API; the daemon CLI enables the
+    # fresh-first schedule explicitly below. Both modes retain the full horizon.
     integrity = verify_delivery_database_integrity()
     print(f"[DELIVERY_DB_OK] integrity={integrity['integrity']} rows={integrity['rows']}", flush=True)
     init_db()
@@ -3275,9 +3290,15 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000):
         'bounty "rust"',
     ]
 
-    for q in dynamic_queries:
+    current_pass = None
+    for pass_name, q, query_limit in discovery_query_schedule(dynamic_queries, search_limit, fresh_limit):
+        if current_pass != pass_name:
+            if current_pass:
+                print(f"[DISCOVERY_PASS_COMPLETE] phase={current_pass}", flush=True)
+            current_pass = pass_name
+            print(f"[DISCOVERY_PASS_START] phase={pass_name} limit={query_limit} queries={len(dynamic_queries)}", flush=True)
         print(f"\n[Search Query] {q}")
-        items = search_issues(q, limit=search_limit)
+        items = search_issues(q, limit=query_limit)
         print(f"Found {len(items)} candidates.")
 
         for it in items:
@@ -3340,6 +3361,8 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000):
 
         time.sleep(2)
 
+    if current_pass:
+        print(f"[DISCOVERY_PASS_COMPLETE] phase={current_pass}", flush=True)
     print(f"\n=======================================================")
     print(f"[{datetime.now(timezone.utc).isoformat()}] PIPELINE CYCLE COMPLETE. Processed: {total_processed}")
     print(f"[DISCOVERY_FUNNEL] unique_candidates={len(seen_issues)} repeated_candidates_skipped={repeated_candidates} dispatched={total_processed}")
@@ -3353,9 +3376,13 @@ def parse_pipeline_args(argv=None):
     parser.add_argument('--upgrade-existing', action='store_true')
     parser.add_argument('--search-limit', type=int, default=1000,
                         help='Maximum GitHub results per query, paged by gh (1-1000).')
+    parser.add_argument('--fresh-limit', type=int, default=30,
+                        help='Newest results per query before deep scans (0 disables, maximum 1000).')
     args = parser.parse_args(argv)
     if not 1 <= args.search_limit <= 1000:
         parser.error('--search-limit must be between 1 and 1000')
+    if not 0 <= args.fresh_limit <= 1000:
+        parser.error('--fresh-limit must be between 0 and 1000')
     return args
 
 
@@ -3376,13 +3403,15 @@ def main(argv=None):
     print(f"Mode: {'LIVE WIRE (Autonomous Delivery)' if live_mode else 'CANDIDATE PACKET MODE (Safe Preview)'}")
     print(f"Schedule Policy: {'24/7 ANYTIME (No Off-Hours Hold)' if anytime else 'Business Hours Gate'}")
     print(f"Search Horizon: {args.search_limit:,} issues per query (GitHub pagination)")
+    print(f"Fresh Window: {args.fresh_limit} newest results per query before backlog scans (0 disables)")
     print(f"Cycle Sweep Interval: {cycle_interval_seconds}s (Follow-the-Sun 24/7)")
     print("=" * 60 + "\n")
 
     while True:
         try:
             print(f"\n>>> [STARTING 24/7 CYCLE #{cycle_count}] <<<")
-            run_pipeline_cycle(live_mode=live_mode, anytime=anytime, search_limit=args.search_limit)
+            run_pipeline_cycle(live_mode=live_mode, anytime=anytime, search_limit=args.search_limit,
+                               fresh_limit=args.fresh_limit)
         except sqlite3.DatabaseError as e:
             print(f"[FATAL DELIVERY DATABASE ERROR] {e}", flush=True)
             return 1
