@@ -2960,6 +2960,11 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         if usd_val is not None and usd_val < Decimal("50.00"):
             continue
 
+        # Reject issues lacking any explicit bounty, platform attestation, or direct payment intent
+        issue_full = f"{title} {body}"
+        if not (has_bounty or _has_platform_bounty_marker(issue_full) or is_direct_payer(author, repo, issue_full)):
+            continue
+
         filtered_items.append(it)
 
     # Prioritize candidates by Baba's Hardness Moat:
@@ -3145,21 +3150,20 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
     # High-Complexity Hard Tasks & Uncontested Bounties (Minimum Engagement: comments <= 2)
     print(f"\n--- PHASE 2: High-Complexity Hard Tasks & Uncontested Bounties (comments <= 2) ---")
     dynamic_queries = [
-        # Tier 1: Core Platform & Label Bounties
-        '--label bounty',
-        'bounty in:title',
-        '"[Bug bounty]"',
-        '"[BOUNTY]"',
+        # Tier 1: Core Verified Bounty Platforms (Highest Yield & Commercial Integrity)
         'algora.io',
         'polar.sh',
         'opire.dev',
+        'bounty "usdc"',
+        'bounty "$"',
+        '"[Bug bounty]"',
+        '"[BOUNTY]"',
+        'bounty in:title',
 
         # Tier 2: Currency & Payout Signals
-        'bounty "usdc"',
         'bounty "usdt"',
-        'bounty "sol"',
         'bounty "reward"',
-        'bounty "$"',
+        '--label bounty',
 
         # Tier 3: Deep Systems & Hard Architecture Keywords
         'bounty "concurrency"',
@@ -3178,7 +3182,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
 
     for q in dynamic_queries:
         print(f"\n[Search Query] {q}")
-        items = search_issues(q, limit=1000)
+        items = search_issues(q, limit=30)
         print(f"Found {len(items)} candidates.")
 
         for it in items:
