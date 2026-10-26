@@ -7,7 +7,7 @@ import time
 from dataclasses import dataclass
 
 MAX_EXECUTION_ATTEMPTS = 3
-RECOVERY_RELEASE = '2026-10-26-partition-repair-r7'
+RECOVERY_RELEASE = '2026-10-26-discovery-repair-r9'
 CLAIM_LEASE_SECONDS = 30 * 60
 CLAIM_HEARTBEAT_SECONDS = 60
 FLEET_LEASE_CHANNEL = 'BOUNTY_FLEET_LEASE'
@@ -19,6 +19,12 @@ def non_engineering_dispatch_reason(task: dict) -> str:
     title = str(task.get('title') or '')
     body = str(task.get('body') or '')
     repo = str(task.get('repo') or '')
+    if re.search(r'(?:^|/)gh-disc-[a-z0-9_.-]+(?:\s|$)', repo, re.I) or re.search(
+        r'\[\s*nex\s+agent\s*\]|\b(?:github|gh)\s+discussion\s+mirror\b|'
+        r'\b(?:discussion[-_ ]mirror|discussion[-_ ]honeypot|mirror[-_ ]honeypot)\b',
+        title + '\n' + body, re.I,
+    ):
+        return 'bot/discussion mirror, not the original funded issue'
     if re.search(r'^hacker\s+news\s+daily\b', title, re.I) and re.search(
         r'\b20\d{2}[-/]\d{2}[-/]\d{2}\b', title
     ):
@@ -180,20 +186,52 @@ def recovery_decision(
         and event_number(row['text'], 'attempt_limit') == MAX_EXECUTION_ATTEMPTS + 1
         for row in claims
     )
+    # A controller may revalidate one previously undiscovered product workspace.
+    # This authorizes rediscovery only: the worker must still execute the real
+    # baseline, tests, lint, ownership, and publication gates. Historical test
+    # failures and security/competition exclusions cannot use this authorization.
+    native_marker = re.compile(
+        r'verification plan:\s*FAILED_NO_TEST_VERIFICATION:\s*'
+        r'no native test commands were discovered for the worktree\.', re.I,
+    )
+    pin_marker = re.compile(
+        r'untouched upstream baseline:\s*Bootstrap command failed:\s*'
+        r'cargo check --manifest-path [A-Za-z0-9_.-]+/Cargo\.toml --workspace.*?'
+        r'failed to run custom build command for [`\']hyb', re.I | re.S,
+    )
+    native_limit = 0
+    has_pin_failure = any(pin_marker.search(row['text']) for row in failures)
+    if failures and all((native_marker.search(row['text']) or pin_marker.search(row['text'])) and not _PERMANENT_FAILURE.search(
+        native_marker.sub('', pin_marker.sub('', row['text']))
+    ) for row in failures):
+        for row in claims:
+            text = row['text']
+            cap = int(event_number(text, 'attempt_limit'))
+            if (text.startswith('RECOVERY_AUTHORIZED ')
+                    and re.search(r'\brelease=' + re.escape(RECOVERY_RELEASE) + r'(?:\s|$)', text)
+                    and ((not has_pin_failure and re.search(r'\brepair=nested-rust-workspace(?:\s|$)', text))
+                         or (has_pin_failure and re.search(r'\brepair=pinned-rust-toolchain(?:\s|$)', text)
+                             and re.search(r'\btoolchain=\d+\.\d+\.\d+(?:\s|$)', text)))
+                    and re.search(r'\bmanifest=[A-Za-z0-9_-][A-Za-z0-9_.-]*/Cargo\.toml(?:\s|$)', text)
+                    and 1 <= cap <= MAX_EXECUTION_ATTEMPTS
+                    and _timestamp(row) > max(_timestamp(failure) for failure in failures)):
+                native_limit = max(native_limit, cap)
     if any(r["text"].startswith("SUCCESS ") or re.search(r"PR exists", r["text"], re.I) for r in results):
         return RecoveryDecision(False, "already delivered or PR exists", used)
     if any(r["text"].startswith("SKIPPED ") for r in results):
         return RecoveryDecision(False, "excluded task", used)
     if any(not is_retryable_failure(r["text"]) and not (
         authorized and is_repaired_infrastructure_failure(r['text'])
-    ) for r in failures):
+    ) and not (native_limit and (native_marker.search(r['text']) or pin_marker.search(r['text']))) for r in failures):
         return RecoveryDecision(False, "permanent or unclassified failure", used)
+    attempt_limit = native_limit or (MAX_EXECUTION_ATTEMPTS + int(authorized))
+    authorized = authorized or bool(native_limit)
     claim, lease_until = current_claim(task, claims)
     last_result_at = _timestamp(results[-1]) if results else 0
     unfinished = claim is not None and _timestamp(claim) > last_result_at
     if unfinished and lease_until > now:
         return RecoveryDecision(False, "active claim lease", used, lease_until, authorized)
-    if used >= MAX_EXECUTION_ATTEMPTS + int(authorized):
+    if used >= attempt_limit:
         return RecoveryDecision(False, "attempt limit reached", used, authorized=authorized)
     if unfinished:
         return RecoveryDecision(True, "authorized infrastructure retry" if authorized else "expired claim lease", next_attempt, authorized=authorized)

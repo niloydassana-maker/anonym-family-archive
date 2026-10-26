@@ -1,7 +1,9 @@
 import subprocess
+import argparse
 import json
 import os
 import sys
+import tomllib
 import time
 import re
 import sqlite3
@@ -16,6 +18,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import List, Dict, Tuple, Optional, Any
 from tokenharbor_router import DEEPSEEK_FLASH_MODEL, call_deepseek_flash
 from fleet_recovery_policy import (
@@ -129,6 +132,24 @@ def mark_issue_delivered(repo, number, pr_url, reason, db_path=DB_FILE):
 # -------------------------------------------------------------
 # 1. TRANSACTIONAL SQLITE STORE & CONCURRENCY RECOVERY
 # -------------------------------------------------------------
+def verify_delivery_database_integrity(db_path=DB_FILE):
+    """Check table/index consistency before trusting any delivery lookup."""
+    path = Path(db_path).resolve()
+    if not path.exists():
+        return {"integrity": "new database", "rows": 0}
+    with closing(sqlite3.connect(path.as_uri() + "?mode=ro", uri=True, timeout=30)) as con:
+        findings = [row[0] for row in con.execute("PRAGMA integrity_check")]
+        if findings != ["ok"]:
+            raise sqlite3.DatabaseError(
+                "Delivery database integrity failed; dispatch stopped: " + "; ".join(findings[:5])
+            )
+        exists = con.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='deliveries'"
+        ).fetchone()
+        rows = con.execute("SELECT COUNT(*) FROM deliveries NOT INDEXED").fetchone()[0] if exists else 0
+    return {"integrity": "ok", "rows": rows}
+
+
 def init_db(db_path=DB_FILE):
     con = sqlite3.connect(db_path, timeout=30)
     try:
@@ -1659,6 +1680,38 @@ def inspect_repository_architecture(worktree: str) -> dict:
         arch["has_tests"] = True
         arch["has_linter"] = True
 
+    # Some repositories keep their only product workspace one directory below
+    # the root (for example compiler/Cargo.toml). Do not select an example,
+    # vendored tree, symlink, or one arbitrary workspace from several choices.
+    if not arch["ecosystems"]:
+        excluded = {'examples', 'tests', 'benchmarks', 'spikes', 'vendor', 'third_party', 'node_modules', 'target'}
+        nested = sorted(
+            entry.name + '/Cargo.toml' for entry in os.scandir(worktree)
+            if not entry.name.startswith('.') and entry.name not in excluded
+            and entry.is_dir(follow_symlinks=False)
+            and os.path.isfile(os.path.join(entry.path, 'Cargo.toml'))
+            and not os.path.islink(os.path.join(entry.path, 'Cargo.toml'))
+        )
+        if len(nested) == 1:
+            arch['ecosystems'].append('rust')
+            arch['manifests'].append(nested[0])
+            arch['rust_manifest'] = nested[0]
+            arch['package_managers'].append('cargo')
+            arch['has_tests'] = True
+            arch['has_linter'] = True
+
+    if 'rust' in arch['ecosystems']:
+        env_file = os.path.join(worktree, 'tools', 'env.sh')
+        if (os.path.isfile(env_file) and not os.path.islink(env_file)
+                and not os.path.islink(os.path.dirname(env_file))
+                and not any(os.path.exists(os.path.join(worktree, name))
+                            for name in ('rust-toolchain', 'rust-toolchain.toml'))):
+            with open(env_file, encoding='utf-8') as handle:
+                match = re.search(r'^\s*(?:export\s+)?PINNED_RUST\s*=\s*([\'"]?)(\d+\.\d+\.\d+)\1\s*(?:#.*)?$',
+                                  handle.read(65536), re.MULTILINE)
+            if match:
+                arch['rust_toolchain'] = match[2]
+
     if len(arch["ecosystems"]) == 1:
         arch["ecosystem"] = arch["ecosystems"][0]
     elif len(arch["ecosystems"]) > 1:
@@ -1683,15 +1736,35 @@ def discover_verification_plan(arch: dict, worktree: str) -> VerificationPlan:
             plan.linters.append([pm, "run", "lint"])
 
     if "python" in ecosystems:
+        # Install the repository's declared runtime and verification dependencies
+        # before pytest; otherwise configured plugins such as pytest-cov are absent.
+        pyproject = os.path.join(worktree, "pyproject.toml")
+        document = {}
+        if os.path.isfile(pyproject):
+            with open(pyproject, "rb") as handle:
+                document = tomllib.load(handle)
+        if document.get("project") or os.path.isfile(os.path.join(worktree, "setup.py")):
+            optional = document.get("project", {}).get("optional-dependencies", {})
+            extras = [name for name in ("dev", "test", "tests") if name in optional]
+            target = ".[" + ",".join(extras) + "]" if extras else "."
+            plan.bootstrap.append([sys.executable, "-m", "pip", "install", "-e", target])
+        for name in ("requirements.txt", "requirements-dev.txt", "requirements-test.txt", "requirements-tests.txt"):
+            if os.path.isfile(os.path.join(worktree, name)):
+                plan.bootstrap.append([sys.executable, "-m", "pip", "install", "-r", name])
         plan.baseline_tests.append([sys.executable, "-m", "pytest"])
         plan.final_tests.append([sys.executable, "-m", "pytest"])
         plan.linters.append(["ruff", "check", "."])
 
     if "rust" in ecosystems:
-        plan.bootstrap.append(["cargo", "check", "--workspace"])
-        plan.baseline_tests.append(["cargo", "test", "--workspace"])
-        plan.final_tests.append(["cargo", "test", "--workspace"])
-        plan.linters.append(["cargo", "clippy", "--workspace", "--", "-D", "warnings"])
+        pin = arch.get('rust_toolchain')
+        cargo = ['cargo', '+' + pin] if pin else ['cargo']
+        if pin:
+            plan.bootstrap.append(['rustup', 'toolchain', 'install', pin, '--profile', 'minimal', '--component', 'clippy'])
+        manifest_args = ['--manifest-path', arch['rust_manifest']] if arch.get('rust_manifest') else []
+        plan.bootstrap.append([*cargo, "check", *manifest_args, "--workspace"])
+        plan.baseline_tests.append([*cargo, "test", *manifest_args, "--workspace"])
+        plan.final_tests.append([*cargo, "test", *manifest_args, "--workspace"])
+        plan.linters.append([*cargo, "clippy", *manifest_args, "--workspace", "--", "-D", "warnings"])
 
     if "go" in ecosystems:
         plan.bootstrap.append(["go", "mod", "download"])
@@ -2532,6 +2605,9 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
         # Competing PR check: if another contributor has already opened a PR for this issue, do not duplicate!
         has_competing, competing_url = has_existing_open_pr(repo, number)
         if has_competing:
+            if not str(competing_url).startswith('Competing open PR already exists:'):
+                print(f"[COMPETITION CHECK UNAVAILABLE] {issue_id}: {competing_url}; retry on a later sweep.")
+                return False
             print(f"📦 [REJECT/COMPETING] {issue_id}: Open PR {competing_url} already exists. Skipping duplicate attempt.")
             mark_issue_rejected(repo, number, f"Competing PR already open: {competing_url}")
             return False
@@ -2869,11 +2945,13 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
     Defaults to sorting by `created` descending (fresh bounties first) to capture
     high-conversion, zero-competition opportunities before backlogs accumulate.
     """
-    # Pass the query as one argument.  ``shlex.split`` strips the inner quotes
-    # in e.g. ``\"race condition\"`` and loses GitHub's intended grouped-text
-    # search syntax by turning it into two independent arguments.
+    # Preserve quoted search phrases. Legacy CLI-style queries such as
+    # ``--label bounty`` still need separate option/value arguments.
     import shlex
-    parts = shlex.split(query) if isinstance(query, str) else list(query)
+    if isinstance(query, str):
+        parts = shlex.split(query) if query.lstrip().startswith('--') else [query]
+    else:
+        parts = list(query)
     # Filter out state/comments if already in query
     clean_parts = [p for p in parts if not p.startswith("state:") and not p.startswith("comments:")]
     cmd = ["gh", "search", "issues"] + clean_parts + [
@@ -2906,6 +2984,13 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         author = (it.get("author") or {}).get("login", "")
 
         if not repo or not number:
+            continue
+
+        task = {"repo": repo, "title": title, "body": body}
+        if non_engineering_dispatch_reason(task) or is_nonsoftware_data_task(task):
+            continue
+        author_object = it.get("author") or {}
+        if author_object.get("is_bot") or str(author).startswith("app/"):
             continue
 
         # Baba Mandate: Neglect crowded issues altogether (reserve compute for uncrowded tickets <= 2 comments)
@@ -2955,15 +3040,9 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         if _has_payment_negation(full_text) or _has_economic_scam_marker(full_text):
             continue
 
-        # Zero-Token-Waste Gate: pre-screen the approved $50-$200 high-ticket floor at query layer.
-        has_bounty, in_bounds, raw_text, usd_val, _ = parse_and_normalize_bounty(title + " " + body)
-        if usd_val is not None and usd_val < Decimal("50.00"):
-            continue
-
-        # Reject issues lacking any explicit bounty, platform attestation, or direct payment intent
-        issue_full = f"{title} {body}"
-        if not (has_bounty or _has_platform_bounty_marker(issue_full) or is_direct_payer(author, repo, issue_full)):
-            continue
+        # Funding and the $50 floor are checked after fetching authoritative
+        # author/platform comments. A search result does not contain those
+        # comments, so missing or older body pricing cannot reject it here.
 
         filtered_items.append(it)
 
@@ -3082,7 +3161,9 @@ def sync_fleet_results_to_local_db(db_path=DB_FILE):
     except Exception as e:
         print(f"  [Fleet Sync Notice] {e}", flush=True)
 
-def run_pipeline_cycle(live_mode=False, anytime=False):
+def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000):
+    integrity = verify_delivery_database_integrity()
+    print(f"[DELIVERY_DB_OK] integrity={integrity['integrity']} rows={integrity['rows']}", flush=True)
     init_db()
     if REMOTE_FLEET_MODE:
         sync_fleet_results_to_local_db()
@@ -3098,6 +3179,16 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
     print(f"=======================================================")
 
     total_processed = 0
+    seen_issues = set()
+    repeated_candidates = 0
+    author_corridors = {}
+
+    def corridor_for(author):
+        if not anytime:
+            return detect_author_corridor(author)
+        if author not in author_corridors:
+            author_corridors[author] = detect_author_corridor(author)
+        return author_corridors[author]
 
     # Phase 1: High-Priority Verified Seeds
     seeds = [
@@ -3110,6 +3201,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
         repo = s["repo"]
         number = s["number"]
         issue_id = f"{repo}#{number}"
+        seen_issues.add(issue_id)
 
         already_done, cur_status = is_issue_claimed_or_delivered(repo, number)
         if already_done:
@@ -3133,7 +3225,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
             print(f"[REJECT] {issue_id}: {reason}")
             continue
 
-        corridor_name, is_active, corridor_info = detect_author_corridor(author)
+        corridor_name, is_active, corridor_info = corridor_for(author)
         # Territory check: only reject confirmed excluded regional markets or territories per prior audit
         if corridor_name in ["Excluded Regional Market", "Excluded Territory"]:
             print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
@@ -3182,7 +3274,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
 
     for q in dynamic_queries:
         print(f"\n[Search Query] {q}")
-        items = search_issues(q, limit=30)
+        items = search_issues(q, limit=search_limit)
         print(f"Found {len(items)} candidates.")
 
         for it in items:
@@ -3196,6 +3288,10 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
                 continue
 
             issue_id = f"{repo}#{number}"
+            if issue_id in seen_issues:
+                repeated_candidates += 1
+                continue
+            seen_issues.add(issue_id)
             already_done, cur_status = is_issue_claimed_or_delivered(repo, number)
             if already_done:
                 print(f"[SKIP] {issue_id} already in state '{cur_status}'.")
@@ -3224,7 +3320,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
                 print(f"[REJECT/HEADROOM] {issue_id}: Bounty ${usd_val} below the $50 high-ticket floor. Headroom reserved exclusively for high-ticket complex tasks.")
                 continue
 
-            corridor_name, is_active, corridor_info = detect_author_corridor(author)
+            corridor_name, is_active, corridor_info = corridor_for(author)
             # Territory check: only reject confirmed excluded regional markets or territories per prior audit
             if corridor_name in ["Excluded Regional Market", "Excluded Territory"]:
                 print(f"[REJECT/CORRIDOR] {issue_id}: {corridor_info} - failing closed.")
@@ -3243,15 +3339,31 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
 
     print(f"\n=======================================================")
     print(f"[{datetime.now(timezone.utc).isoformat()}] PIPELINE CYCLE COMPLETE. Processed: {total_processed}")
+    print(f"[DISCOVERY_FUNNEL] unique_candidates={len(seen_issues)} repeated_candidates_skipped={repeated_candidates} dispatched={total_processed}")
     print(f"=======================================================")
 
-def main():
-    live_mode = "--live" in sys.argv
-    anytime = "--anytime" in sys.argv or "--24x7" in sys.argv
-    run_once = "--once" in sys.argv
+def parse_pipeline_args(argv=None):
+    parser = argparse.ArgumentParser(description="Discover and verify paid engineering tasks.")
+    parser.add_argument('--live', action='store_true')
+    parser.add_argument('--anytime', '--24x7', action='store_true', dest='anytime')
+    parser.add_argument('--once', action='store_true')
+    parser.add_argument('--upgrade-existing', action='store_true')
+    parser.add_argument('--search-limit', type=int, default=1000,
+                        help='Maximum GitHub results per query, paged by gh (1-1000).')
+    args = parser.parse_args(argv)
+    if not 1 <= args.search_limit <= 1000:
+        parser.error('--search-limit must be between 1 and 1000')
+    return args
+
+
+def main(argv=None):
+    args = parse_pipeline_args(argv)
+    live_mode = args.live
+    anytime = args.anytime
+    run_once = args.once
     cycle_interval_seconds = 180  # 3 minutes between follow-the-sun sweeps
 
-    if "--upgrade-existing" in sys.argv:
+    if args.upgrade_existing:
         upgrade_all_existing_deliveries(live_mode=live_mode)
         return
 
@@ -3260,14 +3372,17 @@ def main():
     print("⚡ AUTONOMOUS ICU PRODUCTION PIPELINE - 24/7 DAEMON ENGINE")
     print(f"Mode: {'LIVE WIRE (Autonomous Delivery)' if live_mode else 'CANDIDATE PACKET MODE (Safe Preview)'}")
     print(f"Schedule Policy: {'24/7 ANYTIME (No Off-Hours Hold)' if anytime else 'Business Hours Gate'}")
-    print(f"Search Horizon: 1,000 issues per query (Contract-Congruent)")
+    print(f"Search Horizon: {args.search_limit:,} issues per query (GitHub pagination)")
     print(f"Cycle Sweep Interval: {cycle_interval_seconds}s (Follow-the-Sun 24/7)")
     print("=" * 60 + "\n")
 
     while True:
         try:
             print(f"\n>>> [STARTING 24/7 CYCLE #{cycle_count}] <<<")
-            run_pipeline_cycle(live_mode=live_mode, anytime=anytime)
+            run_pipeline_cycle(live_mode=live_mode, anytime=anytime, search_limit=args.search_limit)
+        except sqlite3.DatabaseError as e:
+            print(f"[FATAL DELIVERY DATABASE ERROR] {e}", flush=True)
+            return 1
         except KeyboardInterrupt:
             print("\n[STOPPED] Received keyboard interrupt. Shutting down daemon gracefully.")
             break
@@ -3284,4 +3399,4 @@ def main():
         time.sleep(cycle_interval_seconds)
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

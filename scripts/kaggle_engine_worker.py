@@ -7,6 +7,7 @@ from __future__ import annotations
 # ==============================================================================
 import os
 import sys
+import tomllib
 import json
 import time
 import re
@@ -29,6 +30,7 @@ from typing import List, Dict, Tuple, Optional, Any
 from fleet_recovery_policy import (
     CLAIM_LEASE_SECONDS, CLAIM_HEARTBEAT_SECONDS, FLEET_LEASE_CHANNEL, RECOVERY_RELEASE, current_claim, event_run,
     is_nonsoftware_data_task, recovery_decision, task_reference, non_engineering_dispatch_reason,
+    is_retryable_failure,
 )
 
 # Enforce UTF-8 line buffering
@@ -1410,6 +1412,37 @@ def inspect_repository_architecture(worktree: str) -> dict:
         arch["has_tests"] = True
         arch["has_linter"] = True
 
+    # Match the monolith's product discovery without mistaking example or
+    # vendored manifests for the repository's native verification target.
+    if not arch["ecosystems"]:
+        excluded = {'examples', 'tests', 'benchmarks', 'spikes', 'vendor', 'third_party', 'node_modules', 'target'}
+        nested = sorted(
+            entry.name + '/Cargo.toml' for entry in os.scandir(worktree)
+            if not entry.name.startswith('.') and entry.name not in excluded
+            and entry.is_dir(follow_symlinks=False)
+            and os.path.isfile(os.path.join(entry.path, 'Cargo.toml'))
+            and not os.path.islink(os.path.join(entry.path, 'Cargo.toml'))
+        )
+        if len(nested) == 1:
+            arch['ecosystems'].append('rust')
+            arch['manifests'].append(nested[0])
+            arch['rust_manifest'] = nested[0]
+            arch['package_managers'].append('cargo')
+            arch['has_tests'] = True
+            arch['has_linter'] = True
+
+    if 'rust' in arch['ecosystems']:
+        env_file = os.path.join(worktree, 'tools', 'env.sh')
+        if (os.path.isfile(env_file) and not os.path.islink(env_file)
+                and not os.path.islink(os.path.dirname(env_file))
+                and not any(os.path.exists(os.path.join(worktree, name))
+                            for name in ('rust-toolchain', 'rust-toolchain.toml'))):
+            with open(env_file, encoding='utf-8') as handle:
+                match = re.search(r'^\s*(?:export\s+)?PINNED_RUST\s*=\s*([\'"]?)(\d+\.\d+\.\d+)\1\s*(?:#.*)?$',
+                                  handle.read(65536), re.MULTILINE)
+            if match:
+                arch['rust_toolchain'] = match[2]
+
     if len(arch["ecosystems"]) == 1:
         arch["ecosystem"] = arch["ecosystems"][0]
     elif len(arch["ecosystems"]) > 1:
@@ -1434,15 +1467,36 @@ def discover_verification_plan(arch: dict, worktree: str) -> VerificationPlan:
             plan.linters.append([pm, "run", "lint"])
 
     if "python" in ecosystems:
+        # Install the repository's declared runtime and verification dependencies
+        # before pytest; otherwise configured plugins such as pytest-cov are absent.
+        pyproject = os.path.join(worktree, "pyproject.toml")
+        document = {}
+        if os.path.isfile(pyproject):
+            with open(pyproject, "rb") as handle:
+                document = tomllib.load(handle)
+        if document.get("project") or os.path.isfile(os.path.join(worktree, "setup.py")):
+            optional = document.get("project", {}).get("optional-dependencies", {})
+            extras = [name for name in ("dev", "test", "tests") if name in optional]
+            target = ".[" + ",".join(extras) + "]" if extras else "."
+            plan.bootstrap.append([sys.executable, "-m", "pip", "install", "-e", target])
+        for name in ("requirements.txt", "requirements-dev.txt", "requirements-test.txt", "requirements-tests.txt"):
+            if os.path.isfile(os.path.join(worktree, name)):
+                plan.bootstrap.append([sys.executable, "-m", "pip", "install", "-r", name])
         plan.baseline_tests.append([sys.executable, "-m", "pytest"])
         plan.final_tests.append([sys.executable, "-m", "pytest"])
         plan.linters.append(["ruff", "check", "."])
 
     if "rust" in ecosystems:
-        plan.bootstrap.append(["cargo", "check", "--workspace"])
-        plan.baseline_tests.append(["cargo", "test", "--lib"])
-        plan.final_tests.append(["cargo", "test", "--lib"])
-        plan.linters.append(["cargo", "clippy", "--lib", "--", "-D", "warnings"])
+        pin = arch.get('rust_toolchain')
+        cargo = ['cargo', '+' + pin] if pin else ['cargo']
+        if pin:
+            plan.bootstrap.append(['rustup', 'toolchain', 'install', pin, '--profile', 'minimal', '--component', 'clippy'])
+        manifest_args = ['--manifest-path', arch['rust_manifest']] if arch.get('rust_manifest') else []
+        targets = ['--workspace'] if manifest_args else ['--lib']
+        plan.bootstrap.append([*cargo, "check", *manifest_args, "--workspace"])
+        plan.baseline_tests.append([*cargo, "test", *manifest_args, *targets])
+        plan.final_tests.append([*cargo, "test", *manifest_args, *targets])
+        plan.linters.append([*cargo, "clippy", *manifest_args, *targets, "--", "-D", "warnings"])
 
     if "go" in ecosystems:
         plan.bootstrap.append(["go", "mod", "download"])
@@ -1927,6 +1981,27 @@ def verify_cline_provider_wire() -> Tuple[bool, str]:
         return True, f'Cline live tool round trip verified: provider={CLINE_PROVIDER}, model={CLINE_MODEL}, completions={completed}, tool_results={tool_results}'
     except Exception as exc:
         return False, f'Cline live provider check failed: {_sanitize_runtime_diagnostic(exc, 500)}'
+
+def initialize_cline_for_engine() -> Tuple[bool, str]:
+    """Keep transient provider throttling from ending an otherwise ready worker."""
+    configured, configuration = configure_cline_for_engine()
+    if not configured:
+        return False, configuration
+    delays = (30, 60, 60)
+    for attempt in range(len(delays) + 1):
+        ready, diagnostic = verify_cline_provider_wire()
+        if ready:
+            return True, configuration + ' ' + diagnostic
+        if attempt == len(delays) or not is_retryable_failure(diagnostic):
+            return False, diagnostic
+        delay = delays[attempt]
+        message = (f'STARTING {ENGINE_ID} transient Cline provider failure; '
+                   f'retrying verification {attempt + 2}/{len(delays) + 1} in {delay}s')
+        _command_log(message + ': ' + _sanitize_runtime_diagnostic(diagnostic, 300))
+        door_say(message, body='ENGINE_REGISTRATION')
+        time.sleep(delay)
+    return False, 'Cline provider verification did not complete.'
+
 
 def build_cline_engineering_prompt(
     repo: str,
@@ -2821,6 +2896,40 @@ def _run_init_command(argv: List[str], label: str, timeout: int) -> bool:
 
 NODE_LTS_VERSION = "22.23.4"
 NODE_LTS_SHA256 = "1805bcd35e6815559bd2eb97db438d3fdb0eb3a5e6a977b7c1badca76337e9ce"
+GO_VERSION = "1.26.9"
+# Official go.dev release manifest, linux/amd64 archive.
+GO_SHA256 = "42d158b4d8f7b61ac0a830567c940a86098fb7aac52e467a5ebec03ef5cc2f8d"
+
+
+def ensure_supported_go():
+    """Provide both Go and gofmt for native and Rust/Go hybrid verification."""
+    install_dir = f"/tmp/fleet-go-{GO_VERSION}"
+    go = os.path.join(install_dir, "bin", "go")
+    gofmt = os.path.join(install_dir, "bin", "gofmt")
+    if not (os.path.isfile(go) and os.path.isfile(gofmt)):
+        archive = f"/tmp/go{GO_VERSION}.linux-amd64.tar.gz"
+        _download_init_file(f"https://go.dev/dl/go{GO_VERSION}.linux-amd64.tar.gz",
+                            archive, timeout=120)
+        with open(archive, "rb") as downloaded:
+            digest = hashlib.file_digest(downloaded, "sha256").hexdigest()
+        if digest != GO_SHA256:
+            raise RuntimeError("Go archive checksum mismatch; bootstrap refused.")
+        os.makedirs(install_dir, exist_ok=True)
+        subprocess.run(["tar", "-xzf", archive, "-C", install_dir, "--strip-components=1"],
+                       check=True, timeout=60)
+    # Do not inherit a GOROOT pointing at a different installation.
+    probe_env = dict(os.environ, GOROOT=install_dir)
+    probe = subprocess.run([go, "version"], capture_output=True, text=True,
+                           env=probe_env, timeout=15)
+    if probe.returncode != 0 or not re.fullmatch(
+        r"go version go" + re.escape(GO_VERSION) + r" linux/amd64\s*", probe.stdout
+    ):
+        raise RuntimeError("Go runtime verification failed.")
+    subprocess.run([gofmt, "-h"], capture_output=True, check=True, timeout=15)
+    os.environ["GOROOT"] = install_dir
+    os.environ["PATH"] = os.path.join(install_dir, "bin") + os.pathsep + os.environ.get("PATH", "")
+    print(f"[Init] Verified {probe.stdout.strip()} and gofmt at {install_dir}/bin", flush=True)
+    return go
 
 
 def ensure_supported_node():
@@ -2859,6 +2968,7 @@ def setup_kaggle_env():
     os.makedirs(SANDBOX_DIR, exist_ok=True)
     os.makedirs(PACKET_DIR, exist_ok=True)
     ensure_supported_node()
+    ensure_supported_go()
 
     # 1. Install or locate gh CLI
     if not shutil.which("gh"):
@@ -3365,10 +3475,7 @@ def run_worker_loop():
             body="ENGINE_REGISTRATION",
         )
         raise
-    cline_ready, cline_message = configure_cline_for_engine()
-    if cline_ready:
-        cline_ready, wire_message = verify_cline_provider_wire()
-        cline_message = cline_message + ' ' + wire_message if cline_ready else wire_message
+    cline_ready, cline_message = initialize_cline_for_engine()
     if not cline_ready:
         diagnostic = _sanitize_runtime_diagnostic(cline_message, 300)
         door_say(
