@@ -3209,7 +3209,7 @@ def execute_claimed_fleet_task(task: dict, lease: FleetTaskLease):
         pr_url = attempt_automated_pull_request(repo, number, task.get('title', ''), task.get('body', ''), live_mode=True)
         if pr_url:
             summary = (
-                f"Verified Cline worktree implementation for issue #{number}.\n\n"
+                f"Implemented and verified the resolution for issue #{number}.\n\n"
                 "The linked pull request passed the required native verification and pre-PR gates."
             )
             receipt_ok = deliver_pr_receipt(
