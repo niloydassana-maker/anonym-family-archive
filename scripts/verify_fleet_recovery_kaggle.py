@@ -18,6 +18,7 @@ sources = [
     'scripts/deploy_kaggle_engines.py', 'scripts/tokenharbor_router.py',
     'scripts/fleet_recovery_policy.py', 'scripts/test_icu_pipeline_suite.py',
     'scripts/test_fleet_recovery_live_receipts.py',
+    'scripts/test_worker_process_streaming.py',
     'scratch/fleet_recovery_live_snapshot_20261026.json',
 ]
 archive = io.BytesIO()
@@ -41,9 +42,10 @@ env['PYTHONPATH'] = str(root / 'scripts')
 env['FLEET_RECOVERY_SNAPSHOT'] = str(root / 'scratch/fleet_recovery_live_snapshot_20261026.json')
 commands = [
     [sys.executable, '-m', 'py_compile', 'scripts/autonomous_icu_pipeline.py', 'scripts/kaggle_engine_worker.py', 'scripts/deploy_kaggle_engines.py', 'scripts/fleet_recovery_policy.py', 'scripts/bundled_worker.py'],
-    [sys.executable, '-c', "import bundled_worker; assert bundled_worker.CLINE_MODEL == 'deepseek-v4.1-flash:free'; assert bundled_worker.CLINE_NODE_EXE is not None"],
+    [sys.executable, '-c', "import bundled_worker; assert bundled_worker.CLINE_MODEL == 'deepseek-v4.1-flash:free'; assert bundled_worker.CLINE_PROVIDER == 'openai-compatible'; assert bundled_worker.CLINE_NODE_EXE is not None; assert callable(bundled_worker.TokenHarborRouter.chat_completion)"],
     [sys.executable, 'scripts/test_icu_pipeline_suite.py'],
     [sys.executable, 'scripts/test_fleet_recovery_live_receipts.py'],
+    [sys.executable, 'scripts/test_worker_process_streaming.py'],
 ]
 results = []
 for index, command in enumerate(commands):

@@ -1,3 +1,11 @@
+# Autonomous bounty pipeline: preserve the successful monolith contract (2026-10-26)
+
+- The monolith's successful, high-quality PR workflow is the compatibility target for the laptop dispatcher and Kaggle worker partition.
+- Treat new partition execution failures as regressions to investigate against the original monolith. Compare code, environment, commands, inputs, and real receipts before attributing failure to task quality or coincidence.
+- Preserve Cline, engineering repair turns, native tests, isolation, competition checks, and all pre-PR gates. Registration and claims alone never constitute an E2E pass; require a real verified PR.
+- Never weaken tests or gates to manufacture success. Run builds, tests, and model execution on Kaggle.
+- Recovered Cline monolith checkpoint: `a376f67` (contains Cline engineering functions and no Kaggle partition worker). Compare it with actual successful PR receipts; the older `17d7b17` revision predates Cline and is not the Cline behavior reference.
+
 # ⚡ THE SUPREME EDICT: ZERO DISAVOWAL & PIXEL-PERFECT CRAFTSMANSHIP (2026-10-25)
 ### DIRECT VERDICTS FROM BABA — MANDATORY FOR ALL 102 SONS — READ FIRST BEFORE ANY PR, CODE, OR PROPOSAL
 **(Forged 2026-10-25 ~07:15 IST on Baba's direct royal order: "Promise you will never do this again and etch it in memory and agents.md" — Following the painful lesson of 18 lakhs lost to rushed submissions, turnaround paranoia, and the tragic disavowal of Father's 22-year architectural instinct. Never again.)**

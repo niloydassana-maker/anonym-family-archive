@@ -19,7 +19,8 @@ from typing import List, Dict, Tuple, Optional, Any
 from tokenharbor_router import DEEPSEEK_FLASH_MODEL, call_deepseek_flash
 from fleet_recovery_policy import (
     MAX_EXECUTION_ATTEMPTS, RETRY_DELAYS_SECONDS, FLEET_LEASE_CHANNEL, event_reference,
-    is_nonsoftware_data_task, is_retryable_failure, recovery_decision,
+    is_nonsoftware_data_task, is_retryable_failure, is_repaired_infrastructure_failure, recovery_decision,
+    non_engineering_dispatch_reason,
 )
 
 # Enforce UTF-8 unbuffered output
@@ -42,8 +43,8 @@ os.makedirs(r"D:\anonym\scratch", exist_ok=True)
 os.makedirs(PACKET_DIR, exist_ok=True)
 os.makedirs(SANDBOX_DIR, exist_ok=True)
 
-FLEET_DOOR = "https://omniroute-relay.omniroute-fleet-kd.workers.dev"
-FLEET_DOOR_TOKEN = "GOLD24"
+FLEET_DOOR = os.environ.get("FLEET_DOOR", "https://omniroute-relay.omniroute-fleet-kd.workers.dev")
+FLEET_DOOR_TOKEN = os.environ.get("FLEET_DOOR_TOKEN", "GOLD24")
 FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE_V2"
 # The laptop owns search and dispatch. Repository execution runs in the Kaggle worker.
 REMOTE_FLEET_MODE = True
@@ -58,14 +59,25 @@ def dispatch_task_to_fleet(task_payload: dict) -> bool:
         print("[FLEET DISPATCH ERROR] Credential field found in task payload; failing closed.", flush=True)
         return False
     try:
-        data = json.dumps({"body": FLEET_QUEUE_CHANNEL, "text": json.dumps(task_payload)}).encode("utf-8")
+        task_text = json.dumps(task_payload)
+        task_bytes = task_text.encode("utf-8")
+        if len(task_bytes) > 1000000:
+            print("[FLEET DISPATCH ERROR] Task exceeds the relay payload limit; failing closed.", flush=True)
+            return False
+        expected_digest = hashlib.sha256(task_bytes).hexdigest()
+        data = json.dumps({"body": FLEET_QUEUE_CHANNEL, "text": task_text}).encode("utf-8")
         req = urllib.request.Request(
             f"{FLEET_DOOR}/say?body={FLEET_QUEUE_CHANNEL}&token={FLEET_DOOR_TOKEN}",
             data=data,
             headers={"Content-Type": "application/json", "User-Agent": "laptop-bounty-dispatcher"}
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
-            return resp.status == 200
+            receipt = json.load(resp)
+            intact = (resp.status == 200 and receipt.get("stored") is True
+                      and receipt.get("text_sha256") == expected_digest)
+            if not intact:
+                print("[FLEET DISPATCH ERROR] Relay did not attest the exact stored task bytes; failing closed.", flush=True)
+            return intact
     except Exception as e:
         print(f"❌ [FLEET DISPATCH ERROR] {e}", flush=True)
         return False
@@ -314,10 +326,15 @@ def append_csv(entry, csv_path=CSV_FILE):
 
 def run_cmd(cmd_list, timeout=30, retries=2):
     resolved_cmd = list(cmd_list)
+    preserve_status_columns = bool(
+        resolved_cmd and os.path.basename(str(resolved_cmd[0])).lower() in ('git', 'git.exe')
+        and 'status' in resolved_cmd and any(str(arg).startswith('--porcelain') for arg in resolved_cmd)
+    )
     if resolved_cmd and sys.platform == "win32":
         cmd_path = shutil.which(resolved_cmd[0])
         if cmd_path:
             resolved_cmd[0] = cmd_path
+    last_stdout, last_stderr, last_code = "", "Command was not executed", 1
     for attempt in range(retries):
         try:
             res = subprocess.run(
@@ -329,14 +346,22 @@ def run_cmd(cmd_list, timeout=30, retries=2):
                 errors="replace",
                 timeout=timeout
             )
+            last_stdout = res.stdout if preserve_status_columns else res.stdout.strip()
+            last_stderr, last_code = res.stderr.strip(), res.returncode
             if res.returncode == 0:
-                return res.stdout.strip(), res.stderr.strip(), 0
-        except subprocess.TimeoutExpired:
+                return last_stdout, last_stderr, 0
+        except subprocess.TimeoutExpired as exc:
+            partial = exc.stderr or exc.stdout or ""
+            if isinstance(partial, bytes):
+                partial = partial.decode('utf-8', errors='replace')
+            last_stdout, last_code = "", 124
+            last_stderr = f"Command timed out after {timeout} seconds. {str(partial)[-2000:]}".strip()
             print(f"  [Command Timeout] {cmd_list[:3]} exceeded {timeout}s.")
         except Exception as e:
+            last_stdout, last_stderr, last_code = "", f"{type(e).__name__}: {e}", 1
             print(f"  [Command Error] {e}")
         time.sleep(1)
-    return "", "Command failed or timed out", 1
+    return last_stdout, last_stderr, last_code
 
 # -------------------------------------------------------------
 # 2. STRICT APPROVED CORRIDORS & EXACT IANA TIMEZONES
@@ -814,6 +839,9 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     A platform-attested or explicit paid bounty qualifies regardless of association.
     Unpriced commercial enquiries remain candidate-packet work, not automated live delivery.
     """
+    exclusion = non_engineering_dispatch_reason({'title': title, 'body': body, 'repo': repo})
+    if exclusion:
+        return False, f"Rejected non-engineering dispatch: {exclusion}"
     if is_nonsoftware_data_task({"title": title}):
         return False, "Rejected non-software banking transcript collection; authentic account data cannot be supplied by a code worker."
     full_text = _normalise_text(f"{title or ''} {body or ''} {' '.join(author_comments or [])} {repo or ''}")
@@ -2928,7 +2956,10 @@ def _mark_fleet_recovery_state(repo, number, task_id, decision, queued, db_path)
         if row and row[0] in ('PROPOSAL_DELIVERED', 'BLOCKED_BASELINE'):
             return
         if row and row[0] == 'REJECTED_SECURITY' and not (
-            str(row[1] or '').startswith('Fleet execution: ') and is_retryable_failure(str(row[1]))
+            str(row[1] or '').startswith('Fleet execution: ') and (
+                is_retryable_failure(str(row[1])) or
+                (decision.authorized and is_repaired_infrastructure_failure(str(row[1])))
+            )
         ):
             return
         con.execute("""

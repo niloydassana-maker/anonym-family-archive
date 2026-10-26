@@ -188,7 +188,9 @@ def worker_source_for_deployment() -> str:
     return source.replace('from __future__ import annotations', 'from __future__ import annotations' + bootstrap, 1)
 
 
-def deploy_all_engines() -> list[dict]:
+def deploy_all_engines(engine_indexes: set[int] | None = None) -> list[dict]:
+    if engine_indexes is not None and (not engine_indexes or not engine_indexes <= {1, 2, 3, 4, 5}):
+        raise ValueError('Select engine indexes between 1 and 5.')
     worker_src_path = Path(r"D:\anonym\scripts\kaggle_engine_worker.py")
     if not worker_src_path.exists():
         raise FileNotFoundError(f"Missing worker script: {worker_src_path}")
@@ -199,6 +201,8 @@ def deploy_all_engines() -> list[dict]:
     credential_datasets: dict[str, str] = {}
     for node in FLEET_ACCOUNTS:
         idx = node["engine"]
+        if engine_indexes is not None and idx not in engine_indexes:
+            continue
         account = node["account"]
         tok_file = node["token_file"]
 

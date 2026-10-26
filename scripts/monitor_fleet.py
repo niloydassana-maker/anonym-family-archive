@@ -9,8 +9,8 @@ from datetime import datetime
 # Enforce UTF-8 line buffering on Windows console
 sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 
-DOOR = "https://omniroute-relay.omniroute-fleet-kd.workers.dev"
-TOKEN = "GOLD24"
+DOOR = os.environ.get("FLEET_DOOR", "https://omniroute-relay.omniroute-fleet-kd.workers.dev")
+TOKEN = os.environ.get("FLEET_DOOR_TOKEN", "GOLD24")
 FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE_V2"
 FLEET_CLAIM_CHANNEL = "BOUNTY_FLEET_CLAIM"
 FLEET_RESULT_CHANNEL = "BOUNTY_FLEET_RESULT"
@@ -105,12 +105,12 @@ def main():
     while True:
         try:
             render_dashboard()
-            time.sleep(3)
+            time.sleep(max(10, int(os.environ.get("FLEET_MONITOR_POLL_SECONDS", "30"))))
         except KeyboardInterrupt:
             print("\nLog stream stopped.")
             break
         except Exception as e:
-            time.sleep(3)
+            time.sleep(max(10, int(os.environ.get("FLEET_MONITOR_POLL_SECONDS", "30"))))
 
 if __name__ == "__main__":
     main()

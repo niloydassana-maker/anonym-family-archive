@@ -7,13 +7,38 @@ import time
 from dataclasses import dataclass
 
 MAX_EXECUTION_ATTEMPTS = 3
-RECOVERY_RELEASE = '2026-10-26-bounded-recovery-r1'
+RECOVERY_RELEASE = '2026-10-26-dispatch-integrity-r5'
 CLAIM_LEASE_SECONDS = 30 * 60
 CLAIM_HEARTBEAT_SECONDS = 60
 FLEET_LEASE_CHANNEL = 'BOUNTY_FLEET_LEASE'
 RETRY_DELAYS_SECONDS = (5 * 60, 15 * 60)
 
-_PERMANENT_FAILURE = re.compile(
+
+def non_engineering_dispatch_reason(task: dict) -> str:
+    """Exclude actual archive records and program budgets before any claim."""
+    title = str(task.get('title') or '')
+    body = str(task.get('body') or '')
+    repo = str(task.get('repo') or '')
+    if re.search(r'^hacker\s+news\s+daily\b', title, re.I) and re.search(
+        r'\b20\d{2}[-/]\d{2}[-/]\d{2}\b', title
+    ):
+        return 'dated news archive; quoted opportunities are not this issue\'s bounty'
+    if re.search(r'(?:^|/)(?:hackernews|hacker-news|news)[-_]daily(?:$|[-_])', repo, re.I):
+        return 'news archive repository, not an authoritative engineering bounty'
+    if re.search(r'(?:^|/)bounty[-_](?:crawl|scout|watcher|bot|plaza|arcade)(?:$|[-_])', repo, re.I):
+        return 'bounty discovery aggregator, not the original funded issue'
+    if re.search(r'\bannual\s+bounty\s+budget\b', body, re.I) and re.search(
+        r'\b(?:stand\s+up|set\s*up|managed)\b.{0,100}\b(?:program|vdp)\b|'
+        r'\b(?:program|vdp)\b.{0,100}\bset\s*up\b', title + '\n' + body, re.I
+    ):
+        return 'program operating budget, not a reward for implementing this issue'
+    if re.search(r'@platform-config|\bplatform_instructions\b', body, re.I) and re.search(
+        r'\b(?:pre-session\s+instructions|paste\s+everything\s+verbatim|complete\s+pre-session)\b', body, re.I
+    ):
+        return 'submission demands disclosure of private agent instructions'
+    return ''
+
+_HARD_FAILURE = re.compile(
     r"security violation|assessment safety gate|unsafe relative path|"
     r"FAILED_NO_TEST_VERIFICATION|no native test commands|"
     r"competing (?:pull request|pr)|open (?:pull request|pr) already|"
@@ -21,12 +46,17 @@ _PERMANENT_FAILURE = re.compile(
     r"not a software|non-software|speculative|roadmap|bot/discussion mirror",
     re.IGNORECASE,
 )
+_PERMANENT_FAILURE = re.compile(
+    _HARD_FAILURE.pattern + r'|re-authenticate your Cline account|Cline provider readback failed',
+    re.IGNORECASE,
+)
 _TRANSIENT_FAILURE = re.compile(
     r"timed?\s*out|timeout|network|connection (?:reset|refused|aborted)|"
     r"temporary failure|temporarily unavailable|name resolution|"
     r"HTTP(?:\s+Error)?\s*(?:401|408|429|500|502|503|504)\b|rate.?limit|"
     r"key exhaustion|no ready .*key|model is unavailable|"
-    r"model unavailable|claim lease lost|ledger .*unavailable",
+    r"model unavailable|claim lease lost|ledger .*unavailable|"
+    r"Git add verified files failed.*pathspec ['\"]ackage-lock\.json['\"] did not match any files",
     re.IGNORECASE,
 )
 
@@ -36,6 +66,14 @@ def is_retryable_failure(reason: str) -> bool:
     return bool(_TRANSIENT_FAILURE.search(reason or "")) and not bool(
         _PERMANENT_FAILURE.search(reason or "")
     )
+
+
+def is_repaired_infrastructure_failure(reason: str) -> bool:
+    """Only the controller faults repaired in this release may be authorized."""
+    return not _HARD_FAILURE.search(reason or '') and bool(re.search(
+        r're-authenticate your Cline account|Cline execution failed.*Command timed out after (?:900|3600) seconds',
+        reason or '', re.IGNORECASE,
+    ))
 
 
 def is_nonsoftware_data_task(task: dict) -> bool:
@@ -112,6 +150,7 @@ class RecoveryDecision:
     reason: str
     attempt: int
     retry_at: float = 0
+    authorized: bool = False
 
 
 def recovery_decision(
@@ -132,22 +171,33 @@ def recovery_decision(
     identities = {event_run(r["text"]) or (r["at"], r["text"]) for r in initial_claims}
     used = max(len(identities), len(failures), max(explicit, default=0))
     next_attempt = used + 1
+    # A trusted operator can authorize one additional infrastructure-repair
+    # run, scoped to this exact release and issue. Total attempts never reset.
+    authorized = used >= MAX_EXECUTION_ATTEMPTS and any(
+        row['text'].startswith('RECOVERY_AUTHORIZED ')
+        and re.search(r'\brelease=' + re.escape(RECOVERY_RELEASE) + r'(?:\s|$)', row['text'])
+        and event_number(row['text'], 'attempt_limit') == MAX_EXECUTION_ATTEMPTS + 1
+        for row in claims
+    )
     if any(r["text"].startswith("SUCCESS ") or re.search(r"PR exists", r["text"], re.I) for r in results):
         return RecoveryDecision(False, "already delivered or PR exists", used)
     if any(r["text"].startswith("SKIPPED ") for r in results):
         return RecoveryDecision(False, "excluded task", used)
-    if any(not is_retryable_failure(r["text"]) for r in failures):
+    if any(not is_retryable_failure(r["text"]) and not (
+        authorized and is_repaired_infrastructure_failure(r['text'])
+    ) for r in failures):
         return RecoveryDecision(False, "permanent or unclassified failure", used)
     claim, lease_until = current_claim(task, claims)
     last_result_at = _timestamp(results[-1]) if results else 0
     unfinished = claim is not None and _timestamp(claim) > last_result_at
     if unfinished and lease_until > now:
-        return RecoveryDecision(False, "active claim lease", used, lease_until)
-    if used >= MAX_EXECUTION_ATTEMPTS:
-        return RecoveryDecision(False, "attempt limit reached", used)
+        return RecoveryDecision(False, "active claim lease", used, lease_until, authorized)
+    if used >= MAX_EXECUTION_ATTEMPTS + int(authorized):
+        return RecoveryDecision(False, "attempt limit reached", used, authorized=authorized)
     if unfinished:
-        return RecoveryDecision(True, "expired claim lease", next_attempt)
+        return RecoveryDecision(True, "authorized infrastructure retry" if authorized else "expired claim lease", next_attempt, authorized=authorized)
     if failures:
         retry_at = _timestamp(failures[-1]) + RETRY_DELAYS_SECONDS[min(max(used - 1, 0), 1)]
-        return RecoveryDecision(now >= retry_at, "temporary failure cooldown" if now < retry_at else "temporary failure retry", next_attempt, retry_at)
+        reason = "temporary failure cooldown" if now < retry_at else ("authorized infrastructure retry" if authorized else "temporary failure retry")
+        return RecoveryDecision(now >= retry_at, reason, next_attempt, retry_at, authorized)
     return RecoveryDecision(True, "new task", 1)

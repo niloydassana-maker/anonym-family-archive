@@ -18,6 +18,8 @@ import urllib.error
 import urllib.parse
 import glob
 import subprocess
+import signal
+import shlex
 import uuid
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from decimal import Decimal, ROUND_HALF_UP
@@ -26,21 +28,25 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional, Any
 from fleet_recovery_policy import (
     CLAIM_LEASE_SECONDS, CLAIM_HEARTBEAT_SECONDS, FLEET_LEASE_CHANNEL, RECOVERY_RELEASE, current_claim, event_run,
-    is_nonsoftware_data_task, recovery_decision, task_reference,
+    is_nonsoftware_data_task, recovery_decision, task_reference, non_engineering_dispatch_reason,
 )
 
 # Enforce UTF-8 line buffering
 sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 
-DOOR = "https://omniroute-relay.omniroute-fleet-kd.workers.dev"
-DOOR_TOKEN = "GOLD24"
+DOOR = os.environ.get("FLEET_DOOR", "https://omniroute-relay.omniroute-fleet-kd.workers.dev")
+DOOR_TOKEN = os.environ.get("FLEET_DOOR_TOKEN", "GOLD24")
 FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE_V2"
 FLEET_CLAIM_CHANNEL = "BOUNTY_FLEET_CLAIM"
 FLEET_RESULT_CHANNEL = "BOUNTY_FLEET_RESULT"
+FLEET_IDLE_POLL_SECONDS = max(15, int(os.environ.get("FLEET_IDLE_POLL_SECONDS", "60")))
 ENGINE_ID = os.environ.get("ENGINE_ID", "kaggle-engine-unknown")
 ENGINE_INDEX = int(os.environ.get("ENGINE_INDEX", "1"))
 TOTAL_ENGINES = 5
 _ACTIVE_TASK_LEASE = None
+_invalid_queue_record_digests = set()
+_last_fleet_poll_log = 0.0
+_fleet_poll_failures = 0
 
 # Cloud sandbox and paths
 SANDBOX_DIR = "/tmp/sandbox"
@@ -57,6 +63,7 @@ CLINE_PROXY_BASE_URL = os.environ.get("CLINE_PROXY_BASE_URL", "http://127.0.0.1:
 CLINE_NODE_EXE = os.environ.get("CLINE_NODE_EXE", shutil.which("node") or "")
 CLINE_NODE_ENTRYPOINT = os.environ.get("CLINE_NODE_ENTRYPOINT", "")
 CLINE_MODEL = os.environ.get("CLINE_MODEL", DEEPSEEK_FLASH_MODEL)
+CLINE_PROVIDER = "openai-compatible"
 CLINE_DATA_DIR = os.environ.get("CLINE_DATA_DIR", "/tmp/cline-data")
 # This is a local proxy marker, never a TokenHarbor credential. The proxy reads
 # the engine-private key shard itself.
@@ -131,6 +138,7 @@ class TokenHarborRouter:
         self._jitter = jitter or random.random
         self._transport = transport or self._http_transport
         self._cursor = 0
+        self._last_http_status = None
         self._slots = [_KeySlot(secret=key) for key in (keys or self._load_keys(key_file)) if key]
 
     @staticmethod
@@ -330,43 +338,80 @@ class TokenHarborRouter:
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
         payload = {"model": DEEPSEEK_FLASH_MODEL, "messages": messages, "max_tokens": 4096}
+        success, response_payload, model, diagnostic = self._call_payload(payload, timeout, allow_tools=False)
+        return success, (self._extract_text(response_payload) or "") if success else "", model, diagnostic
+
+    def chat_completion(self, payload: dict, timeout: int = DEFAULT_TIMEOUT_SECONDS):
+        """Forward the real Cline conversation and native tool protocol."""
+        if not isinstance(payload, dict) or not isinstance(payload.get("messages"), list) or not payload["messages"]:
+            return False, {}, DEEPSEEK_FLASH_MODEL, "Cline request requires a non-empty message history."
+        if not isinstance(timeout, (int, float)) or timeout <= 0:
+            return False, {}, DEEPSEEK_FLASH_MODEL, "Timeout must be a positive number of seconds."
+        forwarded = dict(payload)
+        forwarded["model"] = DEEPSEEK_FLASH_MODEL
+        # Preserve the upstream completion intact, then encode its real fields
+        # as SSE when the client requested streaming.
+        forwarded["stream"] = False
+        forwarded.pop("stream_options", None)
+        return self._call_payload(forwarded, timeout, allow_tools=True)
+
+    def _call_payload(self, payload: dict, timeout: int, allow_tools: bool = False):
         network_attempts = 0
         last_error = "No Token Harbor key is currently ready."
 
         while True:
             leased = self._lease_key()
             if leased is None:
-                return False, "", DEEPSEEK_FLASH_MODEL, last_error
-            _, slot = leased
+                return False, {}, DEEPSEEK_FLASH_MODEL, last_error
+            key_index, slot = leased
+            request_started = time.monotonic()
+            request_id = uuid.uuid4().hex[:10]
+            _command_log(
+                f'MODEL_REQUEST START id={request_id} attempt={network_attempts + 1} '
+                f'key_slot={key_index} timeout={timeout}s tools={len(payload.get("tools") or [])}'
+            )
             try:
                 status, headers, response_payload = self._transport(slot.secret, payload, timeout)
+                self._last_http_status = status
             except (error.URLError, TimeoutError, OSError) as exc:
+                self._last_http_status = None
                 self._release_ready(slot)
                 network_attempts += 1
+                _command_log(
+                    f'MODEL_REQUEST END id={request_id} result=NETWORK_ERROR '
+                    f'elapsed={time.monotonic()-request_started:.1f}s attempt={network_attempts}'
+                )
                 last_error = (
                     f"Token Harbor transient network failure after {timeout}s "
                     f"(fallback attempt {network_attempts}): {exc}"
                 )
                 if network_attempts >= 4:
-                    return False, "", DEEPSEEK_FLASH_MODEL, last_error
+                    return False, {}, DEEPSEEK_FLASH_MODEL, last_error
                 continue
             except Exception as exc:  # Transport adapters must not strand a lease.
                 self._release_ready(slot)
-                return False, "", DEEPSEEK_FLASH_MODEL, f"Token Harbor transport failure: {exc}"
+                return False, {}, DEEPSEEK_FLASH_MODEL, f"Token Harbor transport failure: {exc}"
 
             headers = headers or {}
+            _command_log(
+                f'MODEL_REQUEST END id={request_id} http={status} '
+                f'elapsed={time.monotonic()-request_started:.1f}s attempt={network_attempts + 1}'
+            )
             if 200 <= status < 300:
                 text = self._extract_text(response_payload)
-                if text:
+                choices = response_payload.get("choices", []) if isinstance(response_payload, dict) else []
+                message = choices[0].get("message", {}) if choices and isinstance(choices[0], dict) else {}
+                tools = message.get("tool_calls") if isinstance(message, dict) else None
+                if text or (allow_tools and isinstance(tools, list) and tools):
                     self._release_ready(slot)
-                    return True, text, DEEPSEEK_FLASH_MODEL, None
+                    return True, response_payload, DEEPSEEK_FLASH_MODEL, None
                 # HTTP 200 returned empty text or unparseable payload: cool down this slot and rotate to next key
                 self._cool_down(slot, headers)
                 network_attempts += 1
                 payload_diag = str(response_payload)[:150] if response_payload else "empty response"
                 last_error = f"Token Harbor key returned empty or invalid text ({payload_diag})"
                 if network_attempts >= 4:
-                    return False, "", DEEPSEEK_FLASH_MODEL, last_error
+                    return False, {}, DEEPSEEK_FLASH_MODEL, last_error
                 continue
             if status == 429:
                 self._cool_down(slot, headers)
@@ -388,10 +433,10 @@ class TokenHarborRouter:
                 network_attempts += 1
                 last_error = self._error_text(response_payload, f"Token Harbor server error ({status}).")
                 if network_attempts >= 4:
-                    return False, "", DEEPSEEK_FLASH_MODEL, last_error
+                    return False, {}, DEEPSEEK_FLASH_MODEL, last_error
                 continue
             self._release_ready(slot)
-            return False, "", DEEPSEEK_FLASH_MODEL, self._error_text(response_payload, f"Token Harbor request failed ({status}).")
+            return False, {}, DEEPSEEK_FLASH_MODEL, self._error_text(response_payload, f"Token Harbor request failed ({status}).")
 
     def status(self) -> dict:
         with self._lock:
@@ -403,7 +448,8 @@ class TokenHarborRouter:
                 counts[slot.state] += 1
                 if slot.state == COOLDOWN:
                     cooldowns.append({"key_index": index, "remaining_seconds": max(0.0, round(slot.cooldown_until - now, 3))})
-            return {"model": DEEPSEEK_FLASH_MODEL, "total_keys": len(self._slots), "states": counts, "cooldowns": cooldowns}
+            return {"model": DEEPSEEK_FLASH_MODEL, "total_keys": len(self._slots), "states": counts, "cooldowns": cooldowns,
+                    "last_http_status": self._last_http_status}
 
 
 _default_router: Optional[TokenHarborRouter] = None
@@ -454,7 +500,8 @@ def record_execution_diagnostic(stage: str, detail: object) -> None:
 
 
 def get_execution_diagnostic() -> str:
-    return " || ".join(_execution_diagnostics[-4:])[:1800]
+    # Keep the final blocking cause visible even when baseline logs are long.
+    return " || ".join(reversed(_execution_diagnostics[-4:]))[:1800]
 
 
 def _safe_command_failure(stage: str, result: object) -> None:
@@ -584,29 +631,41 @@ def wait_for_tokenharbor_ready(max_wait_seconds: float = 305.0) -> bool:
 # ==============================================================================
 def run_cmd(cmd_list, timeout=30, retries=2):
     resolved_cmd = list(cmd_list)
+    preserve_status_columns = bool(
+        resolved_cmd and os.path.basename(str(resolved_cmd[0])).lower() in ('git', 'git.exe')
+        and 'status' in resolved_cmd and any(str(arg).startswith('--porcelain') for arg in resolved_cmd)
+    )
     if resolved_cmd and sys.platform == "win32":
         cmd_path = shutil.which(resolved_cmd[0])
         if cmd_path:
             resolved_cmd[0] = cmd_path
+    last_stdout, last_stderr, last_code = "", "Command was not executed", 1
     for attempt in range(retries):
         try:
-            res = subprocess.run(
+            res = run_streamed_process(
                 resolved_cmd,
                 stdin=subprocess.DEVNULL,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-                timeout=timeout
+                timeout=timeout,
+                stream_output=bool(resolved_cmd and os.path.basename(resolved_cmd[0]).lower() in ('git', 'git.exe')),
             )
+            last_stdout = res.stdout if preserve_status_columns else res.stdout.strip()
+            last_stderr, last_code = res.stderr.strip(), res.returncode
             if res.returncode == 0:
-                return res.stdout.strip(), res.stderr.strip(), 0
-        except subprocess.TimeoutExpired:
+                return last_stdout, last_stderr, 0
+        except subprocess.TimeoutExpired as exc:
+            partial = exc.stderr or exc.stdout or ""
+            if isinstance(partial, bytes):
+                partial = partial.decode('utf-8', errors='replace')
+            last_stdout, last_code = "", 124
+            last_stderr = f"Command timed out after {timeout} seconds. {str(partial)[-2000:]}".strip()
             print(f"  [Command Timeout] {cmd_list[:3]} exceeded {timeout}s.")
+        except FleetOwnershipLost as exc:
+            return exc.stdout, f"{exc}\n{exc.stderr}".strip(), 125
         except Exception as e:
+            last_stdout, last_stderr, last_code = "", f"{type(e).__name__}: {e}", 1
             print(f"  [Command Error] {e}")
         time.sleep(1)
-    return "", "Command failed or timed out", 1
+    return last_stdout, last_stderr, last_code
 
 # -------------------------------------------------------------
 # 2. STRICT APPROVED CORRIDORS & EXACT IANA TIMEZONES
@@ -1416,6 +1475,140 @@ def has_successful_test_verification(
     )
 
 
+_COMMAND_LOG_LOCK = threading.Lock()
+
+
+class FleetOwnershipLost(RuntimeError):
+    def __init__(self, message, stdout='', stderr=''):
+        super().__init__(message)
+        self.stdout = stdout
+        self.stderr = stderr
+
+
+def _command_log(message: str) -> None:
+    """Redact the displayed copy; receipts retain the original captured text."""
+    secrets = [value for name, value in os.environ.items()
+               if len(value) >= 8 and re.search(r'TOKEN|SECRET|PASSWORD|(?:^|_)KEY(?:_|$)', name, re.I)]
+    router = globals().get('_default_router')
+    if router is not None:
+        secrets.extend(slot.secret for slot in router._slots)
+    for secret in secrets:
+        message = message.replace(secret, '[REDACTED]')
+    message = _sanitize_runtime_diagnostic(message, 2500)
+    with _COMMAND_LOG_LOCK:
+        print(f"[{datetime.now(timezone.utc).strftime('%H:%M:%S UTC')}] [{ENGINE_ID}] {message}", flush=True)
+
+
+def run_streamed_process(argv, cwd=None, timeout=120, input=None, stdin=None, stream_output=True):
+    """Capture both streams losslessly while exposing real progress and deadlines."""
+    started = time.monotonic()
+    deadline = started + timeout
+    if _ACTIVE_TASK_LEASE is not None and _ACTIVE_TASK_LEASE.lost.is_set():
+        raise FleetOwnershipLost('claim lease lost before command; execution blocked')
+    name = os.path.basename(str(argv[0])).lower()
+    operation = next((str(arg) for arg in argv[1:] if str(arg) in
+                      ('clone', 'fetch', 'checkout', 'reset', 'clean', 'check', 'test', 'clippy')), '')
+    if name in ('cargo', 'cargo.exe') and operation:
+        target = next((str(arg) for arg in argv[1:]
+                       if str(arg) in ('--workspace', '--lib', '--all-targets')), 'default')
+        operation = f'{operation}_{target.lstrip("-")}'
+    phase = re.sub(r'[^A-Z0-9_]', '_', f'{name}_{operation}'.upper()).strip('_')
+    preview = []
+    redact_next = False
+    for arg in argv[:8]:
+        preview.append('[REDACTED]' if redact_next else str(arg))
+        redact_next = str(arg).lower() in ('--key', '--apikey', '--token', '--password', '-k')
+    label = ' '.join(preview)
+    _command_log(f'START {phase} timeout={timeout}s command={label}')
+    if _ACTIVE_TASK_LEASE is not None:
+        _ACTIVE_TASK_LEASE.phase = phase
+    proc = subprocess.Popen(
+        argv, cwd=cwd, stdin=subprocess.PIPE if input is not None else stdin,
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+        text=True, encoding='utf-8', errors='replace', bufsize=1,
+        start_new_session=(os.name == 'posix'),
+    )
+    if _ACTIVE_TASK_LEASE is not None:
+        _ACTIVE_TASK_LEASE.command_pid = proc.pid
+    stdout_parts, stderr_parts = [], []
+
+    def collect(pipe, parts, stream):
+        try:
+            for line in iter(pipe.readline, ''):
+                parts.append(line)
+                if stream_output and line.strip():
+                    _command_log(f'{phase} {stream}: {line.rstrip()}')
+        finally:
+            pipe.close()
+
+    threads = [threading.Thread(target=collect, args=(proc.stdout, stdout_parts, 'stdout'), daemon=True),
+               threading.Thread(target=collect, args=(proc.stderr, stderr_parts, 'stderr'), daemon=True)]
+    if input is not None:
+        def feed():
+            try:
+                proc.stdin.write(input)
+            except (BrokenPipeError, OSError):
+                pass
+            finally:
+                try:
+                    proc.stdin.close()
+                except (BrokenPipeError, OSError):
+                    pass
+        threads.append(threading.Thread(target=feed, daemon=True))
+    for thread in threads:
+        thread.start()
+
+    def stop_group(sig):
+        try:
+            if os.name == 'posix':
+                os.killpg(proc.pid, sig)
+            elif proc.poll() is None:
+                proc.kill()
+        except ProcessLookupError:
+            pass
+
+    try:
+        last_progress = started
+        while True:
+            if _ACTIVE_TASK_LEASE is not None and _ACTIVE_TASK_LEASE.lost.is_set():
+                raise FleetOwnershipLost('claim lease lost during command; owned process group stopped')
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise subprocess.TimeoutExpired(argv, timeout)
+            try:
+                proc.wait(timeout=min(1, remaining))
+                break
+            except subprocess.TimeoutExpired:
+                if time.monotonic() >= deadline:
+                    raise
+                if time.monotonic() - last_progress >= 30:
+                    _command_log(f'RUNNING {phase} pid={proc.pid} elapsed={time.monotonic()-started:.1f}s limit={timeout}s')
+                    last_progress = time.monotonic()
+        for thread in threads:
+            thread.join(timeout=max(0, deadline-time.monotonic()))
+            if thread.is_alive():
+                raise subprocess.TimeoutExpired(argv, timeout)
+    except (subprocess.TimeoutExpired, FleetOwnershipLost) as failure:
+        stop_group(signal.SIGTERM)
+        for thread in threads:
+            thread.join(timeout=1)
+        if proc.poll() is None or any(thread.is_alive() for thread in threads):
+            stop_group(signal.SIGKILL if os.name == 'posix' else signal.SIGTERM)
+        proc.wait()
+        for thread in threads:
+            thread.join(timeout=5)
+        if isinstance(failure, FleetOwnershipLost):
+            _command_log(f'LEASE_LOST {phase} pid={proc.pid} elapsed={time.monotonic()-started:.1f}s')
+            raise FleetOwnershipLost(str(failure), ''.join(stdout_parts), ''.join(stderr_parts))
+        _command_log(f'TIMEOUT {phase} pid={proc.pid} elapsed={time.monotonic()-started:.1f}s limit={timeout}s')
+        raise subprocess.TimeoutExpired(argv, timeout, output=''.join(stdout_parts), stderr=''.join(stderr_parts))
+    finally:
+        if _ACTIVE_TASK_LEASE is not None:
+            _ACTIVE_TASK_LEASE.command_pid = 0
+    _command_log(f'END {phase} pid={proc.pid} exit={proc.returncode} elapsed={time.monotonic()-started:.1f}s')
+    return subprocess.CompletedProcess(argv, proc.returncode, ''.join(stdout_parts), ''.join(stderr_parts))
+
+
 def run_command_safe(argv: List[str], cwd: str, timeout: int = 120, input: Optional[str] = None) -> CommandResult:
     start = time.time()
     try:
@@ -1424,14 +1617,10 @@ def run_command_safe(argv: List[str], cwd: str, timeout: int = 120, input: Optio
             cmd_path = shutil.which(resolved_argv[0])
             if cmd_path:
                 resolved_argv[0] = cmd_path
-        proc = subprocess.run(
+        proc = run_streamed_process(
             resolved_argv,
             cwd=cwd,
             input=input,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
             timeout=timeout
         )
         duration = time.time() - start
@@ -1443,16 +1632,25 @@ def run_command_safe(argv: List[str], cwd: str, timeout: int = 120, input: Optio
             stderr=proc.stderr or "",
             duration_s=duration
         )
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired as exc:
         duration = time.time() - start
+        stdout = exc.stdout or ""
+        stderr = exc.stderr or ""
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode('utf-8', errors='replace')
+        if isinstance(stderr, bytes):
+            stderr = stderr.decode('utf-8', errors='replace')
         return CommandResult(
             argv=argv,
             cwd=cwd,
             exit_code=-1,
-            stdout="",
-            stderr=f"Command timed out after {timeout} seconds",
+            stdout=stdout,
+            stderr=f"Command timed out after {timeout} seconds\n{stderr}",
             duration_s=duration
         )
+    except FleetOwnershipLost as exc:
+        return CommandResult(argv=argv, cwd=cwd, exit_code=-1, stdout=exc.stdout,
+                             stderr=f'{exc}\n{exc.stderr}'.strip(), duration_s=time.time()-start)
     except Exception as e:
         duration = time.time() - start
         return CommandResult(
@@ -1466,6 +1664,11 @@ def run_command_safe(argv: List[str], cwd: str, timeout: int = 120, input: Optio
 
 class _ClineProxyHandler(BaseHTTPRequestHandler):
     """Engine-local OpenAI-compatible bridge from Cline to TokenHarbor."""
+    completed_requests = 0
+    received_requests = 0
+    last_request_path = None
+    forwarded_tool_definitions = 0
+    forwarded_tool_results = 0
 
     def log_message(self, _format, *_args):
         # The worker owns concise operational logging; proxy request bodies and
@@ -1486,7 +1689,12 @@ class _ClineProxyHandler(BaseHTTPRequestHandler):
             except Exception as exc:
                 self._json(503, {"ok": False, "error": _sanitize_runtime_diagnostic(exc)})
                 return
-            self._json(200, {"ok": True, **payload})
+            self._json(200, {"ok": True, **payload,
+                             "received_requests": type(self).received_requests,
+                             "last_request_path": type(self).last_request_path,
+                             "completed_requests": type(self).completed_requests,
+                             "forwarded_tool_definitions": type(self).forwarded_tool_definitions,
+                             "forwarded_tool_results": type(self).forwarded_tool_results})
             return
         if self.path in ("/v1/models", "/models"):
             self._json(200, {"object": "list", "data": [{"id": CLINE_MODEL, "object": "model", "owned_by": "tokenharbor"}]})
@@ -1494,6 +1702,8 @@ class _ClineProxyHandler(BaseHTTPRequestHandler):
         self._json(404, {"error": "not found"})
 
     def do_POST(self):
+        type(self).received_requests += 1
+        type(self).last_request_path = self.path.split('?', 1)[0]
         if self.path not in ("/v1/chat/completions", "/chat/completions"):
             self._json(404, {"error": "not found"})
             return
@@ -1503,53 +1713,67 @@ class _ClineProxyHandler(BaseHTTPRequestHandler):
         except Exception:
             self._json(400, {"error": {"message": "invalid JSON request"}})
             return
-        system_prompt = None
-        prompt_parts = []
-        for message in payload.get("messages", []):
-            if not isinstance(message, dict):
-                continue
-            content = message.get("content", "")
-            if isinstance(content, list):
-                content = "\n".join(
-                    str(item.get("text", "")) for item in content
-                    if isinstance(item, dict) and item.get("type") == "text"
-                )
-            if message.get("role") == "system" and system_prompt is None:
-                system_prompt = str(content)
-            elif message.get("role") in ("user", "assistant"):
-                prompt_parts.append(str(content))
-        success, response_text, model_used, error_message = _get_default_router().call(
-            prompt="\n\n".join(prompt_parts) or "Continue the engineering task.",
-            system_prompt=system_prompt,
+        if not isinstance(payload, dict):
+            self._json(400, {"error": {"message": "request must be an object"}})
+            return
+        request_id = uuid.uuid4().hex[:10]
+        request_started = time.monotonic()
+        _command_log(
+            f'CLINE_GATEWAY START id={request_id} messages={len(payload.get("messages") or [])} '
+            f'tools={len(payload.get("tools") or [])} stream={bool(payload.get("stream"))}'
+        )
+        success, completion, model_used, error_message = _get_default_router().chat_completion(
+            payload,
             timeout=DEFAULT_TIMEOUT_SECONDS,
         )
-        if not success or not response_text:
+        if not success:
+            _command_log(
+                f'CLINE_GATEWAY END id={request_id} result=UPSTREAM_ERROR '
+                f'elapsed={time.monotonic()-request_started:.1f}s'
+            )
             self._json(502, {"error": {"message": _sanitize_runtime_diagnostic(error_message or "TokenHarbor request failed")}})
             return
-        completion_id = f"chatcmpl-{uuid.uuid4().hex[:16]}"
+        choices = completion.get("choices") if isinstance(completion, dict) else None
+        if not isinstance(choices, list) or not choices or not isinstance(choices[0].get("message"), dict):
+            self._json(502, {"error": {"message": "TokenHarbor returned an invalid chat completion"}})
+            return
+        type(self).completed_requests += 1
+        type(self).forwarded_tool_definitions += len(payload.get("tools") or [])
+        type(self).forwarded_tool_results += sum(
+            isinstance(message, dict) and message.get("role") == "tool"
+            for message in payload.get("messages", [])
+        )
+        _command_log(
+            f'CLINE_GATEWAY END id={request_id} result=OK model={model_used} '
+            f'elapsed={time.monotonic()-request_started:.1f}s '
+            f'tool_calls={sum(len(choice.get("message", {}).get("tool_calls") or []) for choice in choices if isinstance(choice, dict))}'
+        )
         if payload.get("stream"):
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")
             self.send_header("Cache-Control", "no-cache")
-            self.send_header("Connection", "keep-alive")
+            self.send_header("Connection", "close")
             self.end_headers()
+            streamed_choices = []
+            for index, choice in enumerate(choices):
+                message = dict(choice['message'])
+                if isinstance(message.get('tool_calls'), list):
+                    message['tool_calls'] = [dict(tool, index=i) for i, tool in enumerate(message['tool_calls'])]
+                streamed_choices.append({"index": choice.get('index', index), "delta": message,
+                                         "finish_reason": choice.get('finish_reason')})
             event = {
-                "id": completion_id,
+                "id": completion.get('id'),
                 "object": "chat.completion.chunk",
-                "created": int(time.time()),
-                "model": model_used or CLINE_MODEL,
-                "choices": [{"index": 0, "delta": {"role": "assistant", "content": response_text}, "finish_reason": "stop"}],
+                "created": completion.get('created'),
+                "model": completion.get('model') or model_used,
+                "choices": streamed_choices,
             }
+            if 'usage' in completion:
+                event['usage'] = completion['usage']
             self.wfile.write(f"data: {json.dumps(event)}\n\ndata: [DONE]\n\n".encode("utf-8"))
             self.wfile.flush()
             return
-        self._json(200, {
-            "id": completion_id,
-            "object": "chat.completion",
-            "created": int(time.time()),
-            "model": model_used or CLINE_MODEL,
-            "choices": [{"index": 0, "message": {"role": "assistant", "content": response_text}, "finish_reason": "stop"}],
-        })
+        self._json(200, completion)
 
 
 def run_cline_proxy_server() -> None:
@@ -1568,6 +1792,15 @@ def _cline_proxy_is_healthy() -> bool:
             return 200 <= response.status < 300
     except (OSError, urllib.error.URLError, urllib.error.HTTPError, ValueError):
         return False
+
+
+def cline_proxy_router_status() -> dict:
+    """Read the key states from the process that actually serves Cline."""
+    with _proxy_free_urlopen(CLINE_PROXY_HEALTH_URL, timeout=5) as response:
+        status = json.load(response)
+    if not isinstance(status, dict) or status.get('ok') is not True or not isinstance(status.get('states'), dict):
+        raise RuntimeError('Cline proxy key readiness is unavailable; dispatch is blocked')
+    return status
 
 def ensure_cline_proxy_running() -> Tuple[bool, str]:
     """
@@ -1625,11 +1858,16 @@ def configure_cline_for_engine() -> Tuple[bool, str]:
     if not proxy_ok:
         return False, proxy_message
     os.makedirs(CLINE_DATA_DIR, exist_ok=True)
+    # Both auth and engineering must resolve the same isolated provider file.
+    os.environ['CLINE_DATA_DIR'] = CLINE_DATA_DIR
+    provider_file = os.path.join(CLINE_DATA_DIR, 'settings', 'providers.json')
+    os.environ['CLINE_PROVIDER_SETTINGS_PATH'] = provider_file
     auth_command = [
         *cline_command,
         "--data-dir", CLINE_DATA_DIR,
         "auth",
-        "--provider", "openai-native",
+        "--data-dir", CLINE_DATA_DIR,
+        "--provider", CLINE_PROVIDER,
         "--apikey", CLINE_PROXY_API_KEY,
         "--modelid", CLINE_MODEL,
         "--baseurl", CLINE_PROXY_BASE_URL,
@@ -1638,7 +1876,57 @@ def configure_cline_for_engine() -> Tuple[bool, str]:
     if result.exit_code != 0:
         detail = (result.stderr or result.stdout or "Cline auth returned no diagnostic").strip()
         return False, f"Cline proxy configuration failed (exit {result.exit_code}): {detail[:600]}"
-    return True, "Cline installed and configured against the engine-local TokenHarbor proxy."
+    try:
+        with open(provider_file, encoding='utf-8') as handle:
+            saved = json.load(handle)
+        settings = saved.get('providers', {}).get(CLINE_PROVIDER, {}).get('settings', {})
+        auth = settings.get('auth') or {}
+        if (settings.get('model') != CLINE_MODEL or
+                str(settings.get('baseUrl', '')).rstrip('/') != CLINE_PROXY_BASE_URL.rstrip('/') or
+                (auth.get('apiKey') or settings.get('apiKey')) != CLINE_PROXY_API_KEY):
+            return False, 'Cline provider readback failed: model, endpoint, or local proxy credential was not persisted correctly.'
+    except (OSError, ValueError, TypeError, AttributeError):
+        return False, 'Cline provider readback failed: isolated provider settings are missing or malformed.'
+    return True, f"Cline configuration verified: provider={CLINE_PROVIDER}, model={CLINE_MODEL}, base={CLINE_PROXY_BASE_URL}."
+
+
+def cline_worktree_command(worktree: str, prompt: str, retries: int = 3) -> List[str]:
+    command = resolve_cline_command()
+    if not command:
+        raise RuntimeError('Cline executable is unavailable after bootstrap.')
+    return [*command, '--data-dir', CLINE_DATA_DIR, '--provider', CLINE_PROVIDER,
+            '--model', CLINE_MODEL, '--key', CLINE_PROXY_API_KEY,
+            '-y', '--retries', str(retries), '-c', worktree, prompt]
+
+
+def verify_cline_provider_wire() -> Tuple[bool, str]:
+    """Require actual Cline tool use through this engine's own private router."""
+    source_path = os.path.abspath(__file__)
+    read_command = "grep -n -m1 '^CLINE_PROVIDER = ' " + shlex.quote(source_path)
+    prompt = (
+        f'Use a read-only shell tool to run exactly this command: {read_command}. '
+        'Report the exact CLINE_PROVIDER constant value from that real file, then finish. '
+        'Do not read any other lines, edit any file, run tests, inspect credentials, or access any other path.'
+    )
+    before = {}
+    try:
+        with _proxy_free_urlopen(CLINE_PROXY_HEALTH_URL, timeout=5) as response:
+            before = json.load(response)
+        result = run_command_safe(
+            cline_worktree_command(os.path.dirname(source_path), prompt, retries=1),
+            cwd=os.path.dirname(source_path), timeout=180,
+        )
+        with _proxy_free_urlopen(CLINE_PROXY_HEALTH_URL, timeout=5) as response:
+            after = json.load(response)
+        completed = after.get('completed_requests', 0) - before.get('completed_requests', 0)
+        tool_results = after.get('forwarded_tool_results', 0) - before.get('forwarded_tool_results', 0)
+        if result.exit_code != 0 or completed < 1 or tool_results < 1:
+            diagnostic = _sanitize_runtime_diagnostic(result.stderr or result.stdout or 'No native Cline tool round trip was observed', 600)
+            received = after.get('received_requests', 0) - before.get('received_requests', 0)
+            return False, f'Cline live provider check failed (exit {result.exit_code}, received={received}, upstream_http={after.get("last_http_status")}, path={after.get("last_request_path")}, completions={completed}, tool_results={tool_results}): {diagnostic}'
+        return True, f'Cline live tool round trip verified: provider={CLINE_PROVIDER}, model={CLINE_MODEL}, completions={completed}, tool_results={tool_results}'
+    except Exception as exc:
+        return False, f'Cline live provider check failed: {_sanitize_runtime_diagnostic(exc, 500)}'
 
 def build_cline_engineering_prompt(
     repo: str,
@@ -1681,7 +1969,7 @@ Required scenarios:
 Prior failures from the immediately preceding attempt:
 {failure_context}
 
-Modify the repository files in this directory to resolve the issue, and ensure existing and new tests pass. Inspect the existing code and tests before editing. Add or update focused tests for the reported behavior, including applicable null, empty, boundary, negative, concurrency, and regression cases. Do not modify CI workflow files or write outside this worktree. Do not add corporate signatures, credentials, payment details, or unrelated changes. Run the relevant repository tests and linters when practical, then leave the actual changes in this worktree for the verification gates."""
+Modify the repository files in this directory to resolve the issue, and ensure existing and new tests pass. Inspect the existing code and tests before editing. Add or update focused tests for the reported behavior, including applicable null, empty, boundary, negative, concurrency, and regression cases. Do not modify CI workflow files or write outside this worktree. Do not add corporate signatures, credentials, payment details, or unrelated changes. Do not run compilers, test suites, or linters; the worker will execute the discovered native commands under bounded, logged deadlines after your edits. Leave all source and test edits in this worktree for those gates."""
 
 def _status_paths_from_porcelain(status_output: str) -> Tuple[bool, List[str], str]:
     """Extract changed worktree paths from `git status --porcelain` without trusting them."""
@@ -1724,15 +2012,16 @@ def run_cline_engineering_turn(
     prompt = build_cline_engineering_prompt(
         repo, issue_number, title, body, arch, scenarios, prior_failures
     )
-    command = [
-        *cline_command,
-        "--data-dir", CLINE_DATA_DIR,
-        "-y",
-        "--retries", "3",
-        "-c", worktree,
-        prompt,
-    ]
-    result = run_command_safe(command, cwd=worktree, timeout=300)
+    command = cline_worktree_command(worktree, prompt)
+    ecosystems = arch.get('ecosystems') or [arch.get('ecosystem')]
+    turn_timeout = 3600 if 'rust' in ecosystems else 900
+    _command_log(f'CLINE_TURN START repo={repo} issue={issue_number} timeout={turn_timeout}s')
+    cline_started = time.monotonic()
+    result = run_command_safe(command, cwd=worktree, timeout=turn_timeout)
+    _command_log(
+        f'CLINE_TURN END repo={repo} issue={issue_number} exit={result.exit_code} '
+        f'elapsed={time.monotonic()-cline_started:.1f}s limit={turn_timeout}s'
+    )
     if result.exit_code != 0:
         details = (result.stderr or result.stdout or "Cline returned no diagnostic output").strip()
         return False, [], [], f"Cline execution failed (exit {result.exit_code}): {details[:4000]}"
@@ -1763,23 +2052,68 @@ def run_cline_engineering_turn(
             return False, [], [], f"Unable to read Cline-modified file {rel_path}: {exc}"
     return True, file_changes, changed_paths, f"Cline completed successfully. {status_message}"
 
+def native_verification_timeout(command: List[str], default: int) -> int:
+    """Allow cold Rust compilation without changing commands or pass criteria."""
+    return 1800 if command and os.path.basename(command[0]) == 'cargo' else default
+
+
 def verify_baseline(worktree: str, plan: VerificationPlan) -> Tuple[bool, str, List[CommandResult]]:
     results = []
     for cmd in plan.bootstrap:
-        res = run_command_safe(cmd, cwd=worktree, timeout=600)
+        res = run_command_safe(cmd, cwd=worktree, timeout=native_verification_timeout(cmd, 600))
         results.append(res)
         if res.exit_code != 0:
             _safe_command_failure("baseline bootstrap", res)
             return False, f"Bootstrap command failed: {' '.join(cmd)}\n{res.stderr or res.stdout}", results
 
     for cmd in plan.baseline_tests:
-        res = run_command_safe(cmd, cwd=worktree, timeout=600)
+        res = run_command_safe(cmd, cwd=worktree, timeout=native_verification_timeout(cmd, 600))
         results.append(res)
         if res.exit_code != 0:
             _safe_command_failure("baseline tests", res)
             return False, f"Baseline test failure on untouched upstream: {' '.join(cmd)}\n{res.stderr or res.stdout}", results
 
     return True, "Baseline verified green.", results
+
+
+def configure_task_cargo_cache(worktree: str, repo: str, issue_number: int, base_sha: str) -> Optional[str]:
+    """Keep task-scoped Rust artifacts outside `git clean -fdx`'s worktree."""
+    manifests = [
+        os.path.join(worktree, "Cargo.lock"),
+        os.path.join(worktree, "rust-toolchain"),
+        os.path.join(worktree, "rust-toolchain.toml"),
+        os.path.join(worktree, ".cargo", "config"),
+        os.path.join(worktree, ".cargo", "config.toml"),
+    ]
+    digest = hashlib.sha256()
+    digest.update(f"{repo}#{issue_number}\0{base_sha}\0".encode())
+    for path in manifests:
+        if os.path.isfile(path):
+            digest.update(os.path.basename(path).encode() + b"\0")
+            with open(path, "rb") as handle:
+                digest.update(handle.read())
+    for pattern in ("rust-toolchain", "rust-toolchain.toml"):
+        for path in sorted(glob.glob(os.path.join(worktree, "**", pattern), recursive=True)):
+            if os.path.isfile(path):
+                digest.update(os.path.relpath(path, worktree).replace(os.sep, "/").encode() + b"\0")
+                with open(path, "rb") as handle:
+                    digest.update(handle.read())
+    rustc = shutil.which("rustc")
+    rustc_version = "rustc-unavailable"
+    if rustc:
+        try:
+            result = subprocess.run([rustc, "--version"], capture_output=True, text=True, timeout=5, check=False)
+            rustc_version = result.stdout.strip() if result.returncode == 0 else f"rustc-exit-{result.returncode}"
+        except (OSError, subprocess.TimeoutExpired):
+            rustc_version = "rustc-version-unavailable"
+    digest.update(rustc_version.encode())
+    cache_key = digest.hexdigest()[:24]
+    cache_root = os.path.join("/tmp", "cargo-task-cache", hashlib.sha256(repo.encode()).hexdigest()[:12],
+                              str(issue_number), cache_key)
+    os.makedirs(cache_root, exist_ok=True)
+    os.environ["CARGO_TARGET_DIR"] = cache_root
+    _command_log(f"CARGO_CACHE configured repo={repo} issue={issue_number} key={cache_key} rustc={rustc_version}")
+    return cache_root
 
 def model_scenarios(title: str, body: str, arch: dict) -> List[ScenarioCase]:
     cases = []
@@ -1911,7 +2245,7 @@ def prepare_isolated_worktree(repo: str, number: int, default_branch: Optional[s
         return None, None, f"Fork preparation failed (exit {fork_code}): {fork_err or fork_out}"
 
     if not os.path.exists(os.path.join(work_dir, ".git")):
-        clone_out, clone_err, clone_code = run_cmd(["git", "clone", fork_url, work_dir], timeout=90)
+        clone_out, clone_err, clone_code = run_cmd(["git", "clone", fork_url, work_dir], timeout=600)
         if clone_code != 0:
             return None, None, f"Git clone failed: {clone_err or clone_out}"
 
@@ -2026,7 +2360,7 @@ def run_engineering_iteration_loop(
                 return False, run, f"Unable to reset before repair turn {turn}: {reset_message}"
 
         # 1. Cline is the primary worktree agent. It receives the real checkout
-        # and can inspect it directly. DeepSeek is a grounded fallback only.
+        # and can inspect it directly. Cline failures close this execution.
         cline_ok, extracted_files, verified_paths, cline_message = run_cline_engineering_turn(
             worktree, repo, issue_number, title, body, arch, scenarios, prior_failures
         )
@@ -2034,11 +2368,11 @@ def run_engineering_iteration_loop(
             print(f"     [CLINE PRIMARY] {cline_message}")
         else:
             print(f"     [CLINE FAIL-CLOSED] {cline_message}")
-            # A failed Cline run can have left partial edits. The fallback must
-            # always begin from the verified upstream base.
+            # A failed Cline run can have left partial edits; reset them before
+            # closing the attempt.
             reset_ok, reset_message = reset_worktree_to_base(worktree, base_sha)
             if not reset_ok:
-                return False, run, f"Unable to reset after Cline fallback on turn {turn}: {reset_message}"
+                return False, run, f"Unable to reset after Cline failure on turn {turn}: {reset_message}"
             run.status = "FAILED_CLINE_ENGINEERING"
             run.error_summary = f"Cline failed closed on turn {turn}: {cline_message}"
             record_execution_diagnostic("Cline engineering", run.error_summary)
@@ -2097,7 +2431,7 @@ def run_engineering_iteration_loop(
         tests_passed = True
         test_fail_log = ""
         for test_cmd in test_commands:
-            cmd_res = run_command_safe(test_cmd, cwd=worktree, timeout=180)
+            cmd_res = run_command_safe(test_cmd, cwd=worktree, timeout=native_verification_timeout(test_cmd, 180))
             run.verification.append(cmd_res)
             if cmd_res.exit_code != 0:
                 tests_passed = False
@@ -2116,7 +2450,7 @@ def run_engineering_iteration_loop(
         linters_passed = True
         lint_fail_log = ""
         for lint_cmd in plan.linters:
-            l_res = run_command_safe(lint_cmd, cwd=worktree, timeout=120)
+            l_res = run_command_safe(lint_cmd, cwd=worktree, timeout=native_verification_timeout(lint_cmd, 120))
             run.verification.append(l_res)
             if l_res.exit_code != 0 or "warning" in (l_res.stdout or "").lower() or "error" in (l_res.stderr or "").lower():
                 linters_passed = False
@@ -2307,14 +2641,18 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
         print(f"  ❌ [{diagnostic}] {repo}#{number}")
         return None
 
-    # Step 4: Check untouched baseline (Never abort: feed baseline errors into the 3-turn loop)
+    if "rust" in (arch.get("ecosystems") or [arch.get("ecosystem")]):
+        configure_task_cargo_cache(worktree, repo, number, base_sha)
+
+    # Step 4: The untouched upstream must pass its own baseline before Cline
+    # receives a bounty task. Do not turn unrelated upstream failures into
+    # additional engineering scope.
     base_ok, base_msg, base_results = verify_baseline(worktree, plan)
-    initial_failures = None
     if not base_ok:
         record_execution_diagnostic("untouched upstream baseline", base_msg)
-        print(f"  ⚠️ [BASELINE NOTICE] Untouched upstream reported baseline test/build issues. Passing errors directly into Multi-Turn Loop for DeepSeek self-correction...")
-        print(f"     Details: {base_msg[:300]}")
-        initial_failures = f"Untouched upstream baseline errors to resolve:\n{base_msg[:2500]}"
+        mark_issue_blocked_baseline(repo, number, base_msg)
+        print(f"  ❌ [BLOCKED_BASELINE] {repo}#{number}: {base_msg[:500]}", flush=True)
+        return None
 
     # Step 5: Run Multi-Turn Iteration Loop (3 turns with full error feedback)
     loop_ok, run, loop_msg = run_engineering_iteration_loop(
@@ -2328,7 +2666,6 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
         scenarios=scenarios,
         base_sha=base_sha,
         max_iterations=3,
-        initial_feedback=initial_failures,
         live_mode=live_mode
     )
     if not loop_ok:
@@ -2403,7 +2740,7 @@ def _download_init_file(url: str, destination: str, timeout: int = 60) -> None:
 
 def _run_init_command(argv: List[str], label: str, timeout: int) -> bool:
     try:
-        result = subprocess.run(argv, check=False, timeout=timeout)
+        result = run_streamed_process(argv, timeout=timeout)
     except subprocess.TimeoutExpired:
         print(f"[Init Warning] {label} timed out after {timeout}s.", flush=True)
         return False
@@ -2467,7 +2804,7 @@ def setup_kaggle_env():
             print("[Init] Installing standalone Rust/Cargo toolchain...", flush=True)
             rustup_sh = "/tmp/rustup.sh"
             _download_init_file("https://sh.rustup.rs", rustup_sh, timeout=60)
-            subprocess.run(["sh", rustup_sh, "-y", "--default-toolchain", "stable", "--profile", "minimal"], check=True, timeout=300)
+            run_streamed_process(["sh", rustup_sh, "-y", "--default-toolchain", "stable", "--profile", "minimal"], timeout=300).check_returncode()
             cargo_bin = os.path.expanduser("~/.cargo/bin")
             os.environ["PATH"] = f"{cargo_bin}:{os.environ.get('PATH', '')}"
             print(f"[Init] Rust/Cargo installed at {cargo_bin}", flush=True)
@@ -2646,6 +2983,8 @@ def is_mirror_dispatch_task(task: dict) -> bool:
     """Reject stale bot or discussion-mirror records before a fleet claim."""
     if not isinstance(task, dict):
         return True
+    if non_engineering_dispatch_reason(task):
+        return True
     text = " ".join(str(task.get(field) or "") for field in ("title", "body", "repo"))
     labels = task.get("labels") or []
     if isinstance(labels, list):
@@ -2691,12 +3030,15 @@ class FleetTaskLease:
         self.stop = threading.Event()
         self.lost = threading.Event()
         self.thread = None
+        self.phase = 'PREPARING_WORKTREE'
+        self.command_pid = 0
+        self.confirmed_until = 0
 
     def receipt(self, kind: str) -> str:
         return (
             f"{kind} {self.task['task_id']} by {ENGINE_ID} for {task_reference(self.task)} "
             f"attempt={self.attempt} run={self.run_id} "
-            f"lease_until={int(time.time() + CLAIM_LEASE_SECONDS)}"
+            f"lease_until={int(time.time() + CLAIM_LEASE_SECONDS)} phase={self.phase} pid={self.command_pid}"
         )
 
     def acquire(self) -> bool:
@@ -2715,16 +3057,33 @@ class FleetTaskLease:
             claim, lease_until = current_claim(self.task, fetch_claim_lease_rows())
             owned = bool(claim and event_run(claim['text']) == self.run_id and lease_until > time.time())
         except Exception:
-            owned = False
+            # A temporary coordinator outage does not revoke a confirmed lease.
+            # Publication still requires a fresh authoritative lookup.
+            if time.time() >= self.confirmed_until:
+                self.lost.set()
+            return False
         if not owned:
             self.lost.set()
+        else:
+            self.confirmed_until = lease_until
         return owned
 
     def _renew(self):
         while not self.stop.wait(CLAIM_HEARTBEAT_SECONDS):
-            if not self.owned() or not door_say(self.receipt("HEARTBEAT"), body=FLEET_LEASE_CHANNEL):
-                self.lost.set()
-                return
+            if not self.owned():
+                if self.lost.is_set():
+                    return
+                _command_log('Lease lookup temporarily unavailable; retrying within the last confirmed lease. Publication remains blocked until revalidated.')
+                continue
+            receipt = self.receipt('HEARTBEAT')
+            if not door_say(receipt, body=FLEET_LEASE_CHANNEL):
+                if time.time() >= self.confirmed_until:
+                    self.lost.set()
+                    return
+                _command_log('Lease renewal temporarily unavailable; retaining only the last confirmed expiry.')
+                continue
+            match = re.search(r'\blease_until=(\d+)\b', receipt)
+            self.confirmed_until = float(match[1])
 
     def close(self):
         self.stop.set()
@@ -2800,6 +3159,7 @@ def task_has_prior_fleet_claim(task_id: str) -> bool:
     )
 
 def fetch_tasks(limit: int = 100) -> List[dict]:
+    global _last_fleet_poll_log, _fleet_poll_failures
     try:
         url = f"{DOOR}/say?body={FLEET_QUEUE_CHANNEL}&token={DOOR_TOKEN}&limit={limit}"
         req = urllib.request.Request(url, headers={"User-Agent": "kaggle-engine"})
@@ -2815,10 +3175,30 @@ def fetch_tasks(limit: int = 100) -> List[dict]:
                     for secret_field in ("gh_token", "github_token", "github_pat", "authorization"):
                         task.pop(secret_field, None)
                     tasks.append(task)
-                except Exception:
-                    pass
+                except (ValueError, TypeError) as exc:
+                    raw = str(o.get("text", ""))
+                    digest = hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
+                    if digest not in _invalid_queue_record_digests:
+                        if len(_invalid_queue_record_digests) >= 256:
+                            _invalid_queue_record_digests.clear()
+                        _invalid_queue_record_digests.add(digest)
+                        print(f"[{ENGINE_ID}] INVALID_TASK_JSON chars={len(raw)} digest={digest}: {_sanitize_runtime_diagnostic(exc)}; task not executed", flush=True)
+            now = time.monotonic()
+            if _fleet_poll_failures or now - _last_fleet_poll_log >= 300:
+                print(f"[{ENGINE_ID}] POLL_OK HTTP 200 tasks={len(tasks)} prior_poll_failures={_fleet_poll_failures}", flush=True)
+                _last_fleet_poll_log = now
+            _fleet_poll_failures = 0
             return tasks
+    except urllib.error.HTTPError as exc:
+        _fleet_poll_failures += 1
+        try:
+            detail = exc.read(2000).decode("utf-8", errors="replace")
+        except Exception:
+            detail = "response body unavailable"
+        print(f"[{ENGINE_ID}] fetch_tasks error: HTTP {exc.code} endpoint={urllib.parse.urlsplit(DOOR).netloc}/say diagnostic={_sanitize_runtime_diagnostic(detail, 700)}", flush=True)
+        return []
     except Exception as e:
+        _fleet_poll_failures += 1
         print(f"[{ENGINE_ID}] fetch_tasks error: {e}", flush=True)
         return []
 
@@ -2884,6 +3264,9 @@ def run_worker_loop():
         )
         raise
     cline_ready, cline_message = configure_cline_for_engine()
+    if cline_ready:
+        cline_ready, wire_message = verify_cline_provider_wire()
+        cline_message = cline_message + ' ' + wire_message if cline_ready else wire_message
     if not cline_ready:
         diagnostic = _sanitize_runtime_diagnostic(cline_message, 300)
         door_say(
@@ -2923,7 +3306,7 @@ def run_worker_loop():
             # records forever in an append-only queue.
             tasks = fetch_tasks(limit=100)
             if not tasks:
-                time.sleep(15)
+                time.sleep(FLEET_IDLE_POLL_SECONDS)
                 continue
 
             # Read claim receipts once per poll.  Besides avoiding a relay
@@ -3002,8 +3385,8 @@ def run_worker_loop():
                 if not decision.allowed:
                     continue
 
-                if not tokenharbor_has_ready_key():
-                    status = get_router_status()
+                status = cline_proxy_router_status()
+                if status.get('states', {}).get(READY, 0) < 1:
                     states = status.get("states", {})
                     print(
                         f"[{ENGINE_ID}] No READY TokenHarbor key; task remains unclaimed. "
@@ -3099,10 +3482,10 @@ def run_worker_loop():
                     else:
                         door_say(f"FAILED {ENGINE_ID} verification failed for {repo}#{number}", body=FLEET_RESULT_CHANNEL)
 
-            time.sleep(15)
+            time.sleep(FLEET_IDLE_POLL_SECONDS)
         except Exception as e:
             print(f"[{ENGINE_ID}] Error in worker loop: {e}", flush=True)
-            time.sleep(15)
+            time.sleep(FLEET_IDLE_POLL_SECONDS)
 
 if __name__ == "__main__":
     if "--cline-proxy" in sys.argv:
