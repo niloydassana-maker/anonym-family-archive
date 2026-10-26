@@ -5,6 +5,7 @@ import sys
 import time
 import re
 import sqlite3
+from contextlib import closing
 import hashlib
 import tempfile
 import shutil
@@ -16,6 +17,10 @@ from zoneinfo import ZoneInfo
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional, Any
 from tokenharbor_router import DEEPSEEK_FLASH_MODEL, call_deepseek_flash
+from fleet_recovery_policy import (
+    MAX_EXECUTION_ATTEMPTS, RETRY_DELAYS_SECONDS, FLEET_LEASE_CHANNEL, event_reference,
+    is_nonsoftware_data_task, is_retryable_failure, recovery_decision,
+)
 
 # Enforce UTF-8 unbuffered output
 sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
@@ -39,40 +44,18 @@ os.makedirs(SANDBOX_DIR, exist_ok=True)
 
 FLEET_DOOR = "https://omniroute-relay.omniroute-fleet-kd.workers.dev"
 FLEET_DOOR_TOKEN = "GOLD24"
-FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE"
+FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE_V2"
 # The laptop owns search and dispatch. Repository execution runs in the Kaggle worker.
 REMOTE_FLEET_MODE = True
 
-def get_dispatch_github_token() -> Optional[str]:
-    """Return a GitHub token for a fleet task without ever logging its value."""
-    for name in ("GH_TOKEN", "GITHUB_TOKEN"):
-        token = os.environ.get(name, "").strip()
-        if token:
-            return token
-
-    vault_dir = r"D:\anonym\vault"
-    for filename in ("github_token.txt", "gh_token.txt", "github_pat.txt"):
-        token_path = os.path.join(vault_dir, filename)
-        try:
-            with open(token_path, "r", encoding="utf-8") as token_file:
-                token = token_file.read().strip()
-            if token:
-                return token
-        except OSError:
-            continue
-
-    # `gh auth token` reads the authenticated CLI credential without putting it
-    # in an argument list.  Its output is kept only in the in-memory task body.
-    token_out, _, token_code = run_cmd(["gh", "auth", "token"], timeout=15, retries=1)
-    if token_code == 0 and token_out.strip():
-        return token_out.strip()
-    return None
-
-
 def dispatch_task_to_fleet(task_payload: dict) -> bool:
-    """Enqueue a verified, credential-bearing task for the Kaggle execution plane."""
-    if not isinstance(task_payload.get("gh_token"), str) or not task_payload["gh_token"].strip():
-        print("[FLEET DISPATCH ERROR] GitHub credential unavailable; failing closed.", flush=True)
+    """Enqueue verified task metadata without transmitting credentials."""
+    if not isinstance(task_payload, dict):
+        print("[FLEET DISPATCH ERROR] Task payload is not an object; failing closed.", flush=True)
+        return False
+    secret_fields = {"gh_token", "github_token", "github_pat", "authorization"}
+    if any(str(key).strip().lower() in secret_fields for key in task_payload):
+        print("[FLEET DISPATCH ERROR] Credential field found in task payload; failing closed.", flush=True)
         return False
     try:
         data = json.dumps({"body": FLEET_QUEUE_CHANNEL, "text": json.dumps(task_payload)}).encode("utf-8")
@@ -87,26 +70,55 @@ def dispatch_task_to_fleet(task_payload: dict) -> bool:
         print(f"❌ [FLEET DISPATCH ERROR] {e}", flush=True)
         return False
 
-def mark_issue_dispatched(repo, number, reason, db_path=DB_FILE):
+def mark_issue_dispatched(repo, number, reason, db_path=DB_FILE, task_id=None):
     try:
-        with sqlite3.connect(db_path, timeout=30) as con:
+        with closing(sqlite3.connect(db_path, timeout=30)) as con, con:
             con.execute("""
-            INSERT INTO deliveries (repo, issue_number, status, reason, claimed_at)
-            VALUES (?, ?, 'DISPATCHED_TO_KAGGLE', ?, datetime('now'))
+            INSERT INTO deliveries (repo, issue_number, status, reason, claimed_at, fleet_task_id)
+            VALUES (?, ?, 'DISPATCHED_TO_KAGGLE', ?, datetime('now'), ?)
             ON CONFLICT(repo, issue_number) DO UPDATE SET
                 status = 'DISPATCHED_TO_KAGGLE',
                 reason = excluded.reason,
-                claimed_at = datetime('now')
-            """, (repo, number, reason))
+                claimed_at = datetime('now'),
+                fleet_task_id = excluded.fleet_task_id
+            """, (repo, number, reason, task_id))
             con.commit()
     except Exception as e:
         print(f"  [DB Mark Dispatched Error] {e}")
+
+
+def mark_issue_delivered(repo, number, pr_url, reason, db_path=DB_FILE):
+    """Record a fleet success only when its PR URL matches the claimed repository."""
+    expected_prefix = f"https://github.com/{repo}/pull/"
+    if not isinstance(pr_url, str) or not re.fullmatch(re.escape(expected_prefix) + r"\d+", pr_url):
+        print(f"  [DB Mark Delivered Error] Invalid PR URL for {repo}#{number}.", flush=True)
+        return False
+    try:
+        init_db(db_path=db_path)
+        with closing(sqlite3.connect(db_path, timeout=30)) as con, con:
+            con.execute("""
+            INSERT INTO deliveries (repo, issue_number, status, reason, delivered_at, pr_url)
+            VALUES (?, ?, 'PROPOSAL_DELIVERED', ?, datetime('now'), ?)
+            ON CONFLICT(repo, issue_number) DO UPDATE SET
+                status = 'PROPOSAL_DELIVERED',
+                reason = excluded.reason,
+                delivered_at = datetime('now'),
+                pr_url = excluded.pr_url
+            WHERE deliveries.status != 'REJECTED_SECURITY'
+            """, (repo, number, reason, pr_url))
+            changed = con.total_changes > 0
+            con.commit()
+            return changed
+    except Exception as e:
+        print(f"  [DB Mark Delivered Error] {e}", flush=True)
+        return False
 
 # -------------------------------------------------------------
 # 1. TRANSACTIONAL SQLITE STORE & CONCURRENCY RECOVERY
 # -------------------------------------------------------------
 def init_db(db_path=DB_FILE):
-    with sqlite3.connect(db_path, timeout=30) as con:
+    con = sqlite3.connect(db_path, timeout=30)
+    try:
         con.execute("PRAGMA journal_mode=WAL;")
         con.execute("""
         CREATE TABLE IF NOT EXISTS deliveries (
@@ -130,61 +142,95 @@ def init_db(db_path=DB_FILE):
             con.execute("ALTER TABLE deliveries ADD COLUMN pr_url TEXT;")
         except Exception:
             pass
+        columns = {row[1] for row in con.execute("PRAGMA table_info(deliveries)")}
+        for name, declaration in (
+            ("fleet_task_id", "TEXT"),
+            ("fleet_attempt", "INTEGER NOT NULL DEFAULT 0"),
+            ("fleet_retry_at", "REAL NOT NULL DEFAULT 0"),
+            ("dispatch_attempts", "INTEGER NOT NULL DEFAULT 0"),
+        ):
+            if name not in columns:
+                con.execute(f"ALTER TABLE deliveries ADD COLUMN {name} {declaration}")
         # Auto-recover stale claims older than 30 minutes
         con.execute("DELETE FROM deliveries WHERE status = 'CLAIMED' AND claimed_at < datetime('now', '-30 minutes');")
         con.commit()
+    finally:
+        con.close()
 
 def try_claim_issue(repo, number, title, author, corridor, reason, db_path=DB_FILE):
+    con = None
     try:
-        with sqlite3.connect(db_path, timeout=30) as con:
-            cur = con.cursor()
-            cur.execute("""
-            INSERT INTO deliveries (repo, issue_number, status, claimed_at, title, author, corridor, reason)
-            VALUES (?, ?, 'CLAIMED', datetime('now'), ?, ?, ?, ?)
-            """, (repo, number, title, author, corridor, reason))
-            con.commit()
-            return True
+        con = sqlite3.connect(db_path, timeout=30)
+        cur = con.cursor()
+        cur.execute("""
+        INSERT INTO deliveries (repo, issue_number, status, claimed_at, title, author, corridor, reason, dispatch_attempts)
+        VALUES (?, ?, 'CLAIMED', datetime('now'), ?, ?, ?, ?, 1)
+        ON CONFLICT(repo, issue_number) DO UPDATE SET
+            status = 'CLAIMED', claimed_at = datetime('now'),
+            title = excluded.title, author = excluded.author,
+            corridor = excluded.corridor, reason = excluded.reason,
+            dispatch_attempts = deliveries.dispatch_attempts + 1
+        WHERE deliveries.status = 'RETRY_PENDING'
+            AND deliveries.fleet_retry_at <= CAST(strftime('%s', 'now') AS REAL)
+            AND deliveries.dispatch_attempts < ?
+        """, (repo, number, title, author, corridor, reason, MAX_EXECUTION_ATTEMPTS))
+        con.commit()
+        return cur.rowcount == 1
     except sqlite3.IntegrityError:
         return False
     except Exception as e:
         print(f"  [DB Claim Error] {e}")
         return False
+    finally:
+        if con is not None:
+            con.close()
 
 def is_issue_claimed_or_delivered(repo, number, db_path=DB_FILE):
+    con = None
     try:
-        with sqlite3.connect(db_path, timeout=30) as con:
-            cur = con.cursor()
-            cur.execute("SELECT status FROM deliveries WHERE repo = ? AND issue_number = ?", (repo, number))
-            row = cur.fetchone()
-            if row:
-                return True, row[0]
-            return False, None
+        con = sqlite3.connect(db_path, timeout=30)
+        cur = con.cursor()
+        cur.execute("SELECT status, fleet_retry_at, dispatch_attempts FROM deliveries WHERE repo = ? AND issue_number = ?", (repo, number))
+        row = cur.fetchone()
+        if row:
+            if row[0] == 'RETRY_PENDING' and row[1] <= time.time() and row[2] < MAX_EXECUTION_ATTEMPTS:
+                return False, row[0]
+            return True, row[0]
+        return False, None
     except Exception:
         return False, None
+    finally:
+        if con is not None:
+            con.close()
 
 def commit_delivery(repo, number, comment_id, receipt_url, sha256_digest, pr_url=None, db_path=DB_FILE):
+    con = None
     try:
-        with sqlite3.connect(db_path, timeout=30) as con:
-            cur = con.cursor()
-            cur.execute("""
-            UPDATE deliveries
-            SET status = 'PROPOSAL_DELIVERED',
-                delivered_at = datetime('now'),
-                comment_id = ?,
-                receipt_url = ?,
-                sha256_digest = ?,
-                pr_url = COALESCE(?, pr_url)
-            WHERE repo = ? AND issue_number = ? AND (status = 'CLAIMED' OR status = 'PROPOSAL_DELIVERED')
-            """, (comment_id, receipt_url, sha256_digest, pr_url, repo, number))
-            con.commit()
-            return cur.rowcount >= 1
+        con = sqlite3.connect(db_path, timeout=30)
+        cur = con.cursor()
+        cur.execute("""
+        UPDATE deliveries
+        SET status = 'PROPOSAL_DELIVERED',
+            delivered_at = datetime('now'),
+            comment_id = ?,
+            receipt_url = ?,
+            sha256_digest = ?,
+            pr_url = COALESCE(?, pr_url)
+        WHERE repo = ? AND issue_number = ? AND (status = 'CLAIMED' OR status = 'PROPOSAL_DELIVERED')
+        """, (comment_id, receipt_url, sha256_digest, pr_url, repo, number))
+        con.commit()
+        return cur.rowcount >= 1
     except Exception as e:
         print(f"  [DB Commit Error] {e}")
         return False
+    finally:
+        if con is not None:
+            con.close()
 
 def update_delivery_pr(repo, number, pr_url, db_path=DB_FILE):
     try:
-        with sqlite3.connect(db_path, timeout=30) as con:
+        init_db(db_path=db_path)
+        with closing(sqlite3.connect(db_path, timeout=30)) as con, con:
             con.execute("UPDATE deliveries SET pr_url = ? WHERE repo = ? AND issue_number = ?", (pr_url, repo, number))
             con.commit()
             return True
@@ -206,7 +252,7 @@ def delete_github_comment(repo, comment_id):
 
 def release_claim(repo, number, db_path=DB_FILE):
     try:
-        with sqlite3.connect(db_path, timeout=30) as con:
+        with closing(sqlite3.connect(db_path, timeout=30)) as con, con:
             con.execute("DELETE FROM deliveries WHERE repo = ? AND issue_number = ? AND status = 'CLAIMED'", (repo, number))
             con.commit()
     except Exception:
@@ -218,7 +264,7 @@ def mark_issue_rejected(repo, number, reason, db_path=DB_FILE):
     so the daemon NEVER repeats the attempt and NEVER burns tokens on it again.
     """
     try:
-        with sqlite3.connect(db_path, timeout=30) as con:
+        with closing(sqlite3.connect(db_path, timeout=30)) as con, con:
             con.execute("""
             INSERT INTO deliveries (repo, issue_number, status, reason, delivered_at)
             VALUES (?, ?, 'REJECTED_SECURITY', ?, datetime('now'))
@@ -236,7 +282,7 @@ def mark_issue_blocked_baseline(repo, number, reason, db_path=DB_FILE):
     """Persist an upstream failure distinctly so no patch is misrepresented as verified."""
     try:
         init_db(db_path=db_path)
-        with sqlite3.connect(db_path, timeout=30) as con:
+        with closing(sqlite3.connect(db_path, timeout=30)) as con, con:
             con.execute("""
             INSERT INTO deliveries (repo, issue_number, status, reason, delivered_at)
             VALUES (?, ?, 'BLOCKED_BASELINE', ?, datetime('now'))
@@ -768,6 +814,8 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     A platform-attested or explicit paid bounty qualifies regardless of association.
     Unpriced commercial enquiries remain candidate-packet work, not automated live delivery.
     """
+    if is_nonsoftware_data_task({"title": title}):
+        return False, "Rejected non-software banking transcript collection; authentic account data cannot be supplied by a code worker."
     full_text = _normalise_text(f"{title or ''} {body or ''} {' '.join(author_comments or [])} {repo or ''}")
     assoc = (author_assoc or "NONE").upper()
 
@@ -855,6 +903,20 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     )
     if repo and re.search(aggregator_repos, repo, re.IGNORECASE):
         return False, f"Rejected: repository '{repo}' is an aggregator/indexer, not an authoritative software host."
+
+    # Reject discussion/bot mirrors before they can enter the fleet queue. These
+    # repositories copy issue text from an upstream host but cannot accept a
+    # meaningful source change or authoritative PR.
+    bot_mirror_patterns = [
+        r"(?:^|/)gh-disc-[a-z0-9_.-]+(?:\s|$)",
+        r"\[\s*nex\s+agent\s*\]",
+        r"\b(?:github|gh)\s+discussion\s+mirror\b",
+        r"\b(?:discussion[-_ ]mirror|discussion[-_ ]honeypot|mirror[-_ ]honeypot)\b",
+        r"\b(?:mirrored|scraped|synced)\s+(?:from|github)\s+discussions?\b",
+    ]
+    for pattern in bot_mirror_patterns:
+        if re.search(pattern, full_text, re.IGNORECASE):
+            return False, f"Rejected bot/discussion mirror or spam aggregator: '{pattern}'"
 
     # Filter out static site blogs, newsletters, bookmark aggregators, and arxiv scrapers
     if repo:
@@ -2391,17 +2453,10 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
 
     # Remote fleet mode ends the laptop's responsibility at verified triage.
     # Generation, baseline verification, repair turns, and PR work happen only
-    # in the cloud worker. The task includes the authenticated GitHub token
-    # required by the remote delivery worker; it is never printed or persisted
-    # to SQLite by this dispatcher.
+    # in the cloud worker. GitHub credentials are private Kaggle secrets and
+    # never enter this shared task queue.
     if REMOTE_FLEET_MODE:
         print(f"🚀 [OFFLOADING TO KAGGLE FLEET] {issue_id}: dispatching verified task to the 5-engine fleet...")
-        gh_token = get_dispatch_github_token()
-        if not gh_token:
-            print(f"❌ [DISPATCH FAILED] {issue_id} has no GitHub token available for the cloud worker.")
-            if live_mode:
-                mark_issue_rejected(repo, number, "Fleet dispatch blocked: GitHub credential unavailable")
-            return False
         task_data = {
             "task_id": f"BT-{int(time.time())}-{repo.replace('/', '_')}-{number}",
             "repo": repo,
@@ -2415,15 +2470,14 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
             "author_assoc": author_assoc,
             "corridor_info": corridor_info,
             "reason": reason,
-            "gh_token": gh_token,
             "dispatched_at": datetime.now(timezone.utc).isoformat(),
         }
         if dispatch_task_to_fleet(task_data):
-            mark_issue_dispatched(repo, number, f"Queued for Kaggle fleet (Task: {task_data['task_id']})")
+            mark_issue_dispatched(repo, number, f"Queued for Kaggle fleet (Task: {task_data['task_id']})", task_id=task_data['task_id'])
             print(f"✅ [DISPATCH CONFIRMED] {issue_id} successfully queued for the 5-engine Kaggle fleet.")
             return True
         print(f"❌ [DISPATCH FAILED] {issue_id} could not be delivered to the Cloudflare queue.")
-        mark_issue_rejected(repo, number, "Fleet dispatch network error")
+        mark_dispatch_network_failure(repo, number)
         return False
 
     print(f"\n🎯 [GENUINE ICU PATIENT ENGAGED] {issue_id}")
@@ -2575,7 +2629,7 @@ def upgrade_existing_delivery(repo, number, live_mode=True):
     Deletes an existing advisory proposal comment on GitHub and replaces it with
     full-stack production code implementation, unit tests, and verified settlement coordinates.
     """
-    with sqlite3.connect(DB_FILE, timeout=30) as con:
+    with closing(sqlite3.connect(DB_FILE, timeout=30)) as con, con:
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         cur.execute("SELECT * FROM deliveries WHERE repo = ? AND issue_number = ?", (repo, number))
@@ -2666,7 +2720,7 @@ def upgrade_all_existing_deliveries(live_mode=True):
     print("🔄 UPGRADING ALL EXISTING ADVISORY PROPOSALS TO FULL CODE")
     print(f"Mode: {'LIVE WIRE (Delete old & post full code)' if live_mode else 'SAFE PREVIEW'}")
     print("=======================================================")
-    with sqlite3.connect(DB_FILE, timeout=30) as con:
+    with closing(sqlite3.connect(DB_FILE, timeout=30)) as con, con:
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         cur.execute("SELECT repo, issue_number FROM deliveries WHERE status = 'PROPOSAL_DELIVERED'")
@@ -2824,32 +2878,115 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
 
     return filtered_items
 
+def mark_dispatch_network_failure(repo, number, db_path=DB_FILE):
+    """Retry an unacknowledged enqueue without treating it as a security event."""
+    with closing(sqlite3.connect(db_path, timeout=30)) as con, con:
+        row = con.execute(
+            "SELECT dispatch_attempts FROM deliveries WHERE repo = ? AND issue_number = ?",
+            (repo, number),
+        ).fetchone()
+        attempts = max(1, row[0] if row else 1)
+        status = 'FAILED_EXHAUSTED' if attempts >= MAX_EXECUTION_ATTEMPTS else 'RETRY_PENDING'
+        retry_at = time.time() + RETRY_DELAYS_SECONDS[min(attempts - 1, 1)]
+        con.execute(
+            "UPDATE deliveries SET status = ?, reason = 'Fleet dispatch network error', fleet_retry_at = ? "
+            "WHERE repo = ? AND issue_number = ? AND status = 'CLAIMED'",
+            (status, retry_at, repo, number),
+        )
+
+
+def _fetch_fleet_recovery_orders(channel):
+    req = urllib.request.Request(
+        f"{FLEET_DOOR}/say?body={channel}&token={FLEET_DOOR_TOKEN}&limit=500",
+        headers={"User-Agent": "laptop-bounty-dispatcher"},
+    )
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        data = json.loads(resp.read().decode('utf-8'))
+    if not isinstance(data, dict) or not isinstance(data.get('orders'), list):
+        raise ValueError('Invalid fleet recovery ledger; leaving local state unchanged')
+    return data['orders']
+
+
+def _mark_fleet_recovery_state(repo, number, task_id, decision, queued, db_path):
+    if decision.reason == 'new task':
+        return
+    if decision.reason == 'attempt limit reached':
+        status = 'FAILED_EXHAUSTED'
+    elif decision.reason in ('permanent or unclassified failure', 'excluded task', 'non-software data collection'):
+        status = 'FAILED_TERMINAL'
+    elif decision.reason == 'already delivered or PR exists':
+        # An incomplete PR receipt must never trigger another implementation.
+        status = 'PR_RECONCILIATION_REQUIRED'
+    else:
+        # Workers own retries of buffered records. Only absent records return
+        # to query-layer triage, authority, amount, and competition checks.
+        status = 'FLEET_RETRY_WAIT' if queued else 'RETRY_PENDING'
+    with closing(sqlite3.connect(db_path, timeout=30)) as con, con:
+        row = con.execute(
+            'SELECT status, reason FROM deliveries WHERE repo = ? AND issue_number = ?', (repo, number),
+        ).fetchone()
+        if row and row[0] in ('PROPOSAL_DELIVERED', 'BLOCKED_BASELINE'):
+            return
+        if row and row[0] == 'REJECTED_SECURITY' and not (
+            str(row[1] or '').startswith('Fleet execution: ') and is_retryable_failure(str(row[1]))
+        ):
+            return
+        con.execute("""
+            INSERT INTO deliveries (repo, issue_number, status, reason, fleet_task_id, fleet_attempt, fleet_retry_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(repo, issue_number) DO UPDATE SET
+                status = excluded.status, reason = excluded.reason,
+                fleet_task_id = excluded.fleet_task_id,
+                fleet_attempt = MAX(deliveries.fleet_attempt, excluded.fleet_attempt),
+                fleet_retry_at = excluded.fleet_retry_at
+        """, (repo, number, status, f'Fleet recovery: {decision.reason}', task_id,
+              max(0, decision.attempt - 1) if decision.allowed or decision.reason == 'temporary failure cooldown' else decision.attempt,
+              decision.retry_at))
+
+
 def sync_fleet_results_to_local_db(db_path=DB_FILE):
-    """Sync results emitted by Kaggle engines back into the local SQLite store so state is never lost."""
+    """Reconcile legacy and current receipts with the worker's recovery policy."""
     try:
-        url = f"{FLEET_DOOR}/say?body=BOUNTY_FLEET_RESULT&token={FLEET_DOOR_TOKEN}&limit=50"
-        req = urllib.request.Request(url, headers={"User-Agent": "laptop-bounty-dispatcher"})
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-            orders = data.get("orders", [])
-            for o in orders:
-                txt = o.get("text", "")
-                success_match = re.search(r"SUCCESS\s+[^\s]+\s+opened verified PR.*?(https://github\.com/[^\s]+)\s+for\s+([^\s#]+)#(\d+)", txt)
-                if success_match:
-                    pr_url, r_repo, r_num = success_match.group(1), success_match.group(2), int(success_match.group(3))
-                    mark_issue_delivered(r_repo, r_num, pr_url, "Verified PR opened by Kaggle fleet", db_path=db_path)
+        init_db(db_path=db_path)
+        results = _fetch_fleet_recovery_orders('BOUNTY_FLEET_RESULT')
+        claims = _fetch_fleet_recovery_orders('BOUNTY_FLEET_CLAIM')
+        claims += _fetch_fleet_recovery_orders(FLEET_LEASE_CHANNEL)
+        queue = _fetch_fleet_recovery_orders(FLEET_QUEUE_CHANNEL)
+        tasks, queued_refs = {}, set()
+        for row in queue:
+            try:
+                task = json.loads(row.get('text', '{}'))
+                if not isinstance(task, dict) or not all(task.get(k) for k in ('repo', 'issue_number', 'task_id')):
                     continue
-                fail_match = re.search(r"FAILED\s+[^\s]+\s+(.*?)\s+for\s+([^\s#]+)#(\d+)", txt)
-                if fail_match:
-                    reason_msg, r_repo, r_num = fail_match.group(1), fail_match.group(2), int(fail_match.group(3))
-                    mark_issue_rejected(r_repo, r_num, f"Fleet execution: {reason_msg}", db_path=db_path)
+                ref = f"{task['repo']}#{task['issue_number']}"
+                tasks.setdefault(ref, task)
+                queued_refs.add(ref)
+            except (ValueError, TypeError):
+                continue
+        for row in claims + results:
+            text = str(row.get('text') or '')
+            ref = event_reference(text)
+            if ref and ref not in tasks:
+                repo, number = ref.rsplit('#', 1)
+                tasks[ref] = {'repo': repo, 'issue_number': int(number), 'task_id': f'recovery-{ref}'}
+        for ref, task in tasks.items():
+            repo, number = task['repo'], int(task['issue_number'])
+            success = next((row for row in reversed(results) if
+                            str(row.get('text', '')).startswith('SUCCESS ') and event_reference(row['text']) == ref), None)
+            if success:
+                match = re.search(r'https://github\.com/[^\s]+/pull/\d+', success['text'])
+                if match:
+                    mark_issue_delivered(repo, number, match[0], 'Verified PR opened by Kaggle fleet', db_path=db_path)
+                continue
+            decision = recovery_decision(task, claims, results)
+            _mark_fleet_recovery_state(repo, number, task['task_id'], decision, ref in queued_refs, db_path)
     except Exception as e:
         print(f"  [Fleet Sync Notice] {e}", flush=True)
 
 def run_pipeline_cycle(live_mode=False, anytime=False):
+    init_db()
     if REMOTE_FLEET_MODE:
         sync_fleet_results_to_local_db()
-    init_db()
     now_utc = datetime.now(timezone.utc)
     current_ist = now_utc.astimezone(ZoneInfo("Asia/Kolkata"))
     print(f"\n=======================================================")

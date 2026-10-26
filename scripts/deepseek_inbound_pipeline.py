@@ -26,7 +26,9 @@ PACKETS_DIR = os.path.join(SCRATCH_DIR, "email_packets")
 DB_FILE = os.path.join(SCRATCH_DIR, "email_pipeline.db")
 VAULT_DIR = os.path.join(BASE_DIR, "vault")
 GMAIL_APP_PW_FILE = os.path.join(VAULT_DIR, "gmail_apppw.txt")
-TOKENHARBOR_KEYS_FILE = os.path.join(VAULT_DIR, "tokenharbor_keys.json")
+TOKENHARBOR_FLEET_KEYS_FILE = os.path.join(VAULT_DIR, "tokenharbor_keys.json")
+TOKENHARBOR_INBOUND_KEYS_FILE = os.path.join(VAULT_DIR, "tokenharbor_inbound_keys.json")
+TOKENHARBOR_INBOUND_KEYS_ENV = "TOKENHARBOR_INBOUND_KEYS_JSON"
 
 CLIENT_EMAIL = "isearch.xsolve@gmail.com"
 TOKENHARBOR_URL = "https://tokenharbor.ai/v1/chat/completions"
@@ -44,15 +46,32 @@ def get_gmail_password():
         return f.read().strip()
 
 def get_all_tokenharbor_keys():
-    if os.path.exists(TOKENHARBOR_KEYS_FILE):
-        try:
-            with open(TOKENHARBOR_KEYS_FILE, "r", encoding="utf-8") as f:
-                keys = json.load(f)
-                if isinstance(keys, list) and len(keys) > 0:
-                    return keys
-        except Exception:
-            pass
-    return ["thk_live_GFsTA-sfrkKSDgkL_MGfoP0sQPjYH8moanW4YKGUiM-vwtHRyvEUiC5mvogxo-I3"]
+    keys_json = os.environ.get(TOKENHARBOR_INBOUND_KEYS_ENV, "").strip()
+    if keys_json:
+        keys = json.loads(keys_json)
+    elif os.path.exists(TOKENHARBOR_INBOUND_KEYS_FILE):
+        with open(TOKENHARBOR_INBOUND_KEYS_FILE, "r", encoding="utf-8") as f:
+            keys = json.load(f)
+    else:
+        raise RuntimeError(
+            "A dedicated inbound TokenHarbor key pool is required; refusing to reuse the fleet pool."
+        )
+
+    if isinstance(keys, dict):
+        keys = keys.get("keys", keys.get("value", []))
+    if not isinstance(keys, list) or not keys or not all(isinstance(key, str) and key.strip() for key in keys):
+        raise ValueError("Dedicated inbound TokenHarbor credentials must be a non-empty list of keys.")
+    keys = [key.strip() for key in keys]
+    if len(set(keys)) != len(keys):
+        raise ValueError("Dedicated inbound TokenHarbor credentials contain duplicate keys.")
+
+    if os.path.exists(TOKENHARBOR_FLEET_KEYS_FILE):
+        with open(TOKENHARBOR_FLEET_KEYS_FILE, "r", encoding="utf-8") as f:
+            fleet_doc = json.load(f)
+        fleet_keys = fleet_doc if isinstance(fleet_doc, list) else fleet_doc.get("keys", fleet_doc.get("value", []))
+        if set(keys).intersection(fleet_keys if isinstance(fleet_keys, list) else []):
+            raise RuntimeError("Inbound TokenHarbor credentials overlap the active fleet pool; refusing request.")
+    return keys
 
 CURRENT_KEY_IDX = 0
 def get_tokenharbor_key():

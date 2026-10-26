@@ -18,22 +18,29 @@ import urllib.error
 import urllib.parse
 import glob
 import subprocess
+import uuid
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional, Any
+from fleet_recovery_policy import (
+    CLAIM_LEASE_SECONDS, CLAIM_HEARTBEAT_SECONDS, FLEET_LEASE_CHANNEL, RECOVERY_RELEASE, current_claim, event_run,
+    is_nonsoftware_data_task, recovery_decision, task_reference,
+)
 
 # Enforce UTF-8 line buffering
 sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 
 DOOR = "https://omniroute-relay.omniroute-fleet-kd.workers.dev"
 DOOR_TOKEN = "GOLD24"
-FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE"
+FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE_V2"
 FLEET_CLAIM_CHANNEL = "BOUNTY_FLEET_CLAIM"
 FLEET_RESULT_CHANNEL = "BOUNTY_FLEET_RESULT"
 ENGINE_ID = os.environ.get("ENGINE_ID", "kaggle-engine-unknown")
 ENGINE_INDEX = int(os.environ.get("ENGINE_INDEX", "1"))
 TOTAL_ENGINES = 5
+_ACTIVE_TASK_LEASE = None
 
 # Cloud sandbox and paths
 SANDBOX_DIR = "/tmp/sandbox"
@@ -42,6 +49,18 @@ DB_FILE = "/tmp/icu_pipeline.db"
 CSV_FILE = "/tmp/icu_desperation_ledger.csv"
 CLIENT_CONTACT_EMAIL = "isearch.xsolve@gmail.com"
 DEEPSEEK_FLASH_MODEL = "deepseek-v4.1-flash:free"
+
+# Cline is provisioned inside each Kaggle kernel and is the only worktree
+# engineering agent.  These cloud-local paths must never inherit laptop paths.
+CLINE_PROXY_HEALTH_URL = os.environ.get("CLINE_PROXY_HEALTH_URL", "http://127.0.0.1:8080/health")
+CLINE_PROXY_BASE_URL = os.environ.get("CLINE_PROXY_BASE_URL", "http://127.0.0.1:8080/v1")
+CLINE_NODE_EXE = os.environ.get("CLINE_NODE_EXE", shutil.which("node") or "")
+CLINE_NODE_ENTRYPOINT = os.environ.get("CLINE_NODE_ENTRYPOINT", "")
+CLINE_MODEL = os.environ.get("CLINE_MODEL", DEEPSEEK_FLASH_MODEL)
+CLINE_DATA_DIR = os.environ.get("CLINE_DATA_DIR", "/tmp/cline-data")
+# This is a local proxy marker, never a TokenHarbor credential. The proxy reads
+# the engine-private key shard itself.
+CLINE_PROXY_API_KEY = "tokenharbor-local-proxy"
 
 os.makedirs(SANDBOX_DIR, exist_ok=True)
 os.makedirs(PACKET_DIR, exist_ok=True)
@@ -54,7 +73,7 @@ def update_delivery_pr(repo, number, pr_url):
     print(f"  [PR RECORDED] {repo}#{number} -> {pr_url}", flush=True)
 
 # ==============================================================================
-# EMBEDDED TOKENHARBOR ROUTER (17 ROTATING KEYS)
+# ENGINE-SCOPED TOKENHARBOR ROUTER (PRIVATE KEYS LOADED AT RUNTIME)
 # ==============================================================================
 """Thread-safe Token Harbor router for DeepSeek Flash.
 
@@ -79,27 +98,6 @@ DEEPSEEK_FLASH_MODEL = "deepseek-v4.1-flash:free"
 DEFAULT_KEY_FILE = r"D:\anonym\vault\tokenharbor_keys.json"
 DEFAULT_TIMEOUT_SECONDS = 120
 TOKEN_HARBOR_KEYS_ENV = "TOKENHARBOR_KEYS_JSON"
-EMBEDDED_TOKENHARBOR_KEYS = [
-  "thk_live_GFsTA-sfrkKSDgkL_MGfoP0sQPjYH8moanW4YKGUiM-vwtHRyvEUiC5mvogxo-I3",
-  "thk_live_6fHZs4uUt5_kT_EfgCm0KFyQaXlC8LpStzkeZ2iKQ7grfFU8yYDJ1Iekiy3sRTog",
-  "thk_live_zNOnRlBiEzDBAKFW4hVQJVDtyjM8GfhWPHu4x4FhzrU13dONvteS1-09RIGizqYw",
-  "thk_live_GckcRyn6lbBwzH0lxHQH1TOPYgqJtXaps5rdJLbMJl7Vpe55alCyAyiBDiDtF0u6",
-  "thk_live_1jE6-8kxcRF8KVd_SXDl1sTV-4ol3EuiViGKLKFH6U2KI5Y5q0l5puo09I4o-XgR",
-  "thk_live_9Jxk7F63BFE0szXYDwxZGjm-SW-xoN7X7h3ThwnkU-KWfT2YET8X-mqE1-HTptcQ",
-  "thk_live_03wWVSuXzhxGmwZxQfc0nHY3CjqPZP-treTo92pBHlb8V7YbSo20bJ5Ga2UPcO7H",
-  "thk_live_B3FtY5bd-McqVWkNOmNDviTarWxfIqlK39GpQZtRdqFwGMs-EwBS0Y7eTeI-cWca",
-  "thk_live_aY9IrPDJWhyo-cMfwoGMoZ-Tf1I9Zv7qAy18mhILi2zZp23_ae8EbFniuBbKGp-P",
-  "thk_live_mexsI6o1StNaYxlZdE9_4sFtUkHEmL1-IEkMVU6SjZgtZtoxCcGdsQyRCLousX9g",
-  "thk_live_wyxIKiv7HpBKzx0Gd3GUSNAHEHImKa1gWWNvD5FFIxK6yNcv10D2DPYzWJIaPCdL",
-  "thk_live_r-zQGzJcbh0Ytk3Z17mfIyrDVkVfC6gdKCDKqBWTExqGBDHvh4mbxL7Mun_4V_I3",
-  "thk_live_lZtQkDQIzkNCsxG9SDZxUJEHSzGbDEhlARvX6VzN9eKsoT646euPnqw-owsIHWKX",
-  "thk_live_1Uitcw22UkOhp2S8IXTxigvTMLIcvpbNnzFITpCh0Goqsuy7Jm3-Nh0CRK3lVQKh",
-  "thk_live_R2dF02K7p_HTQyOQLuh6fmIR_7DPwTlfrLXI0-WObGk5IPrZqoo7ibgqOXgwl8Rs",
-  "thk_live_g2eo-HfVHLU2xhR32iNpHcrGi4r6vzwaJ9bRvdY15fXrtrmQiA_L-Ai9IMXBq3Lc",
-  "thk_live_pjxqmdrQ3qhxreoYaqCA0MuVqJa0iGmE7YSECKFN4y1dW571ZTL67qvjPGjWgXIv"
-]
-
-
 READY = "READY"
 LEASED = "LEASED"
 COOLDOWN = "COOLDOWN"
@@ -137,32 +135,37 @@ class TokenHarborRouter:
 
     @staticmethod
     def _load_keys(key_file: str) -> List[str]:
-        # Kaggle workers receive their own encrypted secret at runtime.  The
-        # laptop's vault remains local and is never copied into a kernel or a
-        # queue payload.  Missing or malformed credentials deliberately fail
-        # closed when the router is first used.
-        raw_env = os.environ.get(TOKEN_HARBOR_KEYS_ENV, "").strip()
-        if raw_env:
+        # Production kernels point at a private, engine-specific mounted
+        # dataset. It takes precedence over any stale account-level Kaggle
+        # secret so one engine cannot accidentally load a sibling's key pool.
+        engine_key_file = os.environ.get("TOKENHARBOR_KEY_FILE", "").strip()
+        if engine_key_file:
             try:
-                document = json.loads(raw_env)
-            except json.JSONDecodeError as exc:
-                raise ValueError(f"{TOKEN_HARBOR_KEYS_ENV} must contain a JSON key list.") from exc
+                with open(engine_key_file, "r", encoding="utf-8") as handle:
+                    document = json.load(handle)
+            except (OSError, json.JSONDecodeError) as exc:
+                raise ValueError("Configured private TokenHarbor shard is unavailable or malformed.") from exc
         else:
-            document = None
-            try:
-                from kaggle_secrets import UserSecretsClient  # type: ignore
-                raw_secret = UserSecretsClient().get_secret(TOKEN_HARBOR_KEYS_ENV)
-                if raw_secret:
-                    document = json.loads(raw_secret)
-            except Exception:
-                # A local process has no Kaggle secret provider; use its vault.
+            # Local development can still use the vault or an explicitly
+            # supplied secret. No API key is embedded in worker source.
+            raw_env = os.environ.get(TOKEN_HARBOR_KEYS_ENV, "").strip()
+            if raw_env:
+                try:
+                    document = json.loads(raw_env)
+                except json.JSONDecodeError as exc:
+                    raise ValueError(f"{TOKEN_HARBOR_KEYS_ENV} must contain a JSON key list.") from exc
+            else:
                 document = None
-            if document is None:
-                if os.path.exists(key_file):
+                try:
+                    from kaggle_secrets import UserSecretsClient  # type: ignore
+                    raw_secret = UserSecretsClient().get_secret(TOKEN_HARBOR_KEYS_ENV)
+                    if raw_secret:
+                        document = json.loads(raw_secret)
+                except Exception:
+                    document = None
+                if document is None and os.path.exists(key_file):
                     with open(key_file, "r", encoding="utf-8") as handle:
                         document = json.load(handle)
-                elif EMBEDDED_TOKENHARBOR_KEYS:
-                    document = EMBEDDED_TOKENHARBOR_KEYS
         if isinstance(document, list):
             values = document
         elif isinstance(document, dict):
@@ -171,8 +174,18 @@ class TokenHarborRouter:
             raise ValueError("Token Harbor key file must contain a key list.")
         if not isinstance(values, list) or not all(isinstance(key, str) and key.strip() for key in values):
             raise ValueError("Token Harbor key file contains invalid key entries.")
-        if len(values) != 17:
-            raise ValueError("Kaggle engine requires exactly 17 Token Harbor keys; failing closed.")
+        expected_count_raw = os.environ.get("TOKENHARBOR_EXPECTED_KEY_COUNT", "").strip()
+        if expected_count_raw:
+            try:
+                expected_count = int(expected_count_raw)
+            except ValueError as exc:
+                raise ValueError("TOKENHARBOR_EXPECTED_KEY_COUNT must be an integer.") from exc
+            if expected_count <= 0 or len(values) != expected_count:
+                raise ValueError(
+                    f"Engine TokenHarbor shard requires exactly {expected_count} keys; found {len(values)}."
+                )
+        elif not values:
+            raise ValueError("TokenHarbor key list is empty.")
         return values
 
     @staticmethod
@@ -396,6 +409,77 @@ class TokenHarborRouter:
 _default_router: Optional[TokenHarborRouter] = None
 _default_router_lock = threading.Lock()
 _last_generation_diagnostic = "generation did not start"
+_execution_diagnostics: List[str] = []
+_ANSI_ESCAPE_RE = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
+
+
+def reset_execution_diagnostics() -> None:
+    _execution_diagnostics.clear()
+
+
+def reset_task_diagnostics() -> None:
+    global _last_generation_diagnostic
+    reset_execution_diagnostics()
+    _last_generation_diagnostic = ""
+
+
+def _sanitize_runtime_diagnostic(value: object, limit: int = 500) -> str:
+    """Bound worker receipts and redact credentials or high-risk identifiers."""
+    text = _ANSI_ESCAPE_RE.sub("", str(value or ""))
+    for pattern, replacement in (
+        (r"(?i)Bearer\s+[^\s,;]+", "Bearer [REDACTED]"),
+        (r"(?i)\bthk_live_[A-Za-z0-9_-]+", "[TOKEN REDACTED]"),
+        (r"(?i)\b(?:gh[pousr]_|github_pat_)[A-Za-z0-9_-]+", "[TOKEN REDACTED]"),
+        (r"(?i)\b(?:KAGGLE_API_TOKEN|KAGGLE_KEY|GH_TOKEN|GITHUB_TOKEN|API[_ -]?KEY|PASSWORD|SECRET|AUTHORIZATION)\b\s*[:=]\s*[^\s,;]+", "[CREDENTIAL REDACTED]"),
+        (r"(?i)token=[^&\s]+", "token=[REDACTED]"),
+        (r"(?is)-----BEGIN [^-]*PRIVATE KEY-----.*?-----END [^-]*PRIVATE KEY-----", "[PRIVATE KEY REDACTED]"),
+        (r"\b(?:0x)?[A-Fa-f0-9]{40,}\b", "[LONG ID REDACTED]"),
+        (r"\b\d{9,18}\b", "[NUMBER REDACTED]"),
+    ):
+        text = re.sub(pattern, replacement, text)
+    text = re.sub(r"[\r\n\t]+", " | ", text)
+    text = re.sub(r"\s{2,}", " ", text).strip()
+    return text[:limit]
+
+
+def record_execution_diagnostic(stage: str, detail: object) -> None:
+    message = _sanitize_runtime_diagnostic(detail)
+    if not message:
+        return
+    entry = f"{stage}: {message}"[:650]
+    if not _execution_diagnostics or _execution_diagnostics[-1] != entry:
+        _execution_diagnostics.append(entry)
+    if len(_execution_diagnostics) > 8:
+        del _execution_diagnostics[:-8]
+
+
+def get_execution_diagnostic() -> str:
+    return " || ".join(_execution_diagnostics[-4:])[:1800]
+
+
+def _safe_command_failure(stage: str, result: object) -> None:
+    argv = list(getattr(result, "argv", []) or [])
+    if any(arg in ("--body", "--password", "--token") for arg in argv):
+        command = " ".join(str(arg) for arg in argv[:2]) + " [arguments redacted]"
+    else:
+        command = " ".join(str(arg) for arg in argv[:6])
+    output = getattr(result, "stderr", "") or getattr(result, "stdout", "") or "no command output"
+    output = _ANSI_ESCAPE_RE.sub("", str(output))
+    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    useful = [
+        line for line in lines
+        if re.search(r"error|failed|failure|timed? out|timeout|not found|missing|ERESOLVE|test result|FAIL", line, re.IGNORECASE)
+    ]
+    excerpt = " | ".join((useful or lines)[-3:]) if (useful or lines) else "no command output"
+    try:
+        duration = float(getattr(result, "duration_s", 0.0))
+    except (TypeError, ValueError):
+        duration = 0.0
+    record_execution_diagnostic(
+        stage,
+        f"command={command or '[unknown]'} exit={getattr(result, 'exit_code', 'unknown')} "
+        f"duration={duration:.1f}s detail={excerpt}",
+    )
 
 
 def _set_generation_diagnostic(reason: str) -> None:
@@ -405,7 +489,7 @@ def _set_generation_diagnostic(reason: str) -> None:
     and avoids putting operational details into the task payload.
     """
     global _last_generation_diagnostic
-    _last_generation_diagnostic = reason[:300]
+    _last_generation_diagnostic = _sanitize_runtime_diagnostic(reason, 300)
 
 
 def get_last_generation_diagnostic() -> str:
@@ -416,8 +500,10 @@ def _classify_generation_failure(error_message: Optional[str]) -> str:
     """Return an actionable, credential-safe router failure category."""
     message = (error_message or "").strip()
     normalized = message.lower()
-    if "http 401" in normalized or "http 403" in normalized:
-        return "TokenHarbor router HTTP 401/403"
+    if "http 401" in normalized:
+        return "TokenHarbor router HTTP 401"
+    if "http 403" in normalized:
+        return "TokenHarbor router HTTP 403"
     if "http 429" in normalized or "rate limit" in normalized:
         return "TokenHarbor router HTTP 429"
     if any(marker in normalized for marker in ("timeout", "timed out", "transient network", "urlerror")):
@@ -450,6 +536,48 @@ def get_router_status() -> dict:
         return _get_default_router().status()
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         return {"model": DEEPSEEK_FLASH_MODEL, "total_keys": 0, "states": {}, "error": str(exc)}
+
+
+def tokenharbor_has_ready_key() -> bool:
+    status = get_router_status()
+    states = status.get("states", {})
+    try:
+        return int(states.get(READY, 0)) > 0
+    except (TypeError, ValueError):
+        return False
+
+
+def wait_for_tokenharbor_ready(max_wait_seconds: float = 305.0) -> bool:
+    """Wait for a cooled key to become ready, but never wait on disabled keys."""
+    deadline = time.monotonic() + max(0.0, float(max_wait_seconds))
+    while True:
+        status = get_router_status()
+        states = status.get("states", {})
+        try:
+            if int(states.get(READY, 0)) > 0:
+                return True
+        except (TypeError, ValueError):
+            pass
+
+        remaining_delays = []
+        for item in status.get("cooldowns", []) or []:
+            try:
+                remaining_delays.append(max(0.0, float(item.get("remaining_seconds", 0.0))))
+            except (AttributeError, TypeError, ValueError):
+                continue
+        if not remaining_delays:
+            return False
+
+        budget = deadline - time.monotonic()
+        delay = min(remaining_delays)
+        if budget <= 0 or delay > budget:
+            return False
+        sleep_for = min(budget, max(0.25, delay + 0.25))
+        print(
+            f"[{ENGINE_ID}] TokenHarbor shard is cooling down; waiting {sleep_for:.1f}s before another generation attempt.",
+            flush=True,
+        )
+        time.sleep(sleep_for)
 
 # ==============================================================================
 # SUBPROCESS EXECUTION ENGINE
@@ -603,6 +731,102 @@ VERIFIED_SETTLEMENT_ADDRESSES = {
     "ComputeBudget111111111111111111111111111111",
 }
 
+def collect_worktree_context(worktree: Optional[str], title: str, body: str) -> str:
+    """Return bounded source/test context from the actual isolated checkout.
+
+    Remote issue references are useful supporting evidence, but they are not a
+    substitute for the files that are checked out at the verified base SHA.
+    This deliberately reads only Git-tracked, safe paths from the worktree.
+    """
+    if not worktree or not os.path.isdir(worktree):
+        return "No isolated worktree is available for this proposal."
+    try:
+        listed = subprocess.run(
+            ["git", "-C", worktree, "ls-files", "-z"],
+            capture_output=True,
+            timeout=20,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return f"Unable to list tracked worktree files: {type(exc).__name__}."
+    if listed.returncode != 0:
+        return "Unable to list tracked worktree files."
+
+    paths = [
+        value.decode("utf-8", errors="replace").replace("\\", "/")
+        for value in listed.stdout.split(b"\0")
+        if value
+    ]
+    issue_text = f"{title or ''} {body or ''}".lower()
+    ignored_words = {
+        "about", "after", "before", "being", "change", "could", "does", "from",
+        "have", "issue", "please", "should", "that", "their", "there", "these",
+        "this", "with", "would", "when", "where", "which",
+    }
+    keywords = {
+        word for word in re.findall(r"[a-zA-Z][a-zA-Z0-9_-]{3,}", issue_text)
+        if word not in ignored_words
+    }
+    manifests = {
+        "package.json", "pyproject.toml", "setup.py", "requirements.txt", "Cargo.toml",
+        "go.mod", "CMakeLists.txt", "Makefile",
+    }
+
+    def score(path: str) -> Tuple[int, str]:
+        lowered = path.lower()
+        path_score = sum(3 for keyword in keywords if keyword in lowered)
+        if os.path.basename(path) in manifests:
+            path_score += 2
+        if re.search(r"(?:^|/)(?:test|tests|spec|__tests__)/|(?:test|spec)\.[^/]+$", lowered):
+            path_score += 1
+        return path_score, path
+
+    generated_components = {
+        ".git", ".venv", "venv", "node_modules", "site-packages", "vendor",
+        "dist", "build", "target",
+    }
+    readable_suffixes = {
+        ".py", ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".rs", ".go",
+        ".c", ".cc", ".cpp", ".h", ".hpp", ".java", ".kt", ".rb", ".php",
+        ".cs", ".swift", ".scala", ".sh", ".toml", ".yaml", ".yml",
+    }
+    selected = sorted(
+        (
+            path for path in paths
+            if is_safe_relative_path(worktree, path)
+            and not any(component.lower() in generated_components for component in path.replace("\\", "/").split("/"))
+            and (
+                os.path.basename(path) in manifests
+                or os.path.splitext(path)[1].lower() in readable_suffixes
+            )
+        ),
+        key=score,
+        reverse=True,
+    )
+    selected = selected[:12]
+    sections = ["Tracked worktree paths:\n" + "\n".join(f"- {path}" for path in selected)]
+    remaining = 14_000
+    for path in selected:
+        full_path = os.path.join(worktree, path.replace("/", os.sep))
+        if not os.path.isfile(full_path):
+            continue
+        try:
+            if os.path.getsize(full_path) > 160_000:
+                continue
+            with open(full_path, "r", encoding="utf-8", errors="replace") as source_file:
+                content = source_file.read()
+        except OSError:
+            continue
+        excerpt = content[: min(3_000, remaining)]
+        if not excerpt:
+            break
+        sections.append(f"\n--- Worktree file: {path} ---\n{excerpt}")
+        remaining -= len(excerpt)
+        if remaining <= 0:
+            break
+    return "\n".join(sections)
+
+
 def generate_grounded_proposal(
     repo,
     title,
@@ -612,6 +836,7 @@ def generate_grounded_proposal(
     iteration_feedback=None,
     prior_failures=None,
     turn: int = 1,
+    worktree: Optional[str] = None,
 ):
     evidence = collect_repo_evidence(repo, body)
     if not evidence or not evidence.get("commit_sha"):
@@ -625,6 +850,7 @@ def generate_grounded_proposal(
     # an unusually large issue body or embedded code dump.
     code_snippets = sanitize_prompt_input(evidence.get("code_blocks", ""))[:3000]
     source_context = sanitize_prompt_input(evidence.get("referenced_source", ""))[:2500]
+    worktree_context = sanitize_prompt_input(collect_worktree_context(worktree, title, body))[:14000]
     commit_sha = sanitize_prompt_input(evidence.get("commit_sha", ""))
     default_branch = sanitize_prompt_input(evidence.get("default_branch", "main"))
 
@@ -660,6 +886,9 @@ Extracted Code & Error Traces:
 Referenced Source Context:
 {source_context if source_context else 'Standard repository architecture.'}
 
+Actual isolated worktree context (authoritative for files and paths):
+{worktree_context}
+
 Client Comments:
 {clean_comments}
 </issue_context>
@@ -692,6 +921,7 @@ YOUR RESPONSE MUST FOLLOW THIS EXACT 4-PART STRUCTURE:
 STRICT RULES:
 - You MUST write the actual code and test files in code blocks.
 - Every code block to create or edit MUST be preceded by: **File:** `path/to/file` so the test harness can extract and apply it.
+- Edit the actual paths shown in the isolated worktree context. Do not invent replacement manifests, stub modules, or unrelated new files. Add a new file only when the existing repository structure requires it and the path belongs to its established source or test layout.
 - ZERO HEDGING: Never say "source files are not available", "I cannot provide drop-in replacement", or "provide a repository checkout". You have full expert capability to author the complete, production-grade files.
 - Deliver working code and runnable tests immediately — not promises or future scoping.
 - Speak directly as a senior peer architect delivering the fix.
@@ -1163,6 +1393,29 @@ def discover_verification_plan(arch: dict, worktree: str) -> VerificationPlan:
 
     return plan
 
+
+def verification_test_commands(plan: VerificationPlan) -> List[List[str]]:
+    """Return the native test commands that are mandatory before any PR."""
+    return [
+        list(command)
+        for command in (plan.baseline_tests + plan.targeted_tests + plan.final_tests)
+        if command
+    ]
+
+
+def has_successful_test_verification(
+    verification: List[CommandResult], test_commands: List[List[str]]
+) -> bool:
+    """Require a successful receipt for at least one planned native test command."""
+    expected = {tuple(command) for command in test_commands if command}
+    if not expected or not verification:
+        return False
+    return any(
+        result.exit_code == 0 and tuple(result.argv) in expected
+        for result in verification
+    )
+
+
 def run_command_safe(argv: List[str], cwd: str, timeout: int = 120, input: Optional[str] = None) -> CommandResult:
     start = time.time()
     try:
@@ -1211,6 +1464,99 @@ def run_command_safe(argv: List[str], cwd: str, timeout: int = 120, input: Optio
             duration_s=duration
         )
 
+class _ClineProxyHandler(BaseHTTPRequestHandler):
+    """Engine-local OpenAI-compatible bridge from Cline to TokenHarbor."""
+
+    def log_message(self, _format, *_args):
+        # The worker owns concise operational logging; proxy request bodies and
+        # credentials must never enter the kernel log.
+        return
+
+    def _json(self, status: int, payload: dict, content_type: str = "application/json") -> None:
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.end_headers()
+        self.wfile.write(json.dumps(payload).encode("utf-8"))
+
+    def do_GET(self):
+        if self.path in ("/health", "/status", "/"):
+            try:
+                payload = _get_default_router().status()
+            except Exception as exc:
+                self._json(503, {"ok": False, "error": _sanitize_runtime_diagnostic(exc)})
+                return
+            self._json(200, {"ok": True, **payload})
+            return
+        if self.path in ("/v1/models", "/models"):
+            self._json(200, {"object": "list", "data": [{"id": CLINE_MODEL, "object": "model", "owned_by": "tokenharbor"}]})
+            return
+        self._json(404, {"error": "not found"})
+
+    def do_POST(self):
+        if self.path not in ("/v1/chat/completions", "/chat/completions"):
+            self._json(404, {"error": "not found"})
+            return
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            payload = json.loads(self.rfile.read(length).decode("utf-8"))
+        except Exception:
+            self._json(400, {"error": {"message": "invalid JSON request"}})
+            return
+        system_prompt = None
+        prompt_parts = []
+        for message in payload.get("messages", []):
+            if not isinstance(message, dict):
+                continue
+            content = message.get("content", "")
+            if isinstance(content, list):
+                content = "\n".join(
+                    str(item.get("text", "")) for item in content
+                    if isinstance(item, dict) and item.get("type") == "text"
+                )
+            if message.get("role") == "system" and system_prompt is None:
+                system_prompt = str(content)
+            elif message.get("role") in ("user", "assistant"):
+                prompt_parts.append(str(content))
+        success, response_text, model_used, error_message = _get_default_router().call(
+            prompt="\n\n".join(prompt_parts) or "Continue the engineering task.",
+            system_prompt=system_prompt,
+            timeout=DEFAULT_TIMEOUT_SECONDS,
+        )
+        if not success or not response_text:
+            self._json(502, {"error": {"message": _sanitize_runtime_diagnostic(error_message or "TokenHarbor request failed")}})
+            return
+        completion_id = f"chatcmpl-{uuid.uuid4().hex[:16]}"
+        if payload.get("stream"):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream")
+            self.send_header("Cache-Control", "no-cache")
+            self.send_header("Connection", "keep-alive")
+            self.end_headers()
+            event = {
+                "id": completion_id,
+                "object": "chat.completion.chunk",
+                "created": int(time.time()),
+                "model": model_used or CLINE_MODEL,
+                "choices": [{"index": 0, "delta": {"role": "assistant", "content": response_text}, "finish_reason": "stop"}],
+            }
+            self.wfile.write(f"data: {json.dumps(event)}\n\ndata: [DONE]\n\n".encode("utf-8"))
+            self.wfile.flush()
+            return
+        self._json(200, {
+            "id": completion_id,
+            "object": "chat.completion",
+            "created": int(time.time()),
+            "model": model_used or CLINE_MODEL,
+            "choices": [{"index": 0, "message": {"role": "assistant", "content": response_text}, "finish_reason": "stop"}],
+        })
+
+
+def run_cline_proxy_server() -> None:
+    """Run the local-only Cline gateway inside this engine process tree."""
+    HTTPServer(("127.0.0.1", 8080), _ClineProxyHandler).serve_forever()
+
+
 def _proxy_free_urlopen(url: str, timeout: float):
     """Probe localhost without inheriting any ambient HTTP proxy settings."""
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
@@ -1233,8 +1579,6 @@ def ensure_cline_proxy_running() -> Tuple[bool, str]:
     """
     if _cline_proxy_is_healthy():
         return True, "Cline proxy health check passed."
-    if not os.path.isfile(CLINE_PROXY_SCRIPT):
-        return False, f"Cline proxy script is unavailable: {CLINE_PROXY_SCRIPT}"
 
     creationflags = 0
     if sys.platform == "win32":
@@ -1244,8 +1588,8 @@ def ensure_cline_proxy_running() -> Tuple[bool, str]:
         )
     try:
         subprocess.Popen(
-            [sys.executable, CLINE_PROXY_SCRIPT],
-            cwd=os.path.dirname(CLINE_PROXY_SCRIPT),
+            [sys.executable, os.path.abspath(__file__), "--cline-proxy"],
+            cwd=os.path.dirname(os.path.abspath(__file__)),
             stdin=subprocess.DEVNULL,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
@@ -1263,13 +1607,38 @@ def ensure_cline_proxy_running() -> Tuple[bool, str]:
     return False, "Cline proxy did not become healthy after launch."
 
 def resolve_cline_command() -> Optional[List[str]]:
-    """Resolve the globally installed Cline CLI, with its explicit Node fallback."""
+    """Resolve the Kaggle-provisioned Cline CLI."""
     cline_executable = shutil.which("cline")
     if cline_executable:
         return [cline_executable]
     if os.path.isfile(CLINE_NODE_EXE) and os.path.isfile(CLINE_NODE_ENTRYPOINT):
         return [CLINE_NODE_EXE, CLINE_NODE_ENTRYPOINT]
     return None
+
+
+def configure_cline_for_engine() -> Tuple[bool, str]:
+    """Configure Cline against this engine's private local TokenHarbor proxy."""
+    cline_command = resolve_cline_command()
+    if not cline_command:
+        return False, "Cline executable is unavailable after Kaggle bootstrap."
+    proxy_ok, proxy_message = ensure_cline_proxy_running()
+    if not proxy_ok:
+        return False, proxy_message
+    os.makedirs(CLINE_DATA_DIR, exist_ok=True)
+    auth_command = [
+        *cline_command,
+        "--data-dir", CLINE_DATA_DIR,
+        "auth",
+        "--provider", "openai-native",
+        "--apikey", CLINE_PROXY_API_KEY,
+        "--modelid", CLINE_MODEL,
+        "--baseurl", CLINE_PROXY_BASE_URL,
+    ]
+    result = run_command_safe(auth_command, cwd=SANDBOX_DIR, timeout=90)
+    if result.exit_code != 0:
+        detail = (result.stderr or result.stdout or "Cline auth returned no diagnostic").strip()
+        return False, f"Cline proxy configuration failed (exit {result.exit_code}): {detail[:600]}"
+    return True, "Cline installed and configured against the engine-local TokenHarbor proxy."
 
 def build_cline_engineering_prompt(
     repo: str,
@@ -1347,23 +1716,23 @@ def run_cline_engineering_turn(
 
     cline_command = resolve_cline_command()
     if not cline_command:
-        return False, [], [], "Cline executable is unavailable; using legacy proposal fallback."
+        return False, [], [], "Cline executable is unavailable after bootstrap."
     proxy_ok, proxy_message = ensure_cline_proxy_running()
     if not proxy_ok:
-        return False, [], [], f"{proxy_message} Using legacy proposal fallback."
+        return False, [], [], proxy_message
 
     prompt = build_cline_engineering_prompt(
         repo, issue_number, title, body, arch, scenarios, prior_failures
     )
     command = [
         *cline_command,
+        "--data-dir", CLINE_DATA_DIR,
         "-y",
-        "--auto-approve", "true",
-        "-P", CLINE_PROVIDER,
-        "-m", CLINE_MODEL,
-        "--cwd", worktree,
+        "--retries", "3",
+        "-c", worktree,
+        prompt,
     ]
-    result = run_command_safe(command, cwd=worktree, timeout=300, input=prompt)
+    result = run_command_safe(command, cwd=worktree, timeout=300)
     if result.exit_code != 0:
         details = (result.stderr or result.stdout or "Cline returned no diagnostic output").strip()
         return False, [], [], f"Cline execution failed (exit {result.exit_code}): {details[:4000]}"
@@ -1400,12 +1769,14 @@ def verify_baseline(worktree: str, plan: VerificationPlan) -> Tuple[bool, str, L
         res = run_command_safe(cmd, cwd=worktree, timeout=600)
         results.append(res)
         if res.exit_code != 0:
+            _safe_command_failure("baseline bootstrap", res)
             return False, f"Bootstrap command failed: {' '.join(cmd)}\n{res.stderr or res.stdout}", results
 
     for cmd in plan.baseline_tests:
         res = run_command_safe(cmd, cwd=worktree, timeout=600)
         results.append(res)
         if res.exit_code != 0:
+            _safe_command_failure("baseline tests", res)
             return False, f"Baseline test failure on untouched upstream: {' '.join(cmd)}\n{res.stderr or res.stdout}", results
 
     return True, "Baseline verified green.", results
@@ -1610,7 +1981,7 @@ def build_peer_pr_body(run: EngineeringRun, title: str, number: int, scenarios: 
             command = " ".join(result.argv)
             body_lines.append(f"- `{command}` — exit `{result.exit_code}`, duration `{result.duration_s:.3f}s`.")
     else:
-        body_lines.append("- No verification command receipts were recorded; do not merge.")
+        body_lines.append("- Verification receipts are unavailable; the pre-PR gate blocks publication.")
     return "\n".join(body_lines)
 
 def run_engineering_iteration_loop(
@@ -1637,6 +2008,13 @@ def run_engineering_iteration_loop(
     )
 
     prior_failures = initial_feedback
+    test_commands = verification_test_commands(plan)
+    if not test_commands:
+        run.status = "FAILED_NO_TEST_VERIFICATION"
+        run.error_summary = "FAILED_NO_TEST_VERIFICATION: no native test command was discovered for this worktree."
+        record_execution_diagnostic("verification plan", run.error_summary)
+        return False, run, run.error_summary
+
     for turn in range(1, max_iterations + 1):
         run.iteration = turn
         print(f"  🔄 [ENGINEERING ITERATION {turn}/{max_iterations}] for {repo}#{issue_number}...")
@@ -1647,59 +2025,85 @@ def run_engineering_iteration_loop(
             if not reset_ok:
                 return False, run, f"Unable to reset before repair turn {turn}: {reset_message}"
 
-        # 1. Every generation and repair turn routes to DeepSeek Flash
-        proposal = generate_grounded_proposal(
-            repo,
-            title,
-            body,
-            "maintainer",
-            [],
-            iteration_feedback=prior_failures,
-            prior_failures=prior_failures,
-            turn=turn,
+        # 1. Cline is the primary worktree agent. It receives the real checkout
+        # and can inspect it directly. DeepSeek is a grounded fallback only.
+        cline_ok, extracted_files, verified_paths, cline_message = run_cline_engineering_turn(
+            worktree, repo, issue_number, title, body, arch, scenarios, prior_failures
         )
-        if not proposal:
-            diagnostic = get_last_generation_diagnostic() or "unspecified generation failure"
-            print(f"     ⚠️ Iteration {turn}: Generation returned no text ({diagnostic}). Routing diagnostic to turn {turn + 1}...")
-            prior_failures = f"Turn {turn} generation error: {diagnostic}. Produce the complete solution now."
-            continue
-
-        extracted_files = extract_files_from_proposal(proposal)
-        verified_paths = [path for path, _ in extracted_files]
-        if not extracted_files:
-            print(f"     ⚠️ Iteration {turn}: No extractable code files found. Routing formatting instruction back to DeepSeek for turn {turn + 1}...")
-            prior_failures = (
-                f"Turn {turn} failed: No files could be extracted. "
-                "Every file to create or edit MUST be formatted as: **File:** `path/to/file`\n```language\n...full file code...\n```"
+        if cline_ok:
+            print(f"     [CLINE PRIMARY] {cline_message}")
+        else:
+            print(f"     [CLINE FAIL-CLOSED] {cline_message}")
+            # A failed Cline run can have left partial edits. The fallback must
+            # always begin from the verified upstream base.
+            reset_ok, reset_message = reset_worktree_to_base(worktree, base_sha)
+            if not reset_ok:
+                return False, run, f"Unable to reset after Cline fallback on turn {turn}: {reset_message}"
+            run.status = "FAILED_CLINE_ENGINEERING"
+            run.error_summary = f"Cline failed closed on turn {turn}: {cline_message}"
+            record_execution_diagnostic("Cline engineering", run.error_summary)
+            return False, run, run.error_summary
+            if not tokenharbor_has_ready_key():
+                wait_for_tokenharbor_ready()
+            proposal = generate_grounded_proposal(
+                repo,
+                title,
+                body,
+                "maintainer",
+                [],
+                iteration_feedback=prior_failures,
+                prior_failures=prior_failures,
+                turn=turn,
+                worktree=worktree,
             )
-            continue
+            if not proposal:
+                diagnostic = get_last_generation_diagnostic() or "unspecified generation failure"
+                record_execution_diagnostic(f"generation turn {turn}", diagnostic)
+                print(f"     ⚠️ Iteration {turn}: Generation returned no text ({diagnostic}). Routing diagnostic to turn {turn + 1}...")
+                prior_failures = f"Turn {turn} generation error: {diagnostic}. Produce the complete solution now."
+                continue
+
+            extracted_files = extract_files_from_proposal(proposal)
+            verified_paths = [path for path, _ in extracted_files]
+            if not extracted_files:
+                record_execution_diagnostic(f"proposal extraction turn {turn}", "No code files were extractable from the model response.")
+                print(f"     ⚠️ Iteration {turn}: No extractable code files found. Routing formatting instruction back to DeepSeek for turn {turn + 1}...")
+                prior_failures = (
+                    f"Turn {turn} failed: No files could be extracted. "
+                    "Every file to create or edit MUST be formatted as: **File:** `path/to/file`\n```language\n...full file code...\n```"
+                )
+                continue
 
         # 2. Reject syntax-invalid output before executing native tests.
         syntax_ok, syntax_message = validate_synthesized_files(worktree, extracted_files)
         if not syntax_ok:
+            record_execution_diagnostic(f"syntax validation turn {turn}", syntax_message)
             print(f"     ⚠️ Iteration {turn}: Syntax validation error. Routing error back to DeepSeek for turn {turn + 1}...")
             prior_failures = f"Syntax error in turn {turn}:\n{syntax_message}\nFix syntax errors and re-emit complete files."
             run.error_summary = prior_failures
             continue
 
-        # 3. Apply the validated DeepSeek patch inside the isolated worktree.
-        applied_ok, apply_msg = apply_verified_changes(worktree, extracted_files)
-        if not applied_ok:
-            print(f"     ⚠️ Iteration {turn}: Failed applying changes. Routing back to DeepSeek for turn {turn + 1}...")
-            prior_failures = f"Failed applying changes in turn {turn}:\n{apply_msg}"
-            continue
+        # 3. Cline has already edited the worktree. The DeepSeek fallback is
+        # applied only after its output passed the same syntax gate.
+        if not cline_ok:
+            applied_ok, apply_msg = apply_verified_changes(worktree, extracted_files)
+            if not applied_ok:
+                record_execution_diagnostic(f"apply changes turn {turn}", apply_msg)
+                print(f"     ⚠️ Iteration {turn}: Failed applying changes. Routing back to DeepSeek for turn {turn + 1}...")
+                prior_failures = f"Failed applying changes in turn {turn}:\n{apply_msg}"
+                continue
 
         # 4. Run native repository verification suites
         tests_passed = True
         test_fail_log = ""
-        verification_tests = plan.baseline_tests + plan.targeted_tests + plan.final_tests
-        for test_cmd in verification_tests:
+        for test_cmd in test_commands:
             cmd_res = run_command_safe(test_cmd, cwd=worktree, timeout=180)
             run.verification.append(cmd_res)
             if cmd_res.exit_code != 0:
                 tests_passed = False
                 err_text = cmd_res.stderr or cmd_res.stdout
                 test_fail_log = f"Test failure in turn {turn}: {' '.join(test_cmd)}\n{err_text}"
+                _safe_command_failure(f"native tests turn {turn}", cmd_res)
                 break
 
         if not tests_passed:
@@ -1718,6 +2122,7 @@ def run_engineering_iteration_loop(
                 linters_passed = False
                 lint_err = l_res.stderr or l_res.stdout
                 lint_fail_log = f"Linter warning/failure in turn {turn}: {' '.join(lint_cmd)}\n{lint_err}"
+                _safe_command_failure(f"linter turn {turn}", l_res)
                 break
 
         if not linters_passed:
@@ -1727,20 +2132,51 @@ def run_engineering_iteration_loop(
             continue
 
         # If both tests and linters passed:
+        if not has_successful_test_verification(run.verification, test_commands):
+            run.status = "FAILED_NO_TEST_VERIFICATION"
+            run.error_summary = "FAILED_NO_TEST_VERIFICATION: no successful native test command receipt exists."
+            record_execution_diagnostic("pre-PR test gate", run.error_summary)
+            return False, run, run.error_summary
         run.status = "READY_TO_PUSH"
         run.modified_files = sorted(set(verified_paths))
+        reset_execution_diagnostics()
         print(f"  ✅ [ITERATION GREEN] 100% tests and linters passed on turn {turn}!")
         return True, run, f"Iteration green on turn {turn}."
 
     run.status = "ITERATION_EXHAUSTED"
-    return False, run, f"Iteration exhausted after {max_iterations} turns without green."
+    exhausted_message = f"Iteration exhausted after {max_iterations} turns without green."
+    record_execution_diagnostic("repair loop", exhausted_message)
+    return False, run, exhausted_message
 
 
-def commit_and_open_pr(worktree: str, repo: str, number: int, title: str, pr_body: str, verified_files: List[str], default_branch: str = "main") -> Optional[str]:
+def commit_and_open_pr(
+    worktree: str,
+    repo: str,
+    number: int,
+    title: str,
+    pr_body: str,
+    verified_files: List[str],
+    default_branch: str = "main",
+    verification: Optional[List[CommandResult]] = None,
+    test_commands: Optional[List[List[str]]] = None,
+) -> Optional[str]:
     branch_name = f"fix/bounty-{number}"
+
+    def fail(message: str) -> None:
+        record_execution_diagnostic("commit / pull request", message)
+        print(f"  [AUTO-PR ERROR] {message}")
+
+    if not has_successful_test_verification(verification or [], test_commands or []):
+        fail("FAILED_NO_TEST_VERIFICATION: refusing commit and pull request without a successful native test receipt.")
+        return None
+
+    if not fleet_lease_allows_publication():
+        fail("claim lease lost: refusing commit and pull request without current fleet ownership")
+        return None
+
     safe_files = sorted(set(verified_files))
     if not safe_files or any(not is_safe_relative_path(worktree, path) for path in safe_files):
-        print("  [AUTO-PR ERROR] No safe, verified file set is available for commit.")
+        fail("No safe, verified file set is available for commit.")
         return None
     for argv, operation in (
         (["git", "-C", worktree, "config", "user.name", "isearchxsolve"], "config user.name"),
@@ -1749,41 +2185,48 @@ def commit_and_open_pr(worktree: str, repo: str, number: int, title: str, pr_bod
     ):
         _, error = _git_checked(argv, 15, operation)
         if error:
-            print(f"  [AUTO-PR ERROR] {error}")
+            fail(error)
             return None
     pre_sha, error = _git_checked(["git", "-C", worktree, "rev-parse", "HEAD"], 10, "pre-commit rev-parse")
     if error or not pre_sha:
-        print(f"  [AUTO-PR ERROR] {error or 'Missing pre-commit SHA.'}")
+        fail(error or "Missing pre-commit SHA.")
         return None
     status_out, error = _git_checked(["git", "-C", worktree, "status", "--porcelain"], 10, "status")
     if error:
-        print(f"  [AUTO-PR ERROR] {error}")
+        fail(error)
         return None
     changed_files = {line[3:].replace("\\", "/") for line in status_out.splitlines() if len(line) >= 4}
-    if changed_files - set(safe_files):
-        print("  [AUTO-PR ERROR] Unverified worktree changes detected; refusing to stage them.")
+    unverified_files = sorted(changed_files - set(safe_files))
+    if unverified_files:
+        fail(
+            "Unverified worktree changes detected; refusing to stage them. "
+            f"Unverified paths: {', '.join(unverified_files)}"
+        )
         return None
     _, error = _git_checked(["git", "-C", worktree, "add", "--", *safe_files], 15, "add verified files")
     if error:
-        print(f"  [AUTO-PR ERROR] {error}")
+        fail(error)
         return None
     commit_msg = f"fix: #{number} - {title}"
     _, error = _git_checked(["git", "-C", worktree, "commit", "-m", commit_msg], 15, "commit")
     if error:
-        print(f"  [AUTO-PR ERROR] {error}")
+        fail(error)
         return None
     post_sha, error = _git_checked(["git", "-C", worktree, "rev-parse", "HEAD"], 10, "post-commit rev-parse")
     if error or not post_sha or post_sha.strip() == pre_sha.strip():
-        print(f"  [AUTO-PR ERROR] {error or 'Commit SHA did not advance.'}")
+        fail(error or "Commit SHA did not advance.")
         return None
     count_out, error = _git_checked(["git", "-C", worktree, "rev-list", "--count", f"{pre_sha.strip()}..{post_sha.strip()}"], 10, "single-commit count")
     if error or count_out.strip() != "1":
-        print(f"  [AUTO-PR ERROR] {error or 'Expected exactly one commit, got ' + count_out.strip()}")
+        fail(error or "Expected exactly one commit, got " + count_out.strip())
         return None
 
+    if not fleet_lease_allows_publication():
+        fail("claim lease lost: refusing push without current fleet ownership")
+        return None
     push_out, push_err, push_code = run_cmd(["git", "-C", worktree, "push", "origin", branch_name, "--force"], timeout=45)
     if push_code != 0:
-        print(f"  [AUTO-PR ERROR] Git push failed: {push_err or push_out}")
+        fail(f"Git push failed (exit {push_code}): {push_err or push_out}")
         return None
 
     pr_cmd = [
@@ -1794,6 +2237,9 @@ def commit_and_open_pr(worktree: str, repo: str, number: int, title: str, pr_bod
         "--title", f"fix: #{number} - {title}",
         "--body", pr_body
     ]
+    if not fleet_lease_allows_publication():
+        fail("claim lease lost: refusing pull request without current fleet ownership")
+        return None
     pr_out, pr_err, pr_code = run_cmd(pr_cmd, timeout=30)
     if pr_code == 0 and pr_out.strip():
         pr_url = pr_out.strip()
@@ -1801,6 +2247,7 @@ def commit_and_open_pr(worktree: str, repo: str, number: int, title: str, pr_bod
         update_delivery_pr(repo, number, pr_url)
         auto_resolve_cla_if_needed(repo, pr_url)
         return pr_url
+    fail(f"GitHub pull request creation failed (exit {pr_code}): {pr_err or pr_out or 'no output'}")
     return None
 
 def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_mode=True):
@@ -1829,19 +2276,23 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
     # Step 1: Pre-flight competition check
     comp_ok, comp_msg = check_competing_prs_fail_closed(repo, number)
     if not comp_ok:
+        record_execution_diagnostic("preflight competition gate", comp_msg)
         print(f"  ❌ [ZERO-COMPETITION GATE TRIGGERED] {repo}#{number}: {comp_msg}")
         return None
 
     # Step 2: Prepare isolated worktree
     worktree, base_sha, wt_err = prepare_isolated_worktree(repo, number)
     if not worktree:
+        record_execution_diagnostic("worktree preparation", wt_err or "worktree preparation failed without details")
         print(f"  ❌ [WORKTREE INIT FAILED] {repo}#{number}: {wt_err}")
         return None
     branch_out, branch_err, branch_code = run_cmd(
         ["gh", "repo", "view", repo, "--json", "defaultBranchRef", "--jq", ".defaultBranchRef.name"], timeout=20
     )
     if branch_code != 0 or not branch_out or not branch_out.strip():
-        print(f"  ❌ [DEFAULT BRANCH LOOKUP FAILED] {branch_err or branch_out}")
+        branch_diagnostic = f"gh repo view {repo} defaultBranchRef failed (exit {branch_code}): {branch_err or branch_out or 'empty branch name'}"
+        record_execution_diagnostic("default branch lookup", branch_diagnostic)
+        print(f"  ❌ [DEFAULT BRANCH LOOKUP FAILED] {branch_diagnostic}")
         return None
     default_branch = branch_out.strip()
 
@@ -1849,11 +2300,18 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
     arch = inspect_repository_architecture(worktree)
     plan = discover_verification_plan(arch, worktree)
     scenarios = model_scenarios(title, proposal_or_body, arch)
+    test_commands = verification_test_commands(plan)
+    if not test_commands:
+        diagnostic = "FAILED_NO_TEST_VERIFICATION: no native test commands were discovered for the worktree."
+        record_execution_diagnostic("verification plan", diagnostic)
+        print(f"  ❌ [{diagnostic}] {repo}#{number}")
+        return None
 
     # Step 4: Check untouched baseline (Never abort: feed baseline errors into the 3-turn loop)
     base_ok, base_msg, base_results = verify_baseline(worktree, plan)
     initial_failures = None
     if not base_ok:
+        record_execution_diagnostic("untouched upstream baseline", base_msg)
         print(f"  ⚠️ [BASELINE NOTICE] Untouched upstream reported baseline test/build issues. Passing errors directly into Multi-Turn Loop for DeepSeek self-correction...")
         print(f"     Details: {base_msg[:300]}")
         initial_failures = f"Untouched upstream baseline errors to resolve:\n{base_msg[:2500]}"
@@ -1874,6 +2332,7 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
         live_mode=live_mode
     )
     if not loop_ok:
+        record_execution_diagnostic("engineering loop", loop_msg)
         print(f"  ❌ [ITERATION FAILED] {loop_msg}")
         return None
     run.verification = base_results + run.verification
@@ -1881,6 +2340,7 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
     # Step 6: Final Pre-Push Competition Check (Fail-Closed)
     comp_ok_final, comp_msg_final = check_competing_prs_fail_closed(repo, number)
     if not comp_ok_final:
+        record_execution_diagnostic("pre-push competition gate", comp_msg_final)
         print(f"  ❌ [ZERO-COMPETITION GATE TRIGGERED PRE-PUSH] {repo}#{number}: {comp_msg_final}")
         return None
 
@@ -1888,7 +2348,24 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
     pr_body = build_peer_pr_body(run, title, number, scenarios)
 
     # Step 8: Commit, push branch, open PR
-    pr_url = commit_and_open_pr(worktree, repo, number, title, pr_body, run.modified_files, default_branch=default_branch)
+    if not has_successful_test_verification(run.verification, test_commands):
+        diagnostic = "FAILED_NO_TEST_VERIFICATION: refusing PR because the engineering run has no successful native test receipt."
+        record_execution_diagnostic("pre-PR test gate", diagnostic)
+        print(f"  ❌ [{diagnostic}] {repo}#{number}")
+        return None
+    pr_url = commit_and_open_pr(
+        worktree,
+        repo,
+        number,
+        title,
+        pr_body,
+        run.modified_files,
+        default_branch=default_branch,
+        verification=run.verification,
+        test_commands=test_commands,
+    )
+    if not pr_url and not get_execution_diagnostic():
+        record_execution_diagnostic("pull request", "PR creation returned no URL and no lower-level diagnostic was captured.")
     return pr_url
 
 
@@ -1916,6 +2393,29 @@ def record_processed_task(task_id: str):
     except Exception:
         pass
 
+
+def _download_init_file(url: str, destination: str, timeout: int = 60) -> None:
+    request_obj = urllib.request.Request(url, headers={"User-Agent": "kaggle-engine-worker"})
+    with urllib.request.urlopen(request_obj, timeout=timeout) as response:
+        with open(destination, "wb") as target:
+            shutil.copyfileobj(response, target)
+
+
+def _run_init_command(argv: List[str], label: str, timeout: int) -> bool:
+    try:
+        result = subprocess.run(argv, check=False, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        print(f"[Init Warning] {label} timed out after {timeout}s.", flush=True)
+        return False
+    except Exception as exc:
+        print(f"[Init Warning] {label} failed ({type(exc).__name__}): {_sanitize_runtime_diagnostic(exc)}", flush=True)
+        return False
+    if result.returncode != 0:
+        print(f"[Init Warning] {label} exited with status {result.returncode}.", flush=True)
+        return False
+    return True
+
+
 def setup_kaggle_env():
     global SANDBOX_DIR, PACKET_DIR
     os.makedirs(SANDBOX_DIR, exist_ok=True)
@@ -1927,66 +2427,135 @@ def setup_kaggle_env():
         gh_dir = "/tmp/gh_install"
         try:
             print("[Init] Downloading portable GitHub CLI for Linux...", flush=True)
-            urllib.request.urlretrieve("https://github.com/cli/cli/releases/download/v2.42.1/gh_2.42.1_linux_amd64.tar.gz", gh_tar)
+            _download_init_file("https://github.com/cli/cli/releases/download/v2.42.1/gh_2.42.1_linux_amd64.tar.gz", gh_tar, timeout=60)
             os.makedirs(gh_dir, exist_ok=True)
-            subprocess.run(["tar", "-xzf", gh_tar, "-C", gh_dir, "--strip-components=1"], check=True)
+            subprocess.run(["tar", "-xzf", gh_tar, "-C", gh_dir, "--strip-components=1"], check=True, timeout=60)
             bin_dir = os.path.join(gh_dir, "bin")
             os.environ["PATH"] = f"{bin_dir}:{os.environ.get('PATH', '')}"
             print(f"[Init] GitHub CLI installed at {bin_dir}", flush=True)
         except Exception as e:
             print(f"[Init] gh download error: {e}. Trying apt-get...", flush=True)
-            subprocess.run(["apt-get", "update", "-qq"], check=False)
-            subprocess.run(["apt-get", "install", "-y", "-qq", "gh"], check=False)
+            _run_init_command(["apt-get", "update", "-qq"], "GitHub CLI apt index update", 120)
+            _run_init_command(["apt-get", "install", "-y", "-qq", "gh"], "GitHub CLI apt install", 180)
 
     # 2. Always bootstrap the native Rust/C++ toolchain.  Kaggle base images
     # vary, and bindgen/rocksdb require libclang even when `clang` already
     # happens to be on PATH.
-    try:
-        print("[Init] Bootstrapping native C/C++ compiler and libclang headers...", flush=True)
-        subprocess.run(["apt-get", "update", "-qq"], check=False)
-        subprocess.run(
-            ["apt-get", "install", "-y", "-qq", "clang", "libclang-dev", "cmake", "mold", "build-essential"],
-            check=False,
-        )
-        libclang_candidates = (
-            glob.glob("/usr/lib/llvm-*/lib/libclang.so")
-            + glob.glob("/usr/lib/llvm-*/lib/libclang.so.*")
-            + glob.glob("/usr/lib/x86_64-linux-gnu/libclang.so")
-            + glob.glob("/usr/lib/x86_64-linux-gnu/libclang.so.*")
-        )
-        if libclang_candidates:
-            libclang_path = os.path.dirname(sorted(libclang_candidates)[0])
-            os.environ["LIBCLANG_PATH"] = libclang_path
-            print(f"[Init] LIBCLANG_PATH={libclang_path}", flush=True)
-        else:
-            print("[Init Warning] libclang was not found after bootstrap; Rust bindgen builds will fail closed.", flush=True)
-    except Exception as e:
-        print(f"[Init Warning] Native build tool bootstrap error: {e}", flush=True)
+    print("[Init] Bootstrapping native C/C++ compiler and libclang headers...", flush=True)
+    _run_init_command(["apt-get", "update", "-qq"], "native toolchain apt index update", 180)
+    _run_init_command(
+        ["apt-get", "install", "-y", "-qq", "clang", "libclang-dev", "cmake", "mold", "build-essential"],
+        "native C/C++ toolchain install",
+        300,
+    )
+    libclang_candidates = (
+        glob.glob("/usr/lib/llvm-*/lib/libclang.so")
+        + glob.glob("/usr/lib/llvm-*/lib/libclang.so.*")
+        + glob.glob("/usr/lib/x86_64-linux-gnu/libclang.so")
+        + glob.glob("/usr/lib/x86_64-linux-gnu/libclang.so.*")
+    )
+    if libclang_candidates:
+        libclang_path = os.path.dirname(sorted(libclang_candidates)[0])
+        os.environ["LIBCLANG_PATH"] = libclang_path
+        print(f"[Init] LIBCLANG_PATH={libclang_path}", flush=True)
+    else:
+        print("[Init Warning] libclang was not found after bootstrap; Rust bindgen builds will fail closed.", flush=True)
 
     # 3. Install Rust / Cargo toolchain if missing (for Solana zk-SNARKs and Rust bounties)
     if not shutil.which("cargo"):
         try:
             print("[Init] Installing standalone Rust/Cargo toolchain...", flush=True)
             rustup_sh = "/tmp/rustup.sh"
-            urllib.request.urlretrieve("https://sh.rustup.rs", rustup_sh)
-            subprocess.run(["sh", rustup_sh, "-y", "--default-toolchain", "stable", "--profile", "minimal"], check=True)
+            _download_init_file("https://sh.rustup.rs", rustup_sh, timeout=60)
+            subprocess.run(["sh", rustup_sh, "-y", "--default-toolchain", "stable", "--profile", "minimal"], check=True, timeout=300)
             cargo_bin = os.path.expanduser("~/.cargo/bin")
             os.environ["PATH"] = f"{cargo_bin}:{os.environ.get('PATH', '')}"
             print(f"[Init] Rust/Cargo installed at {cargo_bin}", flush=True)
         except Exception as e:
             print(f"[Init Warning] Failed to install Rust via rustup: {e}. Trying apt-get...", flush=True)
-            subprocess.run(["apt-get", "update", "-qq"], check=False)
-            subprocess.run(["apt-get", "install", "-y", "-qq", "cargo", "rustc"], check=False)
+            _run_init_command(["apt-get", "update", "-qq"], "Rust apt index update", 120)
+            _run_init_command(["apt-get", "install", "-y", "-qq", "cargo", "rustc"], "Rust apt fallback install", 180)
 
-    # 3. Configure git identity
+    # 4. Make pnpm available on Kaggle images that ship Node/npm but omit the
+    # package-manager shim. Corepack remains first choice so repository
+    # packageManager pins are honored when pnpm is invoked in a worktree.
+    if not shutil.which("pnpm"):
+        corepack = shutil.which("corepack")
+        if corepack:
+            enable_result = run_command_safe([corepack, "enable", "pnpm"], cwd=SANDBOX_DIR, timeout=30)
+            if enable_result.exit_code != 0:
+                _safe_command_failure("pnpm Corepack shim", enable_result)
+            if not shutil.which("pnpm"):
+                activate_result = run_command_safe(
+                    [corepack, "prepare", "pnpm@10", "--activate"],
+                    cwd=SANDBOX_DIR,
+                    timeout=240,
+                )
+                if activate_result.exit_code != 0:
+                    _safe_command_failure("pnpm Corepack bootstrap", activate_result)
+
+        if not shutil.which("pnpm") and shutil.which("npm"):
+            npm_result = run_command_safe(
+                [shutil.which("npm") or "npm", "install", "--global", "pnpm@10"],
+                cwd=SANDBOX_DIR,
+                timeout=240,
+            )
+            if npm_result.exit_code != 0:
+                _safe_command_failure("pnpm npm bootstrap", npm_result)
+
+        if shutil.which("pnpm"):
+            print("[Init] pnpm is available for native Node verification.", flush=True)
+        else:
+            print("[Init Warning] pnpm could not be bootstrapped; pnpm repository verification will fail closed with the command receipt.", flush=True)
+
+    # 5. Install Cline in the Kaggle runtime when it is absent. Cline's
+    # compiled CLI is the sole engineering agent; no laptop binary or model
+    # fallback is used by the worker.
+    if not shutil.which("cline"):
+        npm = shutil.which("npm")
+        if not npm:
+            _run_init_command(["apt-get", "update", "-qq"], "Node/npm apt index update", 180)
+            _run_init_command(["apt-get", "install", "-y", "-qq", "nodejs", "npm"], "Node/npm install for Cline", 240)
+            npm = shutil.which("npm")
+        if not npm:
+            raise RuntimeError("Cline bootstrap failed: npm is unavailable in this Kaggle runtime.")
+        cline_install = run_command_safe(
+            [npm, "install", "--global", "--no-audit", "--no-fund", "cline@3.0.74"],
+            cwd=SANDBOX_DIR,
+            timeout=300,
+        )
+        if cline_install.exit_code != 0:
+            _safe_command_failure("Cline npm bootstrap", cline_install)
+            raise RuntimeError("Cline bootstrap failed: npm install did not complete successfully.")
+    if not resolve_cline_command():
+        raise RuntimeError("Cline bootstrap failed: executable is not on PATH after installation.")
+    print("[Init] Cline CLI is available for isolated worktree engineering.", flush=True)
+
+    # 6. Configure git identity
     subprocess.run(["git", "config", "--global", "user.name", "isearchxsolve"], check=False)
     subprocess.run(["git", "config", "--global", "user.email", "isearch.xsolve@gmail.com"], check=False)
 
 def configure_task_github_auth(task: dict) -> bool:
-    """Configure GitHub only from the credential supplied by this dispatch task."""
-    token = str(task.get("gh_token") or "").strip()
+    """Configure GitHub from the private Kaggle secret attached to this kernel."""
+    if isinstance(task, dict):
+        # Older queue entries carried this field. Never trust or retain it.
+        for secret_field in ("gh_token", "github_token", "github_pat", "authorization"):
+            task.pop(secret_field, None)
+    try:
+        from kaggle_secrets import UserSecretsClient
+        token = str(UserSecretsClient().get_secret("GITHUB_TOKEN") or "").strip()
+    except Exception as exc:
+        token = ""
+        print(f"[{ENGINE_ID}] Kaggle User Secret unavailable ({type(exc).__name__}); checking private credential dataset.", flush=True)
     if not token:
-        print(f"[{ENGINE_ID}] [FAIL-CLOSED] Dispatch task has no GitHub credential.", flush=True)
+        private_dataset_token = "/kaggle/input/omniroute-github-credential-20261026/github_token.txt"
+        try:
+            with open(private_dataset_token, "r", encoding="utf-8") as token_file:
+                token = token_file.read().strip()
+        except OSError:
+            token = ""
+    if not token:
+        print(f"[{ENGINE_ID}] [FAIL-CLOSED] Kaggle GITHUB_TOKEN is unavailable from private storage.", flush=True)
         return False
     os.environ["GH_TOKEN"] = token
     os.environ["GITHUB_TOKEN"] = token
@@ -2048,6 +2617,17 @@ _SPECULATIVE_DISPATCH_PATTERNS = (
     re.compile(r"\b(?:design/roadmap\s+proposal\s+only|proposal\s+only|not\s+an\s+active\s+deduction|illustrative\s+defaults?|pilot\s+economic\s+scenario)\b", re.IGNORECASE),
 )
 
+# Old append-only queue entries can predate the dispatcher-side mirror filter.
+# Keep the same exclusion at the execution boundary, where a stale record must
+# never consume a claim, model turn, or verification run.
+_MIRROR_DISPATCH_PATTERNS = (
+    re.compile(r"(?:^|/)gh-disc-[a-z0-9_.-]+(?:\s|$)", re.IGNORECASE),
+    re.compile(r"\[\s*nex\s+agent\s*\]", re.IGNORECASE),
+    re.compile(r"\b(?:github|gh)\s+discussion\s+mirror\b", re.IGNORECASE),
+    re.compile(r"\b(?:discussion[-_ ]mirror|discussion[-_ ]honeypot|mirror[-_ ]honeypot)\b", re.IGNORECASE),
+    re.compile(r"\b(?:mirrored|scraped|synced)\s+(?:from|github)\s+discussions?\b", re.IGNORECASE),
+)
+
 def is_speculative_dispatch_task(task: dict) -> bool:
     """Reject speculative roadmap records before they can reach model/build work."""
     if not isinstance(task, dict):
@@ -2061,8 +2641,22 @@ def is_speculative_dispatch_task(task: dict) -> bool:
         )
     return any(pattern.search(text) for pattern in _SPECULATIVE_DISPATCH_PATTERNS)
 
-def fetch_ledger_texts(body: str, limit: int = 100) -> List[str]:
-    """Read append-only fleet ledger records for replay protection."""
+
+def is_mirror_dispatch_task(task: dict) -> bool:
+    """Reject stale bot or discussion-mirror records before a fleet claim."""
+    if not isinstance(task, dict):
+        return True
+    text = " ".join(str(task.get(field) or "") for field in ("title", "body", "repo"))
+    labels = task.get("labels") or []
+    if isinstance(labels, list):
+        text += " " + " ".join(
+            str(label.get("name") or "") if isinstance(label, dict) else str(label)
+            for label in labels
+        )
+    return any(pattern.search(text) for pattern in _MIRROR_DISPATCH_PATTERNS)
+
+def fetch_ledger_rows(body: str, limit: int = 500) -> List[dict]:
+    """Preserve server timestamps for lease expiry and bounded recovery."""
     try:
         url = f"{DOOR}/say?body={urllib.parse.quote(body)}&token={urllib.parse.quote(DOOR_TOKEN)}&limit={int(limit)}"
         req = urllib.request.Request(url, headers={"User-Agent": "kaggle-engine"})
@@ -2071,20 +2665,141 @@ def fetch_ledger_texts(body: str, limit: int = 100) -> List[str]:
         if not isinstance(payload, dict) or not isinstance(payload.get("orders"), list):
             raise ValueError("invalid ledger response")
         orders = payload["orders"]
-        return [str(order.get("text") or "") for order in orders if isinstance(order, dict)]
+        return [order for order in orders if isinstance(order, dict)]
     except Exception as exc:
         print(f"[{ENGINE_ID}] ledger lookup failed for {body}: {type(exc).__name__}; blocking dispatch", flush=True)
         raise RuntimeError(f"Unable to verify {body} ledger; dispatch is blocked") from None
+
+
+def fetch_ledger_texts(body: str, limit: int = 500) -> List[str]:
+    """Historical claim lookup remains available to audit and replay callers."""
+    return [str(row.get("text") or "") for row in fetch_ledger_rows(body, limit)]
+
+
+def fetch_claim_lease_rows() -> List[dict]:
+    # Frequent renewals must not evict the durable attempt-count receipts.
+    return fetch_ledger_rows(FLEET_CLAIM_CHANNEL) + fetch_ledger_rows(FLEET_LEASE_CHANNEL)
+
+
+class FleetTaskLease:
+    """Renew one assigned task; lost ownership closes the publication gate."""
+
+    def __init__(self, task: dict, attempt: int):
+        self.task = task
+        self.attempt = attempt
+        self.run_id = uuid.uuid4().hex
+        self.stop = threading.Event()
+        self.lost = threading.Event()
+        self.thread = None
+
+    def receipt(self, kind: str) -> str:
+        return (
+            f"{kind} {self.task['task_id']} by {ENGINE_ID} for {task_reference(self.task)} "
+            f"attempt={self.attempt} run={self.run_id} "
+            f"lease_until={int(time.time() + CLAIM_LEASE_SECONDS)}"
+        )
+
+    def acquire(self) -> bool:
+        if not door_say(self.receipt("CLAIMED"), body=FLEET_CLAIM_CHANNEL):
+            return False
+        if not self.owned():
+            return False
+        self.thread = threading.Thread(target=self._renew, daemon=True)
+        self.thread.start()
+        return True
+
+    def owned(self) -> bool:
+        if self.lost.is_set():
+            return False
+        try:
+            claim, lease_until = current_claim(self.task, fetch_claim_lease_rows())
+            owned = bool(claim and event_run(claim['text']) == self.run_id and lease_until > time.time())
+        except Exception:
+            owned = False
+        if not owned:
+            self.lost.set()
+        return owned
+
+    def _renew(self):
+        while not self.stop.wait(CLAIM_HEARTBEAT_SECONDS):
+            if not self.owned() or not door_say(self.receipt("HEARTBEAT"), body=FLEET_LEASE_CHANNEL):
+                self.lost.set()
+                return
+
+    def close(self):
+        self.stop.set()
+        if self.thread:
+            self.thread.join(timeout=20)
+
+
+def fleet_lease_allows_publication() -> bool:
+    # Standalone engineering callers still run the original verification gates.
+    return _ACTIVE_TASK_LEASE is None or _ACTIVE_TASK_LEASE.owned()
+
+
+def execute_claimed_fleet_task(task: dict, lease: FleetTaskLease):
+    global _ACTIVE_TASK_LEASE
+    repo, number = task['repo'], task['issue_number']
+    suffix = f" for {repo}#{number} attempt={lease.attempt} run={lease.run_id}"
+    _ACTIVE_TASK_LEASE = lease
+    try:
+        door_say(f"EXECUTING {ENGINE_ID} Cline workflow{suffix}", body="BOUNTY_FLEET_EXECUTION")
+        print(f"[{ENGINE_ID}] Executing Cline verification workflow on {repo}#{number}, attempt {lease.attempt}...", flush=True)
+        pr_url = attempt_automated_pull_request(repo, number, task.get('title', ''), task.get('body', ''), live_mode=True)
+        if pr_url:
+            summary = (
+                f"Verified Cline worktree implementation for issue #{number}.\n\n"
+                "The linked pull request passed the required native verification and pre-PR gates."
+            )
+            receipt_ok = deliver_pr_receipt(
+                repo, number, pr_url, summary, task.get('title', ''),
+                task.get('author', ''), task.get('corridor_info', ''), task.get('reason', ''),
+            )
+            text = (f"SUCCESS {ENGINE_ID} opened verified PR and SHA-256 receipt: {pr_url}" if receipt_ok else
+                    f"FAILED {ENGINE_ID} PR exists but authoritative SHA-256 issue receipt failed: {pr_url}")
+        else:
+            diagnostic = get_execution_diagnostic() or "Cline workflow did not produce a verified pull request"
+            text = f"FAILED {ENGINE_ID} Cline execution failed closed: {diagnostic}"
+        door_say(text + suffix, body=FLEET_RESULT_CHANNEL)
+    except Exception as exc:
+        diagnostic = _sanitize_runtime_diagnostic(f"{type(exc).__name__}: {exc}", 500)
+        door_say(f"FAILED {ENGINE_ID} Cline execution exception: {diagnostic}" + suffix, body=FLEET_RESULT_CHANNEL)
+        print(f"[{ENGINE_ID}] Cline execution exception: {diagnostic}", flush=True)
+    finally:
+        _ACTIVE_TASK_LEASE = None
+        lease.close()
+
+def claimed_task_ids_from_texts(texts: List[str]) -> set[str]:
+    """Parse immutable claim receipts once for a complete queue poll."""
+    claimed = set()
+    for text in texts:
+        match = re.search(r"\bCLAIMED\s+(BT-\S+)", text, re.IGNORECASE)
+        if match:
+            claimed.add(match.group(1))
+    return claimed
+
+
+def terminal_task_refs_from_texts(texts: List[str]) -> set[str]:
+    """Parse terminal fleet result receipts into ``owner/repo#number`` refs."""
+    terminal_refs = set()
+    for text in texts:
+        if not re.match(r"\s*(?:SUCCESS|FAILED|SKIPPED)\b", text, re.IGNORECASE):
+            continue
+        match = re.search(r"\sfor\s+([^/\s]+/[^#\s]+)#(\d+)\b", text)
+        if match:
+            terminal_refs.add(f"{match.group(1)}#{match.group(2)}")
+    return terminal_refs
+
 
 def task_has_prior_fleet_claim(task_id: str) -> bool:
     """Treat an existing immutable fleet claim as a replay block."""
     if not task_id:
         return False
-    escaped_id = re.escape(task_id)
-    claim_pattern = re.compile(rf"\bCLAIMED\s+{escaped_id}\b", re.IGNORECASE)
-    return any(claim_pattern.search(text) for text in fetch_ledger_texts(FLEET_CLAIM_CHANNEL))
+    return task_id in claimed_task_ids_from_texts(
+        fetch_ledger_texts(FLEET_CLAIM_CHANNEL)
+    )
 
-def fetch_tasks(limit: int = 10) -> List[dict]:
+def fetch_tasks(limit: int = 100) -> List[dict]:
     try:
         url = f"{DOOR}/say?body={FLEET_QUEUE_CHANNEL}&token={DOOR_TOKEN}&limit={limit}"
         req = urllib.request.Request(url, headers={"User-Agent": "kaggle-engine"})
@@ -2094,7 +2809,12 @@ def fetch_tasks(limit: int = 10) -> List[dict]:
             tasks = []
             for o in orders:
                 try:
-                    tasks.append(json.loads(o.get("text", "{}")))
+                    task = json.loads(o.get("text", "{}"))
+                    if not isinstance(task, dict):
+                        continue
+                    for secret_field in ("gh_token", "github_token", "github_pat", "authorization"):
+                        task.pop(secret_field, None)
+                    tasks.append(task)
                 except Exception:
                     pass
             return tasks
@@ -2131,14 +2851,64 @@ def deliver_pr_receipt(repo: str, number: int, pr_url: str, proposal: str, title
         return False
 
 def run_worker_loop():
-    setup_kaggle_env()
+    startup_ok = door_say(
+        f"STARTING {ENGINE_ID} Kaggle environment bootstrap",
+        body="ENGINE_REGISTRATION",
+    )
+    print(
+        f"[{ENGINE_ID}] STARTING registration POST {'accepted' if startup_ok else 'not accepted'}",
+        flush=True,
+    )
+    try:
+        setup_kaggle_env()
+    except Exception as exc:
+        diagnostic = _sanitize_runtime_diagnostic(f"{type(exc).__name__}: {exc}", 300)
+        door_say(
+            f"DEGRADED {ENGINE_ID} environment bootstrap failed: {diagnostic}",
+            body="ENGINE_REGISTRATION",
+        )
+        raise
+
+    expected_tokenharbor_keys_raw = os.environ.get("TOKENHARBOR_EXPECTED_KEY_COUNT", "").strip()
+    try:
+        if os.environ.get("TOKENHARBOR_KEY_FILE") and not expected_tokenharbor_keys_raw:
+            raise RuntimeError("Private TokenHarbor dataset is missing its expected key-count contract.")
+        tokenharbor_status = _get_default_router().status()
+        if expected_tokenharbor_keys_raw and tokenharbor_status.get("total_keys") != int(expected_tokenharbor_keys_raw):
+            raise RuntimeError("TokenHarbor engine shard failed its key-count check; worker will not claim tasks.")
+    except Exception as exc:
+        diagnostic = _sanitize_runtime_diagnostic(f"{type(exc).__name__}: {exc}", 300)
+        door_say(
+            f"DEGRADED {ENGINE_ID} TokenHarbor shard initialization failed: {diagnostic}",
+            body="ENGINE_REGISTRATION",
+        )
+        raise
+    cline_ready, cline_message = configure_cline_for_engine()
+    if not cline_ready:
+        diagnostic = _sanitize_runtime_diagnostic(cline_message, 300)
+        door_say(
+            f"DEGRADED {ENGINE_ID} Cline configuration failed: {diagnostic}",
+            body="ENGINE_REGISTRATION",
+        )
+        raise RuntimeError(cline_message)
+    tokenharbor_key_file = os.environ.get("TOKENHARBOR_KEY_FILE", "")
+    tokenharbor_shard_id = os.path.basename(os.path.dirname(tokenharbor_key_file)) or "local-key-pool"
     print("=" * 70, flush=True)
     print(f"⚡ KAGGLE 5-ENGINE DISTRIBUTED WORKER INITIALIZED", flush=True)
     print(f"Engine ID: {ENGINE_ID}", flush=True)
+    print(
+        f"TokenHarbor shard ready: engine {ENGINE_INDEX}/{TOTAL_ENGINES}, "
+        f"{tokenharbor_shard_id} ({tokenharbor_status['total_keys']} private keys)",
+        flush=True,
+    )
+    print(f"Cline ready: {cline_message}", flush=True)
     print(f"Permanent Door: {DOOR}", flush=True)
     print("=" * 70, flush=True)
 
-    registration_ok = door_say(f"ONLINE {ENGINE_ID} ready for uncontested bounties", body="ENGINE_REGISTRATION")
+    registration_ok = door_say(
+        f"ONLINE {ENGINE_ID} release={RECOVERY_RELEASE} ready for uncontested bounties; TokenHarbor shard {tokenharbor_shard_id} verified ({tokenharbor_status['total_keys']} keys)",
+        body="ENGINE_REGISTRATION",
+    )
     print(
         f"[{ENGINE_ID}] ENGINE_REGISTRATION POST {'accepted' if registration_ok else 'not accepted'}",
         flush=True,
@@ -2148,12 +2918,22 @@ def run_worker_loop():
 
     while True:
         try:
-            tasks = fetch_tasks(limit=10)
+            # Read the complete active relay window.  Fetching only its newest
+            # ten records can strand earlier unclaimed tasks behind completed
+            # records forever in an append-only queue.
+            tasks = fetch_tasks(limit=100)
             if not tasks:
                 time.sleep(15)
                 continue
 
+            # Read claim receipts once per poll.  Besides avoiding a relay
+            # request for every task, this covers claim history older than the
+            # visible queue tail and preserves the immutable replay barrier.
+            claim_rows = fetch_claim_lease_rows()
+            result_rows = fetch_ledger_rows(FLEET_RESULT_CHANNEL)
+
             claim_attempted = set()
+            seen_refs = set()
             for task in tasks:
                 task_id = task.get("task_id", "")
                 repo = task.get("repo", "")
@@ -2167,12 +2947,27 @@ def run_worker_loop():
 
                 if not task_id or not repo or not number:
                     continue
-                if task_id in processed_tasks:
-                    continue
                 if task_id in claim_attempted:
                     continue
 
+                task_ref = f"{repo}#{number}"
+                # One queue record per issue owns its deterministic shard.
+                # Redispatches cannot give the same issue to two engines.
+                if task_ref in seen_refs:
+                    continue
+                seen_refs.add(task_ref)
+
+                # Deterministic Cryptographic Sharding: 0 cross-process or
+                # cross-machine drift.  Only the assigned engine records a
+                # terminal skip for a legacy invalid queue record.
+                task_hash = int(hashlib.sha256(task_id.encode("utf-8")).hexdigest()[:8], 16)
+                assigned_engine = (task_hash % TOTAL_ENGINES) + 1
+                if assigned_engine != ENGINE_INDEX:
+                    continue
+
                 if is_speculative_dispatch_task(task):
+                    if task_id in processed_tasks:
+                        continue
                     processed_tasks.add(task_id)
                     record_processed_task(task_id)
                     door_say(
@@ -2181,36 +2976,90 @@ def run_worker_loop():
                     )
                     continue
 
-                if task_has_prior_fleet_claim(task_id):
-                    print(f"[{ENGINE_ID}] Skipping replayed task with prior fleet claim: {task_id}", flush=True)
+                if is_mirror_dispatch_task(task):
+                    if task_id in processed_tasks:
+                        continue
+                    processed_tasks.add(task_id)
+                    record_processed_task(task_id)
+                    door_say(
+                        f"SKIPPED {ENGINE_ID} bot/discussion mirror task {task_id} for {repo}#{number}; no model or build launched",
+                        body=FLEET_RESULT_CHANNEL,
+                    )
                     continue
 
-                # Deterministic Cryptographic Sharding: 0 cross-process or cross-machine drift!
-                task_hash = int(hashlib.sha256(task_id.encode("utf-8")).hexdigest()[:8], 16)
-                assigned_engine = (task_hash % TOTAL_ENGINES) + 1
-                if assigned_engine != ENGINE_INDEX:
-                    continue  # Assigned to sibling engine in fleet
+                if is_nonsoftware_data_task(task):
+                    if task_id in processed_tasks:
+                        continue
+                    processed_tasks.add(task_id)
+                    record_processed_task(task_id)
+                    door_say(
+                        f"SKIPPED {ENGINE_ID} non-software banking transcript collection task {task_id} for {repo}#{number}; no model or build launched",
+                        body=FLEET_RESULT_CHANNEL,
+                    )
+                    continue
+
+                decision = recovery_decision(task, claim_rows, result_rows)
+                if not decision.allowed:
+                    continue
+
+                if not tokenharbor_has_ready_key():
+                    status = get_router_status()
+                    states = status.get("states", {})
+                    print(
+                        f"[{ENGINE_ID}] No READY TokenHarbor key; task remains unclaimed. "
+                        f"states={states}",
+                        flush=True,
+                    )
+                    break
+
+                # Do not claim work until this kernel can authenticate from
+                # its private Kaggle secret. Missing secrets must not burn a
+                # replay-protected task claim.
+                reset_task_diagnostics()
+                if not configure_task_github_auth(task):
+                    continue
 
                 print(f"\n⚡ [{ENGINE_ID}] CLAIMING TASK: {task_id} ({repo}#{number})", flush=True)
                 claim_attempted.add(task_id)
-                if not door_say(f"CLAIMED {task_id} by {ENGINE_ID}", body=FLEET_CLAIM_CHANNEL):
+                # Recheck after authentication, immediately before reserving.
+                claim_rows = fetch_claim_lease_rows()
+                result_rows = fetch_ledger_rows(FLEET_RESULT_CHANNEL)
+                decision = recovery_decision(task, claim_rows, result_rows)
+                if not decision.allowed:
+                    continue
+                lease = FleetTaskLease(task, decision.attempt)
+                if not lease.acquire():
                     print(
-                        f"[{ENGINE_ID}] Claim was not durably recorded; model/build work blocked for {task_id}.",
+                        f"[{ENGINE_ID}] Durable claim lease was not acquired; model/build work blocked for {task_id}.",
                         flush=True,
                     )
                     continue
-                processed_tasks.add(task_id)
-                record_processed_task(task_id)
 
-                if not configure_task_github_auth(task):
-                    door_say(f"FAILED {ENGINE_ID} dispatch task lacks a GitHub credential for {repo}#{number}", body=FLEET_RESULT_CHANNEL)
-                    continue
+                # Cline is the sole engineering agent. It receives the issue
+                # and the isolated worktree directly; no model proposal or
+                # DeepSeek fallback is generated before implementation.
+                execute_claimed_fleet_task(task, lease)
+                claim_rows = fetch_claim_lease_rows()
+                result_rows = fetch_ledger_rows(FLEET_RESULT_CHANNEL)
+                continue
 
                 # The authoritative issue assessment belongs in the execution
                 # half of the partition, so the laptop remains a dispatcher.
                 proposal = generate_grounded_proposal(repo, title, body, author, author_comments, turn=1)
                 if not proposal:
                     diag_reason = get_last_generation_diagnostic()
+                    if not tokenharbor_has_ready_key() and wait_for_tokenharbor_ready():
+                        print(
+                            f"[{ENGINE_ID}] TokenHarbor cooldown ended; retrying the initial generation once for {repo}#{number}.",
+                            flush=True,
+                        )
+                        proposal = generate_grounded_proposal(
+                            repo, title, body, author, author_comments, turn=1
+                        )
+                        diag_reason = get_last_generation_diagnostic()
+                if not proposal:
+                    diag_reason = diag_reason or "generation failed without a router diagnostic"
+                    record_execution_diagnostic("initial generation", diag_reason)
                     door_say(
                         f"FAILED {ENGINE_ID} generation failed closed: {diag_reason} for {repo}#{number}",
                         body=FLEET_RESULT_CHANNEL,
@@ -2242,6 +3091,11 @@ def run_worker_loop():
                             f"FAILED {ENGINE_ID} generation failed closed: {diagnostic} for {repo}#{number}",
                             body=FLEET_RESULT_CHANNEL,
                         )
+                    elif get_execution_diagnostic():
+                        door_say(
+                            f"FAILED {ENGINE_ID} verification failed closed: {get_execution_diagnostic()} for {repo}#{number}",
+                            body=FLEET_RESULT_CHANNEL,
+                        )
                     else:
                         door_say(f"FAILED {ENGINE_ID} verification failed for {repo}#{number}", body=FLEET_RESULT_CHANNEL)
 
@@ -2251,4 +3105,7 @@ def run_worker_loop():
             time.sleep(15)
 
 if __name__ == "__main__":
-    run_worker_loop()
+    if "--cline-proxy" in sys.argv:
+        run_cline_proxy_server()
+    else:
+        run_worker_loop()

@@ -13,8 +13,21 @@ sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 LEDGER_FILE = r"D:\anonym\scratch\deepseek_mass_attack_ledger.json"
 CSV_FILE = r"D:\anonym\scratch\deepseek_mass_attack_ledger.csv"
 
-TOKENHARBOR_API_KEY = "thk_live_GFsTA-sfrkKSDgkL_MGfoP0sQPjYH8moanW4YKGUiM-vwtHRyvEUiC5mvogxo-I3"
+TOKENHARBOR_API_KEY_ENV = "TOKENHARBOR_MASS_ATTACK_API_KEY"
 TOKENHARBOR_URL = "https://tokenharbor.ai/v1/chat/completions"
+TOKENHARBOR_FLEET_KEY_FILE = r"D:\anonym\vault\tokenharbor_keys.json"
+
+def get_tokenharbor_api_key():
+    api_key = os.environ.get(TOKENHARBOR_API_KEY_ENV, "").strip()
+    if not api_key:
+        raise RuntimeError("A dedicated mass-attack TokenHarbor key is required; shared fleet keys are not accepted.")
+    if os.path.exists(TOKENHARBOR_FLEET_KEY_FILE):
+        with open(TOKENHARBOR_FLEET_KEY_FILE, "r", encoding="utf-8") as handle:
+            fleet_doc = json.load(handle)
+        fleet_keys = fleet_doc if isinstance(fleet_doc, list) else fleet_doc.get("keys", fleet_doc.get("value", []))
+        if api_key in fleet_keys:
+            raise RuntimeError("Mass-attack TokenHarbor key overlaps the active fleet pool; refusing request.")
+    return api_key
 
 # Authentic Multi-Rail Payment Coordinates (From Baba's verified records)
 PAYMENT_COORDINATES = """
@@ -194,7 +207,7 @@ Strict rules:
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {TOKENHARBOR_API_KEY}"
+        "Authorization": f"Bearer {get_tokenharbor_api_key()}"
     }
     data = {
         "model": "deepseek-v4.1-flash:free",
