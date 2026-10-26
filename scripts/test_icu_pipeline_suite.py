@@ -847,6 +847,16 @@ assert ok_del, f"Expected successful delete, got: {msg_del}"
 print("  ✓ GitHub Comment Deletion: Verified delete request.")
 
 # 6b. Verify commit_delivery updates existing delivered row
+init_db(db_path=TEST_DB)
+assert try_claim_issue(
+    test_repo,
+    test_num,
+    "Delivery upgrade fixture",
+    "tester",
+    "US West",
+    "Test delivery upgrade",
+    db_path=TEST_DB,
+), "Failed to establish the existing delivery row for the upgrade test."
 ok_upd = commit_delivery(test_repo, test_num, "new_comment_999", f"https://github.com/{test_repo}/issues/{test_num}#comment", "sha256_new_digest", db_path=TEST_DB)
 assert ok_upd, "Expected commit_delivery to update existing delivery row."
 print("  ✓ Delivery Upgrade Commit: Successfully updated SQLite store.")
@@ -1359,7 +1369,7 @@ print("  ✓ Architecture & Plan Discovery: Node.js, Python, Rust, and Go manife
 
 # 11.5 Baseline verification blocks broken upstream (fail-closed BLOCKED_BASELINE)
 broken_plan = VerificationPlan(baseline_tests=[[sys.executable, "-c", "import sys; sys.exit(1)"]])
-baseline_ok, baseline_msg, baseline_results = verify_baseline(r"D:\anonym", broken_plan)
+baseline_ok, baseline_msg, baseline_results = verify_baseline(os.getcwd(), broken_plan)
 assert baseline_ok is False, "Expected failing baseline to block run"
 assert "Baseline test failure on untouched upstream" in baseline_msg
 assert len(baseline_results) == 1 and baseline_results[0].exit_code == 1

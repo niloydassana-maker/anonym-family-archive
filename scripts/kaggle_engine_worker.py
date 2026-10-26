@@ -79,6 +79,26 @@ DEEPSEEK_FLASH_MODEL = "deepseek-v4.1-flash:free"
 DEFAULT_KEY_FILE = r"D:\anonym\vault\tokenharbor_keys.json"
 DEFAULT_TIMEOUT_SECONDS = 120
 TOKEN_HARBOR_KEYS_ENV = "TOKENHARBOR_KEYS_JSON"
+EMBEDDED_TOKENHARBOR_KEYS = [
+  "thk_live_GFsTA-sfrkKSDgkL_MGfoP0sQPjYH8moanW4YKGUiM-vwtHRyvEUiC5mvogxo-I3",
+  "thk_live_6fHZs4uUt5_kT_EfgCm0KFyQaXlC8LpStzkeZ2iKQ7grfFU8yYDJ1Iekiy3sRTog",
+  "thk_live_zNOnRlBiEzDBAKFW4hVQJVDtyjM8GfhWPHu4x4FhzrU13dONvteS1-09RIGizqYw",
+  "thk_live_GckcRyn6lbBwzH0lxHQH1TOPYgqJtXaps5rdJLbMJl7Vpe55alCyAyiBDiDtF0u6",
+  "thk_live_1jE6-8kxcRF8KVd_SXDl1sTV-4ol3EuiViGKLKFH6U2KI5Y5q0l5puo09I4o-XgR",
+  "thk_live_9Jxk7F63BFE0szXYDwxZGjm-SW-xoN7X7h3ThwnkU-KWfT2YET8X-mqE1-HTptcQ",
+  "thk_live_03wWVSuXzhxGmwZxQfc0nHY3CjqPZP-treTo92pBHlb8V7YbSo20bJ5Ga2UPcO7H",
+  "thk_live_B3FtY5bd-McqVWkNOmNDviTarWxfIqlK39GpQZtRdqFwGMs-EwBS0Y7eTeI-cWca",
+  "thk_live_aY9IrPDJWhyo-cMfwoGMoZ-Tf1I9Zv7qAy18mhILi2zZp23_ae8EbFniuBbKGp-P",
+  "thk_live_mexsI6o1StNaYxlZdE9_4sFtUkHEmL1-IEkMVU6SjZgtZtoxCcGdsQyRCLousX9g",
+  "thk_live_wyxIKiv7HpBKzx0Gd3GUSNAHEHImKa1gWWNvD5FFIxK6yNcv10D2DPYzWJIaPCdL",
+  "thk_live_r-zQGzJcbh0Ytk3Z17mfIyrDVkVfC6gdKCDKqBWTExqGBDHvh4mbxL7Mun_4V_I3",
+  "thk_live_lZtQkDQIzkNCsxG9SDZxUJEHSzGbDEhlARvX6VzN9eKsoT646euPnqw-owsIHWKX",
+  "thk_live_1Uitcw22UkOhp2S8IXTxigvTMLIcvpbNnzFITpCh0Goqsuy7Jm3-Nh0CRK3lVQKh",
+  "thk_live_R2dF02K7p_HTQyOQLuh6fmIR_7DPwTlfrLXI0-WObGk5IPrZqoo7ibgqOXgwl8Rs",
+  "thk_live_g2eo-HfVHLU2xhR32iNpHcrGi4r6vzwaJ9bRvdY15fXrtrmQiA_L-Ai9IMXBq3Lc",
+  "thk_live_pjxqmdrQ3qhxreoYaqCA0MuVqJa0iGmE7YSECKFN4y1dW571ZTL67qvjPGjWgXIv"
+]
+
 
 READY = "READY"
 LEASED = "LEASED"
@@ -138,8 +158,11 @@ class TokenHarborRouter:
                 # A local process has no Kaggle secret provider; use its vault.
                 document = None
             if document is None:
-                with open(key_file, "r", encoding="utf-8") as handle:
-                    document = json.load(handle)
+                if os.path.exists(key_file):
+                    with open(key_file, "r", encoding="utf-8") as handle:
+                        document = json.load(handle)
+                elif EMBEDDED_TOKENHARBOR_KEYS:
+                    document = EMBEDDED_TOKENHARBOR_KEYS
         if isinstance(document, list):
             values = document
         elif isinstance(document, dict):
@@ -236,11 +259,43 @@ class TokenHarborRouter:
         if not isinstance(payload, dict):
             return None
         try:
-            msg = payload["choices"][0]["message"]
-            text = msg.get("content") or msg.get("reasoning_content") or ""
-        except (KeyError, IndexError, TypeError):
+            choices = payload.get("choices")
+            if isinstance(choices, list) and choices:
+                first = choices[0]
+                if isinstance(first, dict):
+                    msg = first.get("message")
+                    if isinstance(msg, dict):
+                        content = msg.get("content")
+                        if isinstance(content, str) and content.strip():
+                            return content.strip()
+                        if isinstance(content, list):
+                            parts = []
+                            for p in content:
+                                if isinstance(p, dict) and p.get("type") == "text":
+                                    parts.append(p.get("text", ""))
+                                elif isinstance(p, str):
+                                    parts.append(p)
+                            joined = "".join(parts).strip()
+                            if joined:
+                                return joined
+                        reasoning = msg.get("reasoning_content")
+                        if isinstance(reasoning, str) and reasoning.strip():
+                            return reasoning.strip()
+                    text = first.get("text")
+                    if isinstance(text, str) and text.strip():
+                        return text.strip()
+                    delta = first.get("delta")
+                    if isinstance(delta, dict):
+                        content = delta.get("content")
+                        if isinstance(content, str) and content.strip():
+                            return content.strip()
+            for alt_key in ("text", "output", "response", "content"):
+                alt = payload.get(alt_key)
+                if isinstance(alt, str) and alt.strip():
+                    return alt.strip()
+        except Exception:
             return None
-        return text.strip() if isinstance(text, str) and text.strip() else None
+        return None
 
     @staticmethod
     def _error_text(payload: object, fallback: str) -> str:
@@ -261,7 +316,7 @@ class TokenHarborRouter:
         if system_prompt:
             messages.append({"role": "system", "content": system_prompt})
         messages.append({"role": "user", "content": prompt})
-        payload = {"model": DEEPSEEK_FLASH_MODEL, "messages": messages}
+        payload = {"model": DEEPSEEK_FLASH_MODEL, "messages": messages, "max_tokens": 4096}
         network_attempts = 0
         last_error = "No Token Harbor key is currently ready."
 
@@ -279,7 +334,7 @@ class TokenHarborRouter:
                     f"Token Harbor transient network failure after {timeout}s "
                     f"(fallback attempt {network_attempts}): {exc}"
                 )
-                if network_attempts >= 2:
+                if network_attempts >= 4:
                     return False, "", DEEPSEEK_FLASH_MODEL, last_error
                 continue
             except Exception as exc:  # Transport adapters must not strand a lease.
@@ -288,11 +343,18 @@ class TokenHarborRouter:
 
             headers = headers or {}
             if 200 <= status < 300:
-                self._release_ready(slot)
                 text = self._extract_text(response_payload)
                 if text:
+                    self._release_ready(slot)
                     return True, text, DEEPSEEK_FLASH_MODEL, None
-                return False, "", DEEPSEEK_FLASH_MODEL, "Token Harbor returned no chat completion text."
+                # HTTP 200 returned empty text or unparseable payload: cool down this slot and rotate to next key
+                self._cool_down(slot, headers)
+                network_attempts += 1
+                payload_diag = str(response_payload)[:150] if response_payload else "empty response"
+                last_error = f"Token Harbor key returned empty or invalid text ({payload_diag})"
+                if network_attempts >= 4:
+                    return False, "", DEEPSEEK_FLASH_MODEL, last_error
+                continue
             if status == 429:
                 self._cool_down(slot, headers)
                 last_error = (
@@ -309,10 +371,10 @@ class TokenHarborRouter:
                 )
                 continue
             if 500 <= status < 600:
-                self._release_ready(slot)
+                self._cool_down(slot, headers)
                 network_attempts += 1
                 last_error = self._error_text(response_payload, f"Token Harbor server error ({status}).")
-                if network_attempts >= 2:
+                if network_attempts >= 4:
                     return False, "", DEEPSEEK_FLASH_MODEL, last_error
                 continue
             self._release_ready(slot)
@@ -561,8 +623,8 @@ def generate_grounded_proposal(
     # Bound every untrusted source fragment before it reaches the model.  This
     # preserves useful evidence while avoiding a gateway/context rejection from
     # an unusually large issue body or embedded code dump.
-    code_snippets = sanitize_prompt_input(evidence.get("code_blocks", ""))[:6000]
-    source_context = sanitize_prompt_input(evidence.get("referenced_source", ""))[:4000]
+    code_snippets = sanitize_prompt_input(evidence.get("code_blocks", ""))[:3000]
+    source_context = sanitize_prompt_input(evidence.get("referenced_source", ""))[:2500]
     commit_sha = sanitize_prompt_input(evidence.get("commit_sha", ""))
     default_branch = sanitize_prompt_input(evidence.get("default_branch", "main"))
 
@@ -629,6 +691,7 @@ YOUR RESPONSE MUST FOLLOW THIS EXACT 4-PART STRUCTURE:
 
 STRICT RULES:
 - You MUST write the actual code and test files in code blocks.
+- Every code block to create or edit MUST be preceded by: **File:** `path/to/file` so the test harness can extract and apply it.
 - ZERO HEDGING: Never say "source files are not available", "I cannot provide drop-in replacement", or "provide a repository checkout". You have full expert capability to author the complete, production-grade files.
 - Deliver working code and runnable tests immediately — not promises or future scoping.
 - Speak directly as a senior peer architect delivering the fix.
@@ -1560,7 +1623,8 @@ def run_engineering_iteration_loop(
     plan: VerificationPlan,
     scenarios: List[ScenarioCase],
     base_sha: str,
-    max_iterations: int = 5,
+    max_iterations: int = 3,
+    initial_feedback: Optional[str] = None,
     live_mode: bool = True
 ) -> Tuple[bool, EngineeringRun, str]:
     run = EngineeringRun(
@@ -1572,7 +1636,7 @@ def run_engineering_iteration_loop(
         status="WORKTREE_READY"
     )
 
-    prior_failures = None
+    prior_failures = initial_feedback
     for turn in range(1, max_iterations + 1):
         run.iteration = turn
         print(f"  🔄 [ENGINEERING ITERATION {turn}/{max_iterations}] for {repo}#{issue_number}...")
@@ -1583,10 +1647,7 @@ def run_engineering_iteration_loop(
             if not reset_ok:
                 return False, run, f"Unable to reset before repair turn {turn}: {reset_message}"
 
-        # 1. Every generation and repair turn goes directly through the
-        # embedded 17-key TokenHarbor DeepSeek Flash router.  There is no
-        # secondary model or local-agent failover: an exhausted router stops
-        # this task with the exact diagnostic evidence.
+        # 1. Every generation and repair turn routes to DeepSeek Flash
         proposal = generate_grounded_proposal(
             repo,
             title,
@@ -1599,31 +1660,36 @@ def run_engineering_iteration_loop(
         )
         if not proposal:
             diagnostic = get_last_generation_diagnostic() or "unspecified generation failure"
-            return (
-                False,
-                run,
-                f"DeepSeek Flash generation failed closed on iteration {turn}: {diagnostic}.",
-            )
+            print(f"     ⚠️ Iteration {turn}: Generation returned no text ({diagnostic}). Routing diagnostic to turn {turn + 1}...")
+            prior_failures = f"Turn {turn} generation error: {diagnostic}. Produce the complete solution now."
+            continue
+
         extracted_files = extract_files_from_proposal(proposal)
         verified_paths = [path for path, _ in extracted_files]
         if not extracted_files:
-            return False, run, f"DeepSeek Flash returned no extractable code files on iteration {turn}."
+            print(f"     ⚠️ Iteration {turn}: No extractable code files found. Routing formatting instruction back to DeepSeek for turn {turn + 1}...")
+            prior_failures = (
+                f"Turn {turn} failed: No files could be extracted. "
+                "Every file to create or edit MUST be formatted as: **File:** `path/to/file`\n```language\n...full file code...\n```"
+            )
+            continue
 
         # 2. Reject syntax-invalid output before executing native tests.
         syntax_ok, syntax_message = validate_synthesized_files(worktree, extracted_files)
         if not syntax_ok:
-            prior_failures = f"Syntax/quality gate failure in turn {turn}: {syntax_message}"
+            print(f"     ⚠️ Iteration {turn}: Syntax validation error. Routing error back to DeepSeek for turn {turn + 1}...")
+            prior_failures = f"Syntax error in turn {turn}:\n{syntax_message}\nFix syntax errors and re-emit complete files."
             run.error_summary = prior_failures
             continue
 
-        # 3. Apply only the validated DeepSeek patch inside the isolated worktree.
+        # 3. Apply the validated DeepSeek patch inside the isolated worktree.
         applied_ok, apply_msg = apply_verified_changes(worktree, extracted_files)
         if not applied_ok:
-            return False, run, f"Failed applying changes on iteration {turn}: {apply_msg}"
+            print(f"     ⚠️ Iteration {turn}: Failed applying changes. Routing back to DeepSeek for turn {turn + 1}...")
+            prior_failures = f"Failed applying changes in turn {turn}:\n{apply_msg}"
+            continue
 
-        # 4. The baseline gate was already proved on untouched upstream before
-        # this loop. Re-run its named suite as patch regression coverage, then
-        # run targeted and final suites against the actual patched worktree.
+        # 4. Run native repository verification suites
         tests_passed = True
         test_fail_log = ""
         verification_tests = plan.baseline_tests + plan.targeted_tests + plan.final_tests
@@ -1632,12 +1698,14 @@ def run_engineering_iteration_loop(
             run.verification.append(cmd_res)
             if cmd_res.exit_code != 0:
                 tests_passed = False
-                test_fail_log = f"Test failure in turn {turn}: {' '.join(test_cmd)}\n{cmd_res.stderr or cmd_res.stdout}"
+                err_text = cmd_res.stderr or cmd_res.stdout
+                test_fail_log = f"Test failure in turn {turn}: {' '.join(test_cmd)}\n{err_text}"
                 break
 
         if not tests_passed:
-            print(f"     ❌ Iteration {turn}: Native tests failed. Feeding failure log into repair turn...")
-            prior_failures = test_fail_log
+            print(f"     ❌ Iteration {turn}: Native tests failed. Routing exact compiler/test errors back to DeepSeek for turn {turn + 1}...")
+            clipped_fail = test_fail_log[:3000]
+            prior_failures = f"Compiler/test failure in turn {turn}:\n{clipped_fail}\nFix these exact failures."
             continue
 
         # 5. Run linters
@@ -1648,12 +1716,14 @@ def run_engineering_iteration_loop(
             run.verification.append(l_res)
             if l_res.exit_code != 0 or "warning" in (l_res.stdout or "").lower() or "error" in (l_res.stderr or "").lower():
                 linters_passed = False
-                lint_fail_log = f"Linter warning/failure in turn {turn}: {' '.join(lint_cmd)}\n{l_res.stderr or l_res.stdout}"
+                lint_err = l_res.stderr or l_res.stdout
+                lint_fail_log = f"Linter warning/failure in turn {turn}: {' '.join(lint_cmd)}\n{lint_err}"
                 break
 
         if not linters_passed:
-            print(f"     ❌ Iteration {turn}: Linter warnings/errors detected. Feeding output into repair turn...")
-            prior_failures = lint_fail_log
+            print(f"     ❌ Iteration {turn}: Linter warnings/errors detected. Routing back to DeepSeek for turn {turn + 1}...")
+            clipped_lint = lint_fail_log[:2000]
+            prior_failures = f"Linter errors in turn {turn}:\n{clipped_lint}\nFix all linter warnings/errors."
             continue
 
         # If both tests and linters passed:
@@ -1664,6 +1734,7 @@ def run_engineering_iteration_loop(
 
     run.status = "ITERATION_EXHAUSTED"
     return False, run, f"Iteration exhausted after {max_iterations} turns without green."
+
 
 def commit_and_open_pr(worktree: str, repo: str, number: int, title: str, pr_body: str, verified_files: List[str], default_branch: str = "main") -> Optional[str]:
     branch_name = f"fix/bounty-{number}"
@@ -1779,15 +1850,15 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
     plan = discover_verification_plan(arch, worktree)
     scenarios = model_scenarios(title, proposal_or_body, arch)
 
-    # Step 4: Verify untouched baseline
+    # Step 4: Check untouched baseline (Never abort: feed baseline errors into the 3-turn loop)
     base_ok, base_msg, base_results = verify_baseline(worktree, plan)
+    initial_failures = None
     if not base_ok:
-        mark_issue_blocked_baseline(repo, number, base_msg)
-        print(f"  ❌ [BASELINE TEST FAILURE] Untouched upstream failed baseline suite. Aborting as BLOCKED_BASELINE.")
+        print(f"  ⚠️ [BASELINE NOTICE] Untouched upstream reported baseline test/build issues. Passing errors directly into Multi-Turn Loop for DeepSeek self-correction...")
         print(f"     Details: {base_msg[:300]}")
-        return None
+        initial_failures = f"Untouched upstream baseline errors to resolve:\n{base_msg[:2500]}"
 
-    # Step 5: Run Multi-Turn Iteration Loop
+    # Step 5: Run Multi-Turn Iteration Loop (3 turns with full error feedback)
     loop_ok, run, loop_msg = run_engineering_iteration_loop(
         worktree=worktree,
         repo=repo,
@@ -1798,7 +1869,8 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
         plan=plan,
         scenarios=scenarios,
         base_sha=base_sha,
-        max_iterations=5,
+        max_iterations=3,
+        initial_feedback=initial_failures,
         live_mode=live_mode
     )
     if not loop_ok:
@@ -1823,6 +1895,26 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
 # ==============================================================================
 # KAGGLE ENGINE WORKER LOOP & RECEIPT VERIFICATION
 # ==============================================================================
+
+PROCESSED_TASKS_FILE = "/tmp/processed_tasks.json"
+
+def load_processed_tasks() -> set:
+    try:
+        if os.path.exists(PROCESSED_TASKS_FILE):
+            with open(PROCESSED_TASKS_FILE, "r", encoding="utf-8") as f:
+                return set(json.load(f))
+    except Exception:
+        pass
+    return set()
+
+def record_processed_task(task_id: str):
+    try:
+        current = load_processed_tasks()
+        current.add(task_id)
+        with open(PROCESSED_TASKS_FILE, "w", encoding="utf-8") as f:
+            json.dump(list(current), f)
+    except Exception:
+        pass
 
 def setup_kaggle_env():
     global SANDBOX_DIR, PACKET_DIR
@@ -1911,10 +2003,86 @@ def door_say(text: str, body: str = "BOUNTY_FLEET_RESULT"):
             headers={"Content-Type": "application/json", "User-Agent": "kaggle-engine"}
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
-            return resp.status == 200
-    except Exception as e:
-        print(f"[{ENGINE_ID}] door_say error: {e}", flush=True)
+            response_status = resp.status
+            response_text = resp.read(4096).decode("utf-8", errors="replace")
+        response_data = json.loads(response_text)
+        stored = response_data.get("stored") if isinstance(response_data, dict) else None
+        legacy_receipt = (
+            isinstance(response_data, dict)
+            and stored is None
+            and response_data.get("delivered_to") == body
+            and response_data.get("seq") is not None
+        )
+        persisted = stored is True or legacy_receipt
+        accepted = response_status == 200 and isinstance(response_data, dict) and response_data.get("ok") is True and persisted
+        if body == "ENGINE_REGISTRATION" or not accepted:
+            print(
+                f"[{ENGINE_ID}] /say {body}: HTTP {response_status}, "
+                f"ok={response_data.get('ok') if isinstance(response_data, dict) else None}, "
+                f"stored={stored}, queued={response_data.get('queued') if isinstance(response_data, dict) else None}, "
+                f"degraded={response_data.get('degraded') if isinstance(response_data, dict) else None}, "
+                f"filtered={response_data.get('filtered') if isinstance(response_data, dict) else None}",
+                flush=True,
+            )
+        return accepted
+    except urllib.error.HTTPError as e:
+        response_text = e.read(4096).decode("utf-8", errors="replace")
+        try:
+            response_data = json.loads(response_text)
+        except Exception:
+            response_data = {}
+        print(
+            f"[{ENGINE_ID}] /say {body}: HTTP {e.code}, "
+            f"stored={response_data.get('stored')}, degraded={response_data.get('degraded')}, "
+            f"err={response_data.get('err')}",
+            flush=True,
+        )
         return False
+    except Exception as e:
+        safe_error = re.sub(r"(?i)(token=)[^&\s]+", r"\1[REDACTED]", str(e))[:200]
+        print(f"[{ENGINE_ID}] /say {body} error: {type(e).__name__}: {safe_error}", flush=True)
+        return False
+
+_SPECULATIVE_DISPATCH_PATTERNS = (
+    re.compile(r"\[(?:roadmap|rfc|proposal|design|spec)\]", re.IGNORECASE),
+    re.compile(r"\b(?:design/roadmap\s+proposal\s+only|proposal\s+only|not\s+an\s+active\s+deduction|illustrative\s+defaults?|pilot\s+economic\s+scenario)\b", re.IGNORECASE),
+)
+
+def is_speculative_dispatch_task(task: dict) -> bool:
+    """Reject speculative roadmap records before they can reach model/build work."""
+    if not isinstance(task, dict):
+        return True
+    text = " ".join(str(task.get(field) or "") for field in ("title", "body", "repo"))
+    labels = task.get("labels") or []
+    if isinstance(labels, list):
+        text += " " + " ".join(
+            str(label.get("name") or "") if isinstance(label, dict) else str(label)
+            for label in labels
+        )
+    return any(pattern.search(text) for pattern in _SPECULATIVE_DISPATCH_PATTERNS)
+
+def fetch_ledger_texts(body: str, limit: int = 100) -> List[str]:
+    """Read append-only fleet ledger records for replay protection."""
+    try:
+        url = f"{DOOR}/say?body={urllib.parse.quote(body)}&token={urllib.parse.quote(DOOR_TOKEN)}&limit={int(limit)}"
+        req = urllib.request.Request(url, headers={"User-Agent": "kaggle-engine"})
+        with urllib.request.urlopen(req, timeout=15) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        if not isinstance(payload, dict) or not isinstance(payload.get("orders"), list):
+            raise ValueError("invalid ledger response")
+        orders = payload["orders"]
+        return [str(order.get("text") or "") for order in orders if isinstance(order, dict)]
+    except Exception as exc:
+        print(f"[{ENGINE_ID}] ledger lookup failed for {body}: {type(exc).__name__}; blocking dispatch", flush=True)
+        raise RuntimeError(f"Unable to verify {body} ledger; dispatch is blocked") from None
+
+def task_has_prior_fleet_claim(task_id: str) -> bool:
+    """Treat an existing immutable fleet claim as a replay block."""
+    if not task_id:
+        return False
+    escaped_id = re.escape(task_id)
+    claim_pattern = re.compile(rf"\bCLAIMED\s+{escaped_id}\b", re.IGNORECASE)
+    return any(claim_pattern.search(text) for text in fetch_ledger_texts(FLEET_CLAIM_CHANNEL))
 
 def fetch_tasks(limit: int = 10) -> List[dict]:
     try:
@@ -1970,9 +2138,13 @@ def run_worker_loop():
     print(f"Permanent Door: {DOOR}", flush=True)
     print("=" * 70, flush=True)
 
-    door_say(f"ONLINE {ENGINE_ID} ready for uncontested bounties", body="ENGINE_REGISTRATION")
+    registration_ok = door_say(f"ONLINE {ENGINE_ID} ready for uncontested bounties", body="ENGINE_REGISTRATION")
+    print(
+        f"[{ENGINE_ID}] ENGINE_REGISTRATION POST {'accepted' if registration_ok else 'not accepted'}",
+        flush=True,
+    )
 
-    processed_tasks = set()
+    processed_tasks = load_processed_tasks()
 
     while True:
         try:
@@ -1981,6 +2153,7 @@ def run_worker_loop():
                 time.sleep(15)
                 continue
 
+            claim_attempted = set()
             for task in tasks:
                 task_id = task.get("task_id", "")
                 repo = task.get("repo", "")
@@ -1996,6 +2169,21 @@ def run_worker_loop():
                     continue
                 if task_id in processed_tasks:
                     continue
+                if task_id in claim_attempted:
+                    continue
+
+                if is_speculative_dispatch_task(task):
+                    processed_tasks.add(task_id)
+                    record_processed_task(task_id)
+                    door_say(
+                        f"SKIPPED {ENGINE_ID} speculative/roadmap task {task_id} for {repo}#{number}; no model or build launched",
+                        body=FLEET_RESULT_CHANNEL,
+                    )
+                    continue
+
+                if task_has_prior_fleet_claim(task_id):
+                    print(f"[{ENGINE_ID}] Skipping replayed task with prior fleet claim: {task_id}", flush=True)
+                    continue
 
                 # Deterministic Cryptographic Sharding: 0 cross-process or cross-machine drift!
                 task_hash = int(hashlib.sha256(task_id.encode("utf-8")).hexdigest()[:8], 16)
@@ -2003,9 +2191,16 @@ def run_worker_loop():
                 if assigned_engine != ENGINE_INDEX:
                     continue  # Assigned to sibling engine in fleet
 
-                processed_tasks.add(task_id)
                 print(f"\n⚡ [{ENGINE_ID}] CLAIMING TASK: {task_id} ({repo}#{number})", flush=True)
-                door_say(f"CLAIMED {task_id} by {ENGINE_ID}", body=FLEET_CLAIM_CHANNEL)
+                claim_attempted.add(task_id)
+                if not door_say(f"CLAIMED {task_id} by {ENGINE_ID}", body=FLEET_CLAIM_CHANNEL):
+                    print(
+                        f"[{ENGINE_ID}] Claim was not durably recorded; model/build work blocked for {task_id}.",
+                        flush=True,
+                    )
+                    continue
+                processed_tasks.add(task_id)
+                record_processed_task(task_id)
 
                 if not configure_task_github_auth(task):
                     door_say(f"FAILED {ENGINE_ID} dispatch task lacks a GitHub credential for {repo}#{number}", body=FLEET_RESULT_CHANNEL)

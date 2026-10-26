@@ -25,6 +25,20 @@ def fetch_ledger(body, limit=10):
     except Exception as e:
         return [{"text": f"Error: {e}"}]
 
+def format_age(epoch_ts):
+    if not epoch_ts:
+        return ""
+    try:
+        now = time.time()
+        diff = max(0, int(now - float(epoch_ts)))
+        if diff < 60:
+            return f"[{diff}s ago]"
+        if diff < 3600:
+            return f"[{diff // 60}m ago]"
+        return f"[{diff // 3600}h {(diff % 3600) // 60}m ago]"
+    except Exception:
+        return ""
+
 def render_dashboard():
     os.system("cls" if os.name == "nt" else "clear")
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S IST")
@@ -41,29 +55,33 @@ def render_dashboard():
         for r in regs:
             text = str(r.get("text", ""))
             match = re.search(r"(?:ONLINE|ENGINE_ALIVE|STARTING|READY|DEGRADED)\s+([^\s]+)", text)
-            latest_by_engine[match.group(1) if match else text] = r
-        for r in list(latest_by_engine.values())[-5:]:
-            print(f"  🟢 {r.get('text', '')}")
+            key = match.group(1) if match else text
+            latest_by_engine[key] = r
+        for key, r in sorted(latest_by_engine.items())[-5:]:
+            age = format_age(r.get("at"))
+            print(f"  🟢 {age:<10} {r.get('text', '')}")
     else:
         print("  (Awaiting engine handshakes...)")
 
     # 2. Task Claims
-    claims = fetch_ledger(FLEET_CLAIM_CHANNEL, limit=8)
+    claims = fetch_ledger(FLEET_CLAIM_CHANNEL, limit=10)
     print("\n[2] RECENT TASK CLAIM RECORDS (append-only history):")
     if claims:
         for c in claims[-6:]:
-            print(f"  ⚡ {c.get('text', '')}")
+            age = format_age(c.get("at"))
+            print(f"  ⚡ {age:<10} {c.get('text', '')}")
     else:
         print("  (No active claims)")
 
     # 3. Execution Results
-    results = fetch_ledger(FLEET_RESULT_CHANNEL, limit=8)
+    results = fetch_ledger(FLEET_RESULT_CHANNEL, limit=15)
     print("\n[3] RECENT ENGINE RESULTS (append-only history):")
     if results:
-        for res in results[-6:]:
+        for res in results[-8:]:
             txt = res.get("text", "")
+            age = format_age(res.get("at"))
             icon = "✅" if "SUCCESS" in txt or "PR_OPENED" in txt else "❌"
-            print(f"  {icon} {txt}")
+            print(f"  {icon} {age:<10} {txt}")
     else:
         print("  (No execution verdicts yet - workers execute on qualified tasks)")
 
@@ -74,7 +92,7 @@ def render_dashboard():
         for t in all_tasks[-5:]:
             try:
                 td = json.loads(t.get("text", "{}"))
-                print(f"  📦 [{td.get('task_id', '')[:25]}] {td.get('repo')}#{td.get('issue_number')} - {td.get('title', '')[:45]}")
+                print(f"  📦 [{td.get('task_id', '')[:25]}] {td.get('repo')}#{td.get('issue_number')} - {td.get('title', '')[:40]}")
             except Exception:
                 print(f"  📦 {t.get('text', '')[:70]}")
     else:

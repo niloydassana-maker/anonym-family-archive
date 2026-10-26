@@ -40,7 +40,8 @@ os.makedirs(SANDBOX_DIR, exist_ok=True)
 FLEET_DOOR = "https://omniroute-relay.omniroute-fleet-kd.workers.dev"
 FLEET_DOOR_TOKEN = "GOLD24"
 FLEET_QUEUE_CHANNEL = "BOUNTY_FLEET_QUEUE"
-REMOTE_FLEET_MODE = False
+# The laptop owns search and dispatch. Repository execution runs in the Kaggle worker.
+REMOTE_FLEET_MODE = True
 
 def get_dispatch_github_token() -> Optional[str]:
     """Return a GitHub token for a fleet task without ever logging its value."""
@@ -234,6 +235,7 @@ def mark_issue_rejected(repo, number, reason, db_path=DB_FILE):
 def mark_issue_blocked_baseline(repo, number, reason, db_path=DB_FILE):
     """Persist an upstream failure distinctly so no patch is misrepresented as verified."""
     try:
+        init_db(db_path=db_path)
         with sqlite3.connect(db_path, timeout=30) as con:
             con.execute("""
             INSERT INTO deliveries (repo, issue_number, status, reason, delivered_at)
@@ -771,6 +773,14 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
 
     if _has_terminal_label(labels):
         return False, "Rejected by terminal issue label (wontfix, invalid, duplicate, or spam)"
+
+    repo_leaf = (repo or "").rstrip("/").rsplit("/", 1)[-1].lower()
+    if repo_leaf in {"portfolio", "personal-portfolio", "personal_portfolio"} and re.search(
+        r"\b(?:site|website|web site|homepage|landing page|footer email)\b",
+        full_text,
+        re.IGNORECASE,
+    ):
+        return False, "Rejected: personal portfolio website task is outside the approved commercial engineering queue."
 
     # Reject non-commercial student/contest programs, homelabs, and internal roadmap tickets
     student_patterns = [
@@ -2814,7 +2824,31 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
 
     return filtered_items
 
+def sync_fleet_results_to_local_db(db_path=DB_FILE):
+    """Sync results emitted by Kaggle engines back into the local SQLite store so state is never lost."""
+    try:
+        url = f"{FLEET_DOOR}/say?body=BOUNTY_FLEET_RESULT&token={FLEET_DOOR_TOKEN}&limit=50"
+        req = urllib.request.Request(url, headers={"User-Agent": "laptop-bounty-dispatcher"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            orders = data.get("orders", [])
+            for o in orders:
+                txt = o.get("text", "")
+                success_match = re.search(r"SUCCESS\s+[^\s]+\s+opened verified PR.*?(https://github\.com/[^\s]+)\s+for\s+([^\s#]+)#(\d+)", txt)
+                if success_match:
+                    pr_url, r_repo, r_num = success_match.group(1), success_match.group(2), int(success_match.group(3))
+                    mark_issue_delivered(r_repo, r_num, pr_url, "Verified PR opened by Kaggle fleet", db_path=db_path)
+                    continue
+                fail_match = re.search(r"FAILED\s+[^\s]+\s+(.*?)\s+for\s+([^\s#]+)#(\d+)", txt)
+                if fail_match:
+                    reason_msg, r_repo, r_num = fail_match.group(1), fail_match.group(2), int(fail_match.group(3))
+                    mark_issue_rejected(r_repo, r_num, f"Fleet execution: {reason_msg}", db_path=db_path)
+    except Exception as e:
+        print(f"  [Fleet Sync Notice] {e}", flush=True)
+
 def run_pipeline_cycle(live_mode=False, anytime=False):
+    if REMOTE_FLEET_MODE:
+        sync_fleet_results_to_local_db()
     init_db()
     now_utc = datetime.now(timezone.utc)
     current_ist = now_utc.astimezone(ZoneInfo("Asia/Kolkata"))
@@ -2913,7 +2947,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
 
     for q in dynamic_queries:
         print(f"\n[Search Query] {q}")
-        items = search_issues(q, limit=100)
+        items = search_issues(q, limit=1000)
         print(f"Found {len(items)} candidates.")
 
         for it in items:
@@ -2977,10 +3011,8 @@ def run_pipeline_cycle(live_mode=False, anytime=False):
     print(f"=======================================================")
 
 def main():
-    global REMOTE_FLEET_MODE
     live_mode = "--live" in sys.argv
     anytime = "--anytime" in sys.argv or "--24x7" in sys.argv
-    REMOTE_FLEET_MODE = "--remote-fleet" in sys.argv or "--dispatcher" in sys.argv or "--dispatcher-only" in sys.argv
     run_once = "--once" in sys.argv
     cycle_interval_seconds = 180  # 3 minutes between follow-the-sun sweeps
 
