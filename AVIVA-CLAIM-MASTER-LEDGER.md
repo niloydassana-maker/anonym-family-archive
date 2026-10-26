@@ -28,16 +28,20 @@
    * Ticket Subject: `RE:'AvivaIndia=022-512-597' Policy Status & Payout Inquiry — Policy No: NHP0044617 — Kunal Das`
    * Aviva Case / Reference: `022-512-597`
    * Aviva's Security Response (2026-10-19 17:53 IST): Policy `01210020` confirmed in database. Payout disclosure held because sender was Gmail instead of registered contact. Attached Non-Financial Endorsement (NFE) Form.
-2. **Official Resolution & Registered Dispatch (from Yahoo Mail):**
-   * **Sender:** `kunal_nit@yahoo.co.in` (The authentic registered email)
-   * **Recipient:** `csc@avivaindia.com`
-   * **Dispatched Timestamp:** **Monday, 19 October 2026 at 6:19 PM IST**
-   * **Subject:** `Complete Policy Claim & Settlement Details - Policy No: 01210020 / NHP0044617 - Kunal Das`
-   * **Body Content (1,433 characters):** Full policy numbers, DOB, PAN, old Docomo number, active mobile numbers, and formal demand for policy status, fund/maturity payout amount, latest policy statement, and claim settlement forms.
-   * **Cryptographic / Visual Proof:** 
-     - Pre-send validation: `D:\anonym\war-log\yahoo_verified_body.png`
-     - Sent confirmation in Yahoo Sent folder: `D:\anonym\war-log\yahoo_verified_sent_body.png`
-3. **Web Portal Audit (MyAviva eConnect):**
+2. **Official Resolution & Registered Dispatch (from Yahoo Mail & Gmail):**
+   * **Sender:** `kunal_nit@yahoo.co.in` & `isearch.xsolve@gmail.com`
+   * **Recipient:** `csc@avivaindia.com` / `customerservices@avivaindia.com`
+   * **NFE Form Submission:** 22 October 2026 with self-attested PAN, Aadhaar, and Kotak Bank cancelled cheque.
+3. **Official Bank Account Endorsement Confirmation (26 October 2026 14:25 IST):**
+   * Aviva Service Ref No: `4750208`
+   * Aviva Confirmation: *"Your request to update the Bank Account details for Kunal Das is accepted and our records have been updated successfully."*
+   * Bank Name: **KOTAK MAHINDRA BANK LIMITED**
+   * Bank Account: **`5550559381`**
+   * Policy No: **`01210020`** (Aviva Health Plus)
+4. **Formal Policy Status & Valuation Request Dispatched (26 October 2026 22:07 IST):**
+   * Dispatched under Ticket `022-512-597` directly to `customerservices@avivaindia.com` (CC: `kunal_nit@yahoo.co.in`).
+   * Demanding official Policy Status (Lapsed/Paid-Up/Closed), total credited premiums, and net payable surrender/refund value (if any).
+5. **Web Portal Audit (MyAviva eConnect):**
    * Attempting login at `online.avivaindia.com/econnect` showed *"You are not registered with us. Please Click here to register."*
    * **Reason:** This was an offline 2000s policy. An online portal account has never been generated. This is normal and does NOT affect policy validity.
 

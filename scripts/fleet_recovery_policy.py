@@ -25,6 +25,8 @@ def non_engineering_dispatch_reason(task: dict) -> str:
         title + '\n' + body, re.I,
     ):
         return 'bot/discussion mirror, not the original funded issue'
+    if re.search(r'\b(?:daily|weekly|monthly|tech|news|ai)\s+(?:news\s+)?(?:digest|summary|roundup|recap|newsletter|briefing)\b', title, re.I):
+        return 'dated news archive or periodic digest; quoted opportunities are not this issue\'s bounty'
     if re.search(r'^hacker\s+news\s+daily\b', title, re.I) and re.search(
         r'\b20\d{2}[-/]\d{2}[-/]\d{2}\b', title
     ):
@@ -45,6 +47,16 @@ def non_engineering_dispatch_reason(task: dict) -> str:
     if re.search(r'<!DOCTYPE\s+html|<html(?:\s+lang=[^>]+)?>|<head>[\s\S]*?<body', body, re.I):
         if not re.search(r'https?://[^\s)]+(?:algora\.io|polar\.sh|gitcoin\.co|opire\.dev)', body, re.I):
             return 'raw HTML source code dump or prototype template; embedded mock amounts are not authoritative bounty funding'
+    if re.search(
+        r'\b(?:share\s+the\s+whitepaper|announce\s+the\s+.*(?:project|whitepaper|token|network\s+launch)|'
+        r'post\s+on\s+forums|online\s+forums|cryptography\s+communities|social\s+media\s+campaign|'
+        r'telegram\s+group|discord\s+moderation|community\s+management|marketing\s+campaign|'
+        r'promote\s+on|write\s+an\s+article\s+about|gather\s+and\s+analyze\s+community\s+feedback|'
+        r'establish\s+communication\s+channels|create\s+basic\s+tutorials\s+and\s+guides)\b',
+        title + '\n' + body,
+        re.I
+    ):
+        return 'marketing, whitepaper sharing, or community outreach task, not a software engineering issue'
     return ''
 
 _HARD_FAILURE = re.compile(

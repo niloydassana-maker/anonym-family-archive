@@ -534,6 +534,88 @@ def detect_author_corridor(author):
 # -------------------------------------------------------------
 # 3. HIGH-RECALL BOUNTY & COMMERCIAL ENGAGEMENT GATE
 # -------------------------------------------------------------
+DYNAMIC_DISCOVERY_QUERIES = [
+    # Tier 1: Core Verified Bounty Platforms (Live API / Commenter / Direct Attestation)
+    'commenter:algora-pbc',
+    'commenter:algora-pbc language:typescript',
+    'commenter:algora-pbc language:rust',
+    'commenter:algora-pbc language:python',
+    '"console.algora.io"',
+    'algora.io',
+    'polar.sh',
+    'opire.dev',
+    'bountycaster "$"',
+    # Tier 2: Specific Priced Queries (Predicate Pushdown of Hard Pricing & Repo Quality Gates)
+    'bounty "$50" stars:>=3',
+    'bounty "$100" stars:>=3',
+    'bounty "$150" stars:>=3',
+    'bounty "$200" stars:>=3',
+    'bounty "$250" stars:>=3',
+    'bounty "$300" stars:>=3',
+    'bounty "$500" stars:>=3',
+    'bounty "$1000" stars:>=3',
+    'bounty "USDC" stars:>=3',
+    'bounty "USDT" stars:>=3',
+    # Tier 3: High-Confidence Title Anchors with Explicit Price Predicate
+    '"[BOUNTY] Critical" stars:>=3',
+    '"[BOUNTY] High" stars:>=3',
+    '"[BOUNTY] Medium" stars:>=3',
+    '"[BOUNTY]" "$" stars:>=3',
+    '"[Bug bounty]" "$" stars:>=3',
+    'bounty in:title "$" stars:>=3',
+    'bounty in:title "$100" stars:>=3',
+    'bounty in:title "$250" stars:>=3',
+    # Tier 4: Precision Labeled & Escrowed Bounties with Explicit Currency
+    '--label bounty "$"',
+    '--label "bug bounty" "$"',
+    '--label "paid bounty" "$"',
+    '--label "funded" "$"',
+    # Tier 5: Engineering Corridors with Explicit Price Predicate
+    'bounty "$" concurrency stars:>=3',
+    'bounty "$" performance stars:>=3',
+    'bounty "$" "memory leak" stars:>=3',
+    'bounty "$" "race condition" stars:>=3',
+    'bounty "$" rust stars:>=3',
+    'bounty "$" python stars:>=3',
+    'bounty "$" golang stars:>=3',
+    'bounty "$" typescript stars:>=3',
+    'bounty "$" "smart contract" stars:>=3',
+    'bounty "$" backend stars:>=3',
+    'bounty "$" database stars:>=3',
+    'bounty "$" distributed stars:>=3',
+]
+
+def extract_upstream_issue_from_aggregator(body: str) -> tuple[str, int] | None:
+    """
+    Extracts the authoritative upstream GitHub issue (repo, number) from an aggregator/mirror issue body.
+    Returns (repo, number) if a valid upstream issue is referenced, or None if circular/invalid.
+    """
+    if not body:
+        return None
+    patterns = [
+        r"(?:###\s*(?:原始链接|Source\s*URL|Platform\s*URL)[^\n]*\n+)\s*https?://github\.com/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)/issues/(\d+)",
+        r"\bupstream\s*issue\s*[:=-]?\s*\[?([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)#(\d+)",
+        r"(?:source\s*url|platform\s*url|original\s*issue|target\s*issue|issue\s*url|enlace)\s*[:=]?\s*\[?[^\]\n]*\]?\s*\(?https?://github\.com/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)/issues/(\d+)",
+        r"https?://github\.com/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)/issues/(\d+)",
+    ]
+    known_aggregators = {
+        "bounty-plaza", "bounty-bot", "bounty-watcher", "sn-monetization",
+        "bountyscout", "open-source-bounties", "devpool-directory", "mergeearn",
+        "securebananalabs", "poyraz", "louis-os", "news-radar", "agentis-colonies", "superteam-earn"
+    }
+    for pat in patterns:
+        matches = re.findall(pat, body, re.IGNORECASE)
+        for repo, num_str in matches:
+            repo_lower = repo.lower()
+            if any(agg in repo_lower for agg in known_aggregators):
+                continue
+            try:
+                num = int(num_str)
+                return (repo, num)
+            except ValueError:
+                continue
+    return None
+
 FX_TO_USD = {
     "$": Decimal("1.00"),
     "usd": Decimal("1.00"),
@@ -649,6 +731,8 @@ def parse_and_normalize_bounty(text, crypto_usd_rates=None):
     source = strip_markup_and_code(text)
     # Strip KPI metrics, protocol TVL, volume, valuation, ARR/MRR targets
     source = re.sub(r"(?:\$|usd|usdc|eur|€|gbp|£)\s*[\d,]+(?:\.\d+)?[kmb]?\+?\s*(?:tvl|volume|mcap|market\s+cap|valuation|arr|mrr|fdv|liquidity|treasury|pool)\b", " ", source, flags=re.IGNORECASE)
+    source = re.sub(r"(?:\$|usd|usdc|eur|€|gbp|£)\s*[\d,]+(?:\.\d+)?\s*(?:billion|trillion|b)\b", " ", source, flags=re.IGNORECASE)
+    source = re.sub(r"(?:\$|usd|usdc|eur|€|gbp|£)\s*[\d,]+(?:\.\d+)?\s*/\s*(?:mo|month|yr|year|hr|hour|day|week|user|seat|vps|server)\b", " ", source, flags=re.IGNORECASE)
     crypto_usd_rates = {
         str(key).lower(): Decimal(str(value))
         for key, value in (crypto_usd_rates or {}).items()
@@ -1057,8 +1141,9 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
                 amount_reason = f"Parsed tier {raw_amount} (~${tier_val} USD)"
 
     # Verified/attested paid work does not require outage vocabulary
+    has_approved_task_label = any(str(lbl.get("name", "")).lower() in ("approved", "bounty", "funded") for lbl in labels if isinstance(lbl, dict))
     maintainer_offer = maintainer and (
-        _has_direct_offer_language(full_text) or has_bounty_title or has_bounty_label or
+        _has_direct_offer_language(full_text) or has_bounty_title or has_bounty_label or has_approved_task_label or
         bool(re.search(r"\b(?:bounty|reward|prize)\b", full_text, re.IGNORECASE))
     )
 
@@ -1365,12 +1450,12 @@ def sanitize_and_validate_payload(content):
 # -------------------------------------------------------------
 def get_issue_fast(repo, number):
     """
-    Two-tier fetch:
-    1. Fast tier: body, author, title, labels, state (0.8s, never times out)
-    2. Deep tier: comments fetched ONLY if body does not contain payment signal and technical context exists
+    Reliable single-pass issue & platform comment fetch.
+    Fetches body, author, title, labels, state, and comments in one shot (0.8s),
+    ensuring platform bounty declarations (algora-pbc, polar, opire, /bounty) are never dropped.
     """
-    cmd = ["gh", "issue", "view", str(number), "--repo", repo, "--json", "body,author,title,labels,state"]
-    out, err, code = run_cmd(cmd, timeout=20)
+    cmd = ["gh", "issue", "view", str(number), "--repo", repo, "--json", "body,author,title,labels,state,comments"]
+    out, err, code = run_cmd(cmd, timeout=25)
     if code != 0 or not out:
         return None
     try:
@@ -1393,38 +1478,22 @@ def get_issue_fast(repo, number):
         a_out, a_err, a_code = run_cmd(cmd_assoc, timeout=10)
         data["authorAssociation"] = a_out.strip() if a_code == 0 and a_out else "NONE"
 
-    # Check if issue text or comments indicate payment or engineering context
     body = data.get("body", "")
-    author = author_login
     author_comments = []
-
-    combined_text = (data.get("title", "") + " " + (body or "")).lower()
-    should_fetch_comments = any(token in combined_text for token in [
-        "bounty", "reward", "paid", "pay", "algora", "polar",
-        "gitcoin", "bountysource", "opire", "$", "usdc", "usdt", "eth", "sol",
-        "bug", "error", "crash", "hang", "fail", "runtime", "issue", "fix", "memory", "perf"
-    ])
-
-    if should_fetch_comments:
-        c_cmd = ["gh", "issue", "view", str(number), "--repo", repo, "--json", "comments"]
-        c_out, c_err, c_code = run_cmd(c_cmd, timeout=15)
-        if c_code == 0 and c_out:
-            try:
-                comments = json.loads(c_out).get("comments", [])
-                for comment in comments:
-                    commenter = comment.get("author", {}) or {}
-                    login = (commenter.get("login") or "").lower()
-                    comment_body = comment.get("body", "") or ""
-                    is_platform_actor = (
-                        commenter.get("is_bot")
-                        or any(name in login for name in
-                               ("algora", "polar", "gitcoin", "bountysource", "opire", "bountybot"))
-                        or _has_platform_bounty_marker(comment_body)
-                    )
-                    if login == str(author_login).lower() or is_platform_actor:
-                        author_comments.append(comment_body)
-            except Exception:
-                pass
+    comments = data.get("comments", [])
+    if isinstance(comments, list):
+        for comment in comments:
+            commenter = comment.get("author", {}) or {}
+            login = (commenter.get("login") or "").lower()
+            comment_body = comment.get("body", "") or ""
+            is_platform_actor = (
+                commenter.get("is_bot")
+                or any(name in login for name in
+                       ("algora", "polar", "gitcoin", "bountysource", "opire", "bountybot"))
+                or _has_platform_bounty_marker(comment_body)
+            )
+            if login == str(author_login).lower() or is_platform_actor:
+                author_comments.append(comment_body)
 
     data["author_comments"] = author_comments
     return data
@@ -2974,15 +3043,29 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
     else:
         parts = list(query)
     # Filter out state/comments if already in query
+    has_comments_flag = any(p.startswith("--comments") or p.startswith("comments:") for p in parts)
+    has_assignee_flag = any(p.startswith("--assignee") or p.startswith("assignee:") or p == "--no-assignee" for p in parts)
+    has_archived_flag = any(p.startswith("--archived") or p.startswith("archived:") for p in parts)
+    has_visibility_flag = any(p.startswith("--visibility") or p.startswith("visibility:") for p in parts)
+
     clean_parts = [p for p in parts if not p.startswith("state:") and not p.startswith("comments:")]
     cmd = ["gh", "search", "issues"] + clean_parts + [
         "--state", "open",
-        "--comments", "<=2",
+    ]
+    if not has_assignee_flag:
+        cmd.append("--no-assignee")
+    if not has_archived_flag:
+        cmd.append("--archived=false")
+    if not has_visibility_flag:
+        cmd.extend(["--visibility", "public"])
+    if not has_comments_flag:
+        cmd.extend(["--comments", "<=2"])
+    cmd.extend([
         "--sort", sort_by,
         "--order", order,
         "--limit", str(limit),
         "--json", "number,title,repository,url,labels,createdAt,updatedAt,commentsCount,authorAssociation,body,author"
-    ]
+    ])
     out, err, code = run_cmd(cmd, timeout=75)
     if code != 0:
         print(f"  [GitHub Search Error] {((err or out) or 'unknown failure')[:240]}")
@@ -3008,6 +3091,48 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
             continue
 
         task = {"repo": repo, "title": title, "body": body}
+        agg_reason = non_engineering_dispatch_reason(task)
+        if agg_reason == "bounty discovery aggregator, not the original funded issue" or (
+            repo and any(agg in repo.lower() for agg in ("bounty-plaza", "bounty-bot", "open-source-bounties", "sn-monetization", "bountyscout"))
+        ):
+            upstream = extract_upstream_issue_from_aggregator(body)
+            if upstream:
+                up_repo, up_num = upstream
+                # Skip upstream if it's already a crowded thread (> 3 comments) or closed
+                probe_cmd = ["gh", "api", f"repos/{up_repo}/issues/{up_num}", "--jq", "{state: .state, comments: .comments}"]
+                p_out, _, p_code = run_cmd(probe_cmd, timeout=8)
+                if p_code == 0 and p_out:
+                    try:
+                        p_meta = json.loads(p_out)
+                        if p_meta.get("state") != "open" or p_meta.get("comments", 0) > 3:
+                            continue
+                    except Exception:
+                        pass
+                up_data = get_issue_fast(up_repo, up_num)
+                if up_data and up_data.get("state") == "OPEN":
+                    repo = up_repo
+                    number = up_num
+                    title = up_data.get("title", "")
+                    body = up_data.get("body", "") or ""
+                    labels = up_data.get("labels", [])
+                    author_assoc = (up_data.get("authorAssociation") or "NONE").upper()
+                    author = (up_data.get("author") or {}).get("login", "")
+                    it = {
+                        "repository": {"nameWithOwner": repo},
+                        "number": number,
+                        "title": title,
+                        "url": f"https://github.com/{repo}/issues/{number}",
+                        "labels": labels,
+                        "createdAt": up_data.get("createdAt", it.get("createdAt", "")),
+                        "commentsCount": len(up_data.get("author_comments", [])),
+                        "authorAssociation": author_assoc,
+                        "body": body,
+                        "author": up_data.get("author", {}),
+                    }
+                    task = {"repo": repo, "title": title, "body": body}
+            else:
+                continue
+
         if non_engineering_dispatch_reason(task) or is_nonsoftware_data_task(task):
             continue
         author_object = it.get("author") or {}
@@ -3043,9 +3168,9 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
             "bujiproject-art" in repo_lower or
             re.search(r"^claiming\s+bounty\b", title_lower) or
             re.search(r"\b(?:payout\s+claim|bounty\s+claim|claiming\s+(?:a\s+)?bounty)\b", issue_text_lower) or
-            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed|arxiv|bounty[-_]plaza|bounty[-_]arcade|bounty[-_]bot)\b", repo_lower) or
+            re.search(r"\b(?:picker|reading[-_]list|weekly|digest|awesome[-_]|bookmarks|news[-_]feed|arxiv|bounty[-_]plaza|bounty[-_]arcade|bounty[-_]bot|gossip[-_]bot)\b", repo_lower) or
             re.search(r"(?:每日信息流|信息流|日报|周报|资讯|快讯|每日精选)", title_lower) or
-            re.search(r"\b(?:daily\s+digest|weekly\s+digest|newsletter|reading\s+list|curated\s+list|showing\s+new\s+listings)\b", title_lower) or
+            re.search(r"\b(?:daily|weekly|monthly|tech|news|ai)\s+(?:news\s+)?(?:digest|summary|roundup|recap|newsletter|reading\s+list|curated\s+list|briefing|stream|showing\s+new\s+listings)\b", title_lower) or
             re.search(r"\b(?:arxiv\s+daily|daily\s+arxiv|paper\s+digest|new\s+papers|daily\s+papers)\b", title_lower) or
             re.search(r"\b(?:hackathon|hack\s+weekend|game\s+jam|prize\s+pool|demo\s+video|t&c\s+compliance|submission\s+checklist)\b", title_lower) or
             re.search(r"\b(?:opportunity\s+router|ranked\s+opportunities)\b", title_lower) or
@@ -3301,62 +3426,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
     # Phase 2: Dynamic Search
     # High-Complexity Hard Tasks & Uncontested Bounties (Minimum Engagement: comments <= 2)
     print(f"\n--- PHASE 2: High-Complexity Hard Tasks & Uncontested Bounties (comments <= 2) ---")
-    dynamic_queries = [
-        # Tier 1: Core Verified Bounty Platforms (Highest Yield & Commercial Integrity)
-        'algora.io',
-        'polar.sh',
-        'opire.dev',
-        'bountycaster',
-        'replit.com/bounties',
-        'bounty "usdc"',
-        'bounty "usdt"',
-        'bounty "$"',
-        '"[Bug bounty]"',
-        '"[BOUNTY]"',
-        'bounty in:title',
-
-        # Tier 2: Currency & Explicit Offer Signals
-        'bounty "will pay"',
-        'bounty "willing to pay"',
-        'bounty "offering"',
-        '"paid bounty"',
-        '"issue bounty"',
-        '"bounty reward"',
-        'bounty "reward"',
-        'bounty "sol"',
-        'bounty "eth"',
-        'bounty "dai"',
-        'bounty "usd"',
-        'bounty "inr"',
-        'bounty "eur"',
-        '--label bounty',
-        '--label "bug bounty"',
-        '--label "paid bounty"',
-        '--label "funded"',
-
-        # Tier 3: Deep Systems & Hard Architecture Keywords
-        'bounty "concurrency"',
-        'bounty "race condition"',
-        'bounty "memory leak"',
-        'bounty "deadlock"',
-        'bounty "performance"',
-        'bounty "smart contract"',
-        'bounty "consensus"',
-        'bounty "compiler"',
-        'bounty "distributed"',
-        'bounty "zero-knowledge"',
-        'bounty "database"',
-        'bounty "cache"',
-        'bounty "websocket"',
-        'bounty "security"',
-        'bounty "solana"',
-        'bounty "rust"',
-        'bounty "golang"',
-        'bounty "python"',
-        'bounty "typescript"',
-        'bounty "backend"',
-        'bounty "api"',
-    ]
+    dynamic_queries = list(DYNAMIC_DISCOVERY_QUERIES)
 
     current_pass = None
     for pass_name, q, query_limit in discovery_query_schedule(dynamic_queries, search_limit, fresh_limit):
