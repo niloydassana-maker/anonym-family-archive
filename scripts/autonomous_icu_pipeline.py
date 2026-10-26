@@ -1075,6 +1075,9 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     if has_amount and not amount_in_bounds:
         return False, amount_reason
 
+    if has_amount and amount_in_bounds:
+        return False, f"Payment amount parsed ({amount_reason}), but no qualifying payer authority or bounty attestation."
+
     return False, "Lacks explicit parsed currency amount within consulting bounds ($20 to $9,999,999 USD equivalent). Bare 'happy to pay' without amount rejected."
 
 # -------------------------------------------------------------
