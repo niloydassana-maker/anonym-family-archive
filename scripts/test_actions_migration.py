@@ -9,16 +9,16 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from actions_dispatch import query_window
+from actions_dispatch import discover, query_window
 from actions_github import GitHub, GitHubError, StateStore, task_id
 from actions_reconcile import classify_checks
 from actions_release import (git, manifest, protect_baseline_tests, regression_proof,
-                             require_commands, safe_path, status_paths, validate_plan_contract)
+                             require_commands, safe_path, status_paths, validate_plan_contract, restore_checkpoint)
 from bounty_admission import admit, amounts, competition
 
 
 def context():
-    return {"repo": "owner/project", "issue_number": 7, "complete_comments": True,
+    return {"repo": "owner/project", "issue_number": 7, "title": "Parser race condition", "body": "Fix src/parser.py", "complete_comments": True,
             "repository": {"owner": {"login": "owner"}}, "fetched_at": "unit fixture",
             "issue": {"title": "Parser race condition", "body": "Fix deadlock in src/parser.py. Bounty $500.",
                       "state": "open", "html_url": "https://github.com/owner/project/issues/7",
@@ -39,6 +39,13 @@ class AdmissionTests(unittest.TestCase):
         c["comments"] = []
         c["issue"]["title"] = "[Bounty $100] parser regression"
         self.assertIsNotNone(admit(c)[0])
+
+    def test_funding_match_offsets_survive_long_code_blocks_and_repeated_price(self):
+        c = context()
+        c["issue"]["title"] = "[$750] memory performance regression"
+        c["issue"]["body"] = ("Fix src/parser.py\n" + "x" * 1000 + "\n```sh\n" + "code\n" * 200 +
+                               "```\n" + "z" * 1000 + "\nBounty: $750 USD paid by maintainers")
+        self.assertEqual(admit(c)[0]["funding"]["amount"], "750")
 
     def test_no_phantom_amount_from_severity(self):
         c = context()
@@ -103,9 +110,10 @@ class TransportTests(unittest.TestCase):
     def test_full_issue_body_and_all_comments(self):
         api = GitHub()
         issue = {"title": "fixture", "body": "x" * 50000, "comments": 101}
-        def get(url):
+        def get(url, **kwargs):
             if "/comments?" in url:
-                return [{}] * (100 if url.endswith("&page=1") else 1)
+                self.assertTrue(kwargs["paginate"])
+                return [[{}] * 99, [{}] * 2]
             return issue if "/issues/" in url else {"default_branch": "main"}
         with patch.object(api, "api", side_effect=get):
             result = api.issue_context("owner/repo", 1)
@@ -116,6 +124,24 @@ class TransportTests(unittest.TestCase):
         for repo, number in [("a/b;echo", 1), ("a/b", "$(shell)"), ("a/b", True)]:
             with self.assertRaises(ValueError):
                 task_id(repo, number)
+
+    def test_hydration_budget_keeps_every_unprocessed_search_result(self):
+        items = [{"repository_url": "https://api.github.com/repos/owner/project", "number": n,
+                  "updated_at": "fixture"} for n in range(1, 102)]
+        def get(endpoint):
+            if "search/issues?" in endpoint:
+                rows = items[:30] if "per_page=30" in endpoint else items[100:] if "&page=2" in endpoint else items[:100]
+                return {"items": rows, "total_count": 101}
+            raise AssertionError(endpoint)
+        fake = SimpleNamespace(api=get, issue_context=lambda repo, number: context(), pages=lambda *a, **k: [])
+        import sqlite3
+        with tempfile.TemporaryDirectory() as folder, patch("actions_dispatch.GitHub", return_value=fake):
+            with patch("builtins.print"):
+                discover(["normal"], queries_per_lane=1, state_dir=folder)
+            with sqlite3.connect(Path(folder) / "discovery.sqlite3") as con:
+                counts = dict(con.execute("SELECT status,count(*) FROM pending GROUP BY status"))
+            con.close()
+            self.assertEqual(counts, {"checked": 60, "pending": 41})
 
     def test_current_open_competition(self):
         pr = {"title": "Fix #7", "body": "", "head": {"ref": "fix/7", "sha": "a", "repo": None}, "html_url": "unit fixture"}
@@ -215,8 +241,24 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(proof["green_exit"], 0)
         self.assertEqual(manifest(self.root, status_paths(self.root)), before)
 
+    def test_checkpoint_restores_real_tracked_and_new_companion_bytes(self):
+        import zipfile
+        (self.root / "product.py").write_text("def value(): return 1\n")
+        patch_bytes = git(self.root, "diff", "--binary", "HEAD").stdout
+        git(self.root, "restore", "product.py")
+        with tempfile.TemporaryDirectory() as outside:
+            archive = Path(outside) / "checkpoint.zip"
+            with zipfile.ZipFile(archive, "w") as saved:
+                saved.writestr("checkpoint.json", json.dumps({"schema": 1, "head_sha": self.base}))
+                saved.writestr("tracked.patch", patch_bytes)
+                saved.writestr("untracked/tests/new_companion.py", "# retained companion\n")
+            receipt = restore_checkpoint(self.root, self.base, archive)
+        self.assertEqual(receipt["status"], "RESTORED")
+        self.assertEqual((self.root / "product.py").read_text(), "def value(): return 1\n")
+        self.assertEqual((self.root / "tests/new_companion.py").read_text(), "# retained companion\n")
+
     def test_failed_or_warning_receipts_block(self):
-        for code, output in [(1, ""), (0, "warning: unsafe"), (0, "npm warn unsupported engine")]:
+        for code, output in [(1, ""), (0, "warning: unsafe"), (0, "npm warn unsupported engine"), (0, "4:4 warning unused variable"), (0, "0 errors, 2 warnings"), (0, "Ran 0 tests")]:
             with self.assertRaises(ValueError):
                 require_commands([["native", "test"]], [{"argv": ["native", "test"], "exit_code": code, "stdout": output}])
         with self.assertRaises(ValueError):

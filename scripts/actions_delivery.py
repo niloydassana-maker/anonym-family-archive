@@ -16,7 +16,7 @@ from types import SimpleNamespace
 from actions_github import GitHub, GitHubError, StateStore, issue_number, repository, task_id, utcnow
 from actions_release import (git, manifest, product_paths, protect_baseline_tests,
                              regression_proof, require_commands, safe_path, status_paths,
-                             validate_plan_contract, write_json)
+                             validate_plan_contract, write_json, restore_checkpoint)
 from bounty_admission import admit, competition
 from bounty_fx import quote
 
@@ -139,6 +139,35 @@ def engineer():
             raise RuntimeError("BLOCKED_BASELINE: " + diagnostic)
         if status_paths(root):
             raise ValueError("Provisioning mutated the untouched source baseline")
+        if state.get("previous_owner") and not task.get("owned_pr"):
+            prior_run = state["previous_owner"].split(":")[0]
+            if not prior_run.isdecimal():
+                raise ValueError("Invalid previous run identity")
+            recovery_dir = artifacts() / "previous-run"
+            environment = dict(os.environ)
+            if api.token:
+                environment["GH_TOKEN"] = api.token
+            downloaded = subprocess.run(["gh", "run", "download", prior_run,
+                "--repo", os.environ["GITHUB_REPOSITORY"], "--name", "task-engineering-" + prior_run,
+                "--dir", str(recovery_dir)], env=environment, capture_output=True, timeout=180)
+            if downloaded.returncode:
+                write_json(artifacts() / "recovery.json", {"status": "NO_PRIOR_ARTIFACT_AVAILABLE", "run": prior_run})
+            else:
+                checkpoints = []
+                import zipfile
+                for archive in recovery_dir.glob("cline-recovery/*.zip"):
+                    with zipfile.ZipFile(archive) as saved:
+                        if "checkpoint.json" in saved.namelist():
+                            info = json.loads(saved.read("checkpoint.json"))
+                            checkpoints.append((info["at"], archive))
+                if checkpoints:
+                    archive = max(checkpoints)[1]
+                    try:
+                        recovery = restore_checkpoint(root, base, archive)
+                    except ValueError as exc:
+                        recovery = {"status": "REQUIRES_CLINE_RECONCILIATION", "archive": str(archive),
+                                    "diagnostic": str(exc)}
+                    write_json(artifacts() / "recovery.json", recovery)
         # Resume the real owned patch after checking the untouched current base.
         # Source is fetched as Git objects; no credentials are given to Cline.
         if task.get("owned_pr_number"):
@@ -161,31 +190,49 @@ def engineer():
             "Do not commit, push, create a fork or publish. Preserve complete issue context at "
             + prepared["context_path"] + "."
         )
+        if (artifacts() / "recovery.json").exists():
+            body += "\nRead retained previous-run edits and recovery evidence at " + str(artifacts() / "recovery.json")
         if task.get("owned_pr"):
             body += "\nRepair this same owned PR: " + task["owned_pr"] + "\n" + json.dumps(task["prior_failures"])
         arch = prepared["architecture"]
         arch["full_delivery_context"] = prepared["context_path"]
         cases = worker.model_scenarios(task["title"], body, arch)
-        ok, run, diagnostic = worker.run_engineering_iteration_loop(
-            root, repo, number, task["title"], body, arch, plan, cases, base, max_iterations=3)
-        if not ok:
-            raise RuntimeError(diagnostic)
-        if git(root, "rev-parse", "HEAD").stdout.decode().strip() != base:
-            raise ValueError("Cline changed Git HEAD before release verification")
-        paths = status_paths(root)
-        protect_baseline_tests(root, base, paths)
-        if not product_paths(paths):
-            raise ValueError("No issue-linked product change; no-op/docs/lockfile-only release blocked")
-        regression = regression_proof(
-            root, base, read_json(regression_file),
-            lambda argv: worker.run_command_safe(argv, cwd=root, timeout=3600))
-        before = manifest(root, status_paths(root))
-        final_commands = plan.builds + worker.verification_test_commands(plan) + plan.linters + plan.format_checks
-        final = [worker.run_command_safe(argv, cwd=root, timeout=3600) for argv in final_commands]
-        results = [asdict(row) for row in final]
-        require_commands(final_commands, results)
-        if manifest(root, status_paths(root)) != before:
-            raise ValueError("Native verification changed the proposed source tree")
+        feedback = json.dumps(task.get("prior_failures", []))
+        for release_turn in range(1, 4):
+            ok, run, diagnostic = worker.run_engineering_iteration_loop(
+                root, repo, number, task["title"], body, arch, plan, cases, base,
+                max_iterations=1, initial_feedback=feedback)
+            if not ok:
+                feedback = diagnostic
+                worker.preserve_cline_edits(root)
+                continue
+            try:
+                if git(root, "rev-parse", "HEAD").stdout.decode().strip() != base:
+                    raise ValueError("Cline changed Git HEAD before release verification")
+                paths = status_paths(root)
+                protect_baseline_tests(root, base, paths)
+                if not product_paths(paths):
+                    raise ValueError("No issue-linked product change; no-op/docs/lockfile-only release blocked")
+                regression = regression_proof(
+                    root, base, read_json(regression_file),
+                    lambda argv: worker.run_command_safe(argv, cwd=root, timeout=3600))
+                before = manifest(root, status_paths(root))
+                final_commands = plan.builds + worker.verification_test_commands(plan) + plan.linters + plan.format_checks
+                final = [worker.run_command_safe(argv, cwd=root, timeout=3600) for argv in final_commands]
+                results = [asdict(row) for row in final]
+                evidence_file = artifacts() / f"release-verification-{release_turn}.json"
+                write_json(evidence_file, results)
+                require_commands(final_commands, results)
+                if manifest(root, status_paths(root)) != before:
+                    raise ValueError("Native verification changed the proposed source tree")
+                break
+            except (ValueError, RuntimeError, OSError) as exc:
+                feedback = ("Independent release verification failed: " + str(exc) +
+                            "\nRead complete native receipts at " + str(artifacts()) +
+                            ". Repair the actual failure, preserving completed edits and master tests.")
+                worker.preserve_cline_edits(root)
+        else:
+            raise RuntimeError("Bounded Cline delivery repair exhausted: " + feedback)
         git(root, "diff", "--check")
         git(root, "config", "user.name", "isearchxsolve")
         git(root, "config", "user.email", "isearch.xsolve@gmail.com")
@@ -226,6 +273,8 @@ def validate_bundle(receipt, bundle, root):
         raise ValueError("Bundle HEAD mismatch")
     if git(root, "rev-list", "--count", base + ".." + head).stdout.strip() != b"1":
         raise ValueError("Release is not one task commit")
+    if git(root, "show", "-s", "--format=%P", head).stdout.decode().split() != [base]:
+        raise ValueError("Release must have exactly the verified upstream parent")
     if git(root, "rev-parse", head + "^{tree}").stdout.decode().strip() != receipt["tree_sha"]:
         raise ValueError("Release tree mismatch")
     paths = [os.fsdecode(p) for p in git(root, "diff", "--name-only", "-z", base, head).stdout.split(b"\0") if p]
@@ -249,6 +298,7 @@ def validate_bundle(receipt, bundle, root):
             raise ValueError("Native-plan source citation mismatch")
     plan = SimpleNamespace(**receipt["plan"])
     validate_plan_contract(plan)
+    require_commands(plan.baseline_tests, receipt["baseline"])
     commands = plan.builds + plan.baseline_tests + plan.targeted_tests + plan.final_tests + plan.linters + plan.format_checks
     require_commands(commands, receipt["verification"])
     if receipt["regression"]["red_exit"] == 0 or receipt["regression"]["green_exit"] != 0:
@@ -271,6 +321,9 @@ def publish():
     if not proof:
         raise ValueError("Release funding/issue state blocked: " + reason)
     competition(api, repo, number, own_head=state.get("head_sha") or head)
+    current_base = api.api(f"repos/{repo}/commits/{receipt['default_branch']}")["sha"]
+    if current_base != receipt["base_sha"]:
+        raise ValueError("Upstream base changed after native verification; rebase and reverify before publication")
     account = api.api("user")["login"]
     name = repo.split("/")[1]
     try:
@@ -285,7 +338,8 @@ def publish():
             raise ValueError("Fork parent mismatch")
     branch = state.get("branch") or f"fix/bounty-{number}-{identity[:6]}-{state['attempt']}"
     prior_head = state.get("head_sha")
-    store.owned_update(identity, run_owner, status="PUBLISHING", proposed_head=head)
+    store.owned_update(identity, run_owner, status="PUBLISHING", proposed_head=head,
+                       proposed_branch=branch, verified_run=receipt["run_url"])
     subprocess.run(["gh", "auth", "setup-git"], check=True, timeout=30)
     lease = [f"--force-with-lease=refs/heads/{branch}:{prior_head}"] if state.get("pr_number") else []
     git(root, "push", *lease, f"https://github.com/{account}/{name}.git", head + ":refs/heads/" + branch)
@@ -295,17 +349,17 @@ def publish():
                 and p["head"]["repo"]["owner"]["login"] == account]
     if len(existing) > 1:
         raise ValueError("Multiple matching PRs need reconciliation")
+    rows = receipt["verification"]
+    body = (f"Resolves #{number}: {context['title']}.\n\n"
+            f"Verified base: {receipt['base_sha']}\nVerified head: {head}\n\n"
+            "Regression: the companion test fails on the upstream source and passes with this change.\n\n"
+            "Native verification:\n" + "\n".join(
+                f"- {json.dumps(r['argv'])}: exit {r['exit_code']}, {r['duration_s']:.2f}s" for r in rows)
+            + "\n\nExecution receipt: " + receipt["run_url"])
     if existing:
-        pr = existing[0]
+        pr = api.api(f"repos/{repo}/pulls/{existing[0]['number']}", "PATCH", {"body": body})
     else:
         competition(api, repo, number)
-        rows = receipt["verification"]
-        body = (f"Resolves #{number}: {context['title']}.\n\n"
-                f"Verified base: {receipt['base_sha']}\nVerified head: {head}\n\n"
-                "Regression: the companion test fails on the upstream source and passes with this change.\n\n"
-                "Native verification:\n" + "\n".join(
-                    f"- {json.dumps(r['argv'])}: exit {r['exit_code']}, {r['duration_s']:.2f}s" for r in rows)
-                + "\n\nExecution receipt: " + receipt["run_url"])
         pr = api.api(f"repos/{repo}/pulls", "POST",
                      {"head": account + ":" + branch, "base": context["repository"]["default_branch"],
                       "title": f"fix: #{number} - {context['title']}", "body": body})

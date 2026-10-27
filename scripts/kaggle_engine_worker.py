@@ -2091,6 +2091,14 @@ def preserve_cline_edits(worktree: str) -> str:
                              capture_output=True, check=True, timeout=30).stdout
     with zipfile.ZipFile(destination, "w", zipfile.ZIP_DEFLATED) as backup:
         backup.writestr("tracked.patch", patch)
+        backup.writestr("checkpoint.json", json.dumps({
+            "schema": 1, "head_sha": subprocess.run(
+                ["git", "-C", worktree, "rev-parse", "HEAD"], capture_output=True,
+                check=True, timeout=10).stdout.decode().strip(),
+            "harness_sha": os.environ.get("GITHUB_SHA"),
+            "engine_id": ENGINE_ID, "at": datetime.now(timezone.utc).isoformat(),
+            "worktree_name": os.path.basename(worktree),
+        }))
         for raw_path in tracked.split(b"\0"):
             if not raw_path:
                 continue

@@ -40,8 +40,10 @@ class GitHub:
     def __init__(self, token=None):
         self.token = token or os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
 
-    def api(self, endpoint, method="GET", data=None):
+    def api(self, endpoint, method="GET", data=None, paginate=False):
         command = ["gh", "api", endpoint, "--method", method]
+        if paginate:
+            command += ["--paginate", "--slurp"]
         encoded = None
         if data is not None:
             command += ["--input", "-"]
@@ -57,16 +59,12 @@ class GitHub:
 
     def pages(self, endpoint, **params):
         """Require complete pagination; a failed page never means empty supply."""
-        page = 1
-        while True:
-            sep = "&" if "?" in endpoint else "?"
-            rows = self.api(endpoint + sep + urlencode({**params, "per_page": 100, "page": page}))
+        sep = "&" if "?" in endpoint else "?"
+        pages = self.api(endpoint + sep + urlencode({**params, "per_page": 100}), paginate=True)
+        for rows in pages:
             if not isinstance(rows, list):
                 raise GitHubError("Expected paginated GitHub array")
             yield from rows
-            if len(rows) < 100:
-                return
-            page += 1
 
     def issue_context(self, repo, number):
         repo, number = repository(repo), issue_number(number)
@@ -157,6 +155,7 @@ class StateStore:
             if attempt > (4 if recovery else 3):
                 raise ValueError("Bounded recovery attempts exhausted")
             return {**old, "status": "CLAIMED", "attempt": attempt, "owner": owner,
+                    "previous_owner": old.get("owner"), "previous_status": old.get("status"),
                     "run_url": run_url, "harness_sha": harness_sha, "claimed_at": utcnow()}
         return self.mutate(identity, reserve)
 
@@ -169,12 +168,18 @@ class StateStore:
 
     def records(self):
         try:
-            entries = self.api.api(f"repos/{self.repo}/contents/fleet-state?ref={self.branch}")
+            tree = self.api.api(f"repos/{self.repo}/git/trees/{self.branch}")
         except GitHubError as exc:
             if "404" in str(exc):
                 return
             raise
-        for entry in entries:
-            if re.fullmatch(r"[a-f0-9]{32}\.json", entry.get("name", "")):
-                record, _ = self.read(entry["name"][:-5])
+        subtree = next((entry for entry in tree["tree"] if entry["path"] == "fleet-state" and entry["type"] == "tree"), None)
+        if not subtree:
+            return
+        tree = self.api.api(f"repos/{self.repo}/git/trees/{subtree['sha']}")
+        if tree.get("truncated"):
+            raise GitHubError("Durable state tree truncated; reconciliation must be partitioned")
+        for entry in tree["tree"]:
+            if re.fullmatch(r"[a-f0-9]{32}\.json", entry["path"]):
+                record, _ = self.read(entry["path"][:-5])
                 yield record

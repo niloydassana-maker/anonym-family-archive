@@ -55,7 +55,16 @@ def reconcile(repair=False, api=None, store=None):
                 fields = {"status": "FAILED_MISSING_TERMINAL_RECEIPT", "diagnostic":
                           f"Actions run completed ({run['conclusion']}) without terminal callback; artifacts retained",
                           "run_url": run["html_url"]}
-        elif status in ("PUBLISHED_PENDING_CHECKS", "AWAITING_REVIEW", "FAILED_REMOTE_CHECKS"):
+        # Reconcile a server-acknowledged PR after a transport/callback failure.
+        if (status.startswith("FAILED") or status == "PUBLISHING") and record.get("proposed_head"):
+            matches = [p for p in api.pages(f"repos/{record['repo']}/pulls", state="open")
+                       if p["head"]["sha"] == record["proposed_head"]
+                       and p["head"]["repo"] and p["head"]["repo"]["owner"]["login"] == "isearchxsolve"]
+            if len(matches) == 1:
+                fields = {"status": "PUBLISHED_PENDING_CHECKS", "head_sha": record["proposed_head"],
+                          "pr_number": matches[0]["number"], "pr_url": matches[0]["html_url"],
+                          "branch": matches[0]["head"]["ref"], "publication_recovered": True}
+        if status in ("PUBLISHED_PENDING_CHECKS", "AWAITING_REVIEW", "FAILED_REMOTE_CHECKS"):
             pr = api.api(f"repos/{record['repo']}/pulls/{record['pr_number']}")
             if pr["head"]["sha"] != record["head_sha"]:
                 fields = {"status": "BLOCKED_HEAD_CHANGED", "diagnostic": "Owned PR head differs from verified receipt"}

@@ -41,7 +41,7 @@ def query_window(api, expression, window=None, fresh=0):
             return [], total  # Split before spending hydration work on a capped window.
         rows = result["items"]
         items.extend(rows)
-        if fresh or len(rows) < 100:
+        if fresh or not rows or page * 100 >= total:
             return items, total
         page += 1
 
@@ -56,8 +56,10 @@ def context_candidates(api, item, visited=None):
     visited.add(identity)
     context = api.issue_context(repo, number)
     text = context["title"] + "\n" + context["body"]
-    if NON_WORK.search(context["title"]) and re.search(
-            r"original|source|upstream|mirrored|digest|intake", text, re.I):
+    if ((NON_WORK.search(context["title"]) and re.search(
+            r"original|source|upstream|mirrored|digest|intake", text, re.I))
+            or re.search(r"mirrored from|(?:original|source|upstream)\s+issue\s*:|"
+                         r"source\s*:\s*https://github\.com/[^\s]+/issues/", text, re.I)):
         for original_repo, original_number in dict.fromkeys(re.findall(
                 r"https://github\.com/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)/issues/([1-9][0-9]*)", text)):
             yield from context_candidates(api, {"repository_url": "https://api.github.com/repos/" + original_repo,
@@ -103,9 +105,10 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
     con = sqlite3.connect(folder / "discovery.sqlite3", timeout=30)
     con.execute("CREATE TABLE IF NOT EXISTS cursors(lane TEXT PRIMARY KEY, position INTEGER)")
     con.execute("CREATE TABLE IF NOT EXISTS candidates(task_id TEXT PRIMARY KEY, payload TEXT, updated_at TEXT)")
+    con.execute("CREATE TABLE IF NOT EXISTS pending(task_id TEXT PRIMARY KEY, payload TEXT, lanes TEXT, "
+                "signature TEXT, checked REAL DEFAULT 0, status TEXT DEFAULT 'pending')")
     counts = Counter()
     candidates = {}
-    seen = set()
     try:
         for lane in lanes:
             start_row = con.execute("SELECT position FROM cursors WHERE lane=?", (lane,)).fetchone()
@@ -114,41 +117,63 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                 expression = QUERIES[lane][(start + offset) % len(QUERIES[lane])]
                 window = horizon.window(expression)
                 rows, total = query_window(api, expression, window)
-                horizon.complete(expression, window, 1000 if total >= 1000 else len(rows), 1000)
                 recent, _ = query_window(api, expression, fresh=30)
                 counts[lane + ".raw"] += len(rows) + len(recent)
                 print(json.dumps({"phase": "SEARCH", "lane": lane, "query": expression,
                                   "partition": horizon.qualifier(window), "total_count": total,
                                   "returned": len(rows), "fresh": len(recent)}), flush=True)
+                # Persist the raw horizon before hydration; bounded work never
+                # drops the unprocessed remainder of a search partition.
                 for item in [*recent, *rows]:
-                    marker = (item["repository_url"], item["number"])
-                    if marker in seen:
-                        identity = task_id(item["repository_url"].split("/repos/")[-1], item["number"])
-                        if identity in candidates:
-                            candidates[identity]["lanes"].add(lane)
-                        continue
-                    seen.add(marker)
-                    try:
-                        for context in context_candidates(api, item):
-                            identity = task_id(context["repo"], context["issue_number"])
-                            proof, reason = admit(context, quote=quote)
-                            if not proof:
-                                counts[lane + "." + reason] += 1
-                                continue
-                            competition(api, context["repo"], context["issue_number"])
-                            candidates.setdefault(identity, {"context": context, "proof": proof, "lanes": set()})["lanes"].add(lane)
-                            counts[lane + ".qualified"] += 1
-                    except (GitHubError, OSError, ValueError, KeyError) as exc:
-                        counts[lane + ".unknown_or_competing"] += 1
-                        print(json.dumps({"phase": "ADMISSION_DIAGNOSTIC", "source": marker, "error": str(exc)}), flush=True)
+                    identity = task_id(item["repository_url"].split("/repos/")[-1], item["number"])
+                    old = con.execute("SELECT lanes,signature,checked,status FROM pending WHERE task_id=?", (identity,)).fetchone()
+                    lanes_seen = set(json.loads(old[0])) if old else set()
+                    lanes_seen.add(lane)
+                    signature = item.get("updated_at", "")
+                    pending = not old or old[1] != signature or time.time() - old[2] > 21600
+                    con.execute("INSERT OR REPLACE INTO pending VALUES(?,?,?,?,?,?)",
+                                (identity, json.dumps(item), json.dumps(sorted(lanes_seen)), signature,
+                                 old[2] if old else 0, "pending" if pending else old[3]))
+                con.commit()
+                horizon.complete(expression, window, 1000 if total >= 1000 else len(rows), 1000)
             con.execute("INSERT OR REPLACE INTO cursors VALUES(?,?)",
                         (lane, (start + queries_per_lane) % len(QUERIES[lane])))
+            con.commit()
+        pending_rows = con.execute("SELECT task_id,payload,lanes FROM pending WHERE status='pending' ORDER BY checked,rowid LIMIT 60").fetchall()
+        for source_id, payload, lane_json in pending_rows:
+            item, source_lanes = json.loads(payload), json.loads(lane_json)
+            try:
+                for context in context_candidates(api, item):
+                    identity = task_id(context["repo"], context["issue_number"])
+                    proof, reason = admit(context, quote=quote)
+                    if not proof:
+                        counts[reason] += 1
+                        print(json.dumps({"phase": "ADMISSION", "repo": context["repo"], "issue_number": context["issue_number"],
+                                          "reason": reason, "reported_comments": context["issue"].get("comments"),
+                                          "visible_comments": len(context["comments"])}), flush=True)
+                        continue
+                    competition(api, context["repo"], context["issue_number"])
+                    candidates.setdefault(identity, {"context": context, "proof": proof, "lanes": set()})["lanes"].update(source_lanes)
+                    counts["qualified"] += 1
+                con.execute("UPDATE pending SET checked=?,status='checked' WHERE task_id=?", (time.time(), source_id))
+            except (GitHubError, OSError, ValueError, KeyError) as exc:
+                counts["unknown_or_competing"] += 1
+                print(json.dumps({"phase": "ADMISSION_DIAGNOSTIC", "source": source_id, "error": str(exc)}), flush=True)
+                # Transport failures stay pending; competition may change next refresh.
+                if isinstance(exc, ValueError):
+                    con.execute("UPDATE pending SET checked=?,status='checked' WHERE task_id=?", (time.time(), source_id))
             con.commit()
         for identity, candidate in candidates.items():
             serializable = {**candidate, "lanes": sorted(candidate["lanes"])}
             con.execute("INSERT OR REPLACE INTO candidates VALUES(?,?,?)",
                         (identity, json.dumps(serializable), utcnow()))
         con.commit()
+        fresh_count = len(candidates)
+        for identity, payload in con.execute("SELECT task_id,payload FROM candidates ORDER BY updated_at LIMIT 100"):
+            if identity not in candidates:
+                saved = json.loads(payload)
+                saved["lanes"] = set(saved["lanes"])
+                candidates[identity] = saved
         dispatched = []
         if live:
             runs = api.api(f"repos/{store.repo}/actions/runs?per_page=100")["workflow_runs"]
@@ -158,12 +183,25 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                 if len(dispatched) >= min(max_dispatches, headroom):
                     break
                 try:
-                    dispatched.append(dispatch(api, store, candidate["context"], candidate["proof"], candidate["lanes"]))
+                    state, _ = store.read(identity)
+                    if state and not state["status"].startswith("FAILED"):
+                        counts["already_owned"] += 1
+                        continue
+                    current = api.issue_context(candidate["context"]["repo"], candidate["context"]["issue_number"])
+                    proof, reason = admit(current, quote=quote)
+                    if not proof:
+                        con.execute("DELETE FROM candidates WHERE task_id=?", (identity,))
+                        con.commit()
+                        counts["admission_changed." + reason] += 1
+                        continue
+                    competition(api, current["repo"], current["issue_number"], own_head=(state or {}).get("head_sha"))
+                    dispatched.append(dispatch(api, store, current, proof, candidate["lanes"]))
                 except (ValueError, GitHubError) as exc:
                     counts["dispatch_deferred"] += 1
                     print(json.dumps({"phase": "DISPATCH_DIAGNOSTIC", "task_id": identity, "error": str(exc)}), flush=True)
         summary = {"at": utcnow(), "mode": "LIVE" if live else "READ_ONLY", "counts": dict(counts),
-                   "qualified_unique": len(candidates), "dispatched": dispatched}
+                   "qualified_fresh": fresh_count, "qualified_unique": len(candidates), "dispatched": dispatched,
+                   "pending_hydration": con.execute("SELECT count(*) FROM pending WHERE status='pending'").fetchone()[0]}
         with (folder / "receipts.jsonl").open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(summary) + "\n")
         print(json.dumps(summary), flush=True)

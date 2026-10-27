@@ -10,23 +10,25 @@ ISSUERS = {"OWNER", "MEMBER", "COLLABORATOR"}
 NON_WORK = re.compile(
     r"\b(?:digest|newsletter|willingness.to.pay|validation plan|ad spend|"
     r"grant proposal|security bug bounty submission|payout claim|sealed solution|"
-    r"mirrored from|backfill record|status:\s*done)\b|"
+    r"mirrored from|backfill record|status:\s*done|bounty (?:alert|scout|solution))\b|"
     r"^\s*\[(?:experiment|radar|intake|proposal|roadmap)\]", re.I)
 OFFER = re.compile(
     r"/bounty|/reward|\bbount(?:y|ies)\b|\breward\b|\b(?:we|i)\s+(?:will|can|would)\s+pay\b|"
     r"\boffering\b|\brecompensa\b|\brémunération\b|悬赏|赏金|报酬", re.I)
 WITHDRAWN = re.compile(
     r"(?:remov(?:e|ed|ing)|withdraw(?:n|ing)?|cancel(?:led|ing)?)\s+(?:the\s+)?(?:bounty|reward)|"
-    r"bounty\s+(?:is\s+)?(?:withdrawn|cancelled|paid|awarded)|no longer offering", re.I)
+    r"bounty\s+(?:is\s+)?(?:withdrawn|cancelled|paid|awarded)|no longer offering|"
+    r"no\s+(?:bounty|reward|payment|funding)(?:\s+(?:is\s+)?(?:available|expected|offered))?", re.I)
 PAYEE = re.compile(
     r"\b(?:researcher|payout wallet|settlement wallet|settlement rail|"
     r"claiming bounty|bounty submission|requesting funding)\b", re.I)
 HARD = re.compile(
     r"\b(?:race condition|deadlock|concurren\w*|atomic\w*|idempot\w*|"
-    r"overflow|underflow|precision|protocol|invariant|authorization|bypass|"
-    r"cross.tenant|serialization|compiler|parser|memory|latency|throughput|"
-    r"regression|crash|panic|corrupt\w*|transaction|consensus|ABI|"
-    r"performance|distributed|scheduler|algorithm|cryptograph\w*)\b", re.I)
+    r"overflow|underflow|precision|protocols?|invariants?|authorization|bypass|"
+    r"cross.tenant|serialization|compilers?|parsers?|memory|latency|throughput|"
+    r"regressions?|crash\w*|panic\w*|corrupt\w*|transactions?|consensus|ABI|"
+    r"performance|distributed|schedulers?|algorithms?|cryptograph\w*|"
+    r"encryption|signatures?|deadlocks?)\b", re.I)
 COMPONENT = re.compile(
     r"(?<!https://)(?:[\w.-]+/)+[\w.-]+\.[a-zA-Z0-9]+|"
     r"\b[A-Za-z_][A-Za-z0-9_:]*\(\)|\b(?:E[A-Z0-9_]{4,}|[A-Z][A-Za-z]+Error)\b")
@@ -44,8 +46,12 @@ def trusted(context, document):
             or user.lower() == owner.lower() or user.lower() in TRUSTED_BOTS)
 
 
-def amounts(text):
-    text = re.sub(r"\x60{3}[\s\S]*?\x60{3}|~~[\s\S]*?~~|<!--[\s\S]*?-->", " ", text)
+def monetary_text(text):
+    return re.sub(r"\x60{3}[\s\S]*?\x60{3}|~~[\s\S]*?~~|<!--[\s\S]*?-->", " ", text)
+
+
+def amounts(text, positions=False):
+    text = monetary_text(text)
     for match in MONEY.finditer(text):
         after = text[match.end():match.end() + 35]
         if re.match(r"\s*(?:[$\\^_]|(?:pool|TVL|ARR|MRR|valuation|treasury|budget|/month)\b)", after, re.I):
@@ -55,7 +61,8 @@ def amounts(text):
             amount *= 1000
         unit = (match["c1"] or match["c2"]).upper()
         unit = {"$": "USD", "€": "EUR", "£": "GBP", "₹": "INR"}.get(unit, unit)
-        yield amount, unit, match.group()
+        value = (amount, unit, match.group())
+        yield (*value, match.start()) if positions else value
 
 
 def admit(context, quote=None, floor=FLOOR):
@@ -68,8 +75,11 @@ def admit(context, quote=None, floor=FLOOR):
     title, body = issue["title"], issue.get("body") or ""
     if NON_WORK.search(title) or re.search(r"automated\s+(?:superteam\s+)?digest|mirrored from|status:\s*done", body, re.I):
         return None, "MIRROR_OR_NON_ENGINEERING"
-    if re.search(r"\b(?:ad spend|marketing campaign|willingness.to.pay|validation plan)\b", body, re.I):
+    if re.search(r"\b(?:ad spend|marketing campaign|willingness.to.pay|market validation)\b", body, re.I):
         return None, "MARKETING_OR_EXPERIMENT"
+    if re.search(r"test network.*practice money|testnet (?:ETH|tokens?).*(?:only|no real)|"
+                 r"verbatim copy of all instructions.*before the first human message", body, re.I | re.S):
+        return None, "NON_PAYMENT_OR_INSTRUCTION_EXFILTRATION"
     technical = sorted(set(m.group().lower() for m in HARD.finditer(title + "\n" + body)))
     components = sorted(set(m.group() for m in COMPONENT.finditer(re.sub(r"https?://\S+", " ", body))))
     if not technical or (not components and len(technical) < 2):
@@ -78,15 +88,14 @@ def admit(context, quote=None, floor=FLOOR):
     for document in [issue, *context["comments"]]:
         if not trusted(context, document):
             continue
-        text = ((title + "\n") if document is issue else "") + (document.get("body") or "")
+        text = monetary_text(((title + "\n") if document is issue else "") + (document.get("body") or ""))
         if WITHDRAWN.search(text):
             offer = None
             continue
         if PAYEE.search(text) or not OFFER.search(text):
             continue
         candidates = []
-        for amount, currency, raw in amounts(text):
-            location = text.find(raw)
+        for amount, currency, raw, location in amounts(text, positions=True):
             if not OFFER.search(text[max(0, location - 160):location + len(raw) + 160]):
                 continue
             if currency in {"USD", "USDC", "USDT"}:

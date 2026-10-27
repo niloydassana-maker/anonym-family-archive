@@ -7,6 +7,7 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import subprocess
+import zipfile
 
 
 def git(root, *args, check=True):
@@ -89,7 +90,8 @@ def protect_baseline_tests(root, base_sha, paths, head_sha=None):
 def warning_output(text):
     plain = re.sub(r"\x1b\[[0-9;]*m", "", text)
     return bool(re.search(r"(?im)^\s*(?:npm\s+warn|warning[:\s\[]|.*DeprecationWarning:|"
-                          r"the CJS build .* deprecated)", plain))
+                          r"\d+:\d+\s+warning\b|the CJS build .* deprecated)|"
+                          r"\b[1-9]\d*\s+warnings?\b", plain))
 
 
 def validate_plan_contract(plan):
@@ -119,6 +121,9 @@ def require_commands(commands, results):
             raise ValueError("Native command lacks a successful receipt: " + repr(command))
         if warning_output(matching[-1].get("stdout", "") + "\n" + matching[-1].get("stderr", "")):
             raise ValueError("Native verification emitted warnings: " + repr(command))
+        text = matching[-1].get("stdout", "") + "\n" + matching[-1].get("stderr", "")
+        if re.search(r"No tests?(?: files)? (?:found|ran|collected)|Ran 0 tests", text, re.I):
+            raise ValueError("Native runner reported zero executed tests: " + repr(command))
 
 
 def regression_proof(root, base_sha, document, execute):
@@ -151,7 +156,7 @@ def regression_proof(root, base_sha, document, execute):
         output = red.stdout + "\n" + red.stderr
         if (red.exit_code == 0 or expected not in output or re.search(
                 r"Cannot find module|ModuleNotFoundError|command not found|No such file", output, re.I)):
-            raise ValueError("Base regression did not fail on the specified defect assertion")
+            raise ValueError("Base regression did not fail on the specified defect assertion:\n" + output)
     finally:
         for name, backup in backups.items():
             path = safe_path(root, name)
@@ -166,7 +171,7 @@ def regression_proof(root, base_sha, document, execute):
         raise ValueError("Regression probe changed the proposed fix")
     green = execute(command)
     if green.exit_code or warning_output(green.stdout + "\n" + green.stderr):
-        raise ValueError("Final issue regression is not green")
+        raise ValueError("Final issue regression is not green:\n" + green.stdout + "\n" + green.stderr)
     return {"argv": command, "test_files": files, "expected_failure": expected,
             "red_exit": red.exit_code, "green_exit": green.exit_code,
             "red_output_sha256": hashlib.sha256(output.encode()).hexdigest()}
@@ -175,3 +180,35 @@ def regression_proof(root, base_sha, document, execute):
 def write_json(path, document):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_bytes(json.dumps(document, indent=2, ensure_ascii=True).encode())
+
+
+def restore_checkpoint(root, base_sha, archive):
+    """Restore exact owned artifact bytes, never extract arbitrary ZIP paths."""
+    with zipfile.ZipFile(archive) as saved:
+        info = json.loads(saved.read("checkpoint.json"))
+        if info.get("schema") != 1 or info["head_sha"] != base_sha:
+            raise ValueError("Checkpoint baseline differs; retain artifact for explicit Cline rebase")
+        files = {}
+        for entry in saved.infolist():
+            if entry.filename.startswith(("tracked/", "untracked/")):
+                name = entry.filename.split("/", 1)[1]
+                safe_path(root, name)
+                if entry.file_size > 20_000_000 or len(files) >= 10000:
+                    raise ValueError("Oversized source checkpoint requires explicit recovery")
+                if entry.filename.startswith("untracked/") and safe_path(root, name).exists():
+                    raise ValueError("Checkpoint companion would overwrite upstream: " + name)
+                files[name] = (entry, saved.read(entry))
+        # Git validates the binary patch before any companion file is written.
+        patch_file = Path(archive).with_suffix(".patch")
+        patch_file.write_bytes(saved.read("tracked.patch"))
+        git(root, "apply", "--allow-empty", "--check", str(patch_file))
+        git(root, "apply", "--allow-empty", str(patch_file))
+        for name, (entry, data) in files.items():
+            target = safe_path(root, name)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(data)
+            mode = (entry.external_attr >> 16) & 0o777
+            if mode:
+                target.chmod(mode)
+    return {"status": "RESTORED", "archive_sha256": hashlib.sha256(Path(archive).read_bytes()).hexdigest(),
+            "checkpoint": info, "files": manifest(root, status_paths(root))}
