@@ -2,7 +2,7 @@
   "task_id": "9b61681b10555256c11af8014d8fc7b2",
   "repo": "Expensify/App",
   "issue_number": 101616,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "b525f58763de47068e78a4540e1a410b",
   "admission": {
     "funding": {
@@ -49,11 +49,34 @@
   ],
   "dispatched_at": "2026-10-27T22:36:34.063149+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-27T22:36:58.079169+00:00",
+  "updated_at": "2026-10-27T22:39:21.234747+00:00",
   "owner": "40596131378:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40596131378",
   "harness_sha": "e30752d3c70b96a846175884c8e2da32a17956ee",
-  "claimed_at": "2026-10-27T22:36:58.079151+00:00"
+  "claimed_at": "2026-10-27T22:36:58.079151+00:00",
+  "at": "2026-10-27T22:39:06.291376+00:00",
+  "reason": "Cline preparation blocked: Already-resolved / competing-PR case. Issue #101616 is a genuine reproducible product defect (Search tabs show stale 'Refresh needed' after toggling off 'Simulate failing network requests' and are not auto-retried on tab switch; narrow layouts, iOS App), but it has ALREADY been fixed and shipped by another contributor. Evidence: (1) the only PR referencing issue 101616 in the repository is PR #103877, titled 'Load a search tab automatically after an earlier visit left it failed', head wildan-m:App:fix/... sha 0c76a81bfd2c6a7d45993fe172e79871e730a27e, base Expensify:main, which is MERGED (closed, merged=true, merged_at=2026-10-26T17:34:41Z); a GitHub search query 'repo:Expensify/App 101616 is:pr' returns total_count=1 and that single PR is #103877. (2) melvin-bot comment on 2026-10-27T22:10:39Z states: 'The solution for this issue has been deployed to production in version 9.5.23-3 and is now subject to a 7-day regression period ... Here is the list of pull requests that resolve this issue: - https://github.com/Expensify/App/pull/103877 ... If no regressions arise, payment will be issued on 2026-11-03.' The issue title itself is '[Due for payment 2026-11-03] [$250]'. (3) Repo assignment history shows C+ @FitseTLT selected @wildan-m's proposal and the solution was delivered by wildan-m via #103877. (4) In this task's context, owned_pr=null, owned_head=null, owned_pr_number=null and prior_failures=[], i.e. there is no separate unclaimed work item for this fleet run. Producing another fix would duplicate an already-merged and already-being-paid solution, so no product change was made and the checkout was left unchanged.",
+  "declared_reason": "Already-resolved / competing-PR case. Issue #101616 is a genuine reproducible product defect (Search tabs show stale 'Refresh needed' after toggling off 'Simulate failing network requests' and are not auto-retried on tab switch; narrow layouts, iOS App), but it has ALREADY been fixed and shipped by another contributor. Evidence: (1) the only PR referencing issue 101616 in the repository is PR #103877, titled 'Load a search tab automatically after an earlier visit left it failed', head wildan-m:App:fix/... sha 0c76a81bfd2c6a7d45993fe172e79871e730a27e, base Expensify:main, which is MERGED (closed, merged=true, merged_at=2026-10-26T17:34:41Z); a GitHub search query 'repo:Expensify/App 101616 is:pr' returns total_count=1 and that single PR is #103877. (2) melvin-bot comment on 2026-10-27T22:10:39Z states: 'The solution for this issue has been deployed to production in version 9.5.23-3 and is now subject to a 7-day regression period ... Here is the list of pull requests that resolve this issue: - https://github.com/Expensify/App/pull/103877 ... If no regressions arise, payment will be issued on 2026-11-03.' The issue title itself is '[Due for payment 2026-11-03] [$250]'. (3) Repo assignment history shows C+ @FitseTLT selected @wildan-m's proposal and the solution was delivered by wildan-m via #103877. (4) In this task's context, owned_pr=null, owned_head=null, owned_pr_number=null and prior_failures=[], i.e. there is no separate unclaimed work item for this fleet run. Producing another fix would duplicate an already-merged and already-being-paid solution, so no product change was made and the checkout was left unchanged.",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/Expensify--App--101616",
+    "base_sha": "09165c92110ae1cc6543a6652dbb29e7a1600373",
+    "default_branch": "main",
+    "sources": [],
+    "run_url": "",
+    "admission": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/101616",
+      "payer": "melvin-bot[bot]"
+    }
+  },
+  "finished_at": "2026-10-27T22:39:20.366430+00:00"
 }
