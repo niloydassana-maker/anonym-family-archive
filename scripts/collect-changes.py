@@ -21,6 +21,15 @@ FORBIDDEN_PREFIXES = (
     "dist/",
 )
 
+FORBIDDEN_FILES = (
+    "package-lock.json",
+    "yarn.lock",
+    "pnpm-lock.yaml",
+    "Cargo.lock",
+    "poetry.lock",
+    "composer.lock",
+)
+
 def collect_nul_safe_changes():
     try:
         proc = subprocess.run(
@@ -66,13 +75,21 @@ def collect_nul_safe_changes():
     blocked_paths = []
     for p in sorted(set(paths)):
         normalized = p.replace("\\", "/").strip()
-        if any(normalized.startswith(fp) for fp in FORBIDDEN_PREFIXES):
+        filename = normalized.split("/")[-1]
+        if any(normalized.startswith(fp) for fp in FORBIDDEN_PREFIXES) or filename in FORBIDDEN_FILES:
             blocked_paths.append(normalized)
         else:
             verified_paths.append(normalized)
 
     if blocked_paths:
-        print(f"Security Warning: Blocked dangerous/sensitive paths: {blocked_paths}", file=sys.stderr)
+        print(f"Notice: Filtered out non-source/lockfile paths: {blocked_paths}", file=sys.stderr)
+
+    # Invariant: Never allow an empty or lockfile-only commit to masquerade as an issue fix
+    valid_source_exts = (".ts", ".tsx", ".js", ".jsx", ".py", ".rs", ".go", ".java", ".c", ".cpp", ".sol", ".toml", ".json", ".yaml", ".yml", ".md")
+    real_code_changes = [p for p in verified_paths if any(p.endswith(ext) for ext in valid_source_exts) and p not in FORBIDDEN_FILES]
+    if not real_code_changes:
+        print("FAIL-CLOSED: No genuine source code changes detected. Zero-Manufacture Law enforced.", file=sys.stderr)
+        verified_paths = []
 
     # Write verified paths for the commit step
     out_file = Path("../harness/verified_files.txt")
