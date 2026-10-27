@@ -40,10 +40,20 @@ MONEY = re.compile(
 
 
 def trusted(context, document):
+    """Is this document written by the party that can commit the project's money?
+
+    Platform bots publish the funding attestation itself, so their login has to be
+    recognised in both spellings: GitHub apps report ``algora-pbc[bot]`` while the
+    platform is also referred to plainly as ``algora-pbc``. Matching only one form
+    silently discards every real offer a platform publishes on someone else's issue.
+    """
     user = (document.get("user") or {}).get("login", "")
     owner = context["repository"]["owner"]["login"]
+    login = user.lower()
     return (document.get("author_association", "").upper() in ISSUERS
-            or user.lower() == owner.lower() or user.lower() in TRUSTED_BOTS)
+            or login == owner.lower()
+            or login in TRUSTED_BOTS
+            or login.removesuffix("[bot]") in TRUSTED_BOTS)
 
 
 def monetary_text(text):

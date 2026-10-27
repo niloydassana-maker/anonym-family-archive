@@ -35,4 +35,6 @@ jobs:
 
         python3 -W error scripts/test_icu_pipeline_suite.py
 
-        python3 -W error scripts/test_discovery_breadth.py'
+        python3 -W error scripts/test_discovery_breadth.py
+
+        python3 -W error scripts/test_admission_trust.py'
