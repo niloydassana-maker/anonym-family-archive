@@ -118,6 +118,46 @@ native GitHub search qualifier.
   tasks.
 - `git diff --check` - passed.
 
-The contextual branch compiler is verified locally and against live GitHub REST search.
-The query compiler change still needs a new Actions run for a deployed receipt; the prior
-Actions cycle is a regression receipt showing exactly why the context fix was needed.
+## Deployed contextual-branch receipt
+
+Actions run [`40603676054`](https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40603676054)
+completed successfully on `b99eb70899824472302742fb1e1394a84a7c0d1e`. Its founder-lane
+search log recorded the expression:
+
+```text
+"/bounty" mcp OR "model context protocol" is:issue is:open
+```
+
+The deployed compiler expanded it into two independent queries, each retaining `"/bounty"`,
+`is:issue`, `is:open`, `is:public`, `archived:false`, `no:assignee`, and `-linked:pr`. The
+historical date partition returned `branch_total_counts=[0,0]`; the seven-day query returned
+`fresh_branch_total_counts=[125,8]` and 33 items, with `saturated=false`. That is a live
+query execution receipt, not 133 qualified issues.
+
+The same run's final receipt was `qualified_fresh=0`, `qualified_unique=0`,
+`dispatched=[]`. It recorded 31 `HARD_ISSUE_EVIDENCE_MISSING`, 22
+`CURRENT_ISSUER_OFFER_MISSING`, three by-design declarations, two closed/read-only issues,
+and one mirror/non-engineering item. The query repair is deployed and verified; the influx
+plus quality delivery goal is still open because this cycle produced no qualified task.
+
+## Current funding-program eligibility check
+
+A live REST read of `Expensify/App#105168` found the issue open with title `[$175]`, but it
+currently has two assignees. The deployed `no:assignee` search qualifier therefore correctly
+excludes it from new work. Its presence in the prior historical admission audit is not a live
+dispatch receipt.
+
+The existing Expensify fast-lane query uses a `$250` title term, while the documented programme
+checks any `[$N]` title. A trial query keyed only on `commenter:melvin-bot[bot]` returned 96 raw
+open/unassigned results; a sample included ordinary FullStory and exploratory issues, so the
+commenter qualifier alone is too broad to replace the fast lane. Adding `label:External` to
+that trial reduced it to zero current rows. Separately, live queries for unassigned open
+Expensify issues with `[$175]` and `[$250]` titles both returned zero. The broad, rotating
+`repo:Expensify/App label:External` program query remains in the global program lane, so the
+fast-lane `$250` term does not narrow the full search horizon. No gate or admission check was
+changed in this experiment; the low-precision trial was discarded.
+
+The distinction is material: GitHub's native query language can filter metadata and match
+terms, but a commenter match cannot prove that a specific comment contains a current
+maintainer-authorized offer. The dispatcher still verifies the actual amount, offer source,
+engineering evidence, repository intent, and competition before dispatch.
