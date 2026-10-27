@@ -1,0 +1,30 @@
+name: Actions migration contracts
+'on':
+  push:
+    paths:
+    - scripts/**
+    - .github/workflows/**
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+    - name: Compile platform adapters
+      run: python3 -W error -m py_compile scripts/actions_github.py scripts/actions_dispatch.py scripts/actions_delivery.py scripts/actions_reconcile.py
+        scripts/actions_release.py scripts/bounty_admission.py scripts/bounty_fx.py scripts/kaggle_engine_worker.py scripts/delivery_supervisor.py
+    - name: Test migration contracts and unchanged master suites
+      env:
+        PYTHONIOENCODING: utf-8
+      run: 'python3 -W error scripts/test_actions_migration.py
+
+        python3 -W error scripts/test_partition_regressions.py
+
+        python3 -W error scripts/test_cline_delivery_ownership.py
+
+        python3 -W error scripts/test_icu_pipeline_suite.py'

@@ -1904,7 +1904,9 @@ def inspect_repository_architecture(worktree: str) -> dict:
         arch["ecosystems"].append("nodejs")
         arch["manifests"].append("package.json")
         arch["package_manager"] = "npm"
-        if os.path.exists(os.path.join(worktree, "pnpm-lock.yaml")):
+        if os.path.exists(os.path.join(worktree, "bun.lock")) or os.path.exists(os.path.join(worktree, "bun.lockb")) or os.path.exists(os.path.join(worktree, "bunfig.toml")):
+            arch["package_manager"] = "bun"
+        elif os.path.exists(os.path.join(worktree, "pnpm-lock.yaml")):
             arch["package_manager"] = "pnpm"
         elif os.path.exists(os.path.join(worktree, "yarn.lock")):
             arch["package_manager"] = "yarn"
@@ -1991,7 +1993,10 @@ def discover_verification_plan(arch: dict, worktree: str) -> VerificationPlan:
     if "nodejs" in ecosystems:
         pm = arch.get("package_manager", "npm")
         if not os.path.exists(os.path.join(worktree, "node_modules")):
-            plan.bootstrap.append([pm, "install", "--prefer-offline"])
+            if pm in ("bun", "pnpm"):
+                plan.bootstrap.append([pm, "install"])
+            else:
+                plan.bootstrap.append([pm, "install", "--prefer-offline"])
         if arch.get("has_tests"):
             plan.baseline_tests.append([pm, "test"])
             plan.final_tests.append([pm, "test"])
@@ -3910,6 +3915,9 @@ def parse_pipeline_args(argv=None):
 def main(argv=None):
     args = parse_pipeline_args(argv)
     live_mode = args.live
+    if live_mode and not args.upgrade_existing:
+        from actions_dispatch import main as actions_main
+        return actions_main(["--live", "--once" if args.once else "--daemon"])
     anytime = args.anytime
     run_once = args.once
     daemon_lock = None

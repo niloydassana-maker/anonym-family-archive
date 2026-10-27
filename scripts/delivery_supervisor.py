@@ -44,7 +44,7 @@ def validate_plan(document, worktree, previous=None):
             raise ValueError('Native plan source is outside the repository or missing')
         if hashlib.sha256(path.read_bytes()).hexdigest() != source.get('sha256'):
             raise ValueError('Native plan source SHA-256 does not match the checkout')
-    fields = ('bootstrap', 'baseline_tests', 'targeted_tests', 'final_tests', 'linters', 'format_checks')
+    fields = ('bootstrap', 'baseline_tests', 'targeted_tests', 'final_tests', 'linters', 'format_checks', 'builds')
     result = {}
     for field in fields:
         commands = document.get('plan', {}).get(field, [])
@@ -91,7 +91,7 @@ def supervise(worktree, repo, number, phase, failure, plan, artifact_dir,
     failure_file.write_text(str(failure), encoding='utf-8')
     before = source_snapshot(worktree)
     current = {name: getattr(plan, name, []) for name in
-               ('bootstrap', 'baseline_tests', 'targeted_tests', 'final_tests', 'linters', 'format_checks')}
+               ('bootstrap', 'baseline_tests', 'targeted_tests', 'final_tests', 'linters', 'format_checks', 'builds')}
     plan_file = receipt.with_suffix('.plan.json')
     plan_file.write_text(json.dumps(current, indent=2), encoding='utf-8')
     prompt = f'''You supervise the complete delivery lifecycle of {repo}#{number}.
@@ -112,7 +112,7 @@ Write your machine-readable decision to exactly this control artifact outside th
 Format: {{"action":"retry" or "blocked","reason":"evidence-backed diagnosis",
 "sources":[{{"path":"repository-relative manifest or CI file","sha256":"actual file SHA-256"}}],
 "plan":{{"bootstrap":[["program","arg"]],"baseline_tests":[["native","test"]],
-"final_tests":[["native","test"]],"linters":[],"format_checks":[]}}}}
+"final_tests":[["native","test"]],"builds":[["native","build"]],"linters":[],"format_checks":[]}}}}
 For preparation/baseline phases preserve every required native test/lint target and use only real repository commands.
 For publication/receipt phases keep the current plan unchanged and repair only transport/tool configuration.
 The host will independently validate source integrity, execute the plan, and require successful native receipts.

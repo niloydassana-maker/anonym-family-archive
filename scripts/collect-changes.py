@@ -1,109 +1,20 @@
-#!/usr/bin/env python3
-"""
-NUL-Safe Git Status Collector (Engine 2 / R7 Integrity Standard)
-Extracts changed worktree paths from `git status --porcelain=v1 -z` without trusting unverified buffers.
-Handles spaces, special characters, and non-ASCII file paths cleanly.
-"""
-import subprocess
-import sys
-import os
+"""Compatibility collector. Paths are lossless data, never proof of verification."""
 import json
 from pathlib import Path
+from actions_release import status_paths, product_paths
 
-FORBIDDEN_PREFIXES = (
-    ".git/",
-    ".github/workflows/",
-    "node_modules/",
-    ".venv/",
-    "venv/",
-    "target/",
-    "build/",
-    "dist/",
-)
-
-FORBIDDEN_FILES = (
-    "package-lock.json",
-    "yarn.lock",
-    "pnpm-lock.yaml",
-    "Cargo.lock",
-    "poetry.lock",
-    "composer.lock",
-)
 
 def collect_nul_safe_changes():
-    try:
-        proc = subprocess.run(
-            ["git", "status", "--porcelain=v1", "--untracked-files=all", "-z"],
-            capture_output=True,
-            check=True
-        )
-    except subprocess.CalledProcessError as e:
-        print(f"Error running git status: {e}", file=sys.stderr)
-        sys.exit(1)
+    paths = status_paths(Path.cwd())
+    destination = Path('../harness')
+    destination.mkdir(parents=True, exist_ok=True)
+    (destination / 'changed-files.json').write_text(json.dumps(paths, ensure_ascii=True), encoding='utf-8')
+    (destination / 'changed-files.nul').write_bytes(b''.join(p.encode('utf-8') + bytes([0]) for p in paths))
+    if not product_paths(paths):
+        raise ValueError('No product changes; collector cannot declare delivery success')
+    print(json.dumps({'changed_files': paths, 'verification': 'NOT_EVALUATED'}))
+    return paths
 
-    raw_output = proc.stdout
-    if not raw_output:
-        print("No changes detected in worktree.")
-        Path("../harness/verified_files.txt").write_text("", encoding="utf-8")
-        return []
 
-    entries = raw_output.split(b"\x00")
-    paths = []
-    i = 0
-    while i < len(entries):
-        entry = entries[i]
-        i += 1
-        if not entry:
-            continue
-        if len(entry) < 4 or entry[2:3] != b" ":
-            print(f"Warning: malformed entry {entry!r}", file=sys.stderr)
-            continue
-        
-        rel_path = entry[3:].decode("utf-8", errors="replace")
-        paths.append(rel_path)
-        
-        # In porcelain -z, renames and copies (R or C) are followed by a second NUL-separated path (original source)
-        status_code = entry[:2]
-        if b"R" in status_code or b"C" in status_code:
-            if i < len(entries):
-                original_source = entries[i].decode("utf-8", errors="replace")
-                i += 1
-                paths.append(original_source)
-
-    # Filter out forbidden paths / safety invariants
-    verified_paths = []
-    blocked_paths = []
-    for p in sorted(set(paths)):
-        normalized = p.replace("\\", "/").strip()
-        filename = normalized.split("/")[-1]
-        if any(normalized.startswith(fp) for fp in FORBIDDEN_PREFIXES) or filename in FORBIDDEN_FILES:
-            blocked_paths.append(normalized)
-        else:
-            verified_paths.append(normalized)
-
-    if blocked_paths:
-        print(f"Notice: Filtered out non-source/lockfile paths: {blocked_paths}", file=sys.stderr)
-
-    # Invariant: Never allow an empty or lockfile-only commit to masquerade as an issue fix
-    valid_source_exts = (".ts", ".tsx", ".js", ".jsx", ".py", ".rs", ".go", ".java", ".c", ".cpp", ".sol", ".toml", ".json", ".yaml", ".yml", ".md")
-    real_code_changes = [p for p in verified_paths if any(p.endswith(ext) for ext in valid_source_exts) and p not in FORBIDDEN_FILES]
-    if not real_code_changes:
-        print("FAIL-CLOSED: No genuine source code changes detected. Zero-Manufacture Law enforced.", file=sys.stderr)
-        verified_paths = []
-
-    # Write verified paths for the commit step
-    out_file = Path("../harness/verified_files.txt")
-    out_file.parent.mkdir(parents=True, exist_ok=True)
-    out_file.write_text("\n".join(verified_paths) + ("\n" if verified_paths else ""), encoding="utf-8")
-
-    summary = {
-        "total_changed": len(paths),
-        "verified_count": len(verified_paths),
-        "verified_files": verified_paths,
-        "blocked_files": blocked_paths,
-    }
-    print(json.dumps(summary, indent=2))
-    return verified_paths
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     collect_nul_safe_changes()

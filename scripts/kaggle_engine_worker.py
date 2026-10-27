@@ -55,8 +55,9 @@ _last_fleet_poll_log = 0.0
 _fleet_poll_failures = 0
 
 # Cloud sandbox and paths
-SANDBOX_DIR = "/tmp/sandbox"
-PACKET_DIR = "/kaggle/working/fleet-artifacts" if os.path.isdir('/kaggle/working') else "/tmp/candidate_packets"
+SANDBOX_DIR = os.environ.get("FLEET_SANDBOX_DIR", "/tmp/sandbox")
+PACKET_DIR = os.environ.get("FLEET_ARTIFACT_DIR") or (
+    "/kaggle/working/fleet-artifacts" if os.path.isdir('/kaggle/working') else "/tmp/candidate_packets")
 DB_FILE = "/tmp/icu_pipeline.db"
 CSV_FILE = "/tmp/icu_desperation_ledger.csv"
 CLIENT_CONTACT_EMAIL = "isearch.xsolve@gmail.com"
@@ -146,14 +147,14 @@ class TokenHarborRouter:
         engine_key_file = os.environ.get("TOKENHARBOR_KEY_FILE", "").strip()
         if engine_key_file:
             try:
-                with open(engine_key_file, "r", encoding="utf-8") as handle:
+                with open(engine_key_file, "r", encoding="utf-8-sig") as handle:
                     document = json.load(handle)
             except (OSError, json.JSONDecodeError) as exc:
                 raise ValueError("Configured private TokenHarbor shard is unavailable or malformed.") from exc
         else:
             # Local development can still use the vault or an explicitly
             # supplied secret. No API key is embedded in worker source.
-            raw_env = os.environ.get(TOKEN_HARBOR_KEYS_ENV, "").strip()
+            raw_env = os.environ.get(TOKEN_HARBOR_KEYS_ENV, "").strip().lstrip("\ufeff")
             if raw_env:
                 try:
                     document = json.loads(raw_env)
@@ -165,11 +166,11 @@ class TokenHarborRouter:
                     from kaggle_secrets import UserSecretsClient  # type: ignore
                     raw_secret = UserSecretsClient().get_secret(TOKEN_HARBOR_KEYS_ENV)
                     if raw_secret:
-                        document = json.loads(raw_secret)
+                        document = json.loads(raw_secret.strip().lstrip("\ufeff"))
                 except Exception:
                     document = None
                 if document is None and os.path.exists(key_file):
-                    with open(key_file, "r", encoding="utf-8") as handle:
+                    with open(key_file, "r", encoding="utf-8-sig") as handle:
                         document = json.load(handle)
         if isinstance(document, list):
             values = document
@@ -1153,6 +1154,7 @@ class VerificationPlan:
     final_tests: List[List[str]] = field(default_factory=list)
     linters: List[List[str]] = field(default_factory=list)
     format_checks: List[List[str]] = field(default_factory=list)
+    builds: List[List[str]] = field(default_factory=list)
 
 @dataclass
 class ScenarioCase:
@@ -2501,11 +2503,9 @@ def run_engineering_iteration_loop(
         run.iteration = turn
         print(f"  🔄 [ENGINEERING ITERATION {turn}/{max_iterations}] for {repo}#{issue_number}...")
 
-        # Repairs always begin from the verified upstream base, never from a failed patch.
+        # Retain the completed patch and exact failure context across repair turns.
         if turn > 1:
-            reset_ok, reset_message = reset_worktree_to_base(worktree, base_sha)
-            if not reset_ok:
-                return False, run, f"Unable to reset before repair turn {turn}: {reset_message}"
+            preserve_cline_edits(worktree)
 
         # 1. Cline is the primary worktree agent. It receives the real checkout
         # and can inspect it directly. Cline failures close this execution.
@@ -2521,46 +2521,11 @@ def run_engineering_iteration_loop(
                 print(f"     [CLINE EDITS PRESERVED] {recovery_receipt}")
             except Exception as exc:
                 return False, run, f"Cline failed; checkout retained at {worktree} because recovery backup failed: {exc}"
-            # A failed Cline run can have left partial edits; reset them before
-            # closing the attempt.
-            reset_ok, reset_message = reset_worktree_to_base(worktree, base_sha)
-            if not reset_ok:
-                return False, run, f"Unable to reset after Cline failure on turn {turn}: {reset_message}"
+            # The caller checkpoints this checkout; a failed agent never erases it.
             run.status = "FAILED_CLINE_ENGINEERING"
             run.error_summary = f"Cline failed closed on turn {turn}: {cline_message}"
             record_execution_diagnostic("Cline engineering", run.error_summary)
             return False, run, run.error_summary
-            if not tokenharbor_has_ready_key():
-                wait_for_tokenharbor_ready()
-            proposal = generate_grounded_proposal(
-                repo,
-                title,
-                body,
-                "maintainer",
-                [],
-                iteration_feedback=prior_failures,
-                prior_failures=prior_failures,
-                turn=turn,
-                worktree=worktree,
-            )
-            if not proposal:
-                diagnostic = get_last_generation_diagnostic() or "unspecified generation failure"
-                record_execution_diagnostic(f"generation turn {turn}", diagnostic)
-                print(f"     ⚠️ Iteration {turn}: Generation returned no text ({diagnostic}). Routing diagnostic to turn {turn + 1}...")
-                prior_failures = f"Turn {turn} generation error: {diagnostic}. Produce the complete solution now."
-                continue
-
-            extracted_files = extract_files_from_proposal(proposal)
-            verified_paths = [path for path, _ in extracted_files]
-            if not extracted_files:
-                record_execution_diagnostic(f"proposal extraction turn {turn}", "No code files were extractable from the model response.")
-                print(f"     ⚠️ Iteration {turn}: No extractable code files found. Routing formatting instruction back to DeepSeek for turn {turn + 1}...")
-                prior_failures = (
-                    f"Turn {turn} failed: No files could be extracted. "
-                    "Every file to create or edit MUST be formatted as: **File:** `path/to/file`\n```language\n...full file code...\n```"
-                )
-                continue
-
         # 2. Reject syntax-invalid output before executing native tests.
         syntax_ok, syntax_message = validate_synthesized_files(worktree, extracted_files)
         if not syntax_ok:
@@ -2570,23 +2535,14 @@ def run_engineering_iteration_loop(
             run.error_summary = prior_failures
             continue
 
-        # 3. Cline has already edited the worktree. The DeepSeek fallback is
-        # applied only after its output passed the same syntax gate.
-        if not cline_ok:
-            applied_ok, apply_msg = apply_verified_changes(worktree, extracted_files)
-            if not applied_ok:
-                record_execution_diagnostic(f"apply changes turn {turn}", apply_msg)
-                print(f"     ⚠️ Iteration {turn}: Failed applying changes. Routing back to DeepSeek for turn {turn + 1}...")
-                prior_failures = f"Failed applying changes in turn {turn}:\n{apply_msg}"
-                continue
-
         # 4. Run native repository verification suites
         tests_passed = True
         test_fail_log = ""
-        for test_cmd in test_commands:
+        for test_cmd in plan.builds + test_commands + plan.format_checks:
             cmd_res = run_command_safe(test_cmd, cwd=worktree, timeout=native_verification_timeout(test_cmd, 180))
             run.verification.append(cmd_res)
-            if cmd_res.exit_code != 0:
+            from actions_release import warning_output
+            if cmd_res.exit_code != 0 or warning_output(cmd_res.stdout + "\n" + cmd_res.stderr):
                 tests_passed = False
                 err_text = cmd_res.stderr or cmd_res.stdout
                 test_fail_log = f"Test failure in turn {turn}: {' '.join(test_cmd)}\n{err_text}"
@@ -2605,7 +2561,8 @@ def run_engineering_iteration_loop(
         for lint_cmd in plan.linters:
             l_res = run_command_safe(lint_cmd, cwd=worktree, timeout=native_verification_timeout(lint_cmd, 120))
             run.verification.append(l_res)
-            if l_res.exit_code != 0 or "warning" in (l_res.stdout or "").lower() or "error" in (l_res.stderr or "").lower():
+            from actions_release import warning_output
+            if l_res.exit_code != 0 or warning_output(l_res.stdout + "\n" + l_res.stderr):
                 linters_passed = False
                 lint_err = l_res.stderr or l_res.stdout
                 lint_fail_log = f"Linter warning/failure in turn {turn}: {' '.join(lint_cmd)}\n{lint_err}"
@@ -2614,7 +2571,7 @@ def run_engineering_iteration_loop(
 
         if not linters_passed:
             print(f"     ❌ Iteration {turn}: Linter warnings/errors detected. Routing back to DeepSeek for turn {turn + 1}...")
-            clipped_lint = lint_fail_log[:2000]
+            clipped_lint = lint_fail_log
             prior_failures = f"Linter errors in turn {turn}:\n{clipped_lint}\nFix all linter warnings/errors."
             continue
 
@@ -2756,6 +2713,15 @@ def run_cline_claim_intake(task, lease):
     worktree = os.path.join(SANDBOX_DIR, 'repos', repo.replace('/', '--') + '--' + str(number))
     with open(context_path, 'w', encoding='utf-8') as handle:
         json.dump(task, handle, ensure_ascii=False, indent=2)
+    checkout_instruction = (
+        f"Prepare an isolated checkout at {worktree}, from upstream's current default branch. "
+        f"Set origin and upstream to the public repository https://github.com/{repo}.git "
+        f"and check out fix/bounty-{number}. Fork creation and publication belong to a separate "
+        "trusted Actions job; do not request write credentials or create a fork in this phase."
+        if os.environ.get('ACTIONS_PUBLISHER_MANAGED') == '1' else
+        f"Prepare an isolated fork checkout at {worktree}, based strictly on upstream's current default branch.\n"
+        f"Set origin to the authenticated account's fork, upstream to {repo}, and check out fix/bounty-{number}."
+    )
     prompt = f"""You own this task's complete delivery lifecycle immediately after its fleet claim.
 Read the ENTIRE issue and prior failure context from {context_path}; do not truncate or summarize away requirements.
 Repository: {repo}. Issue: #{number}. Your active fleet run: {lease.run_id}.
@@ -2774,8 +2740,7 @@ Choose the actual native commands yourself. Diagnose and repair installation/con
 do not wait for a separate installer or assume npm, a language, a version, or a testing framework.
 Check current funding and all relevant open PRs before work. Stop on withdrawn funding or competition.
 Preserve existing completed edits and diagnostics before any destructive checkout operation.
-Prepare an isolated fork checkout at {worktree}, based strictly on upstream's current default branch.
-Set origin to the authenticated account's fork, upstream to {repo}, and check out fix/bounty-{number}.
+{checkout_instruction}
 Use repository-declared pins and build permissions. Never bypass integrity checks or approval policies.
 Do not manufacture data, command output, test results, or payment evidence. Never expose credentials.
 
@@ -2791,7 +2756,10 @@ Write the preparation decision to {report_path}:
 "architecture":{{"ecosystem":"actual ecosystem","ecosystems":["actual ecosystems"]}},
 "sources":[{{"path":"relative manifest/CI/setup file","sha256":"actual source SHA-256"}}],
 "plan":{{"bootstrap":[["actual","argv"]],"baseline_tests":[["actual","test"]],
-"final_tests":[["actual","test"]],"linters":[],"format_checks":[]}}}}
+"final_tests":[["actual","test"]],"builds":[["actual","build"]],
+"linters":[["actual","lint"]],"format_checks":[]}},
+"regression_plan":{{"component":"actual repository path","command":["actual","regression","test"],
+"expected_failure":"specific defect assertion that fails on the unchanged base"}}}}
 Do not claim delivery. Save the real plan and receipts, then finish this preparation phase."""
     _command_log(f'CLINE_FIRST_AFTER_CLAIM repo={repo} issue={number} context={context_path}')
     result = run_command_safe(cline_worktree_command(SANDBOX_DIR, prompt), cwd=SANDBOX_DIR,

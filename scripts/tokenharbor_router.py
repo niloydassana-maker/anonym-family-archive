@@ -63,7 +63,7 @@ class TokenHarborRouter:
         # laptop's vault remains local and is never copied into a kernel or a
         # queue payload.  Missing or malformed credentials deliberately fail
         # closed when the router is first used.
-        raw_env = os.environ.get(TOKEN_HARBOR_KEYS_ENV, "").strip()
+        raw_env = os.environ.get(TOKEN_HARBOR_KEYS_ENV, "").strip().lstrip("\ufeff")
         if raw_env:
             try:
                 document = json.loads(raw_env)
@@ -75,12 +75,12 @@ class TokenHarborRouter:
                 from kaggle_secrets import UserSecretsClient  # type: ignore
                 raw_secret = UserSecretsClient().get_secret(TOKEN_HARBOR_KEYS_ENV)
                 if raw_secret:
-                    document = json.loads(raw_secret)
+                    document = json.loads(raw_secret.strip().lstrip("\ufeff"))
             except Exception:
                 # A local process has no Kaggle secret provider; use its vault.
                 document = None
             if document is None:
-                with open(key_file, "r", encoding="utf-8") as handle:
+                with open(key_file, "r", encoding="utf-8-sig") as handle:
                     document = json.load(handle)
         if isinstance(document, list):
             values = document

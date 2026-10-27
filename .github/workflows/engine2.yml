@@ -1,166 +1,156 @@
-name: Engine 2 – Bounty Worker
-
-on:
+name: Bounty delivery
+run-name: 'bounty ${{ github.event.client_payload.task_id || inputs.mode }} ${{ github.event.client_payload.repo || inputs.target_repo }} #${{ github.event.client_payload.issue_number
+  || inputs.issue_number }}'
+'on':
   repository_dispatch:
-    types: [bounty_task_dispatch]
+    types:
+    - bounty_task_dispatch
   workflow_dispatch:
     inputs:
+      mode:
+        type: choice
+        options:
+        - canary
+        - deliver
+        default: canary
       target_repo:
-        description: "Target repository (e.g. owner/repo)"
-        required: true
+        description: Original owner/repository (delivery only)
+        required: false
       issue_number:
-        description: "Issue number"
-        required: true
-      task_id:
-        description: "Task ID (optional)"
+        description: Original issue number (delivery only)
         required: false
       force_recovery:
-        description: "Authorize 4th recovery attempt"
+        description: Authorize one bounded fourth recovery attempt
         type: boolean
         default: false
-
 concurrency:
-  group: bounty-engine-worker-${{ github.event.client_payload.repo || inputs.target_repo || github.run_id }}-${{ github.event.client_payload.issue_number || inputs.issue_number || 'standalone' }}
+  group: bounty-${{ github.event.client_payload.repo || inputs.target_repo || 'canary' }}-${{ github.event.client_payload.issue_number || inputs.issue_number
+    || github.run_id }}
   cancel-in-progress: false
-
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
-
+  contents: read
 jobs:
-  run-engine:
+  claim:
     runs-on: ubuntu-latest
-    timeout-minutes: 75
-
+    timeout-minutes: 15
+    env:
+      FLEET_ARTIFACT_DIR: /tmp/fleet-artifacts
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      mode: ${{ steps.claim.outputs.mode }}
+      task_id: ${{ steps.claim.outputs.task_id }}
     steps:
-      - name: Checkout automation harness
-        uses: actions/checkout@v4
-        with:
-          path: harness
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+    - name: Validate original task and reserve durable ownership
+      id: claim
+      env:
+        GH_TOKEN: ${{ secrets.GH_PAT || github.token }}
+      run: python3 scripts/actions_delivery.py claim
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: task-claim-${{ github.run_id }}
+        path: ${{ env.FLEET_ARTIFACT_DIR }}
+        if-no-files-found: error
+        retention-days: 14
+  engineer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      FLEET_ARTIFACT_DIR: /tmp/fleet-artifacts
+      FLEET_SANDBOX_DIR: /tmp/bounty-workspaces
+      CLINE_DATA_DIR: /tmp/bounty-cline
+    needs: claim
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        name: task-claim-${{ github.run_id }}
+        path: ${{ env.FLEET_ARTIFACT_DIR }}
+    - name: Verified minimal agent runtime
+      run: bash scripts/bootstrap-node.sh
+    - name: Install the executable actually used by the worker
+      run: 'npm install --global --no-audit --no-fund cline@3.0.74
 
-      - name: Resolve task inputs
-        id: task
-        run: |
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            echo "target_repo=${{ github.event.client_payload.repo }}" >> $GITHUB_OUTPUT
-            echo "issue_number=${{ github.event.client_payload.issue_number }}" >> $GITHUB_OUTPUT
-            echo "title=${{ github.event.client_payload.title }}" >> $GITHUB_OUTPUT
-            echo "run_id=${{ github.event.client_payload.run_id }}" >> $GITHUB_OUTPUT
-          else
-            echo "target_repo=${{ inputs.target_repo }}" >> $GITHUB_OUTPUT
-            echo "issue_number=${{ inputs.issue_number }}" >> $GITHUB_OUTPUT
-            echo "title=Issue #${{ inputs.issue_number }}" >> $GITHUB_OUTPUT
-            echo "run_id=${{ inputs.task_id || github.run_id }}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Checkout target repository
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ steps.task.outputs.target_repo }}
-          token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
-          path: workspace
-          fetch-depth: 0
-
-      - name: Bootstrap Node 22 (Verified Checksum)
-        run: |
-          chmod +x harness/scripts/bootstrap-node.sh
-          ./harness/scripts/bootstrap-node.sh
-
-      - name: Provision Cline & Dependencies
-        working-directory: workspace
-        run: |
-          npm install -g @cline/cli || echo "Global cline CLI prepared"
-          if [ -f package-lock.json ]; then
-            npm ci || npm ci --ignore-scripts || npm install --ignore-scripts || true
-          elif [ -f package.json ]; then
-            npm install || npm install --ignore-scripts || true
-          fi
-
-      - name: Run Cline Engineering Turn (3600s budget)
-        id: cline_turn
-        timeout-minutes: 60
-        working-directory: workspace
-        env:
-          CLINE_TIMEOUT: 3600
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-          TOKENHARBOR_KEYS_JSON: ${{ secrets.TOKENHARBOR_KEYS_JSON }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-          TARGET_REPO: ${{ steps.task.outputs.target_repo }}
-          ISSUE_NUMBER: ${{ steps.task.outputs.issue_number }}
-        run: |
-          chmod +x ../harness/scripts/run-cline.sh
-          ../harness/scripts/run-cline.sh
-
-      - name: Collect Changes (NUL-safe)
-        id: collect_changes
-        working-directory: workspace
-        run: |
-          python3 ../harness/scripts/collect-changes.py
-
-      - name: Native Verification Gates
-        working-directory: workspace
-        run: |
-          echo "Running repository native tests and verification..."
-          if [ -f package.json ]; then
-            npm test || npm run test:unit || true
-          elif [ -f Cargo.toml ]; then
-            cargo test --all || true
-          elif [ -f go.mod ]; then
-            go test ./... || true
-          fi
-
-      - name: Commit and Create Pull Request
-        id: open_pr
-        working-directory: workspace
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-          TARGET_REPO: ${{ steps.task.outputs.target_repo }}
-          ISSUE_NUM: ${{ steps.task.outputs.issue_number }}
-          ISSUE_TITLE: ${{ steps.task.outputs.title }}
-        run: |
-          git config user.name "Kunal Das"
-          git config user.email "isearch.xsolve@gmail.com"
-          BRANCH_NAME="fix-issue-${ISSUE_NUM}"
-          git checkout -b "$BRANCH_NAME"
-          
-          # Only stage files verified by collect-changes
-          if [ -s ../harness/verified_files.txt ]; then
-            cat ../harness/verified_files.txt | tr '\n' '\0' | xargs -0 git add --
-            git commit -m "fix: #${ISSUE_NUM} - ${ISSUE_TITLE}"
-
-            REPO_NAME=$(basename "$TARGET_REPO")
-            echo "Ensuring fork exists for $TARGET_REPO..."
-            gh repo fork "$TARGET_REPO" --clone=false || true
-            git remote add fork "https://x-access-token:${GH_TOKEN}@github.com/isearchxsolve/${REPO_NAME}.git" || git remote set-url fork "https://x-access-token:${GH_TOKEN}@github.com/isearchxsolve/${REPO_NAME}.git"
-            git push fork "$BRANCH_NAME" --force
-
-            PR_URL=$(gh pr create \
-              --repo "$TARGET_REPO" \
-              --head "isearchxsolve:$BRANCH_NAME" \
-              --title "fix: #${ISSUE_NUM} - ${ISSUE_TITLE}" \
-              --body "### 1. One-Sentence Summary with Business Impact
-              Resolves #${ISSUE_NUM}: ${ISSUE_TITLE}. Closes production vulnerability with deterministic state verification.
-
-              ### 2. Affected System & Blast Radius
-              - Target Repository: \`${TARGET_REPO}\` (Issue #${ISSUE_NUM})
-              - High-Leverage Verification: Pre-screened zero competing open pull requests prior to push.
-
-              ### 3. Verification & Solution Direction
-              - 100% native repository test suites pass with zero warnings or errors.
-              - Hermetic pre-PR boundary checks confirmed against unmodified test suite.
-              - Clean drop-in fix isolated to target components.")
-            echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
-            echo "Created PR: $PR_URL"
-          else
-            echo "No verified files staged; skipping PR creation."
-          fi
-
-      - name: Report Result and Write Job Summary
-        if: always()
-        run: |
-          chmod +x harness/scripts/report-result.sh
-          ./harness/scripts/report-result.sh
+        cline --version'
+    - name: Cline-first engineering and independent native verification
+      env:
+        GH_TOKEN: ${{ github.token }}
+        TOKENHARBOR_KEYS_JSON: ${{ secrets.TOKENHARBOR_KEYS_JSON }}
+        ENGINE_ID: actions-${{ github.run_id }}
+      run: python3 -u scripts/actions_delivery.py engineer
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: task-engineering-${{ github.run_id }}
+        path: ${{ env.FLEET_ARTIFACT_DIR }}
+        if-no-files-found: error
+        retention-days: 14
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      FLEET_ARTIFACT_DIR: /tmp/fleet-artifacts
+    needs:
+    - claim
+    - engineer
+    if: needs.claim.outputs.mode == 'deliver' && needs.engineer.result == 'success'
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        name: task-engineering-${{ github.run_id }}
+        path: ${{ env.FLEET_ARTIFACT_DIR }}
+    - name: Validate release objects and publish without executing target code
+      env:
+        GH_TOKEN: ${{ secrets.GH_PAT }}
+      run: python3 scripts/actions_delivery.py publish
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: task-publication-${{ github.run_id }}
+        path: ${{ env.FLEET_ARTIFACT_DIR }}
+        if-no-files-found: error
+        retention-days: 14
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      FLEET_ARTIFACT_DIR: /tmp/fleet-artifacts
+      ENGINEERING_JOB_RESULT: ${{ needs.engineer.result }}
+      PUBLICATION_JOB_RESULT: ${{ needs.publish.result }}
+      TASK_MODE: ${{ needs.claim.outputs.mode }}
+    needs:
+    - claim
+    - engineer
+    - publish
+    if: always()
+    permissions:
+      contents: write
+      actions: read
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.sha }}
+        persist-credentials: false
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: task-*
+        merge-multiple: true
+        path: ${{ env.FLEET_ARTIFACT_DIR }}
+    - name: Reconcile actual terminal result
+      env:
+        GH_TOKEN: ${{ secrets.GH_PAT || github.token }}
+      run: "status=failure\nif [ \"$ENGINEERING_JOB_RESULT\" = success ]; then\n  if [ \"$TASK_MODE\" = canary ] || [ \"$PUBLICATION_JOB_RESULT\" = success\
+        \ ]; then\n    status=success\n  fi\nfi\npython3 scripts/actions_delivery.py finish --job-status \"$status\""
