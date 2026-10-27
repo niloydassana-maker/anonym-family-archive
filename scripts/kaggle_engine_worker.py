@@ -2063,7 +2063,9 @@ Required scenarios:
 Prior failures from the immediately preceding attempt:
 {failure_context}
 
-Own the delivery of this issue, including any required installation, configuration and repairs. Inspect the existing code and tests before editing. Add companion tests for applicable null, empty, boundary, negative, concurrency and regression cases. Do not weaken or rewrite existing master tests or CI workflows. Use the native package manager, pins and test plan you resolved from the repository. Run the relevant repository tests and linters when practical; every required native check must actually pass before publication. Runtime tools and caches may be provisioned outside the worktree; keep product changes in this isolated checkout. Do not add corporate signatures, credentials, payment details or unrelated changes. Preserve completed work and leave the actual changes for the host's independent verification and publication gates."""
+Own the delivery of this issue, including any required installation, configuration and repairs. Inspect the existing code and tests before editing. Add companion tests for applicable null, empty, boundary, negative, concurrency and regression cases. Do not weaken or rewrite existing master tests or CI workflows. Use the native package manager, pins and test plan you resolved from the repository. Run the relevant repository tests and linters when practical; every required native check must actually pass before publication. Runtime tools and caches may be provisioned outside the worktree; keep product changes in this isolated checkout. Do not add corporate signatures, credentials, payment details or unrelated changes. Preserve completed work and leave the actual changes for the host's independent verification and publication gates.
+
+Use the runner's available RAM/CPU deliberately. Inspect scripts for internal parallel fan-out before full-repository checks, run heavyweight builds/typechecks/tests serially, and poll any live command to completion before starting another. Preserve the full native check set with supported concurrency limits or serial repository-defined component commands; never omit targets or relax warnings/tests to fit memory. If resource pressure interrupts a command, report the exact command and observed evidence, then repair the execution plan rather than treating it as a product defect."""
 
 def _status_paths_from_porcelain(status_output: str) -> Tuple[bool, List[str], str]:
     """Extract changed worktree paths from `git status --porcelain` without trusting them."""
@@ -2774,6 +2776,15 @@ freely. If the baseline has a genuine product defect or lacks external credentia
 The host will independently execute your native plan, then return the issue to you for implementation,
 verification, publication monitoring and any required repairs. Do not push or open a PR before those release gates.
 No existing master test or CI workflow may be weakened. Keep runtime caches outside the checkout when needed.
+
+Manage runner resources while doing that work. Before launching a repository-wide build, typecheck or test,
+inspect available RAM/CPU and inspect whether the command fans out into parallel workspace processes. Run
+resource-heavy checks one at a time. If a command returns a live session, poll that same process to completion
+and capture its real exit status before starting another heavy check. For a monorepo, preserve the complete
+repository-defined target set by using supported concurrency limits or by listing its native component checks
+as separate serial commands in the plan. Never omit targets, weaken tests, or suppress warnings to fit memory.
+If resource pressure interrupts a command, record the exact command and observed resource/error evidence and
+repair the execution plan before retrying; do not classify it as a product failure.
 
 Write the preparation decision to {report_path}:
 {{"action":"retry" or "blocked","reason":"actual diagnosis","worktree":"{worktree}",

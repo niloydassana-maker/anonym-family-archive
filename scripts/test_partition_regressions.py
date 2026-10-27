@@ -91,6 +91,8 @@ class PartitionRegressionTests(unittest.TestCase):
             prompt = module.build_cline_engineering_prompt('owner/repository', 1, 'Issue', body, {}, [], None)
             self.assertIn('FINAL_REQUIREMENT', prompt)
             self.assertIn('Run the relevant repository tests and linters when practical', prompt)
+            self.assertIn('available RAM/CPU', prompt)
+            self.assertIn('serially', prompt)
             self.assertNotIn('Do not run compilers', prompt)
 
     def test_node22_bootstrap_replaces_old_runtime_and_verifies_checksum(self):

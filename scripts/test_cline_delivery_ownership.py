@@ -81,6 +81,8 @@ class DeliveryOwnershipTests(unittest.TestCase):
             self.assertIn('concrete code change', prompts[0])
             self.assertIn('willingness-to-pay research', prompts[0])
             self.assertIn('Do not turn a rejected/non-engineering issue into a fallback proposal', prompts[0])
+            self.assertIn('Manage runner resources', prompts[0])
+            self.assertIn('separate serial commands', prompts[0])
             self.assertEqual(report['plan'].baseline_tests, [['corepack', 'pnpm@9', 'test']])
             self.assertEqual(report['base_sha'], sha)
 

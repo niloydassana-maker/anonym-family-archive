@@ -2191,7 +2191,9 @@ Required scenarios:
 Prior failures from the immediately preceding attempt:
 {failure_context}
 
-Modify the repository files in this directory to resolve the issue, and ensure existing and new tests pass. Inspect the existing code and tests before editing. Add or update focused tests for the reported behavior, including applicable null, empty, boundary, negative, concurrency, and regression cases. Do not modify CI workflow files or write outside this worktree. Do not add corporate signatures, credentials, payment details, or unrelated changes. Run the relevant repository tests and linters when practical, then leave the actual changes in this worktree for the verification gates."""
+Modify the repository files in this directory to resolve the issue, and ensure existing and new tests pass. Inspect the existing code and tests before editing. Add or update focused tests for the reported behavior, including applicable null, empty, boundary, negative, concurrency, and regression cases. Do not modify CI workflow files or write outside this worktree. Do not add corporate signatures, credentials, payment details, or unrelated changes. Run the relevant repository tests and linters when practical, then leave the actual changes in this worktree for the verification gates.
+
+Manage runner resources deliberately. Before full-repository checks, inspect available RAM/CPU and whether each command fans out into parallel workspace processes. Run heavyweight builds, typechecks and tests serially; poll any live command to completion and capture its real exit status before starting another. Preserve the complete native target set with supported concurrency limits or serial repository-defined component commands. Never omit targets, weaken tests, or suppress warnings to fit memory. If resource pressure interrupts a command, record the exact command and evidence, then repair the execution plan rather than treating it as a product failure."""
 
 def _status_paths_from_porcelain(status_output: str) -> Tuple[bool, List[str], str]:
     """Extract changed worktree paths from `git status --porcelain` without trusting them."""
