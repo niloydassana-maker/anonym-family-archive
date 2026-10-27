@@ -1,0 +1,37 @@
+{
+  "task_id": "37939d349f8b8ba62da1e75dab2dfb53",
+  "repo": "xpex-systems-ai/GXEON-AI",
+  "issue_number": 452,
+  "status": "DISPATCHING",
+  "dispatch_id": "f5a3ffb8106e422c85cfc455a46dd3cf",
+  "admission": {
+    "funding": {
+      "amount": "350",
+      "currency": "USDC",
+      "usd_value": "350",
+      "quote": {
+        "basis": "USD-denominated stablecoin offer"
+      },
+      "raw": "350 USDC",
+      "source_url": "https://github.com/xpex-systems-ai/GXEON-AI/issues/452",
+      "payer": "xpex-systems-ai"
+    },
+    "technical_signals": [
+      "signature",
+      "transaction"
+    ],
+    "component_references": [
+      "EARN_SUBMITTED"
+    ],
+    "source_issue": "https://github.com/xpex-systems-ai/GXEON-AI/issues/452",
+    "fetched_at": "2026-10-27T18:21:14.317680+00:00"
+  },
+  "lanes": [
+    "founder",
+    "normal",
+    "startup"
+  ],
+  "dispatched_at": "2026-10-27T18:21:18.948255+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-27T18:21:18.948255+00:00"
+}
