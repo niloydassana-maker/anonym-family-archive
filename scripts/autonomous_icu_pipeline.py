@@ -691,6 +691,8 @@ EXPLICIT_PAYMENT_NEGATIONS = [
 ECONOMIC_SCAM_PATTERNS = [
     r"\b(?:lottery|lotto|casino|gambling)\b",
     r"\b(?:send\s+(?:crypto|money).{0,40}(?:unlock|claim|release))\b",
+    r"\b(?:illuminati|brotherhood|freemason|occult|sorcery|spell\s+caster|fortune|inheritance)\b",
+    r"\b(?:call\s+dr\s+[a-z]+|whatsapp\s+us\s+on|\+234\d{8,})\b",
 ]
 
 def _label_name(label):
@@ -1178,32 +1180,35 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     )
 
     if live_delivery_mode and paid_bounty:
-        if raw_amount.startswith('Tier '):
+        if raw_amount.startswith('Tier ') and not (maintainer or platform_attested):
             return False, 'Severity is not a monetary commitment; explicit task funding required.'
         if not (platform_attested or direct_payer or maintainer_offer or is_verified_sponsor):
             return False, 'Bounty title/label does not establish payer authority; independent funding required.'
         # Quoted discussions, embedded dashboards, and amounts elsewhere in a
         # long issue are not offers. Require nearby payment language in prose.
         live_offer = False
-        for source in [f'{title}\n{body}', *(author_comments or [])]:
-            if re.search(r'<!doctype\s+html|<html\b', source or '', re.I):
-                continue
-            lines = []
-            for line in (source or '').splitlines():
-                if re.match(r'^\s*>', line):
-                    # Maintainers often format the actual bounty banner as a
-                    # blockquote. Keep monetary bounty headers, not debates.
-                    if not (re.search(r'\b(?:bounty|reward)\b', line, re.I)
-                            and re.search(r'[$€£₹]\s*\d|\d\s*(?:USD|USDC|USDT)\b', line, re.I)):
-                        continue
-                    line = re.sub(r'^\s*>\s*', '', line)
-                lines.append(line)
-            prose = strip_markup_and_code('\n'.join(lines))
-            for amount in re.finditer(r'[$€£₹]\s*\d[\d,.]*|\b\d[\d,.]*\s*(?:USD|USDC|USDT|EUR|GBP|INR)\b', prose, re.I):
-                near = prose[max(0, amount.start() - 120):amount.end() + 120]
-                if _has_direct_offer_language(near) or re.search(r'\b(?:bounty|reward|budget|funded|prize)\b', near, re.I):
-                    live_offer = True
-                    break
+        if raw_amount.startswith('Tier ') and (maintainer or platform_attested):
+            live_offer = True
+        else:
+            for source in [f'{title}\n{body}', *(author_comments or [])]:
+                if re.search(r'<!doctype\s+html|<html\b', source or '', re.I):
+                    continue
+                lines = []
+                for line in (source or '').splitlines():
+                    if re.match(r'^\s*>', line):
+                        # Maintainers often format the actual bounty banner as a
+                        # blockquote. Keep monetary bounty headers, not debates.
+                        if not (re.search(r'\b(?:bounty|reward)\b', line, re.I)
+                                and re.search(r'[$€£₹]\s*\d|\d\s*(?:USD|USDC|USDT)\b', line, re.I)):
+                            continue
+                        line = re.sub(r'^\s*>\s*', '', line)
+                    lines.append(line)
+                prose = strip_markup_and_code('\n'.join(lines))
+                for amount in re.finditer(r'[$€£₹]\s*\d[\d,.]*|\b\d[\d,.]*\s*(?:USD|USDC|USDT|EUR|GBP|INR)\b', prose, re.I):
+                    near = prose[max(0, amount.start() - 120):amount.end() + 120]
+                    if _has_direct_offer_language(near) or re.search(r'\b(?:bounty|reward|budget|funded|prize)\b', near, re.I):
+                        live_offer = True
+                        break
         if not live_offer:
             return False, 'No explicit task offer near an amount in unquoted prose.'
 
@@ -3076,10 +3081,16 @@ def upgrade_all_existing_deliveries(live_mode=True):
 
 HARDNESS_PATTERNS = [
     r"\bhard\b", r"\bcomplex\b", r"\bconcurrency\b", r"\brace condition\b",
-    r"\bdeadlock\b", r"\bmemory leak\b", r"\bcorruption\b", r"\bconsensus\b",
-    r"\bcompiler\b", r"\bast\b", r"\bcryptography\b", r"\bzero-knowledge\b",
-    r"\bsvm\b", r"\bevm\b", r"\bkernel\b", r"\bdistributed\b", r"\blatency\b",
-    r"\bboundary\b", r"\binvariant\b", r"\bperformance\b", r"\bprotocol\b"
+    r"\bdeadlock\b", r"\bmutex\b", r"\block-free\b", r"\batomic\b", r"\bthread\s+saf\w+\b",
+    r"\bmemory leak\b", r"\buse-after-free\b", r"\bbuffer overflow\b", r"\bsegmentation fault\b",
+    r"\bcorruption\b", r"\bconsensus\b", r"\braft\b", r"\bpaxos\b",
+    r"\bcompiler\b", r"\bast\b", r"\bparser\b", r"\bcodegen\b", r"\btype\s+checker\b",
+    r"\bcryptography\b", r"\bzero-knowledge\b", r"\bzk-snark\b", r"\bsignature\b",
+    r"\bsvm\b", r"\bevm\b", r"\breentrancy\b", r"\bsmart contract\b",
+    r"\bkernel\b", r"\bdriver\b", r"\bebpf\b", r"\bio_uring\b",
+    r"\bdistributed\b", r"\blatency\b", r"\bp99\b", r"\bthroughput\b", r"\bprofiler\b",
+    r"\bboundary\b", r"\binvariant\b", r"\bperformance\b", r"\boptimization\b",
+    r"\bprotocol\b", r"\bgrpc\b", r"\bprotobuf\b", r"\bzero-copy\b"
 ]
 
 def score_hardness_and_competition(it):
@@ -3087,6 +3098,7 @@ def score_hardness_and_competition(it):
     Baba's Hardness Moat:
     Prioritizes intellectually challenging tickets that scare away novices
     and have near-zero competition (0-3 comments).
+    Zero-hardness tasks receive no competition bonus.
     """
     title = it.get("title", "") or ""
     body = it.get("body", "") or ""
@@ -3097,19 +3109,26 @@ def score_hardness_and_competition(it):
     full_text = (title + " " + body + " " + " ".join(labels)).lower()
 
     # Hardness keywords: +30 points each
+    hardness_hits = 0
     for p in HARDNESS_PATTERNS:
         if re.search(p, full_text):
             score += 30
+            hardness_hits += 1
 
     # Near-zero competition bonus (scared away competitors):
-    if comments_count == 0:
-        score += 80
-    elif comments_count <= 2:
-        score += 50
-    elif comments_count <= 4:
-        score += 25
-    elif comments_count > 4:
-        score -= 100
+    # Only award bonus if the ticket demonstrates genuine engineering hardness!
+    if hardness_hits > 0:
+        if comments_count == 0:
+            score += 80
+        elif comments_count <= 2:
+            score += 50
+        elif comments_count <= 4:
+            score += 25
+        elif comments_count > 4:
+            score -= 100
+    else:
+        if comments_count > 4:
+            score -= 100
 
     return score
 
@@ -3292,7 +3311,8 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         body_has_bounty, body_in_bounds, _, body_usd_val, _ = parse_and_normalize_bounty(f"{title} {body}")
 
         query_str = str(query).lower()
-        query_has_marker = any(qm in query_str for qm in ("algora", "polar", "opire", "bountycaster", "issuehunt", "gitcoin", "bounty", "reward", "funded", "pay"))
+        query_str = str(query).lower()
+        query_is_platform = any(qm in query_str for qm in ("algora", "polar.sh", "opire", "bountycaster", "issuehunt", "gitcoin"))
 
         need_comments = False
         if body_has_bounty:
@@ -3312,18 +3332,20 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
                 payer_assoc=it.get("payerAssociation", "NONE"),
                 live_delivery_mode=True,
             )
-            if not is_icu_body and comments_cnt == 0 and body_usd_val is not None:
-                continue
-            # Check current comments even when an old body offer looks valid:
-            # maintainers can withdraw or change that offer later.
-            need_comments = comments_cnt > 0
+            if is_icu_body:
+                # Fast path: already verified from title/body; delivery cycle will verify fresh comments
+                need_comments = False
+            else:
+                if comments_cnt == 0:
+                    continue
+                need_comments = True
         else:
             # No bounty amount in body
             if comments_cnt == 0:
                 continue
-            # Only hydrate if there is an explicit bounty marker (label, platform, query, or offer language)
+            # Only hydrate if there is an explicit bounty marker (label, platform bot query, or offer language)
             has_marker = (
-                query_has_marker or
+                query_is_platform or
                 _has_platform_bounty_marker(f"{title} {body}") or
                 any(re.search(r"\b(?:bounty|bug\s+bounty|reward|funded|bountied)\b", _label_name(lbl), re.IGNORECASE) for lbl in (labels or [])) or
                 bool(re.search(r"\[(?:bug\s+)?bounty(?:\s+[^\]]+)?\]", title or "", re.IGNORECASE)) or

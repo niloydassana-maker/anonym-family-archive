@@ -57,6 +57,39 @@ def non_engineering_dispatch_reason(task: dict) -> str:
         re.I
     ):
         return 'marketing, whitepaper sharing, or community outreach task, not a software engineering issue'
+    if re.search(
+        r'\b(?:illuminati|brotherhood|freemason|occult|sorcery|spell\s+caster|'
+        r'lottery|lotto|fortune|inheritance|recovery\s+agent|whatsapp\s+us\s+on\s+\+?\d+|'
+        r'call\s+(?:dr|pastor|prophet))\b',
+        title + '\n' + body,
+        re.I
+    ):
+        return 'occult, brotherhood, lottery, or fee-advance scam, not a software engineering issue'
+    if re.search(
+        r'\b(?:debate\s+\d+|crossroads|discussion\s+issue|opinion|personal\s+advice|'
+        r'philosophical|dilemma|life\s+choice)\b',
+        title + '\n' + body,
+        re.I
+    ):
+        return 'philosophical debate, life advice, or non-software discussion thread'
+    if re.search(
+        r'\b(?:agile\s+training|training\s+for|workshop|seminar|course|curriculum|'
+        r'syllabus|classroom|lecture|internship\s+cohort|coaching\s+session)\b',
+        title + '\n' + body,
+        re.I
+    ):
+        return 'educational training, workshop, or curriculum issue, not a software engineering issue'
+    if re.search(r'(?:^|/)(?:floodissues|spam[-_]repo|test[-_]issues|test[-_]flood)(?:$|[-_])', repo, re.I) or re.search(
+        r'^\s*(?:polls?|vote\s+here|test\s+issue)\s*$', title, re.I
+    ):
+        return 'issue flooding or poll repository, not an authoritative engineering codebase'
+    if re.search(
+        r'\b(?:legal\s+&\s+business\s+foundation|incorporat(?:e|ion)|llc|ein|d-u-n-s|'
+        r'business\s+registration|bank\s+account\s+opening)\b',
+        title + '\n' + body,
+        re.I
+    ):
+        return 'administrative or legal business entity setup, not software engineering'
     return ''
 
 _HARD_FAILURE = re.compile(
@@ -65,7 +98,7 @@ _HARD_FAILURE = re.compile(
     r"competing (?:pull request|pr)|open (?:pull request|pr) already|"
     r"PR exists|receipt failed|HTTP\s*404|repository not found|"
     r"not a software|non-software|speculative|roadmap|bot/discussion mirror|"
-    r"raw HTML source code dump",
+    r"raw HTML source code dump|empty repository",
     re.IGNORECASE,
 )
 _PERMANENT_FAILURE = re.compile(
