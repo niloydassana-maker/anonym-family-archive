@@ -72,6 +72,8 @@ jobs:
       FLEET_SANDBOX_DIR: /tmp/bounty-workspaces
       CLINE_DATA_DIR: /tmp/bounty-cline
     needs: claim
+    outputs:
+      verdict: ${{ steps.engineer.outputs.verdict }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -94,6 +96,7 @@ jobs:
 
         cline --version'
     - name: Cline-first engineering and independent native verification
+      id: engineer
       env:
         GH_TOKEN: ${{ github.token }}
         TOKENHARBOR_KEYS_JSON: ${{ secrets.TOKENHARBOR_KEYS_JSON }}
@@ -115,7 +118,8 @@ jobs:
     needs:
     - claim
     - engineer
-    if: needs.claim.outputs.mode == 'deliver' && needs.engineer.result == 'success'
+    if: needs.claim.outputs.mode == 'deliver' && needs.engineer.result == 'success' && needs.engineer.outputs.verdict
+      == 'verified'
     steps:
     - uses: actions/checkout@v4
       with:

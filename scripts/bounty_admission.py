@@ -47,6 +47,32 @@ EXFILTRATION = re.compile(
     r"initialized_with)\b|"
     r"\bhome_dir\b[^.\n]{0,120}\bworking_dir\b", re.I)
 
+# A repository that has already declared the reported behaviour correct is not work: the
+# only possible delivery outcome is a refusal, and the run spends a full Cline session
+# learning what the maintainer already wrote. Measured on Expensify/App#105153 (2026-10-27):
+# the dispatched delivery run returned a verified `action=blocked`, "documented by the
+# repository's own maintainer analysis as expected/by-design", and the next discovery cycle
+# re-admitted the same issue. The wording below is declarative on purpose.
+#
+# The reporter's own "Expected Behaviour" heading is deliberately NOT a marker: every bug
+# report carries one and it states the opposite of this verdict. Only an authoritative
+# document can declare intent, and a later authoritative "this is a bug"/reopen clears it,
+# so a maintainer changing their mind reopens the issue instead of being overruled by their
+# earlier comment.
+BY_DESIGN = re.compile(
+    r"\bworks as (?:designed|intended)\b|\bworking as (?:designed|intended)\b|"
+    r"\bby design\b|\bnot a bug\b|\bnot a defect\b|\bno code change\b|"
+    r"\bwon'?t fix\b|\bwontfix\b|"
+    r"\bexpected behaviou?r\b[^.\n]{0,60}\bby design\b", re.I)
+REAL_BUG = re.compile(
+    r"\b(?:this|that|it)\s+(?:is|remains)\s+(?:still\s+)?a\s+"
+    r"(?:real|genuine|valid)\s+(?:bug|defect|regression)\b|"
+    r"\bconfirmed\s+(?:as\s+)?a\s+(?:bug|defect)\b|"
+    r"\breopen(?:ed|ing)?\b|"
+    r"\b(?:not|no longer)\s+(?:by design|works as designed)\b", re.I)
+BY_DESIGN_LABELS = {"wontfix", "won't fix", "wont fix", "by design", "as designed",
+                    "not a bug", "works as designed", "invalid", "not planned"}
+
 HARD = re.compile(
     r"\b(?:race condition|deadlock|concurren\w*|atomic\w*|idempot\w*|"
     r"overflow|underflow|precision|protocols?|invariants?|authorization|bypass|"
@@ -125,6 +151,20 @@ FUNDING_PROGRAMS = {
         "evidence": "melvin-bot[bot] comment 'Job added to Upwork: "
                     "https://www.upwork.com/jobs/~022108002387844305757' on Expensify/App#103403, "
                     "read live 2026-10-27; the payout convention is a [$N] issue title.",
+        # Accounts that speak for this repository about its own intended behaviour.
+        # `trusted()` refuses them on purpose (it answers the money question, and an app
+        # identity or a CONTRIBUTOR-association automation account cannot commit funds).
+        # Read live 2026-10-27 from repos/Expensify/App/issues/105153/comments: the
+        # declaring comment is login "MelvinBot", type "User",
+        # author_association "CONTRIBUTOR", id 6447058391, created 2026-10-27T16:09:17Z,
+        # html_url https://github.com/Expensify/App/issues/105153#issuecomment-6447058391,
+        # concluding "**Root Cause:** This works as designed. It is not a bug." A different
+        # stranger (login "camesenin", author_association "NONE") merely agreed, and an
+        # untrusted agreement can never establish authority.
+        "automation_logins": ("MelvinBot", "melvin-bot[bot]"),
+        "automation_evidence": "MelvinBot comment id 6447058391 on Expensify/App#105153, "
+                               "author_association CONTRIBUTOR, read live 2026-10-27; "
+                               "melvin-bot[bot] publishes the Upwork attestation.",
     },
 }
 
@@ -149,6 +189,75 @@ def funding_program(context):
             if pattern.search(comment.get("body") or ""):
                 return entry
     return None
+
+
+def analysis_authority(context, document):
+    """Can this document declare what the repository intends its own behaviour to be?
+
+    ``trusted()`` answers a narrower question -- can this party commit the project's money --
+    and refuses a CONTRIBUTOR, which is exactly the association a repository's own
+    issue-analysis automation carries. Reusing it alone would make the gate reject every
+    declaration it exists to read, so a programme's documented automation identities are
+    honoured here as well. The evidence for each identity lives beside the entry.
+    """
+    if trusted(context, document):
+        return True
+    login = ((document.get("user") or {}).get("login") or "").lower()
+    if not login:
+        return False
+    entry = FUNDING_PROGRAMS.get((context["repository"].get("full_name") or "").lower()) or {}
+    documented = {name.lower().removesuffix("[bot]")
+                  for name in entry.get("automation_logins", ())}
+    return login.removesuffix("[bot]") in documented
+
+
+def marker_sentence(body, match, limit=240):
+    """Quote the line carrying the marker, never the whole comment."""
+    start = body.rfind("\n", 0, match.start()) + 1
+    stop = body.find("\n", match.end())
+    line = " ".join(body[start:len(body) if stop < 0 else stop].split())
+    return line if len(line) <= limit else line[:limit - 3].rstrip() + "..."
+
+
+def declared_by_design(context):
+    """Return the repository's own verdict that this report is not a defect, or ``None``.
+
+    Labels are only consulted when no authoritative comment settled the question, and an
+    authoritative statement that the behaviour *is* a defect clears both, including a label
+    that was applied earlier. Silence returns ``None`` -- an absence of a declaration is not
+    a declaration.
+    """
+    verdict, cleared = None, False
+    for document in context.get("comments") or ():
+        if not analysis_authority(context, document):
+            continue
+        body = document.get("body") or ""
+        if REAL_BUG.search(body):
+            verdict, cleared = None, True
+            continue
+        match = BY_DESIGN.search(body)
+        if not match:
+            continue
+        verdict, cleared = {
+            "verdict": "BY_DESIGN",
+            "quote": marker_sentence(body, match),
+            "authority": (document.get("user") or {}).get("login", ""),
+            "author_association": document.get("author_association", ""),
+            "source_url": document.get("html_url", ""),
+            "created_at": document.get("created_at", ""),
+        }, False
+    if cleared or verdict:
+        return verdict
+    issue = context["issue"]
+    labels = {str(label.get("name") if isinstance(label, dict) else label).strip().lower()
+              for label in (issue.get("labels") or ())}
+    hit = labels & BY_DESIGN_LABELS
+    if not hit:
+        return None
+    return {"verdict": "BY_DESIGN", "quote": "labels: " + ", ".join(sorted(hit)),
+            "authority": (context["repository"].get("owner") or {}).get("login", ""),
+            "author_association": "LABEL", "source_url": issue.get("html_url", ""),
+            "created_at": ""}
 
 
 def monetary_text(text):
@@ -185,6 +294,11 @@ def admit(context, quote=None, floor=FLOOR):
     if re.search(r"test network.*practice money|testnet (?:ETH|tokens?).*(?:only|no real)",
                  body, re.I | re.S) or EXFILTRATION.search(title + "\n" + body):
         return None, "NON_PAYMENT_OR_INSTRUCTION_EXFILTRATION"
+    if declared_by_design(context):
+        # One stable code keeps the rejection counter one bucket; the refusing document and
+        # its quote are recoverable with declared_by_design(context) and are recorded in the
+        # verification ledger for the issue this gate was measured on.
+        return None, "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN"
     technical = sorted(set(m.group().lower() for m in HARD.finditer(title + "\n" + body)))
     components = sorted(set(m.group() for m in COMPONENT.finditer(re.sub(r"https?://\S+", " ", body))))
     if not technical or (not components and len(technical) < 2):

@@ -40,6 +40,55 @@ def output(**values):
                 handle.write(f"{key}={value}\n")
 
 
+def summary(result):
+    """Echo a terminal outcome into the job summary.
+
+    A refusal recorded only in an uploaded artifact reads, on the run page, exactly like a
+    pipeline that quietly did nothing. Measured need: the 2026-10-27 delivery run ended with
+    no PR and no visible reason until the step log was opened.
+    """
+    path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not path:
+        return
+    status = str(result.get("status") or "")
+    if not status:
+        return
+    detail = str(result.get("declared_reason") or result.get("reason") or result.get("error") or "")
+    lines = ["### " + status, "",
+             "- task: `" + str(result.get("task_id") or "unknown") + "`"]
+    if result.get("repo"):
+        lines.append("- issue: `" + str(result["repo"]) + "#" + str(result.get("issue_number", "")) + "`")
+    if detail:
+        lines.append("- reason: " + " ".join(detail.split())[:600])
+    if result.get("pr_url"):
+        lines.append("- pull request: " + str(result["pr_url"]))
+    with open(path, "a", encoding="utf-8") as handle:
+        handle.write("\n".join(lines) + "\n")
+
+
+def reject_preparation(blocked, task, repo, number):
+    """Record a verified preparation refusal as terminal and stop the chain here.
+
+    The refusal is not a fault: Cline inspected the repository and returned
+    ``action=blocked`` with its actual diagnosis, and the contract verified that answer
+    before this host saw it. Retrying would buy the same verdict again, so the run ends with
+    the verdict written down, its evidence attached, and the publish job unarmed.
+    """
+    report = getattr(blocked, "report", None) or {}
+    result = {"status": "REJECTED_PREPARATION", "at": utcnow(),
+              "task_id": task.get("task_id"), "repo": repo, "issue_number": number,
+              "reason": str(blocked), "declared_reason": report.get("reason", ""),
+              "evidence": {"action": report.get("action"), "worktree": report.get("worktree", ""),
+                           "base_sha": report.get("base_sha", ""),
+                           "default_branch": report.get("default_branch", ""),
+                           "sources": report.get("sources", []),
+                           "run_url": task.get("run_url", ""),
+                           "admission": (task.get("admission") or {}).get("funding")}}
+    write_json(artifacts() / "engineering-result.json", result)
+    output(verdict="rejected_preparation")
+    summary(result)
+
+
 def read_json(path):
     return json.loads(Path(path).read_text(encoding="utf-8-sig"))
 
@@ -113,7 +162,13 @@ def engineer():
     repo, number = task["repo"], task["issue_number"]
     lease = SimpleNamespace(run_id=state["owner"], attempt=state["attempt"], lost=threading.Event(),
                             phase="CLINE_INTAKE", command_pid=0)
-    prepared = worker.run_cline_claim_intake(task, lease)
+    try:
+        prepared = worker.run_cline_claim_intake(task, lease)
+    except worker.PreparationBlocked as blocked:
+        # Terminal for this dispatch: the refusal reason was already verified, so the chain
+        # stops here instead of being reported as a broken engineering phase.
+        reject_preparation(blocked, task, repo, number)
+        return
     root, base = prepared["worktree"], prepared["base_sha"]
     try:
         upstream = api.api(f"repos/{repo}/commits/{prepared['default_branch']}")
@@ -253,6 +308,8 @@ def engineer():
         write_json(artifacts() / "release.json", receipt)
         write_json(artifacts() / "engineering-result.json", {"status": "VERIFIED", "head_sha": head,
                                                "task_id": task["task_id"], "at": utcnow()})
+        # The publish job is gated on this verdict alone: a refusal must never arm it.
+        output(verdict="verified")
     finally:
         if Path(root, ".git").exists():
             worker.preserve_cline_edits(root)
@@ -393,6 +450,13 @@ def finish(job_status):
             result = read_json(failure)
     if publication.exists():
         result = read_json(publication)
+    elif str(result.get("status", "")).startswith("REJECTED_"):
+        # A verified refusal is a terminal outcome, not a fault. The engineering phase ran,
+        # the contract verified the answer, and the verdict is the deliverable. Prefixing it
+        # with FAILED_ (as every non-published run did until now) erases the reason and
+        # reports a correct decision as a broken pipeline: measured 2026-10-27, when a
+        # by-design refusal on Expensify/App#105153 surfaced as FAILED_ENGINEER.
+        pass
     elif job_status != "success" or result.get("status") != "VERIFIED":
         result["status"] = "FAILED_" + str(result.get("status", job_status)).removeprefix("FAILED_")
     else:
@@ -401,6 +465,7 @@ def finish(job_status):
         result["failures"] = [*previous.get("failures", []),
                               {"run_url": previous.get("run_url"), **result}]
     store.owned_update(identity, owner(), **result, finished_at=utcnow())
+    summary(result)
     print(json.dumps(result))
 
 

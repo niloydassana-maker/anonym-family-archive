@@ -1534,6 +1534,23 @@ class FleetOwnershipLost(RuntimeError):
         self.stderr = stderr
 
 
+class PreparationBlocked(RuntimeError):
+    """Cline reported ``action=blocked``: the report does not warrant a code change.
+
+    This is a verdict, not a fault. Measured on Expensify/App#105153 (2026-10-27): the run
+    spent 244 s of Cline, the decision was verified, and the reason was that the repository
+    had already documented the behaviour as intended. Re-raising it as a generic failure
+    loses that evidence and reports the outcome as ``FAILED_ENGINEER``, which reads as a
+    broken pipeline rather than a correct refusal. The report therefore travels with the
+    exception so the host records the refusal and its reason verbatim, once.
+    """
+
+    def __init__(self, report=None, reason=None):
+        self.report = report if isinstance(report, dict) else {}
+        detail = reason or self.report.get('reason') or 'unresolved prerequisite'
+        super().__init__('Cline preparation blocked: ' + str(detail))
+
+
 def _command_log(message: str) -> None:
     """Redact the displayed copy; receipts retain the original captured text."""
     secrets = [value for name, value in os.environ.items()
@@ -2779,7 +2796,10 @@ Do not claim delivery. Save the real plan and receipts, then finish this prepara
     with open(report_path, encoding='utf-8') as handle:
         report = json.load(handle)
     if report.get('action') != 'retry':
-        raise RuntimeError('Cline preparation blocked: ' + str(report.get('reason', 'unresolved prerequisite')))
+        # A refusal is a verdict, not a transient fault: it is terminal for this dispatch.
+        # Raising a plain RuntimeError here converted a correct "not a warranted change"
+        # into FAILED_ENGINEER and threw away the reason the contract had just verified.
+        raise PreparationBlocked(report)
     if os.path.realpath(report.get('worktree', '')) != os.path.realpath(worktree):
         raise ValueError('Cline preparation returned an unexpected worktree')
     report['plan'] = VerificationPlan(**validate_delivery_plan(report, worktree))

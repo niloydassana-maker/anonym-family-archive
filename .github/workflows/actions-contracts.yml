@@ -24,6 +24,7 @@ jobs:
     - name: Compile platform adapters
       run: python3 -W error -m py_compile scripts/actions_github.py scripts/actions_dispatch.py scripts/actions_delivery.py scripts/actions_reconcile.py
         scripts/actions_release.py scripts/bounty_admission.py scripts/bounty_fx.py scripts/kaggle_engine_worker.py scripts/delivery_supervisor.py
+        scripts/discovery_heartbeat.py
     - name: Test migration contracts and unchanged master suites
       env:
         PYTHONIOENCODING: utf-8
@@ -43,4 +44,12 @@ jobs:
 
         python3 -W error scripts/test_program_offers.py
 
-        python3 -W error scripts/test_queue_ordering.py'
+        python3 -W error scripts/test_queue_ordering.py
+
+        python3 -W error scripts/test_by_design_gate.py
+
+        python3 -W error scripts/test_preparation_terminal.py
+
+        python3 -W error scripts/test_discovery_heartbeat.py
+
+        python3 -W error scripts/test_fresh_discovery_schedule.py'

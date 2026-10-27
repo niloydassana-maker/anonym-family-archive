@@ -666,5 +666,259 @@
     "changed_files_excluded": {
       "docs/ACTIONS-REPAIR-RECEIPTS-2026-10-27.json": "self-referential, cannot state its own size"
     }
+  },
+  "repair_supplement_3": {
+    "observed_at": "2026-10-27T18:52:00+00:00",
+    "head_sha": "ff608856a6e57896ca15c370e404b1b5c5f9e31d",
+    "working_tree": "five repairs plus one measured open gap, uncommitted on top of head_sha",
+    "changed_files": {
+      ".github/workflows/actions-contracts.yml": "M +10/-1",
+      ".github/workflows/engine2.yml": "M +5/-1",
+      "_bounty_repo/": "??",
+      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md": "M +195/-0",
+      "scripts/actions_delivery.py": "M +66/-1",
+      "scripts/actions_dispatch.py": "M +23/-2",
+      "scripts/bounty_admission.py": "M +114/-0",
+      "scripts/discovery_heartbeat.py": "??",
+      "scripts/kaggle_engine_worker.py": "M +21/-1",
+      "scripts/test_by_design_gate.py": "??",
+      "scripts/test_discovery_heartbeat.py": "??",
+      "scripts/test_fresh_discovery_schedule.py": "M +30/-4",
+      "scripts/test_preparation_terminal.py": "??"
+    },
+    "changed_files_source": "git status --porcelain and git diff --numstat HEAD, derived on write",
+    "changed_files_excluded": {
+      "docs/ACTIONS-REPAIR-RECEIPTS-2026-10-27.json": "self-referential, cannot state its own size"
+    },
+    "chain_first_real_dispatch": {
+      "discovery_run": "40554931565",
+      "discovery_summary_at": "2026-10-27T17:57:43Z",
+      "discovery_sha": "ff608856a6e57896ca15c370e404b1b5c5f9e31d",
+      "counts": {
+        "normal.raw": 60,
+        "startup.raw": 182,
+        "founder.raw": 21,
+        "programs.raw": 659,
+        "NON_PAYMENT_OR_INSTRUCTION_EXFILTRATION": 1,
+        "HARD_ISSUE_EVIDENCE_MISSING": 39,
+        "qualified": 1,
+        "CURRENT_ISSUER_OFFER_MISSING": 17,
+        "unknown_or_competing": 2
+      },
+      "qualified_fresh": 1,
+      "qualified_unique": 1,
+      "dispatched": [
+        "818bf873582db6114e20b66a7cdc8ee8"
+      ],
+      "pending_hydration": 3447,
+      "issue": {
+        "repository": "Expensify/App",
+        "number": 105153,
+        "title": "[$175] Web/iOS-Spend-Refresh-needed error not reappear when network requests fail",
+        "amount_usd": 175,
+        "payer": "melvin-bot[bot]",
+        "signal": "regression"
+      },
+      "delivery_run": "40555464157",
+      "delivery_jobs": {
+        "claim": "success",
+        "engineer": "failure",
+        "publish": "skipped",
+        "reconcile": "success"
+      },
+      "pull_request_opened": false
+    },
+    "engineer_failure_is_a_verified_refusal": {
+      "cline_seconds": 244.4,
+      "cline_exit": 0,
+      "submitted": {
+        "action": "blocked",
+        "reason": "Not a concrete, warranted code change: documented by the repository's own maintainer analysis as expected/by-design"
+      },
+      "host_behaviour": "run_cline_claim_intake raised RuntimeError -> recorded FAILED_ENGINEER",
+      "attribution_read_via": "gh api repos/Expensify/App/issues/105153/comments",
+      "comments_visible": 7,
+      "declaring_comment": {
+        "id": "6447058391",
+        "login": "MelvinBot",
+        "type": "User",
+        "author_association": "CONTRIBUTOR",
+        "created_at": "2026-10-27T16:09:17Z",
+        "url": "https://github.com/Expensify/App/issues/105153#issuecomment-6447058391",
+        "sentence": "**Root Cause:** This works as designed. It is not a bug."
+      },
+      "corroborating_non_authority": {
+        "login": "camesenin",
+        "author_association": "NONE"
+      }
+    },
+    "fix_by_design_gate": {
+      "module": "scripts/bounty_admission.py",
+      "authority": "trusted() OR a per-programme automation_logins entry citing a read attestation",
+      "authority_reason": "bare trusted() refuses MelvinBot (type User, association CONTRIBUTOR)",
+      "programme_entry": "expensify/app automation_logins=('MelvinBot', 'melvin-bot[bot]'), evidence=comment 6447058391",
+      "marker_rule": "declarative markers only; 'Expected Behaviour' heading is never a marker; a later authoritative bug statement clears the verdict and beats a stale label; labels are consulted only when no authoritative comment settles it",
+      "reason_emitted": "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN",
+      "live_proof": {
+        "issue": "Expensify/App#105153",
+        "admitted": false,
+        "reason": "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN",
+        "quote": "**Root Cause:** This works as designed. It is not a bug. ...",
+        "controls_still_admitted": {
+          "Expensify/App#94622": "250 USD",
+          "Expensify/App#103403": "250 USD"
+        }
+      },
+      "suite": "scripts/test_by_design_gate.py",
+      "cases": 19
+    },
+    "fix_blocked_is_terminal": {
+      "worker": "scripts/kaggle_engine_worker.py raises PreparationBlocked(RuntimeError) carrying .report",
+      "delivery": "scripts/actions_delivery.py catches it and writes status=REJECTED_PREPARATION",
+      "finish_rule": "a REJECTED_* status is preserved, never prefixed FAILED_, and never appended to failures",
+      "publish_gate": "engine2.yml arms publish only when needs.engineer.outputs.verdict == 'verified'",
+      "suite": "scripts/test_preparation_terminal.py",
+      "cases": 13
+    },
+    "fix_refusal_not_redispatched": {
+      "module": "scripts/actions_dispatch.py",
+      "predicate": "retry_eligible(state): only a recorded FAILED_* may be re-dispatched",
+      "counter": "a REJECTED_* status is counted as terminal_refusal instead of already_owned",
+      "measured_loop": {
+        "first_dispatch_run": "40555464157",
+        "first_dispatch_at": "2026-10-27T17:57:43Z",
+        "refused_as": "FAILED_ENGINEER (the then-current code)",
+        "redispatched_run": "40562829637",
+        "redispatched_at": "2026-10-27T18:44:57Z",
+        "redispatched_from_summary": {
+          "qualified_fresh": 0,
+          "qualified_unique": 1,
+          "dispatched": [
+            "818bf873582db6114e20b66a7cdc8ee8"
+          ],
+          "pending_hydration": 3137
+        },
+        "note": "measured before this repair was pushed, which is why it is evidence the repair is needed rather than evidence it failed"
+      },
+      "cases": 5
+    },
+    "open_gap_not_a_code_change_request": {
+      "state": "MEASURED, NOT REPAIRED",
+      "run": "40559211885",
+      "at": "2026-10-27T18:21:27Z",
+      "issue": "xpex-systems-ai/GXEON-AI#452",
+      "cline_verdict": "action=blocked: 'a docs/contest research deliverable, not a repo code change'",
+      "detail": "GXEON PAID-WORK #002 - TokenGems/Jupiter docs review; Cline also noted competing PR #453",
+      "why_not_fixed": "a 'requests a code change at all' rule needs its own measurement across the paying programmes before it can be tightened without over-rejecting",
+      "what_is_already_contained": "terminal outcome plus retry_eligible stop the repeat cost; admission is still wrong"
+    },
+    "scheduler_stall": {
+      "workflow": "bounty-discovery.yml",
+      "cron_defined": "*/15 * * * *",
+      "default_branch": "master",
+      "first_on_master_commit": "70a3256",
+      "first_on_master_at": "2026-10-27T14:48Z",
+      "workflow_id": 398368410,
+      "workflow_state": "active",
+      "disabled_inactivity": false,
+      "runs_visible_at_1833Z": 9,
+      "run_events_all_workflow_dispatch": true,
+      "run_window": "15:13Z-17:54Z",
+      "scheduled_runs_observed": 0,
+      "conclusion": "genuine scheduler stall on an active workflow with a valid cron on the default branch"
+    },
+    "fix_heartbeat": {
+      "module": "scripts/discovery_heartbeat.py",
+      "decisions": [
+        "already_running",
+        "cooldown",
+        "no_history",
+        "fresh",
+        "stale"
+      ],
+      "max_age_minutes": 45,
+      "cooldown_minutes": 20,
+      "fail_mode": "gh probe error -> HOLD",
+      "lock": "mtime-based stale takeover (not os.kill(pid, 0), which routes to TerminateProcess on Windows)",
+      "live_receipts": [
+        {
+          "at": "2026-10-27T18:33:10Z",
+          "mode": "dry_run",
+          "decision": "fresh",
+          "newest_run_age_minutes": 39,
+          "verdict": "HOLD fresh",
+          "fired": false
+        },
+        {
+          "at": "2026-10-27T18:40:02Z",
+          "mode": "live",
+          "decision": "stale",
+          "newest_run_age_minutes": 46,
+          "verdict": "FIRED bounty-discovery.yml",
+          "fired": true,
+          "created_run": "40562102584",
+          "created_at": "2026-10-27T18:40:08Z",
+          "concluded": "success",
+          "concluded_at": "2026-10-27T18:45:03Z",
+          "duration": "4m55s"
+        },
+        {
+          "at": "2026-10-27T18:40:18Z",
+          "mode": "live",
+          "decision": "already_running",
+          "verdict": "HOLD already_running",
+          "fired": false
+        }
+      ],
+      "limitation": "GitHub exposes no API that creates a schedule event; a heartbeat run is a workflow_dispatch. It restores cadence, it does not impersonate the scheduler.",
+      "installed_as_scheduled_task": false,
+      "cases": 19
+    },
+    "fix_stale_discovery_test": {
+      "file": "scripts/test_fresh_discovery_schedule.py",
+      "was": "asserted run_pipeline_cycle, which --live has not called since the consolidation in autonomous_icu_pipeline.main() L3915-3920 delegates to actions_dispatch.main",
+      "now": "pins the delegated argv for --once and --daemon, proves run_pipeline_cycle is not called, keeps the explicit fresh setting validated, and keeps the legacy non-live path",
+      "cases": 7,
+      "runtime_seconds": 0.43,
+      "was_previously": "263-542s of live network work, failing"
+    },
+    "gates": {
+      "ci_suites_widened_from": 9,
+      "ci_suites_now": 13,
+      "local_run": "all thirteen green under python -W error",
+      "case_counts": {
+        "test_actions_migration": 32,
+        "test_partition_regressions": 6,
+        "test_cline_delivery_ownership": 12,
+        "test_discovery_breadth": 8,
+        "test_admission_trust": 7,
+        "test_repository_intent": 11,
+        "test_program_offers": 15,
+        "test_queue_ordering": 17,
+        "test_by_design_gate": 19,
+        "test_preparation_terminal": 13,
+        "test_discovery_heartbeat": 19,
+        "test_fresh_discovery_schedule": 7,
+        "test_icu_pipeline_suite": "own summary format, exit 0"
+      },
+      "ruff": "0 findings across every touched file",
+      "ruff_findings_fixed": [
+        "discovery_heartbeat.py: unused datetime.timedelta import",
+        "test_preparation_terminal.py: unused re import",
+        "test_by_design_gate.py: a test built a body it never fed to the gate - made real instead of silenced"
+      ],
+      "workflows_parse": [
+        "actions-contracts.yml",
+        "engine2.yml"
+      ],
+      "publish_condition_resolved": "needs.claim.outputs.mode == 'deliver' && needs.engineer.result == 'success' && needs.engineer.outputs.verdict == 'verified'"
+    },
+    "known_limitations": [
+      "an authoritative 'by design, but we should improve it' comment rejects an otherwise valid issue unless it matches a withdrawal marker",
+      "a REJECTED_PREPARATION issue is never retried; consistent with DELIVERED, CLOSED_UNMERGED and PUBLISHED_PENDING_CHECKS, which are equally non-retryable. Resetting the record is a manual act.",
+      "the heartbeat is not yet installed as a scheduled task, so its cadence is whatever a session exercises - the receipts prove correctness, not standing coverage"
+    ],
+    "combined_goal": "NOT_YET_ACHIEVED",
+    "why_still_unachieved": "the chain reaches engineering and engineering now refuses on evidence, but no pull request has been opened, nothing has merged and no payout exists"
   }
 }

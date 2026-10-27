@@ -205,3 +205,198 @@ a scheduled discovery cycle, no pull request has been opened from this lane, not
 no payout exists. Qualified influx is not yet sustained across cycles. `combined_goal` therefore
 remains `NOT_YET_ACHIEVED`, and discovery remains a lottery whose outcome is never revenue until a
 payout is observed.
+
+## Supplement 3: the first real dispatch, the two refusals it produced, and the stall behind them
+
+Supplement 2 measured admission in isolation. This supplement measures the whole chain for the first
+time, and every claim below is read from a run, an artifact or a source file - none is inferred from
+a count.
+
+### 1. The chain ran end to end, and then it stopped at engineering
+
+| stage | receipt | outcome |
+| --- | --- | --- |
+| discovery | run `40554931565`, 17:57:43Z, sha `ff60885` | `qualified: 1`, `qualified_fresh: 1`, `qualified_unique: 1`, `dispatched: ["818bf873582db6114e20b66a7cdc8ee8"]`, `programs.raw: 659`, `pending_hydration: 3447` |
+| dispatch | same run | `repository_dispatch` genuinely fired |
+| claim | delivery run `40555464157`, 17:57:43Z | job `claim` = success |
+| engineering | same run | job `engineer` = **failure**, no pull request |
+| publish | same run | skipped (0s) |
+| reconcile | same run | success |
+
+The dispatched original, named from the artifact rather than from the log: **`Expensify/App#105153`**,
+`"[$175] Web/iOS-Spend-Refresh-needed error not reappear when network requests fail"`, USD 175, payer
+`melvin-bot[bot]`, signal `regression`. This is the first funded hard issue this lane has ever carried
+past admission into engineering, so the repair of the `candidates` table (always 0 rows before
+Supplement 2) is confirmed by real traffic and not only by a test.
+
+### 2. The engineering failure was a correct answer punished as a fault
+
+Cline ran 244.4s, exited 0, and submitted a **verified** report:
+
+```json
+{"action": "blocked",
+ "reason": "Not a concrete, warranted code change: documented by the repository's own maintainer analysis as expected/by-design"}
+```
+
+The host then raised `RuntimeError('Cline preparation blocked: ...')` from
+`run_cline_claim_intake`, which the workflow recorded as `FAILED_ENGINEER`. So a decision the contract
+accepted was reported as a broken pipeline, and - measured below - the same issue stayed eligible for
+the next cycle.
+
+The attribution was read live from `gh api repos/Expensify/App/issues/105153/comments` (7 comments),
+not from memory of the run log:
+
+- declaring comment `6447058391`, `created_at 2026-10-27T16:09:17Z`,
+  `https://github.com/Expensify/App/issues/105153#issuecomment-6447058391`;
+- author login `MelvinBot`, account type `User`, `author_association: CONTRIBUTOR`;
+- the sentence: `**Root Cause:** This works as designed. It is not a bug.`
+
+A body-less stranger (`camesenin`, association `NONE`) merely corroborated it, so the stranger is not
+the authority and is not treated as one.
+
+### 3. Repair: the declared-by-design gate
+
+`scripts/bounty_admission.py` now settles this at admission, before any run is spent.
+
+- **Authority is the repository's own voice.** Bare `trusted()` refuses the issuing account here
+  (`MelvinBot` is a `User` with `CONTRIBUTOR`, not a bot association), so authority is
+  `trusted()` **or** a per-programme `automation_logins` entry that cites a read attestation. The
+  `expensify/app` entry is scoped to that repository and cites comment `6447058391`.
+- **Markers are declarative only.** Every bug report carries `Expected Behaviour`, and it states the
+  *opposite* of this verdict, so that heading is never a marker. A later authoritative statement that
+  it *is* a bug clears the verdict, and beats a stale label; labels are consulted only when no
+  authoritative comment settles the question.
+- **Measured, both directions.** Live, through the production gate:
+  `#105153` -> `admitted=false`, reason `REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN`, quote exactly
+  `**Root Cause:** This works as designed. It is not a bug. ...`; controls `#94622` (83 comments) and
+  `#103403` (96 comments) both still `admitted=true` at `250 USD`. The gate does not empty the backlog.
+
+### 4. Repair: a verified refusal is terminal, not a failure
+
+`scripts/kaggle_engine_worker.py` raises `PreparationBlocked(RuntimeError)` carrying the report;
+`scripts/actions_delivery.py` catches it and writes `REJECTED_PREPARATION` with the declared reason and
+the evidence block, and `finish()` preserves a `REJECTED_*` status instead of prefixing `FAILED_`. The
+`engineer` job now publishes `outputs.verdict`, and `engine2.yml` arms `publish` only when
+`needs.engineer.outputs.verdict == 'verified'` - a refusal can no longer reach the publication step at
+all. The refusal is also excluded from `failures`, because it is not one.
+
+### 5. Repair: a refusal is not re-dispatched (measured loop, then closed)
+
+The fired cycle at 18:44:55Z re-dispatched **the same original** that had already been refused at
+17:57:
+
+```json
+{"counts": {"normal.raw": 73, "startup.raw": 1588, "founder.raw": 25, "programs.raw": 107,
+            "HARD_ISSUE_EVIDENCE_MISSING": 42, "CURRENT_ISSUER_OFFER_MISSING": 14,
+            "unknown_or_competing": 3, "MIRROR_OR_NON_ENGINEERING": 1},
+ "qualified_fresh": 0, "qualified_unique": 1,
+ "dispatched": ["818bf873582db6114e20b66a7cdc8ee8"], "pending_hydration": 3137}
+```
+
+`qualified_fresh: 0` with a non-empty `dispatched` is the loop in one line: the candidate table carried
+the refused original forward and the dispatch gate accepted it, because its recorded status was
+`FAILED_ENGINEER` and failures are retryable by design. `scripts/actions_dispatch.py` now exposes
+`retry_eligible(state)` - only a recorded `FAILED_*` may be re-dispatched, and a `REJECTED_*` is
+counted separately as `terminal_refusal` instead of hiding inside `already_owned`.
+
+Note the honest timing: this loop was measured *before* the gate was pushed, which is why it is
+evidence that the repairs are needed rather than evidence that they failed.
+
+### 6. A second refusal, a different class, and it is NOT covered by the gate above
+
+Run `40559211885` (18:21:27Z) failed on **`xpex-systems-ai/GXEON-AI#452`**, also with
+`action=blocked`, and the log states why: the issue is an external contest/documentation deliverable
+("GXEON PAID-WORK #002 - TokenGems/Jupiter docs review"), i.e. *"a docs/contest research deliverable,
+not a repo code change"*, and Cline noted an existing competing PR `#453`.
+
+That is not a maintainer declaring "works as designed", so the by-design gate does **not** catch it.
+The terminal-outcome repair converts its symptom (`FAILED_ENGINEER` -> `REJECTED_PREPARATION`, publish
+disarmed, no `failures` entry) and `retry_eligible` stops it from being re-dispatched, but its
+*admission* is still wrong: a task that asks for no change to the repository was admitted as a funded
+hard issue. This is recorded as an **open, measured gap**, not repaired here, because a
+"asks for a code change at all" rule needs its own measurement across the paying programmes before it
+can be tightened without over-rejecting - the same discipline that kept `HARD_ISSUE_EVIDENCE_MISSING`
+closed in Supplement 2.
+
+### 7. The scheduler is genuinely stalled, and the cron is not missing
+
+`.github/workflows/bounty-discovery.yml` does define `schedule: - cron: '*/15 * * * *'`. The default
+branch is `master`, the file first reached it in `70a3256` (14:48Z), and workflow `398368410` is
+`active` - not `disabled_inactivity`. At 18:33Z all nine runs visible for it were
+`workflow_dispatch` (15:13Z through 17:54Z, one failure at 16:07Z). **Zero scheduled runs on an
+active workflow with a valid cron on the default branch.** It is a measured scheduler stall, not a
+configuration error, and it cannot be repaired from this repository.
+
+### 8. Repair: a heartbeat that fires only when GitHub is genuinely silent
+
+`scripts/discovery_heartbeat.py` decides from live state, and holds in every case where firing would
+duplicate or race:
+
+| condition | decision |
+| --- | --- |
+| any run `queued`/`in_progress` | `already_running` -> HOLD |
+| last completed run younger than `--max-age-minutes` (45 = three missed `*/15` slots) | `fresh` -> HOLD |
+| fired within `--cooldown-minutes` (20) | `cooldown` -> HOLD |
+| `gh` probe errors | fail closed -> HOLD |
+| older than the window, nothing running | `stale` -> **FIRED** |
+
+Receipts are appended to `scratch/discovery-heartbeat.jsonl`; the cold run also refuses to stack a
+second instance (mtime-based stale-lock takeover, deliberately not `os.kill(pid, 0)`, which routes to
+`TerminateProcess` on Windows).
+
+Proven live, not simulated:
+
+```
+18:33:10Z  dry_run  decision=fresh            newest run 39 min old   VERDICT: HOLD fresh
+18:40:02Z  live     decision=stale            newest run 46 min old   VERDICT: FIRED bounty-discovery.yml
+                    dispatch -> run 40562102584 (created 18:40:08Z, completed success 18:45:03Z, 4m55s)
+18:40:18Z  live     decision=already_running  newest run in_progress   VERDICT: HOLD already_running
+```
+
+The third line is the anti-duplication proof: ten seconds after firing, the same decision function
+refused to fire again. The limitation is stated plainly - GitHub exposes no API that creates a
+`schedule` event, so a heartbeat-triggered run is a `workflow_dispatch`. It restores cadence; it does
+not impersonate the scheduler.
+
+### 9. Repair: a stale test that encoded a contract the code no longer has
+
+`scripts/test_fresh_discovery_schedule.py` asserted that the `--live` CLI reaches `run_pipeline_cycle`,
+which has not been true since the consolidation in `autonomous_icu_pipeline.main()` (L3915-3920
+delegates to `actions_dispatch.main`). It failed at HEAD for that reason alone - it was never in the CI
+gate, so nothing caught it. It now pins the real contract: validation of the explicit fresh setting, the
+exact delegated argv for `--once` and `--daemon`, `run_pipeline_cycle` proven *not* called, and the
+legacy non-live path still honouring the setting. 7 cases in 0.43s, offline, versus 263-542s of live
+network work before.
+
+### 10. Verification at this revision
+
+- **13 gated suites, all green locally** under `python -W error`:
+  `test_actions_migration` 32, `test_partition_regressions` 6, `test_cline_delivery_ownership` 12,
+  `test_icu_pipeline_suite` (own summary format, exit 0), `test_discovery_breadth` 8,
+  `test_admission_trust` 7, `test_repository_intent` 11, `test_program_offers` 15,
+  `test_queue_ordering` 17, `test_by_design_gate` 19, `test_preparation_terminal` 13,
+  `test_discovery_heartbeat` 19, `test_fresh_discovery_schedule` 7.
+- CI gate widened from 9 to 13 suites; `discovery_heartbeat.py` added to the compile step.
+- Ruff: **0 findings** across every touched file (three findings were raised and fixed: two unused
+  imports, and a test that built a body it never fed to the gate - that one was made real instead of
+  silenced).
+- Both workflows parse, and the folded publish condition resolves exactly to
+  `needs.claim.outputs.mode == 'deliver' && needs.engineer.result == 'success' && needs.engineer.outputs.verdict == 'verified'`.
+
+### 11. Known limitations, stated rather than discovered later
+
+- An authoritative comment reading "current behaviour is by design, but we should improve it" rejects an
+  otherwise valid issue unless it matches a withdrawal marker. The gate reads declarative markers only.
+- A `REJECTED_PREPARATION` issue is never retried. That is deliberate and consistent with `DELIVERED`,
+  `CLOSED_UNMERGED` and `PUBLISHED_PENDING_CHECKS`, which are equally non-retryable; re-admitting a
+  written verdict is the waste this repair exists to remove. Resetting the record is a manual act.
+- The heartbeat is not yet installed as a scheduled task on the laptop. Until it is, its cadence is
+  whatever a session exercises - the receipts above are a proof of correctness, not of standing
+  coverage.
+
+### 12. Boundary
+
+The chain now reaches engineering, and engineering now refuses on evidence instead of failing. There is
+still **no pull request, no merge and no payout**, and `combined_goal` remains `NOT_YET_ACHIEVED`. What
+changed is that the pipeline no longer spends delivery runs to relearn verdicts it already holds, and it
+no longer reports a correct refusal as a fault.

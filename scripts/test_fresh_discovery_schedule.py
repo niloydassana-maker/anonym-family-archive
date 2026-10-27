@@ -22,15 +22,41 @@ class FreshDiscoveryScheduleTests(unittest.TestCase):
             with self.subTest(horizon=horizon, fresh=fresh), self.assertRaises(ValueError):
                 list(dispatcher.discovery_query_schedule(['q'], horizon, fresh))
 
-    def test_cli_enables_fresh_first_and_passes_explicit_setting_to_the_cycle(self):
+    def test_cli_validates_the_explicit_fresh_setting(self):
         self.assertEqual(dispatcher.parse_pipeline_args([]).fresh_limit, 30)
-        with patch.object(dispatcher, 'run_pipeline_cycle') as cycle, redirect_stdout(io.StringIO()):
-            self.assertIsNone(dispatcher.main(['--once', '--live', '--anytime', '--fresh-limit', '7']))
-        cycle.assert_called_once_with(live_mode=True, anytime=True, search_limit=1000, fresh_limit=7)
         self.assertEqual(dispatcher.parse_pipeline_args(['--fresh-limit', '0']).fresh_limit, 0)
         for value in ['-1', '1001']:
             with self.subTest(value=value), redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
                 dispatcher.parse_pipeline_args(['--fresh-limit', value])
+
+    def test_live_cli_delegates_to_the_consolidated_dispatcher(self):
+        """`--live` hands off to the consolidated dispatcher instead of running a cycle.
+
+        `main()` reads: `if live_mode and not args.upgrade_existing: from actions_dispatch
+        import main as actions_main; return actions_main(["--live", "--once" if args.once else
+        "--daemon"])`. The earlier version of this test asserted a `run_pipeline_cycle` call
+        that the consolidation removed, so it failed while the product was behaving correctly
+        -- a stale contract, not a regression.
+        """
+        import actions_dispatch
+        for argv, expected in ((['--once', '--live', '--anytime', '--fresh-limit', '7'],
+                                ['--live', '--once']),
+                               (['--live', '--anytime', '--fresh-limit', '7'],
+                                ['--live', '--daemon'])):
+            with self.subTest(argv=argv), \
+                    patch.object(actions_dispatch, 'main', return_value=0) as consolidated, \
+                    patch.object(dispatcher, 'run_pipeline_cycle') as cycle, \
+                    redirect_stdout(io.StringIO()):
+                self.assertEqual(dispatcher.main(argv), 0)
+            consolidated.assert_called_once_with(expected)
+            cycle.assert_not_called()
+
+    def test_the_legacy_non_live_cycle_still_receives_the_explicit_settings(self):
+        """The preview path is still reachable and still gets the same explicit arguments."""
+        with patch.object(dispatcher, 'run_pipeline_cycle', return_value=None) as cycle, \
+                redirect_stdout(io.StringIO()):
+            self.assertIsNone(dispatcher.main(['--once', '--anytime', '--fresh-limit', '7']))
+        cycle.assert_called_once_with(live_mode=False, anytime=True, search_limit=1000, fresh_limit=7)
 
     def run_isolated_cycle(self, fail_first_query=False):
         def candidate(number):

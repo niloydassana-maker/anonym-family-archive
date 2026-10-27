@@ -258,6 +258,26 @@ def preferred_order(rows, verdicts):
     return good + rest
 
 
+def retry_eligible(state):
+    """Only a recorded failure may be dispatched again.
+
+    A verified refusal (``REJECTED_*``) is a terminal engineering outcome: it means the
+    engineering phase ran, the contract verified the answer, and the answer was "this is not
+    a warranted change". Re-admitting the same issue on the next cycle spends a whole delivery
+    run to relearn a verdict already written down.
+
+    Measured 2026-10-27: ``Expensify/App#105153`` was refused as by-design at 17:57 and
+    re-dispatched at 18:44 (runs 40555464157 -> 40562829637) purely because the refusal had
+    been recorded as ``FAILED_ENGINEER``, which is retryable by design. The same mechanism
+    re-queued ``xpex-systems-ai/GXEON-AI#452``.
+
+    ``FAILED_*`` stays retryable: a real fault is worth another attempt, bounded elsewhere.
+    """
+    if not state:
+        return True
+    return str(state.get("status", "")).startswith("FAILED")
+
+
 def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=None):
     folder = Path(state_dir or os.environ.get("BOUNTY_STATE_DIR", Path(__file__).resolve().parents[1] / "scratch/actions-discovery"))
     folder.mkdir(parents=True, exist_ok=True)
@@ -394,8 +414,9 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                     break
                 try:
                     state, _ = store.read(identity)
-                    if state and not state["status"].startswith("FAILED"):
-                        counts["already_owned"] += 1
+                    if not retry_eligible(state):
+                        counts["terminal_refusal" if str(state.get("status", "")).startswith("REJECTED_")
+                               else "already_owned"] += 1
                         continue
                     current = api.issue_context(candidate["context"]["repo"], candidate["context"]["issue_number"])
                     proof, reason = admit(current, quote=quote)
