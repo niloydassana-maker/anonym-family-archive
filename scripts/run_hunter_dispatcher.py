@@ -180,6 +180,17 @@ def run_hunter_cycle(max_dispatches=3):
                 print(f"  [ICU GATE REJECT] {issue_id}: {icu_reason}")
                 continue
 
+            # Codebase Reality Gate: Ensure repo is not empty and contains genuine software languages
+            repo_view = aip.run_cmd(["gh", "repo", "view", repo, "--json", "isEmpty,languages"], timeout=15)
+            if repo_view[2] == 0 and repo_view[0]:
+                try:
+                    rv_data = json.loads(repo_view[0])
+                    if rv_data.get("isEmpty") or not rv_data.get("languages"):
+                        print(f"  [DUMMY/EMPTY REPO] {issue_id}: Repository has no recognized software code languages.")
+                        continue
+                except Exception:
+                    pass
+
             # Hardness Score
             hardness_score = aip.score_hardness_and_competition(task_dict)
             print(f"\n🎯 [QUALIFIED UNCONTESTED BOUNTY FOUND] {issue_id}")
@@ -200,4 +211,21 @@ def run_hunter_cycle(max_dispatches=3):
     print("=" * 70, flush=True)
 
 if __name__ == "__main__":
-    run_hunter_cycle(max_dispatches=2)
+    import argparse
+    parser = argparse.ArgumentParser(description="Hunter-cum-Dispatcher Live Daemon")
+    parser.add_argument("--daemon", action="store_true", help="Run continuously in a loop")
+    parser.add_argument("--interval", type=int, default=300, help="Interval in seconds between cycles (default: 300)")
+    parser.add_argument("--max-dispatches", type=int, default=2, help="Max tasks to dispatch per cycle (default: 2)")
+    args = parser.parse_args()
+
+    if args.daemon:
+        print(f"🔄 Starting Hunter-cum-Dispatcher in DAEMON mode (Interval: {args.interval}s, Max/Cycle: {args.max_dispatches})...", flush=True)
+        while True:
+            try:
+                run_hunter_cycle(max_dispatches=args.max_dispatches)
+            except Exception as e:
+                print(f"[DAEMON CYCLE ERROR] {e}", flush=True)
+            print(f"\n💤 Sleeping {args.interval}s until next hunt cycle...\n", flush=True)
+            time.sleep(args.interval)
+    else:
+        run_hunter_cycle(max_dispatches=args.max_dispatches)

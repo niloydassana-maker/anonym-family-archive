@@ -1137,12 +1137,13 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         if re.search(ep, full_text, re.IGNORECASE):
             return False, f"Rejected by exclusive author or issue farm pattern: '{ep}'"
 
-    # Reject roadmap, RFC, speculative design brainstorms, and unpaid policy discussions
+    # Reject roadmap, RFC, speculative design brainstorms, experiments, and unpaid marketing/policy discussions
     speculative_design_patterns = [
-        r"\[(?:roadmap|rfc|proposal|design|spec)\]",
+        r"\[(?:roadmap|rfc|proposal|design|spec|experiment)\]",
         r"\b(?:design/roadmap\s+proposal\s+only|proposal\s+only|design\s+only)\b",
         r"\b(?:not\s+an\s+active\s+deduction|illustrative\s+defaults?|illustrative\s+scenario)\b",
         r"\b(?:pilot\s+economic\s+scenario|hypothetical\s+flow)\b",
+        r"\b(?:ad\s+spend|facebook\s+ad|interview\s+incentive|willingness-to-pay|validation\s+plan|budget\s+estimate)\b",
     ]
     for sdp in speculative_design_patterns:
         if re.search(sdp, full_text, re.IGNORECASE):
