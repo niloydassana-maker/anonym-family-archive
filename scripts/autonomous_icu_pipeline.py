@@ -15,12 +15,13 @@ import shutil
 import urllib.request
 import urllib.error
 from decimal import Decimal, ROUND_HALF_UP
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional, Any, Callable
 from tokenharbor_router import DEEPSEEK_FLASH_MODEL, call_deepseek_flash
+from discovery_horizon import Horizon
 from fleet_recovery_policy import (
     MAX_EXECUTION_ATTEMPTS, RETRY_DELAYS_SECONDS, FLEET_LEASE_CHANNEL, event_reference,
     is_nonsoftware_data_task, is_retryable_failure, is_repaired_infrastructure_failure, recovery_decision,
@@ -31,6 +32,7 @@ from fleet_recovery_policy import (
 sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
 
 DB_FILE = r"D:\anonym\scratch\icu_pipeline.db"
+DISCOVERY_HORIZON = Horizon(Path(DB_FILE).with_name('discovery-horizon.sqlite3'))
 CSV_FILE = r"D:\anonym\scratch\icu_desperation_ledger.csv"
 PACKET_DIR = r"D:\anonym\scratch\candidate_packets"
 SANDBOX_DIR = r"D:\anonym\scratch\sandbox"
@@ -348,6 +350,13 @@ def append_csv(entry, csv_path=CSV_FILE):
 
 def run_cmd(cmd_list, timeout=30, retries=2):
     resolved_cmd = list(cmd_list)
+    if (len(resolved_cmd) > 3 and os.path.basename(str(resolved_cmd[0])).lower() in ('gh', 'gh.exe')
+            and resolved_cmd[1:3] == ['search', 'issues'] and not resolved_cmd[3].startswith('--')):
+        # gh quotes each positional argument containing whitespace. Passing an
+        # entire Boolean query as one argument turns separate terms into a
+        # literal phrase. Split shell-style phrases without invoking a shell.
+        import shlex
+        resolved_cmd[3:4] = shlex.split(resolved_cmd[3])
     preserve_status_columns = bool(
         resolved_cmd and os.path.basename(str(resolved_cmd[0])).lower() in ('git', 'git.exe')
         and 'status' in resolved_cmd and any(str(arg).startswith('--porcelain') for arg in resolved_cmd)
@@ -535,59 +544,29 @@ def detect_author_corridor(author):
 # 3. HIGH-RECALL BOUNTY & COMMERCIAL ENGAGEMENT GATE
 # -------------------------------------------------------------
 DYNAMIC_DISCOVERY_QUERIES = [
-    # Tier 1: Core Verified Bounty Platforms (Predicate-Pushed Language Corridors & Direct Attestation)
+    # Independent global lanes: no owner, organization, language, or price restriction.
+    'bounty in:title',
+    '"will pay"',
+    '"paid task"',
+    '"cash reward"',
+    'funded in:title',
+    '--label bounty',
+    '--label reward',
     '--commenter algora-pbc',
-    '--commenter algora-pbc --language typescript',
-    '--commenter algora-pbc --language rust',
-    '--commenter algora-pbc --language python',
-    '--commenter algora-pbc --language go',
     '"console.algora.io"',
     'algora.io',
     'polar.sh',
     'opire.dev',
-    'bountycaster "$"',
-    # Tier 2: Specific Priced Queries with Authoritative Bounty Labels (Predicate Pushdown)
-    '--label bounty "$50"',
-    '--label bounty "$100"',
-    '--label bounty "$150"',
-    '--label bounty "$200"',
-    '--label bounty "$250"',
-    '--label bounty "$300"',
-    '--label bounty "$500"',
-    '--label bounty "$1000"',
-    '--label bounty "USDC"',
-    '--label bounty "USDT"',
-    '--label "bug bounty" "$100"',
-    '--label "bug bounty" "$200"',
-    '--label "bug bounty" "$500"',
+    'bountycaster',
+    '"issuehunt.io"',
+    '"gitcoin.co/issue"',
+    '--label "bug bounty"',
     '--label "paid bounty"',
-    '--label funded "$100"',
-    '--label funded "$200"',
-    '--label funded "$500"',
-    # Tier 3: Broad Horizon Language Corridors across GitHub Ecosystem
-    '--label bounty --language python',
-    '--label bounty --language typescript',
-    '--label bounty --language rust',
-    '--label bounty --language go',
-    '--label "bug bounty" --language python',
-    '--label "bug bounty" --language typescript',
-    '--label funded --language python',
-    '--label funded --language typescript',
-    '--label funded --language rust',
-    '--label funded --language go',
-    # Tier 4: Engineering Problem Corridors with Bounty Anchors
-    '--label bounty concurrency',
-    '--label bounty performance',
-    '--label bounty "memory leak"',
-    '--label bounty "race condition"',
-    '--label bounty deadlock',
-    '--label bounty rust',
-    '--label bounty python',
-    '--label bounty golang',
-    '--label bounty typescript',
-    '--label bounty backend',
-    '--label bounty database',
-    '--label bounty distributed',
+    '--label funded',
+    'reward in:title',
+    '"looking to hire"',
+    '"paid" in:title',
+    'bounty',
 ]
 
 GLOBAL_HORIZON_QUERY_MATRIX = DYNAMIC_DISCOVERY_QUERIES
@@ -629,7 +608,7 @@ def _default_query_layer_gate(candidate: Dict[str, Any]) -> Tuple[bool, str]:
 
     return True, "OK"
 
-register_custom_query_gate("default_query_layer_gate", _default_query_layer_gate)
+# Optional query gate helper: callers can register via register_custom_query_gate("db_dedup", _default_query_layer_gate)
 
 def extract_upstream_issue_from_aggregator(body: str) -> tuple[str, int] | None:
     """
@@ -969,7 +948,10 @@ def is_direct_payer(author, repo, full_author_text):
         r"/claim\b|"
         r"submitted\s+(?:complete\s+)?fix\s+in\s+pr\b)"
     )
-    if re.search(payee_pattern, text, re.IGNORECASE) and not re.search(r"\b(?:will\s+pay|willing\s+to\s+pay|paying\s+via)\b", text, re.IGNORECASE):
+    if re.search(payee_pattern, text, re.IGNORECASE) and not (
+        _has_direct_offer_language(text)
+        or re.search(r"\bpaying\s+via\b", text, re.IGNORECASE)
+    ):
         repo_owner = repo.split("/", 1)[0].lower() if "/" in repo else ""
         if repo_owner != author.lower():
             return False
@@ -1011,6 +993,9 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     if is_nonsoftware_data_task({"title": title}):
         return False, "Rejected non-software banking transcript collection; authentic account data cannot be supplied by a code worker."
     full_text = _normalise_text(f"{title or ''} {body or ''} {' '.join(author_comments or [])} {repo or ''}")
+    work_request_text = _normalise_text(f"{title or ''} {body or ''} {repo or ''}")
+    if re.search(r'\b(?:remov(?:e|ed|ing)|withdraw(?:n|ing)?)\s+(?:the\s+)?bounty\b', full_text, re.I):
+        return False, 'Bounty was removed or withdrawn; current funding requires review.'
     assoc = (author_assoc or "NONE").upper()
 
     if _has_terminal_label(labels):
@@ -1038,7 +1023,7 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         r"\b(?:hackathon\.xyz|monad\.xyz/hackathon|dorahacks|devpost|gitcoin\s+hackathon|agora\s+bounty|agora\s+entry)\b"
     ]
     for sp in student_patterns:
-        if re.search(sp, full_text):
+        if re.search(sp, work_request_text):
             return False, f"Rejected by non-commercial student/contest pattern: '{sp}'"
 
     # Reject non-software, social media, marketing, and video bounties
@@ -1048,17 +1033,11 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
         r"\b(?:superteam[-_]earn|superteam)\b"
     ]
     for nsp in non_software_patterns:
-        if re.search(nsp, full_text, re.IGNORECASE):
+        if re.search(nsp, work_request_text, re.IGNORECASE):
             return False, f"Rejected non-software/social marketing bounty: '{nsp}'"
 
-    # Reject mobile-only frameworks that require mobile emulator / Xcode / Android SDK not present in cloud Linux
-    mobile_gui_patterns = [
-        r"\b(?:flutter|react-native|react\s+native|xcode|cocoapods|swiftui|android\s+studio|apk\s+build|ios\s+build)\b",
-        r"\b(?:pubspec\.yaml|podfile|\.xcodeproj|\.xcworkspace)\b"
-    ]
-    for mgp in mobile_gui_patterns:
-        if re.search(mgp, full_text, re.IGNORECASE):
-            return False, f"Rejected mobile-only/GUI stack requiring local emulator: '{mgp}'"
+    # Runtime/tool availability belongs to the claimed task's Cline owner.
+    # A language or SDK keyword is not evidence that a funded task is invalid.
 
     # Reject exclusive author restrictions, honeypots, and recursive issue farms
     exclusive_author_patterns = [
@@ -1136,7 +1115,7 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     # Repositories with strict Issue-First policy: require maintainer 'approved' label
     issue_first_repos = ["unitoneai/securityskills", "expensify/app"]
     if repo and any(ifr in repo.lower() for ifr in issue_first_repos):
-        label_names = [l.get("name", "").lower() if isinstance(l, dict) else str(l).lower() for l in (labels or [])]
+        label_names = [label.get("name", "").lower() if isinstance(label, dict) else str(label).lower() for label in (labels or [])]
         if "approved" not in label_names:
             return False, f"Rejected: repository '{repo}' enforces issue-first policy requiring maintainer 'approved' label."
 
@@ -1197,6 +1176,36 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     paid_bounty = has_amount and amount_in_bounds and (
         platform_attested or direct_payer or maintainer_offer or is_verified_sponsor or has_bounty_label or has_bounty_title
     )
+
+    if live_delivery_mode and paid_bounty:
+        if raw_amount.startswith('Tier '):
+            return False, 'Severity is not a monetary commitment; explicit task funding required.'
+        if not (platform_attested or direct_payer or maintainer_offer or is_verified_sponsor):
+            return False, 'Bounty title/label does not establish payer authority; independent funding required.'
+        # Quoted discussions, embedded dashboards, and amounts elsewhere in a
+        # long issue are not offers. Require nearby payment language in prose.
+        live_offer = False
+        for source in [f'{title}\n{body}', *(author_comments or [])]:
+            if re.search(r'<!doctype\s+html|<html\b', source or '', re.I):
+                continue
+            lines = []
+            for line in (source or '').splitlines():
+                if re.match(r'^\s*>', line):
+                    # Maintainers often format the actual bounty banner as a
+                    # blockquote. Keep monetary bounty headers, not debates.
+                    if not (re.search(r'\b(?:bounty|reward)\b', line, re.I)
+                            and re.search(r'[$€£₹]\s*\d|\d\s*(?:USD|USDC|USDT)\b', line, re.I)):
+                        continue
+                    line = re.sub(r'^\s*>\s*', '', line)
+                lines.append(line)
+            prose = strip_markup_and_code('\n'.join(lines))
+            for amount in re.finditer(r'[$€£₹]\s*\d[\d,.]*|\b\d[\d,.]*\s*(?:USD|USDC|USDT|EUR|GBP|INR)\b', prose, re.I):
+                near = prose[max(0, amount.start() - 120):amount.end() + 120]
+                if _has_direct_offer_language(near) or re.search(r'\b(?:bounty|reward|budget|funded|prize)\b', near, re.I):
+                    live_offer = True
+                    break
+        if not live_offer:
+            return False, 'No explicit task offer near an amount in unquoted prose.'
 
     if paid_bounty:
         authority = (
@@ -1269,11 +1278,11 @@ def collect_repo_evidence(repo, body):
             raw_langs = rmeta.get("languages", [])
             langs = []
             if isinstance(raw_langs, list):
-                for l in raw_langs:
-                    if isinstance(l, dict) and "node" in l:
-                        langs.append(l["node"].get("name"))
-                    elif isinstance(l, dict) and "name" in l:
-                        langs.append(l["name"])
+                for language in raw_langs:
+                    if isinstance(language, dict) and "node" in language:
+                        langs.append(language["node"].get("name"))
+                    elif isinstance(language, dict) and "name" in language:
+                        langs.append(language["name"])
             evidence["languages"] = ", ".join(filter(None, langs)) if langs else "Polyglot"
         except Exception:
             evidence["description"] = ""
@@ -1340,8 +1349,8 @@ def generate_grounded_proposal(
     # an unusually large issue body or embedded code dump.
     code_snippets = sanitize_prompt_input(evidence.get("code_blocks", ""))[:6000]
     source_context = sanitize_prompt_input(evidence.get("referenced_source", ""))[:4000]
-    commit_sha = sanitize_prompt_input(evidence.get("commit_sha", ""))
-    default_branch = sanitize_prompt_input(evidence.get("default_branch", "main"))
+    _commit_sha = sanitize_prompt_input(evidence.get("commit_sha", ""))
+    _default_branch = sanitize_prompt_input(evidence.get("default_branch", "main"))
 
     comments_excerpt = "\n---\n".join(author_comments[:2]) if author_comments else "No subsequent author comments."
 
@@ -1528,25 +1537,48 @@ def get_issue_fast(repo, number):
         a_out, a_err, a_code = run_cmd(cmd_assoc, timeout=10)
         data["authorAssociation"] = a_out.strip() if a_code == 0 and a_out else "NONE"
 
-    body = data.get("body", "")
     author_comments = []
     comments = data.get("comments", [])
+    payer_assoc = "NONE"
+    # GraphQL IssueComment does not expose repository association. REST does.
+    # Fetch all pages before attributing a comment-funded offer to a maintainer.
+    if comments and any("authorAssociation" not in c for c in comments):
+        c_out, _, c_code = run_cmd([
+            "gh", "api", "--paginate", "--slurp",
+            f"repos/{repo}/issues/{number}/comments?per_page=100",
+        ], timeout=30)
+        if c_code == 0 and c_out:
+            try:
+                pages = json.loads(c_out)
+                rest_comments = [c for page in pages for c in page]
+                if len(rest_comments) >= len(comments):
+                    comments = [{**c, "author": c.get("user", {}),
+                                 "authorAssociation": c.get("author_association", "NONE")}
+                                for c in rest_comments]
+            except (ValueError, TypeError, AttributeError):
+                pass
     if isinstance(comments, list):
         for comment in comments:
             commenter = comment.get("author", {}) or {}
             login = (commenter.get("login") or "").lower()
             comment_body = comment.get("body", "") or ""
-            is_platform_actor = (
-                commenter.get("is_bot")
-                or any(name in login for name in
-                       ("algora", "polar", "gitcoin", "bountysource", "opire", "bountybot"))
-                or _has_platform_bounty_marker(comment_body)
-            )
+            # A payout request containing an Algora URL is not an Algora offer.
+            # Authenticate the actor, never a substring in their name or body.
+            is_platform_actor = login in {
+                'algora-pbc', 'app/algora', 'gitcoinbot', 'opire-bot',
+                'opire[bot]', 'polar-sh[bot]', 'issuehunt[bot]', 'bountysource',
+            }
             is_repository_authority = (comment.get("authorAssociation") or "NONE").upper() in {"OWNER", "MEMBER", "COLLABORATOR"}
+            if is_repository_authority and (
+                _has_direct_offer_language(comment_body)
+                or re.search(r"\b(?:bounty|reward)\b", comment_body, re.I)
+            ) and parse_and_normalize_bounty(comment_body)[0]:
+                payer_assoc = comment["authorAssociation"].upper()
             if login == str(author_login).lower() or is_platform_actor or is_repository_authority:
                 author_comments.append(comment_body)
 
     data["author_comments"] = author_comments
+    data["payerAssociation"] = payer_assoc
     return data
 
 # -------------------------------------------------------------
@@ -1675,7 +1707,7 @@ def validate_synthesized_files(work_dir: str, extracted_files: List[Tuple[str, s
     for rel_path, code_body in extracted_files:
         if not is_safe_relative_path(work_dir, rel_path):
             return False, f"Security violation: unsafe synthesized path rejected: {rel_path}"
-        full_path = os.path.join(work_dir, rel_path.replace("/", os.sep))
+        _full_path = os.path.join(work_dir, rel_path.replace("/", os.sep))
 
         # 1. Python Syntax & Indentation Validation
         if rel_path.endswith(".py"):
@@ -2279,12 +2311,14 @@ def check_competing_prs_fail_closed(repo: str, number: int) -> Tuple[bool, str]:
     Fail-closed Zero-Competition gate.
     If lookup fails or competing PR is found, blocks release immediately.
     """
-    cmd = ["gh", "pr", "list", "--repo", repo, "--state", "open", "--limit", "100", "--json", "number,title,headRefName,body"]
+    cmd = ["gh", "pr", "list", "--repo", repo, "--state", "open", "--limit", "1000", "--json", "number,title,headRefName,body"]
     out, err, code = run_cmd(cmd, timeout=20)
     if code != 0 or out is None:
         return False, f"GitHub PR query failed (exit code {code}, err: {err}): failing closed per Zero-Competition Law."
     try:
         prs = json.loads(out)
+        if not isinstance(prs, list) or len(prs) >= 1000:
+            return False, 'GitHub PR result horizon reached; complete competition proof unavailable, failing closed.'
         for p in prs:
             title = str(p.get("title", ""))
             head = str(p.get("headRefName", ""))
@@ -2677,7 +2711,7 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
     base_ok, base_msg, base_results = verify_baseline(worktree, plan)
     if not base_ok:
         mark_issue_blocked_baseline(repo, number, base_msg)
-        print(f"  ❌ [BASELINE TEST FAILURE] Untouched upstream failed baseline suite. Aborting as BLOCKED_BASELINE.")
+        print("  ❌ [BASELINE TEST FAILURE] Untouched upstream failed baseline suite. Aborting as BLOCKED_BASELINE.")
         print(f"     Details: {base_msg[:300]}")
         return None
 
@@ -2797,7 +2831,7 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
 
     proposal = generate_grounded_proposal(repo, title, body, author, author_comments)
     if not proposal:
-        print(f"❌ [ABORTED] Model inference failed. Zero-Manufacture Law: No generic fallback posted.")
+        print("❌ [ABORTED] Model inference failed. Zero-Manufacture Law: No generic fallback posted.")
         if live_mode:
             mark_issue_rejected(repo, number, "Model inference failed")
         return False
@@ -2837,7 +2871,7 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
     print("Executing Multi-Turn Iterative Verification Engine before publishing to GitHub...")
     pr_url = attempt_automated_pull_request(repo, number, title, body, live_mode=live_mode)
     if not pr_url:
-        print(f"❌ [ENGINEERING GATE FAILED] Multi-turn iterative engineering did not achieve 100% green verification. Suppressing issue comment.")
+        print("❌ [ENGINEERING GATE FAILED] Multi-turn iterative engineering did not achieve 100% green verification. Suppressing issue comment.")
         mark_issue_rejected(repo, number, "Engineering verification failed before release")
         return False
 
@@ -2858,7 +2892,7 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
 
             # Hardened validation: check nonempty fields
             if not comment_id or not receipt_url or not created_at:
-                print(f"❌ [RECEIPT INVALID] Missing comment_id, receipt_url, or created_at in server response.")
+                print("❌ [RECEIPT INVALID] Missing comment_id, receipt_url, or created_at in server response.")
                 mark_issue_rejected(repo, number, "Receipt invalid: missing comment_id, receipt_url, or created_at")
                 return False
 
@@ -2872,7 +2906,7 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
             # Fail-closed authenticated user verification
             gh_user_out, _, gh_user_code = run_cmd(["gh", "api", "user", "--jq", ".login"], timeout=10)
             if gh_user_code != 0 or not gh_user_out:
-                print(f"❌ [RECEIPT FAIL-CLOSED] Could not retrieve authenticated GitHub CLI user.")
+                print("❌ [RECEIPT FAIL-CLOSED] Could not retrieve authenticated GitHub CLI user.")
                 mark_issue_rejected(repo, number, "Could not retrieve authenticated GitHub CLI user")
                 return False
 
@@ -2888,13 +2922,13 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
             if local_digest == server_digest:
                 ok_db = commit_delivery(repo, number, comment_id, receipt_url, local_digest)
                 if not ok_db:
-                    print(f"❌ [DB COMMIT FAILED] Database commit affected 0 rows.")
+                    print("❌ [DB COMMIT FAILED] Database commit affected 0 rows.")
                     mark_issue_rejected(repo, number, "DB commit affected 0 rows")
                     return False
 
                 update_delivery_pr(repo, number, pr_url)
 
-                print(f"✅ [CRYPTOGRAPHIC RECEIPT CONFIRMED]")
+                print("✅ [CRYPTOGRAPHIC RECEIPT CONFIRMED]")
                 print(f"   Comment ID:    {comment_id}")
                 print(f"   Public URL:    {receipt_url}")
                 print(f"   PR URL:        {pr_url}")
@@ -2921,7 +2955,7 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
                 time.sleep(10)
                 return True
             else:
-                print(f"❌ [DIGEST MISMATCH] Server body SHA-256 did not match sent proposal.")
+                print("❌ [DIGEST MISMATCH] Server body SHA-256 did not match sent proposal.")
                 mark_issue_rejected(repo, number, "Server body SHA-256 did not match sent proposal")
                 return False
         except Exception as e:
@@ -2951,8 +2985,8 @@ def upgrade_existing_delivery(repo, number, live_mode=True):
     old_comment_id = row["comment_id"]
     title = row["title"]
     author = row["author"]
-    corridor_info = row["corridor"]
-    reason = row["reason"]
+    _corridor_info = row["corridor"]
+    _reason = row["reason"]
 
     print(f"\n🔄 [UPGRADING DELIVERY] {repo}#{number}: {title}")
     print(f"   Old Advisory Comment ID: {old_comment_id}")
@@ -2964,8 +2998,8 @@ def upgrade_existing_delivery(repo, number, live_mode=True):
 
     body = data.get("body", "")
     author_comments = data.get("author_comments", [])
-    author_assoc = data.get("authorAssociation", "NONE")
-    labels = data.get("labels", [])
+    _author_assoc = data.get("authorAssociation", "NONE")
+    _labels = data.get("labels", [])
 
     # 1. Delete the old advisory comment on GitHub
     if old_comment_id and live_mode:
@@ -2992,7 +3026,7 @@ def upgrade_existing_delivery(repo, number, live_mode=True):
 
     # 3. Post the new implementation comment to GitHub
     if not live_mode:
-        print(f"📦 [DRY-RUN] New implementation code generated (Live dispatch held).")
+        print("📦 [DRY-RUN] New implementation code generated (Live dispatch held).")
         return True
 
     print(f"🚀 [DELIVERING PRODUCTION CODE] Posting full solution to {repo}#{number}...")
@@ -3006,7 +3040,7 @@ def upgrade_existing_delivery(repo, number, live_mode=True):
             new_digest = hashlib.sha256(new_proposal.encode("utf-8")).hexdigest()
 
             commit_delivery(repo, number, new_comment_id, receipt_url, new_digest)
-            print(f"✅ [UPGRADE DELIVERED WITH FULL CODE]")
+            print("✅ [UPGRADE DELIVERED WITH FULL CODE]")
             print(f"   New Comment ID: {new_comment_id}")
             print(f"   Receipt URL:    {receipt_url}")
             print(f"   SHA-256 Digest: {new_digest}")
@@ -3056,7 +3090,7 @@ def score_hardness_and_competition(it):
     """
     title = it.get("title", "") or ""
     body = it.get("body", "") or ""
-    labels = [l.get("name", "") if isinstance(l, dict) else str(l) for l in it.get("labels", [])]
+    labels = [label.get("name", "") if isinstance(label, dict) else str(label) for label in it.get("labels", [])]
     comments_count = it.get("commentsCount", 0)
 
     score = 0
@@ -3094,34 +3128,34 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         parts = shlex.split(query) if query.lstrip().startswith('--') else [query]
     else:
         parts = list(query)
-    # Filter out state/comments if already in query
-    has_comments_flag = any(p.startswith("--comments") or p.startswith("comments:") for p in parts)
-    has_assignee_flag = any(p.startswith("--assignee") or p.startswith("assignee:") or p == "--no-assignee" for p in parts)
+    # Preserve explicit qualifiers; never silently impose engagement cutoffs.
     has_archived_flag = any(p.startswith("--archived") or p.startswith("archived:") for p in parts)
     has_visibility_flag = any(p.startswith("--visibility") or p.startswith("visibility:") for p in parts)
 
-    clean_parts = [p for p in parts if not p.startswith("state:") and not p.startswith("comments:")]
+    clean_parts = [p for p in parts if not p.startswith("state:")]
     cmd = ["gh", "search", "issues"] + clean_parts + [
         "--state", "open",
     ]
-    if not has_assignee_flag:
-        cmd.append("--no-assignee")
     if not has_archived_flag:
         cmd.append("--archived=false")
     if not has_visibility_flag:
         cmd.extend(["--visibility", "public"])
-    if not has_comments_flag:
-        cmd.extend(["--comments", "<=2"])
     cmd.extend([
         "--sort", sort_by,
         "--order", order,
         "--limit", str(limit),
         "--json", "number,title,repository,url,labels,createdAt,updatedAt,commentsCount,authorAssociation,body,author"
     ])
+    # Fresh windows stay global. Full scans persist disjoint date partitions,
+    # subdividing at GitHub's result ceiling instead of repeating the same 1,000.
+    horizon_window = None
+    if limit == 1000 and not any('created:' in p or p == '--created' for p in parts):
+        horizon_window = DISCOVERY_HORIZON.window(str(query))
+        cmd.extend(['--created', DISCOVERY_HORIZON.qualifier(horizon_window)])
     out, err, code = run_cmd(cmd, timeout=75)
     if code != 0:
         if "secondary rate limit" in ((err or out) or "").lower():
-            print(f"  [GitHub Rate Limit Backoff] Secondary rate limit detected. Sleeping 60s...")
+            print("  [GitHub Rate Limit Backoff] Secondary rate limit detected. Sleeping 60s...")
             time.sleep(60)
             out, err, code = run_cmd(cmd, timeout=75)
         if code != 0:
@@ -3131,8 +3165,18 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         return []
     try:
         raw_items = json.loads(out)
-    except Exception:
+    except (ValueError, TypeError):
+        print(f"[SEARCH_ERROR] query={query!r} invalid GitHub JSON", flush=True)
         return []
+    if not isinstance(raw_items, list):
+        print(f"[SEARCH_ERROR] query={query!r} expected GitHub results array", flush=True)
+        return []
+    if horizon_window:
+        status = DISCOVERY_HORIZON.complete(str(query), horizon_window, len(raw_items), limit)
+        print(f"[SEARCH_HORIZON] query={query!r} range={DISCOVERY_HORIZON.qualifier(horizon_window)} "
+              f"status={status}", flush=True)
+    print(f"[SEARCH_RAW] query={query!r} returned={len(raw_items)} limit={limit} "
+          f"possibly_capped={len(raw_items) >= limit}", flush=True)
 
     filtered_items = []
     for it in raw_items:
@@ -3141,7 +3185,7 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         title = it.get("title", "")
         body = it.get("body", "") or ""
         labels = it.get("labels", [])
-        author_assoc = (it.get("authorAssociation") or "NONE").upper()
+        _author_assoc = (it.get("authorAssociation") or "NONE").upper()
         author = (it.get("author") or {}).get("login", "")
 
         if not repo or not number:
@@ -3150,61 +3194,23 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         task = {"repo": repo, "title": title, "body": body}
         agg_reason = non_engineering_dispatch_reason(task)
         if agg_reason == "bounty discovery aggregator, not the original funded issue" or (
-            repo and any(agg in repo.lower() for agg in ("bounty-plaza", "bounty-bot", "open-source-bounties", "sn-monetization", "bountyscout"))
+            repo and any(agg in repo.lower() for agg in ("bounty-plaza", "bounty-bot", "open-source-bounties", "sn-monetization", "bountyscout", "devpool-directory", "mergeearn"))
         ):
-            upstream = extract_upstream_issue_from_aggregator(body)
-            if upstream:
-                up_repo, up_num = upstream
-                # Skip upstream if it's already a crowded thread (> 3 comments) or closed
-                probe_cmd = ["gh", "api", f"repos/{up_repo}/issues/{up_num}", "--jq", "{state: .state, comments: .comments}"]
-                p_out, _, p_code = run_cmd(probe_cmd, timeout=8)
-                if p_code == 0 and p_out:
-                    try:
-                        p_meta = json.loads(p_out)
-                        if p_meta.get("state") != "open" or p_meta.get("comments", 0) > 3:
-                            continue
-                    except Exception:
-                        pass
-                up_data = get_issue_fast(up_repo, up_num)
-                if up_data and up_data.get("state") == "OPEN":
-                    repo = up_repo
-                    number = up_num
-                    title = up_data.get("title", "")
-                    body = up_data.get("body", "") or ""
-                    labels = up_data.get("labels", [])
-                    author_assoc = (up_data.get("authorAssociation") or "NONE").upper()
-                    author = (up_data.get("author") or {}).get("login", "")
-                    it = {
-                        "repository": {"nameWithOwner": repo},
-                        "number": number,
-                        "title": title,
-                        "url": f"https://github.com/{repo}/issues/{number}",
-                        "labels": labels,
-                        "createdAt": up_data.get("createdAt", it.get("createdAt", "")),
-                        "commentsCount": len(up_data.get("author_comments", [])),
-                        "authorAssociation": author_assoc,
-                        "body": body,
-                        "author": up_data.get("author", {}),
-                    }
-                    task = {"repo": repo, "title": title, "body": body}
-            else:
-                continue
+            continue
 
         if non_engineering_dispatch_reason(task) or is_nonsoftware_data_task(task):
             continue
         author_object = it.get("author") or {}
         if author_object.get("is_bot") or str(author).startswith("app/"):
             continue
+        # Avoid repeated network hydration of identities already owned by the fleet.
+        gate_ok, gate_reason = evaluate_custom_query_gates(it)
+        if not gate_ok:
+            continue
 
-        # Baba Mandate: Neglect crowded issues altogether (reserve compute for uncrowded tickets <= 2 comments)
+        # Discussion volume and creation age do not establish active competition.
+        # The delivery gate checks actual open PRs and current claims.
         comments_cnt = it.get("commentsCount", 0)
-        if comments_cnt > 2:
-            continue
-
-        # Freshness Gate: Skip ancient abandoned issues created before 2025
-        created_at = it.get("createdAt", "")
-        if created_at and created_at < "2025-01-01":
-            continue
 
         # Filter out static site blogs, newsletters, bookmark aggregators, and arxiv scrapers at query layer
         repo_lower = repo.lower()
@@ -3281,18 +3287,53 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         if any(re.search(rp, full_text, re.IGNORECASE) for rp in reputation_points_patterns):
             continue
 
-        has_bounty_label = any(
-            (lbl.get("name") if isinstance(lbl, dict) else str(lbl)).lower() in ("bounty", "bug bounty", "paid bounty", "funded", "reward")
-            for lbl in labels
-        )
-        has_platform = any(
-            p in full_text for p in ("algora.io", "polar.sh", "opire.dev", "bountycaster")
-        )
-        has_bounty, in_bounds, _, usd_val, _ = parse_and_normalize_bounty(title + " " + body)
-
         # Enforce floor and attestation predicates at search layer:
-        # Hydrate comments if not present to verify funding exists before returning from search
-        if "author_comments" not in it and comments_cnt > 0 and (has_bounty_label or has_platform):
+        # Check body bounty first in-memory (zero network calls)
+        body_has_bounty, body_in_bounds, _, body_usd_val, _ = parse_and_normalize_bounty(f"{title} {body}")
+
+        query_str = str(query).lower()
+        query_has_marker = any(qm in query_str for qm in ("algora", "polar", "opire", "bountycaster", "issuehunt", "gitcoin", "bounty", "reward", "funded", "pay"))
+
+        need_comments = False
+        if body_has_bounty:
+            if body_usd_val is not None and body_usd_val < MIN_CONSULTING_BOUND_USD:
+                continue
+            if not body_in_bounds:
+                continue
+            # Check ICU gate with body alone first
+            is_icu_body, _ = verify_genuine_icu_patient(
+                title,
+                body,
+                [],
+                labels,
+                repo,
+                author_assoc=it.get("authorAssociation", "NONE"),
+                author=author,
+                payer_assoc=it.get("payerAssociation", "NONE"),
+                live_delivery_mode=True,
+            )
+            if not is_icu_body and comments_cnt == 0 and body_usd_val is not None:
+                continue
+            # Check current comments even when an old body offer looks valid:
+            # maintainers can withdraw or change that offer later.
+            need_comments = comments_cnt > 0
+        else:
+            # No bounty amount in body
+            if comments_cnt == 0:
+                continue
+            # Only hydrate if there is an explicit bounty marker (label, platform, query, or offer language)
+            has_marker = (
+                query_has_marker or
+                _has_platform_bounty_marker(f"{title} {body}") or
+                any(re.search(r"\b(?:bounty|bug\s+bounty|reward|funded|bountied)\b", _label_name(lbl), re.IGNORECASE) for lbl in (labels or [])) or
+                bool(re.search(r"\[(?:bug\s+)?bounty(?:\s+[^\]]+)?\]", title or "", re.IGNORECASE)) or
+                _has_direct_offer_language(f"{title} {body}")
+            )
+            if not has_marker:
+                continue
+            need_comments = True
+
+        if need_comments and "author_comments" not in it:
             up_data = get_issue_fast(repo, number)
             if up_data and up_data.get("state") == "OPEN":
                 it["author_comments"] = up_data.get("author_comments", [])
@@ -3300,27 +3341,30 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
                 it["payerAssociation"] = up_data.get("payerAssociation", "NONE")
                 it["labels"] = up_data.get("labels", labels)
                 it["body"] = up_data.get("body", body)
+                body, labels = it["body"], it["labels"]
 
         # Total text across title, body, and hydrated author comments
         total_text = f"{title} {body} " + " ".join(it.get("author_comments", []))
         has_any_bounty, any_in_bounds, _, any_usd_val, _ = parse_and_normalize_bounty(total_text)
 
-        # 1. If explicit bounty amount in title, body, or comments, must meet $50 high-ticket floor (or $20 for unit test boundary)
+        # 1. If explicit bounty amount in title, body, or comments, must meet consulting floor ($20.00)
         if has_any_bounty:
-            if any_usd_val is not None and any_usd_val < Decimal("50.00"):
+            if any_usd_val is not None and any_usd_val < MIN_CONSULTING_BOUND_USD:
+                continue
+            if not any_in_bounds:
                 continue
         else:
             # 2. If no parsed currency amount in title/body:
-            # If commentsCount == 0, physically cannot have comment funding -> drop at search layer
-            if comments_cnt == 0:
+            # If commentsCount == 0 or comments hydrated with no bounty found, drop at search layer
+            if comments_cnt == 0 or "author_comments" in it:
                 continue
 
-            # Must have at least a bounty label or platform marker to warrant inspection
-            if not (has_bounty_label or has_platform):
-                continue
-
-        # 3. If comments have been hydrated, verify genuine ICU gate directly inside search layer
-        if "author_comments" in it:
+        # 3. If comments have been hydrated or body bounty parsed, verify genuine ICU gate directly inside search layer
+        if has_any_bounty and any_usd_val is None:
+            # Retain volatile-currency discovery without inventing an FX rate.
+            # Live delivery separately requires a monetary quote and authority.
+            it['funding_quote_required'] = True
+        if "author_comments" in it or (has_any_bounty and any_usd_val is not None):
             is_icu_check, _ = verify_genuine_icu_patient(
                 title,
                 body,
@@ -3328,21 +3372,18 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
                 labels,
                 repo,
                 author_assoc=it.get("authorAssociation", "NONE"),
-                author=author
+                author=author,
+                payer_assoc=it.get("payerAssociation", "NONE"),
+                live_delivery_mode=True,
             )
             if not is_icu_check:
                 continue
 
-        # Territory Corridor Gate at search layer
+        # Territory Corridor Gate at search layer (only for candidate that passed ICU gate!)
         if author:
             corridor_name, _, _ = detect_author_corridor(author)
             if corridor_name in ("Excluded Regional Market", "Excluded Territory"):
                 continue
-
-        # Evaluate registered custom query gates inside search_issues()
-        gate_ok, gate_reason = evaluate_custom_query_gates(it)
-        if not gate_ok:
-            continue
 
         filtered_items.append(it)
 
@@ -3351,6 +3392,8 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
     # 2. Freshness (newest createdAt)
     filtered_items.sort(key=lambda x: (score_hardness_and_competition(x), x.get("createdAt", "")), reverse=True)
 
+    print(f"[SEARCH_FUNNEL] query={query!r} raw={len(raw_items)} "
+          f"retained={len(filtered_items)} filtered={len(raw_items) - len(filtered_items)}", flush=True)
     return filtered_items
 
 def mark_dispatch_network_failure(repo, number, db_path=DB_FILE):
@@ -3508,14 +3551,14 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
         sync_fleet_results_to_local_db()
     now_utc = datetime.now(timezone.utc)
     current_ist = now_utc.astimezone(ZoneInfo("Asia/Kolkata"))
-    print(f"\n=======================================================")
+    print("\n=======================================================")
     print(f"[{current_ist.strftime('%Y-%m-%d %H:%M:%S IST')}] GENUINE ICU PRODUCTION BLEED PIPELINE")
-    print(f"Standard: Zero-Manufacture, Grounded Analysis, Pre-Post Security Gate")
+    print("Standard: Zero-Manufacture, Grounded Analysis, Pre-Post Security Gate")
     print(f"Commercial Channel: {CLIENT_CONTACT_EMAIL}")
     print(f"Mode: {'LIVE WIRE (Autonomous Delivery)' if live_mode else 'CANDIDATE PACKET MODE (Safe Preview)'}")
     print(f"Execution Target: {'5-Engine Kaggle Fleet (0% Local CPU)' if REMOTE_FLEET_MODE else 'Local Machine'}")
     print(f"Schedule Policy: {'24/7 ANYTIME (No Off-Hours Hold)' if anytime else 'Business Hours Gate'}")
-    print(f"=======================================================")
+    print("=======================================================")
 
     total_processed = 0
     seen_issues = set()
@@ -3559,7 +3602,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
         author_comments = data.get("author_comments", [])
         author_assoc = data.get("authorAssociation", "NONE")
 
-        is_icu, reason = verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc=author_assoc, author=author)
+        is_icu, reason = verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc=author_assoc, author=author, payer_assoc=data.get("payerAssociation", "NONE"))
         if not is_icu:
             mark_issue_rejected(repo, number, reason)
             print(f"[SKIP] {issue_id} rejected at seed gate: {reason}")
@@ -3575,12 +3618,11 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
             print(f"[HOLD] {issue_id} in sleeping/off-hours corridor ({corridor_info}). Holding for business hours.")
             continue
 
-        if post_grounded_proposal(repo, number, title, author, f"https://github.com/{repo}/issues/{number}", body, author_comments, labels, reason, corridor_info, author_assoc=author_assoc, live_mode=live_mode):
+        if post_grounded_proposal(repo, number, title, author, f"https://github.com/{repo}/issues/{number}", body, author_comments, labels, reason, corridor_info, author_assoc=author_assoc, live_mode=live_mode, payer_assoc=data.get("payerAssociation", "NONE")):
             total_processed += 1
 
     # Phase 2: Dynamic Search
-    # High-Complexity Hard Tasks & Uncontested Bounties (Minimum Engagement: comments <= 2)
-    print(f"\n--- PHASE 2: High-Complexity Hard Tasks & Uncontested Bounties (comments <= 2) ---")
+    print("\n--- PHASE 2: Global funded engineering discovery ---")
     dynamic_queries = list(DYNAMIC_DISCOVERY_QUERIES)
 
     current_pass = None
@@ -3592,7 +3634,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
             print(f"[DISCOVERY_PASS_START] phase={pass_name} limit={query_limit} queries={len(dynamic_queries)}", flush=True)
         print(f"\n[Search Query] {q}")
         items = search_issues(q, limit=query_limit)
-        print(f"Found {len(items)} query-verified candidates (0 post-search rejections).")
+        print(f"Found {len(items)} candidates; delivery rechecks current funding and competition.")
 
         for it in items:
             repo = it.get("repository", {}).get("nameWithOwner")
@@ -3625,7 +3667,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
             labels = data.get("labels", labels)
             author_assoc = data.get("authorAssociation", "NONE")
 
-            is_icu, reason = verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc=author_assoc, author=author)
+            is_icu, reason = verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc=author_assoc, author=author, payer_assoc=data.get("payerAssociation", "NONE"))
             if not is_icu:
                 print(f"[REJECT] {issue_id}: {reason}")
                 continue
@@ -3649,17 +3691,17 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
                 print(f"[HOLD] {issue_id} in sleeping/off-hours corridor ({corridor_info}). Holding for business hours.")
                 continue
 
-            if post_grounded_proposal(repo, number, title, author, url, body, author_comments, labels, reason, corridor_info, author_assoc=author_assoc, live_mode=live_mode):
+            if post_grounded_proposal(repo, number, title, author, url, body, author_comments, labels, reason, corridor_info, author_assoc=author_assoc, live_mode=live_mode, payer_assoc=data.get("payerAssociation", "NONE")):
                 total_processed += 1
 
         time.sleep(2)
 
     if current_pass:
         print(f"[DISCOVERY_PASS_COMPLETE] phase={current_pass}", flush=True)
-    print(f"\n=======================================================")
+    print("\n=======================================================")
     print(f"[{datetime.now(timezone.utc).isoformat()}] PIPELINE CYCLE COMPLETE. Processed: {total_processed}")
     print(f"[DISCOVERY_FUNNEL] unique_candidates={len(seen_issues)} repeated_candidates_skipped={repeated_candidates} dispatched={total_processed}")
-    print(f"=======================================================")
+    print("=======================================================")
 
 def parse_pipeline_args(argv=None):
     parser = argparse.ArgumentParser(description="Discover and verify paid engineering tasks.")
@@ -3684,6 +3726,25 @@ def main(argv=None):
     live_mode = args.live
     anytime = args.anytime
     run_once = args.once
+    daemon_lock = None
+    if live_mode and not run_once:
+        daemon_lock = open(Path(DB_FILE).with_suffix('.dispatcher.lock'), 'a+b')
+        daemon_lock.seek(0)
+        try:
+            if os.name == 'nt':
+                import msvcrt
+                if not daemon_lock.read(1):
+                    daemon_lock.write(b'0')
+                    daemon_lock.flush()
+                daemon_lock.seek(0)
+                msvcrt.locking(daemon_lock.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(daemon_lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            daemon_lock.close()
+            print('[DISPATCHER_ALREADY_RUNNING] Another live dispatcher holds the lock.', flush=True)
+            return 1
     cycle_interval_seconds = 180  # 3 minutes between follow-the-sun sweeps
 
     if args.upgrade_existing:

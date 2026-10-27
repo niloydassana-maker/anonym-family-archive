@@ -179,11 +179,15 @@ def worker_source_for_deployment() -> str:
     script_dir = Path(__file__).resolve().parent
     source = (script_dir / 'kaggle_engine_worker.py').read_text(encoding='utf-8')
     policy = (script_dir / 'fleet_recovery_policy.py').read_text(encoding='utf-8')
+    supervisor = (script_dir / 'delivery_supervisor.py').read_text(encoding='utf-8')
     bootstrap = (
         '\nimport sys as _fleet_sys, types as _fleet_types\n'
         "_fleet_policy = _fleet_types.ModuleType('fleet_recovery_policy')\n"
         "_fleet_sys.modules['fleet_recovery_policy'] = _fleet_policy\n"
         f"exec(compile({policy!r}, 'fleet_recovery_policy.py', 'exec'), _fleet_policy.__dict__)\n"
+        "_supervisor = _fleet_types.ModuleType('delivery_supervisor')\n"
+        "_fleet_sys.modules['delivery_supervisor'] = _supervisor\n"
+        f"exec(compile({supervisor!r}, 'delivery_supervisor.py', 'exec'), _supervisor.__dict__)\n"
     )
     return source.replace('from __future__ import annotations', 'from __future__ import annotations' + bootstrap, 1)
 

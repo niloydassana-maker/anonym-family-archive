@@ -6,6 +6,10 @@ from __future__ import annotations
 # The Supreme Edict: Zero Disavowal & Pixel-Perfect Craftsmanship
 # ==============================================================================
 import os
+import random
+import threading
+from email.utils import parsedate_to_datetime
+from urllib import error, request
 import sys
 import tomllib
 import json
@@ -23,14 +27,14 @@ import signal
 import shlex
 import uuid
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from decimal import Decimal, ROUND_HALF_UP
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from dataclasses import dataclass, field
-from typing import List, Dict, Tuple, Optional, Any
+from typing import List, Dict, Tuple, Optional, Any, Callable
+from delivery_supervisor import supervise as supervise_delivery, validate_plan as validate_delivery_plan
 from fleet_recovery_policy import (
     CLAIM_LEASE_SECONDS, CLAIM_HEARTBEAT_SECONDS, FLEET_LEASE_CHANNEL, RECOVERY_RELEASE, current_claim, event_run,
     is_nonsoftware_data_task, recovery_decision, task_reference, non_engineering_dispatch_reason,
-    is_retryable_failure,
+    is_retryable_failure, matching_events,
 )
 
 # Enforce UTF-8 line buffering
@@ -52,7 +56,7 @@ _fleet_poll_failures = 0
 
 # Cloud sandbox and paths
 SANDBOX_DIR = "/tmp/sandbox"
-PACKET_DIR = "/tmp/candidate_packets"
+PACKET_DIR = "/kaggle/working/fleet-artifacts" if os.path.isdir('/kaggle/working') else "/tmp/candidate_packets"
 DB_FILE = "/tmp/icu_pipeline.db"
 CSV_FILE = "/tmp/icu_desperation_ledger.csv"
 CLIENT_CONTACT_EMAIL = "isearch.xsolve@gmail.com"
@@ -91,15 +95,6 @@ Secrets remain in the local vault.  This module never logs or exposes API keys.
 
 # from __future__ import annotations
 
-import json
-import os
-import random
-import threading
-import time
-from dataclasses import dataclass
-from email.utils import parsedate_to_datetime
-from typing import Callable, Dict, List, Optional, Tuple
-from urllib import error, request
 
 
 TOKEN_HARBOR_URL = "https://tokenharbor.ai/v1/chat/completions"
@@ -912,8 +907,8 @@ def generate_grounded_proposal(
     code_snippets = sanitize_prompt_input(evidence.get("code_blocks", ""))[:3000]
     source_context = sanitize_prompt_input(evidence.get("referenced_source", ""))[:2500]
     worktree_context = sanitize_prompt_input(collect_worktree_context(worktree, title, body))[:14000]
-    commit_sha = sanitize_prompt_input(evidence.get("commit_sha", ""))
-    default_branch = sanitize_prompt_input(evidence.get("default_branch", "main"))
+    _commit_sha = sanitize_prompt_input(evidence.get("commit_sha", ""))
+    _default_branch = sanitize_prompt_input(evidence.get("default_branch", "main"))
 
     comments_excerpt = "\n---\n".join(author_comments[:2]) if author_comments else "No subsequent author comments."
 
@@ -1106,7 +1101,7 @@ def get_issue_fast(repo, number):
 
     # Check if issue text or comments indicate payment or engineering context
     body = data.get("body", "")
-    author = author_login
+    _author = author_login
     author_comments = []
 
     combined_text = (data.get("title", "") + " " + (body or "")).lower()
@@ -1126,12 +1121,10 @@ def get_issue_fast(repo, number):
                     commenter = comment.get("author", {}) or {}
                     login = (commenter.get("login") or "").lower()
                     comment_body = comment.get("body", "") or ""
-                    is_platform_actor = (
-                        commenter.get("is_bot")
-                        or any(name in login for name in
-                               ("algora", "polar", "gitcoin", "bountysource", "opire", "bountybot"))
-                        or _has_platform_bounty_marker(comment_body)
-                    )
+                    is_platform_actor = login in {
+                        'algora-pbc', 'app/algora', 'gitcoinbot', 'opire-bot',
+                        'opire[bot]', 'polar-sh[bot]', 'issuehunt[bot]', 'bountysource',
+                    }
                     if login == str(author_login).lower() or is_platform_actor:
                         author_comments.append(comment_body)
             except Exception:
@@ -1266,7 +1259,7 @@ def validate_synthesized_files(work_dir: str, extracted_files: List[Tuple[str, s
     for rel_path, code_body in extracted_files:
         if not is_safe_relative_path(work_dir, rel_path):
             return False, f"Security violation: unsafe synthesized path rejected: {rel_path}"
-        full_path = os.path.join(work_dir, rel_path.replace("/", os.sep))
+        _full_path = os.path.join(work_dir, rel_path.replace("/", os.sep))
 
         # 1. Python Syntax & Indentation Validation
         if rel_path.endswith(".py"):
@@ -2013,6 +2006,9 @@ def build_cline_engineering_prompt(
     prior_failures: Optional[str],
 ) -> str:
     """Build a bounded, self-contained task that gives Cline the worktree context."""
+    delivery_context = (arch or {}).get('full_delivery_context')
+    issue_context = (f'Read the complete issue and delivery context from {delivery_context}.'
+                     if delivery_context else sanitize_prompt_input(body or 'No additional issue body was supplied.'))
     try:
         architecture_context = json.dumps(arch or {}, indent=2, default=str)
     except (TypeError, ValueError):
@@ -2023,9 +2019,13 @@ def build_cline_engineering_prompt(
         f"action={case.action}; expected={case.expected_result}; test={case.test_location}"
         for case in scenarios
     ) or "- No additional scenario matrix was supplied; infer focused regression and boundary coverage from the issue."
-    failure_context = sanitize_prompt_input(
-        prior_failures or "None; this is the first implementation turn."
-    )[:5000]
+    failure_context = "None; this is the first implementation turn."
+    if prior_failures:
+        os.makedirs(PACKET_DIR, exist_ok=True)
+        failure_path = os.path.join(PACKET_DIR, 'cline-failure-' + uuid.uuid4().hex + '.txt')
+        with open(failure_path, 'w', encoding='utf-8') as handle:
+            handle.write(prior_failures)
+        failure_context = 'Read the complete actual failure log at ' + failure_path
 
     return f"""Work directly in the current isolated Git worktree to resolve this issue.
 
@@ -2033,7 +2033,7 @@ Repository: {sanitize_prompt_input(repo)}
 Issue: #{issue_number} — {sanitize_prompt_input(title)}
 
 Issue requirements:
-{sanitize_prompt_input(body or 'No additional issue body was supplied.')}
+{issue_context}
 
 Repository architecture context:
 {architecture_context or 'No architecture metadata was supplied.'}
@@ -2044,7 +2044,7 @@ Required scenarios:
 Prior failures from the immediately preceding attempt:
 {failure_context}
 
-Modify the repository files in this directory to resolve the issue, and ensure existing and new tests pass. Inspect the existing code and tests before editing. Add or update focused tests for the reported behavior, including applicable null, empty, boundary, negative, concurrency, and regression cases. Do not modify CI workflow files or write outside this worktree. Do not add corporate signatures, credentials, payment details, or unrelated changes. Run the relevant repository tests and linters when practical, then leave the actual changes in this worktree for the verification gates."""
+Own the delivery of this issue, including any required installation, configuration and repairs. Inspect the existing code and tests before editing. Add companion tests for applicable null, empty, boundary, negative, concurrency and regression cases. Do not weaken or rewrite existing master tests or CI workflows. Use the native package manager, pins and test plan you resolved from the repository. Run the relevant repository tests and linters when practical; every required native check must actually pass before publication. Runtime tools and caches may be provisioned outside the worktree; keep product changes in this isolated checkout. Do not add corporate signatures, credentials, payment details or unrelated changes. Preserve completed work and leave the actual changes for the host's independent verification and publication gates."""
 
 def _status_paths_from_porcelain(status_output: str) -> Tuple[bool, List[str], str]:
     """Extract changed worktree paths from `git status --porcelain` without trusting them."""
@@ -2185,8 +2185,20 @@ def run_cline_engineering_turn(
     return True, file_changes, changed_paths, f"Cline completed successfully. {status_message}"
 
 def native_verification_timeout(command: List[str], default: int) -> int:
-    """Allow cold Rust compilation without changing commands or pass criteria."""
-    return 1800 if command and os.path.basename(command[0]) == 'cargo' else default
+    """Use one configurable native-verification runway across ecosystems."""
+    return max(default, int(os.environ.get('FLEET_NATIVE_TIMEOUT_SECONDS', '3600')))
+
+
+def cline_supervise_delivery_phase(worktree, repo, number, phase, diagnostic, plan):
+    if not os.path.exists(os.path.join(worktree, '.git')):
+        return True, plan, 'No live Git checkout; retained the deterministic verification plan.'
+    proxy_ok, proxy_message = ensure_cline_proxy_running()
+    if not proxy_ok:
+        return False, plan, proxy_message
+    _command_log(f'CLINE_DELIVERY_SUPERVISOR phase={phase} repo={repo} issue={number}')
+    return supervise_delivery(worktree, repo, number, phase, diagnostic, plan, PACKET_DIR,
+                              cline_worktree_command, run_command_safe, VerificationPlan,
+                              preserve_cline_edits)
 
 
 def verify_baseline(worktree: str, plan: VerificationPlan) -> Tuple[bool, str, List[CommandResult]]:
@@ -2307,18 +2319,22 @@ def model_scenarios(title: str, body: str, arch: dict) -> List[ScenarioCase]:
     ))
     return cases
 
-def check_competing_prs_fail_closed(repo: str, number: int) -> Tuple[bool, str]:
+def check_competing_prs_fail_closed(repo: str, number: int, ignore_pr: Optional[int] = None) -> Tuple[bool, str]:
     """
     Fail-closed Zero-Competition gate.
     If lookup fails or competing PR is found, blocks release immediately.
     """
-    cmd = ["gh", "pr", "list", "--repo", repo, "--state", "open", "--limit", "100", "--json", "number,title,headRefName,body"]
+    cmd = ["gh", "pr", "list", "--repo", repo, "--state", "open", "--limit", "1000", "--json", "number,title,headRefName,body"]
     out, err, code = run_cmd(cmd, timeout=20)
     if code != 0 or out is None:
         return False, f"GitHub PR query failed (exit code {code}, err: {err}): failing closed per Zero-Competition Law."
     try:
         prs = json.loads(out)
+        if not isinstance(prs, list) or len(prs) >= 1000:
+            return False, 'GitHub PR result horizon reached; complete competition proof unavailable, failing closed.'
         for p in prs:
+            if ignore_pr is not None and p.get('number') == ignore_pr:
+                continue
             title = str(p.get("title", ""))
             head = str(p.get("headRefName", ""))
             body = str(p.get("body", ""))
@@ -2579,7 +2595,7 @@ def run_engineering_iteration_loop(
 
         if not tests_passed:
             print(f"     ❌ Iteration {turn}: Native tests failed. Routing exact compiler/test errors back to DeepSeek for turn {turn + 1}...")
-            clipped_fail = test_fail_log[:3000]
+            clipped_fail = test_fail_log
             prior_failures = f"Compiler/test failure in turn {turn}:\n{clipped_fail}\nFix these exact failures."
             continue
 
@@ -2725,7 +2741,177 @@ def commit_and_open_pr(
     fail(f"GitHub pull request creation failed (exit {pr_code}): {pr_err or pr_out or 'no output'}")
     return None
 
-def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_mode=True):
+_DELIVERY_CONTEXT = {}
+
+
+def run_cline_claim_intake(task, lease):
+    """Cline is the first task executor; issue context determines preparation."""
+    repo, number = task['repo'], task['issue_number']
+    folder = os.path.join(PACKET_DIR, 'delivery-supervisor')
+    os.makedirs(folder, exist_ok=True)
+    os.makedirs(SANDBOX_DIR, exist_ok=True)
+    identity = uuid.uuid4().hex
+    context_path = os.path.join(folder, identity + '.context.json')
+    report_path = os.path.join(folder, identity + '.preparation.json')
+    worktree = os.path.join(SANDBOX_DIR, 'repos', repo.replace('/', '--') + '--' + str(number))
+    with open(context_path, 'w', encoding='utf-8') as handle:
+        json.dump(task, handle, ensure_ascii=False, indent=2)
+    prompt = f"""You own this task's complete delivery lifecycle immediately after its fleet claim.
+Read the ENTIRE issue and prior failure context from {context_path}; do not truncate or summarize away requirements.
+Repository: {repo}. Issue: #{number}. Your active fleet run: {lease.run_id}.
+
+You have full freedom to inspect the repository and provision the required tools, pinned versions,
+dependencies, environment and configuration. Read its AGENTS.md, manifests, lockfiles, CI and setup docs.
+Choose the actual native commands yourself. Diagnose and repair installation/configuration failures;
+do not wait for a separate installer or assume npm, a language, a version, or a testing framework.
+Check current funding and all relevant open PRs before work. Stop on withdrawn funding or competition.
+Preserve existing completed edits and diagnostics before any destructive checkout operation.
+Prepare an isolated fork checkout at {worktree}, based strictly on upstream's current default branch.
+Set origin to the authenticated account's fork, upstream to {repo}, and check out fix/bounty-{number}.
+Use repository-declared pins and build permissions. Never bypass integrity checks or approval policies.
+Do not manufacture data, command output, test results, or payment evidence. Never expose credentials.
+
+Establish the unchanged upstream baseline before product edits. Run installations and native verification
+freely. If the baseline has a genuine product defect or lacks external credentials/hardware, report it honestly.
+The host will independently execute your native plan, then return the issue to you for implementation,
+verification, publication monitoring and any required repairs. Do not push or open a PR before those release gates.
+No existing master test or CI workflow may be weakened. Keep runtime caches outside the checkout when needed.
+
+Write the preparation decision to {report_path}:
+{{"action":"retry" or "blocked","reason":"actual diagnosis","worktree":"{worktree}",
+"base_sha":"actual upstream checkout SHA","default_branch":"actual default branch",
+"architecture":{{"ecosystem":"actual ecosystem","ecosystems":["actual ecosystems"]}},
+"sources":[{{"path":"relative manifest/CI/setup file","sha256":"actual source SHA-256"}}],
+"plan":{{"bootstrap":[["actual","argv"]],"baseline_tests":[["actual","test"]],
+"final_tests":[["actual","test"]],"linters":[],"format_checks":[]}}}}
+Do not claim delivery. Save the real plan and receipts, then finish this preparation phase."""
+    _command_log(f'CLINE_FIRST_AFTER_CLAIM repo={repo} issue={number} context={context_path}')
+    result = run_command_safe(cline_worktree_command(SANDBOX_DIR, prompt), cwd=SANDBOX_DIR,
+                              timeout=cline_turn_timeout_seconds())
+    if result.exit_code != 0:
+        if os.path.exists(os.path.join(worktree, '.git')):
+            _command_log('CLINE_PREPARATION_EDITS_PRESERVED ' + preserve_cline_edits(worktree))
+        raise RuntimeError('Cline preparation failed: ' + _sanitize_runtime_diagnostic(result.stderr or result.stdout, 1000))
+    with open(report_path, encoding='utf-8') as handle:
+        report = json.load(handle)
+    if report.get('action') != 'retry':
+        raise RuntimeError('Cline preparation blocked: ' + str(report.get('reason', 'unresolved prerequisite')))
+    if os.path.realpath(report.get('worktree', '')) != os.path.realpath(worktree):
+        raise ValueError('Cline preparation returned an unexpected worktree')
+    report['plan'] = VerificationPlan(**validate_delivery_plan(report, worktree))
+    head, error = _git_checked(['git', '-C', worktree, 'rev-parse', 'HEAD'], 10, 'Cline prepared baseline SHA')
+    status, status_error = _git_checked(['git', '-C', worktree, 'status', '--porcelain',
+                                        '--untracked-files=all'], 10, 'Cline prepared baseline integrity')
+    if error or status_error or not head or head.strip() != report.get('base_sha') or status.strip():
+        raise ValueError('Cline preparation must leave a clean, unchanged upstream baseline')
+    if not re.fullmatch(r'[0-9a-f]{40,64}', report.get('base_sha', '')) or not report.get('default_branch'):
+        raise ValueError('Cline preparation omitted the real baseline or default branch')
+    report['context_path'] = context_path
+    return report
+
+
+def resume_verified_publication(context, repo, number, title, pr_body):
+    """Resume a frozen verified commit without resetting or regenerating edits."""
+    worktree, plan, run = context['worktree'], context['plan'], context['run']
+    head, error = _git_checked(['git', '-C', worktree, 'rev-parse', 'HEAD'], 10, 'publication recovery HEAD')
+    if error or not head or head.strip() == context['base_sha']:
+        return None
+    release_sha = head.strip()
+    count, error = _git_checked(['git', '-C', worktree, 'rev-list', '--count',
+                                 context['base_sha'] + '..' + release_sha], 10, 'publication recovery isolation')
+    if error or count.strip() != '1' or not has_successful_test_verification(run.verification, verification_test_commands(plan)):
+        return None
+    clean, error = _git_checked(['git', '-C', worktree, 'status', '--porcelain', '--untracked-files=all'], 10, 'publication recovery clean tree')
+    if error or clean.strip():
+        return None
+    repaired, _, diagnostic = cline_supervise_delivery_phase(
+        worktree, repo, number, 'publication', get_execution_diagnostic(), plan)
+    if not repaired:
+        record_execution_diagnostic('Cline publication repair', diagnostic)
+        return None
+    if not fleet_lease_allows_publication():
+        return None
+    # Recover an acknowledged-on-server PR after a client timeout, idempotently.
+    branch = f'fix/bounty-{number}'
+    output, error, code = run_cmd(['gh', 'pr', 'list', '--repo', repo, '--head',
+                                  'isearchxsolve:' + branch, '--state', 'open', '--json',
+                                  'number,url,headRefOid,author', '--limit', '2'], timeout=30)
+    if code:
+        return None
+    try:
+        existing = json.loads(output)
+        if len(existing) == 1 and existing[0].get('headRefOid') == release_sha and (
+                existing[0].get('author') or {}).get('login') == 'isearchxsolve':
+            return existing[0]['url']
+        if existing:
+            return None
+    except (ValueError, KeyError, TypeError):
+        return None
+    competition_ok, _ = check_competing_prs_fail_closed(repo, number)
+    if not competition_ok:
+        return None
+    output, error, code = run_cmd(['git', '-C', worktree, 'push', 'origin',
+                                  'HEAD:refs/heads/' + branch], timeout=45)
+    if code or not fleet_lease_allows_publication():
+        return None
+    body_file = os.path.join(PACKET_DIR, 'publication-' + uuid.uuid4().hex + '.md')
+    with open(body_file, 'w', encoding='utf-8') as handle:
+        handle.write(pr_body)
+    output, error, code = run_cmd([
+        'gh', 'pr', 'create', '--repo', repo, '--head', 'isearchxsolve:' + branch,
+        '--base', context['default_branch'], '--title', f'fix: #{number} - {title}',
+        '--body-file', body_file], timeout=45)
+    if code:
+        return None
+    match = re.search(r'https://github\.com/' + re.escape(repo) + r'/pull/\d+', output or '')
+    return match.group(0) if match else None
+
+
+def monitor_delivery_checks(context, repo, number, title, body, pr_url):
+    """Observe remote checks and route an actual failure into a guarded repair."""
+    output, error, code = run_cmd(['gh', 'pr', 'checks', pr_url, '--json',
+                                  'name,state,bucket,link,description'], timeout=30)
+    try:
+        checks = json.loads(output) if output else []
+    except ValueError:
+        checks = []
+    journal = os.path.join(PACKET_DIR, 'checks-' + repo.replace('/', '--') + f'-{number}.json')
+    record = {'repo': repo, 'number': number, 'pr_url': pr_url, 'checks': checks,
+              'query_exit_code': code, 'diagnostic': error}
+    with open(journal, 'w', encoding='utf-8') as handle:
+        json.dump(record, handle, indent=2)
+    failed = [check for check in checks if check.get('bucket') == 'fail']
+    if not failed:
+        return 'CHECKS_PENDING' if any(c.get('bucket') == 'pending' for c in checks) else 'NO_FAILED_CHECKS_OBSERVED'
+    _command_log(f'CLINE_DELIVERY_SUPERVISOR phase=remote-ci repo={repo} issue={number}')
+    # Engineering operates on the already completed checkout, with no reset.
+    ok, repair, diagnostic = run_engineering_iteration_loop(
+        context['worktree'], repo, number, title,
+        body + '\n\nActual failed remote checks:\n' + json.dumps(failed),
+        context['arch'], context['plan'], context['scenarios'], context['base_sha'],
+        max_iterations=1, live_mode=True)
+    if not ok:
+        record_execution_diagnostic('remote CI repair', diagnostic)
+        return 'REMOTE_CI_REPAIR_BLOCKED'
+    match = re.search(r'/pull/(\d+)$', pr_url)
+    competition_ok, _ = check_competing_prs_fail_closed(repo, number, int(match[1]) if match else None)
+    if not competition_ok or not fleet_lease_allows_publication():
+        return 'REMOTE_CI_REPAIR_BLOCKED'
+    worktree = context['worktree']
+    for argv in (['git', '-C', worktree, 'diff', '--check'],
+                 ['git', '-C', worktree, 'add', '--', *repair.modified_files],
+                 ['git', '-C', worktree, 'commit', '--amend', '--no-edit']):
+        _, _, result = run_cmd(argv, timeout=30)
+        if result:
+            return 'REMOTE_CI_REPAIR_BLOCKED'
+    if not fleet_lease_allows_publication():
+        return 'REMOTE_CI_REPAIR_BLOCKED'
+    _, _, result = run_cmd(['git', '-C', worktree, 'push', '--force-with-lease', 'origin',
+                            f'fix/bounty-{number}'], timeout=45)
+    return 'REMOTE_CI_REPAIR_PUSHED_AWAITING_CHECKS' if result == 0 else 'REMOTE_CI_REPAIR_BLOCKED'
+
+
+def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_mode=True, prepared_context=None):
     """
     Multi-Turn Iterative Due-Diligence Engine:
     1. Pre-flight competition check (fail-closed)
@@ -2756,7 +2942,10 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
         return None
 
     # Step 2: Prepare isolated worktree
-    worktree, base_sha, wt_err = prepare_isolated_worktree(repo, number)
+    if prepared_context:
+        worktree, base_sha, wt_err = prepared_context['worktree'], prepared_context['base_sha'], None
+    else:
+        worktree, base_sha, wt_err = prepare_isolated_worktree(repo, number)
     if not worktree:
         record_execution_diagnostic("worktree preparation", wt_err or "worktree preparation failed without details")
         print(f"  ❌ [WORKTREE INIT FAILED] {repo}#{number}: {wt_err}")
@@ -2770,10 +2959,32 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
         print(f"  ❌ [DEFAULT BRANCH LOOKUP FAILED] {branch_diagnostic}")
         return None
     default_branch = branch_out.strip()
+    _DELIVERY_CONTEXT.clear()
+    _DELIVERY_CONTEXT[(repo, number)] = {'worktree': worktree, 'base_sha': base_sha,
+                                        'default_branch': default_branch}
 
     # Step 3: Inspect architecture & discover verification plan
-    arch = inspect_repository_architecture(worktree)
-    plan = discover_verification_plan(arch, worktree)
+    try:
+        if prepared_context:
+            arch = prepared_context.get('architecture') or {'ecosystem': 'cline-managed', 'ecosystems': []}
+            plan = prepared_context['plan']
+            arch['full_delivery_context'] = prepared_context['context_path']
+        else:
+            arch = inspect_repository_architecture(worktree)
+            plan = discover_verification_plan(arch, worktree)
+        discovery_diagnostic = 'Verify and provision the repository-declared native environment before the untouched baseline.'
+    except (ValueError, OSError) as exc:
+        arch = {'ecosystem': 'unknown', 'ecosystems': [], 'discovery_error': str(exc)}
+        plan = VerificationPlan()
+        discovery_diagnostic = 'Native discovery requires repair: ' + str(exc)
+    if prepared_context:
+        preparation_ok, preparation_message = True, 'Cline already owns preparation from the claim boundary.'
+    else:
+        preparation_ok, plan, preparation_message = cline_supervise_delivery_phase(
+            worktree, repo, number, 'preparation', discovery_diagnostic, plan)
+    if not preparation_ok:
+        record_execution_diagnostic('Cline delivery preparation', preparation_message)
+        return None
     scenarios = model_scenarios(title, proposal_or_body, arch)
     test_commands = verification_test_commands(plan)
     if not test_commands:
@@ -2789,6 +3000,16 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
     # receives a bounty task. Do not turn unrelated upstream failures into
     # additional engineering scope.
     base_ok, base_msg, base_results = verify_baseline(worktree, plan)
+    if not base_ok:
+        repaired, repaired_plan, repair_message = cline_supervise_delivery_phase(
+            worktree, repo, number, 'baseline', base_msg, plan)
+        if repaired:
+            plan = repaired_plan
+            test_commands = verification_test_commands(plan)
+            base_ok, base_msg, retry_results = verify_baseline(worktree, plan)
+            base_results.extend(retry_results)
+        else:
+            base_msg += '\nCline lifecycle repair: ' + repair_message
     if not base_ok:
         record_execution_diagnostic("untouched upstream baseline", base_msg)
         mark_issue_blocked_baseline(repo, number, base_msg)
@@ -2814,6 +3035,8 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
         print(f"  ❌ [ITERATION FAILED] {loop_msg}")
         return None
     run.verification = base_results + run.verification
+    context = _DELIVERY_CONTEXT[(repo, number)]
+    context.update(plan=plan, arch=arch, scenarios=scenarios, run=run)
 
     # Step 6: Final Pre-Push Competition Check (Fail-Closed)
     comp_ok_final, comp_msg_final = check_competing_prs_fail_closed(repo, number)
@@ -2842,6 +3065,12 @@ def attempt_automated_pull_request(repo, number, title, proposal_or_body, live_m
         verification=run.verification,
         test_commands=test_commands,
     )
+    if not pr_url:
+        pr_url = resume_verified_publication(context, repo, number, title, pr_body)
+        if pr_url:
+            update_delivery_pr(repo, number, pr_url)
+    if pr_url:
+        context['checks_state'] = monitor_delivery_checks(context, repo, number, title, proposal_or_body, pr_url)
     if not pr_url and not get_execution_diagnostic():
         record_execution_diagnostic("pull request", "PR creation returned no URL and no lower-level diagnostic was captured.")
     return pr_url
@@ -3313,10 +3542,15 @@ def execute_claimed_fleet_task(task: dict, lease: FleetTaskLease):
     repo, number = task['repo'], task['issue_number']
     suffix = f" for {repo}#{number} attempt={lease.attempt} run={lease.run_id}"
     _ACTIVE_TASK_LEASE = lease
+    _DELIVERY_CONTEXT.clear()
+    reset_task_diagnostics()
+    lease.phase = 'CLINE_DELIVERY_OWNER'
     try:
         door_say(f"EXECUTING {ENGINE_ID} Cline workflow{suffix}", body="BOUNTY_FLEET_EXECUTION")
         print(f"[{ENGINE_ID}] Executing Cline verification workflow on {repo}#{number}, attempt {lease.attempt}...", flush=True)
-        pr_url = attempt_automated_pull_request(repo, number, task.get('title', ''), task.get('body', ''), live_mode=True)
+        prepared = run_cline_claim_intake(task, lease)
+        pr_url = attempt_automated_pull_request(repo, number, task.get('title', ''), task.get('body', ''),
+                                              live_mode=True, prepared_context=prepared)
         if pr_url:
             summary = (
                 f"Implemented and verified the resolution for issue #{number}.\n\n"
@@ -3326,8 +3560,23 @@ def execute_claimed_fleet_task(task: dict, lease: FleetTaskLease):
                 repo, number, pr_url, summary, task.get('title', ''),
                 task.get('author', ''), task.get('corridor_info', ''), task.get('reason', ''),
             )
+            context = _DELIVERY_CONTEXT.get((repo, number))
+            if not receipt_ok and context:
+                repaired, _, repair_diagnostic = cline_supervise_delivery_phase(
+                    context['worktree'], repo, number, 'receipt',
+                    'The verified PR exists but its authoritative delivery receipt failed. '
+                    'Diagnose transport/authentication without changing or republishing source: ' + pr_url,
+                    context['plan'])
+                if repaired:
+                    receipt_ok = reconcile_or_retry_pr_receipt(
+                        repo, number, pr_url, summary, task.get('title', ''), task.get('author', ''),
+                        task.get('corridor_info', ''), task.get('reason', ''))
+                else:
+                    record_execution_diagnostic('Cline receipt repair', repair_diagnostic)
+            checks_state = context.get('checks_state', 'NOT_OBSERVED') if context else 'NOT_OBSERVED'
             text = (f"SUCCESS {ENGINE_ID} opened verified PR and SHA-256 receipt: {pr_url}" if receipt_ok else
                     f"FAILED {ENGINE_ID} PR exists but authoritative SHA-256 issue receipt failed: {pr_url}")
+            text += ' checks_state=' + checks_state
         else:
             diagnostic = get_execution_diagnostic() or "Cline workflow did not produce a verified pull request"
             text = f"FAILED {ENGINE_ID} Cline execution failed closed: {diagnostic}"
@@ -3423,7 +3672,7 @@ def deliver_pr_receipt(repo: str, number: int, pr_url: str, proposal: str, title
         try:
             resp_data = json.loads(out)
             comment_id = str(resp_data.get("id", ""))
-            receipt_url = resp_data.get("html_url", "")
+            _receipt_url = resp_data.get("html_url", "")
             server_body = resp_data.get("body", "")
 
             local_digest = hashlib.sha256(comment_payload.encode("utf-8")).hexdigest()
@@ -3433,7 +3682,7 @@ def deliver_pr_receipt(repo: str, number: int, pr_url: str, proposal: str, title
                 print(f"✅ [CRYPTOGRAPHIC RECEIPT CONFIRMED] Comment ID: {comment_id} | PR: {pr_url} | SHA: {local_digest[:16]}", flush=True)
                 return True
             else:
-                print(f"⚠️ SHA digest mismatch between sent and server body.", flush=True)
+                print("⚠️ SHA digest mismatch between sent and server body.", flush=True)
                 return False
         except Exception as e:
             print(f"Receipt parsing error: {e}", flush=True)
@@ -3441,6 +3690,26 @@ def deliver_pr_receipt(repo: str, number: int, pr_url: str, proposal: str, title
     else:
         print(f"Failed posting comment: {err or out}", flush=True)
         return False
+
+def reconcile_or_retry_pr_receipt(repo, number, pr_url, proposal, title, author, corridor_info, reason):
+    """Resolve a timeout against server state before repeating a receipt write."""
+    expected = hashlib.sha256((proposal + '\n\n---\n**Verified Pull Request**: ' + pr_url).encode()).hexdigest()
+    login, _, login_code = run_cmd(['gh', 'api', 'user', '--jq', '.login'], timeout=15)
+    output, _, code = run_cmd(['gh', 'api', '--paginate', '--slurp',
+                               f'repos/{repo}/issues/{number}/comments?per_page=100'], timeout=30)
+    if code or login_code:
+        return False
+    try:
+        for page in json.loads(output):
+            for comment in page:
+                if ((comment.get('user') or {}).get('login') == login.strip()
+                        and hashlib.sha256((comment.get('body') or '').encode()).hexdigest() == expected):
+                    _command_log(f'DELIVERY_RECEIPT_RECONCILED repo={repo} issue={number} sha256={expected}')
+                    return True
+    except (ValueError, TypeError, AttributeError):
+        return False
+    return deliver_pr_receipt(repo, number, pr_url, proposal, title, author, corridor_info, reason)
+
 
 def run_worker_loop():
     startup_ok = door_say(
@@ -3486,7 +3755,7 @@ def run_worker_loop():
     tokenharbor_key_file = os.environ.get("TOKENHARBOR_KEY_FILE", "")
     tokenharbor_shard_id = os.path.basename(os.path.dirname(tokenharbor_key_file)) or "local-key-pool"
     print("=" * 70, flush=True)
-    print(f"⚡ KAGGLE 5-ENGINE DISTRIBUTED WORKER INITIALIZED", flush=True)
+    print("⚡ KAGGLE 5-ENGINE DISTRIBUTED WORKER INITIALIZED", flush=True)
     print(f"Engine ID: {ENGINE_ID}", flush=True)
     print(
         f"TokenHarbor shard ready: engine {ENGINE_INDEX}/{TOTAL_ENGINES}, "
@@ -3630,6 +3899,8 @@ def run_worker_loop():
                 # Cline is the sole engineering agent. It receives the issue
                 # and the isolated worktree directly; no model proposal or
                 # DeepSeek fallback is generated before implementation.
+                task = dict(task)
+                task['prior_failures'] = [row['text'] for row in matching_events(task, result_rows)]
                 execute_claimed_fleet_task(task, lease)
                 claim_rows = fetch_claim_lease_rows()
                 result_rows = fetch_ledger_rows(FLEET_RESULT_CHANNEL)
