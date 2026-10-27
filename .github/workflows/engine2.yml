@@ -83,6 +83,8 @@ jobs:
         working-directory: workspace
         env:
           CLINE_TIMEOUT: 3600
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          TOKENHARBOR_KEYS_JSON: ${{ secrets.TOKENHARBOR_KEYS_JSON }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
