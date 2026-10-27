@@ -26,26 +26,79 @@ SEARCH_QUALIFIERS = (
     "is:issue", "is:open", "is:public", "archived:false",
     "-label:type/experiment", "no:assignee", "-linked:pr",
 )
-QUERY_POLICY_VERSION = "unassigned-no-closing-pr-v1"
+QUERY_POLICY_VERSION = "unassigned-no-closing-pr-branches-v2"
 QUERY_EXCLUDED_ASSIGNED = "query_excluded_assigned"
 
 
-def build_issue_search_query(expression, window=None, fresh=0):
-    """Compile each lane expression with the shared GitHub-side eligibility filters.
+def split_search_or_branches(expression):
+    """Split configured top-level ``OR`` expressions without splitting quoted text.
 
-    Parentheses keep the shared qualifiers attached to every branch of expressions
-    containing OR. GitHub can enforce issue state, visibility, archive, assignee and
-    closing-PR relations at search time; predicates without GitHub search qualifiers
-    remain in the existing evidence-based admission contract.
+    GitHub's REST issue-search endpoint does not preserve the same semantics when an
+    entire text expression is wrapped in parentheses. Compile each disjunction branch
+    as its own query instead, so common eligibility qualifiers can be ANDed into every
+    branch before search results are returned.
     """
     expression = str(expression or "").strip()
-    query = (f"({expression}) " if expression else "") + " ".join(SEARCH_QUALIFIERS)
+    branches = []
+    start = 0
+    quoted = False
+    escaped = False
+    depth = 0
+    index = 0
+    while index < len(expression):
+        char = expression[index]
+        if char == '"' and not escaped:
+            quoted = not quoted
+        elif not quoted:
+            if char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+                if depth < 0:
+                    raise ValueError("Unbalanced parentheses in GitHub search expression")
+            elif (depth == 0 and expression[index:index + 2].upper() == "OR"
+                  and (index == 0 or expression[index - 1].isspace())
+                  and (index + 2 == len(expression) or expression[index + 2].isspace())):
+                branches.append(expression[start:index].strip())
+                start = index + 2
+                index += 1
+        escaped = char == "\\" and not escaped
+        if char != "\\":
+            escaped = False
+        index += 1
+    if quoted or depth:
+        raise ValueError("Unbalanced quote or parentheses in GitHub search expression")
+    branches.append(expression[start:].strip())
+    if any(not branch for branch in branches):
+        raise ValueError("Empty branch in GitHub OR search expression")
+    return branches
+
+
+def build_issue_search_query(expression, window=None, fresh=0):
+    """Compile one GitHub search branch with shared server-side eligibility filters.
+
+    Disjunctions are expanded by ``build_issue_search_queries`` so every branch gets
+    these filters before GitHub returns results. GitHub can enforce issue state,
+    visibility, archive, assignee and closing-PR relations at search time; predicates
+    without GitHub search qualifiers remain in the existing evidence-based admission
+    contract.
+    """
+    expression = str(expression or "").strip()
+    if len(split_search_or_branches(expression)) != 1:
+        raise ValueError("Compile OR expressions with build_issue_search_queries")
+    query = (expression + " " if expression else "") + " ".join(SEARCH_QUALIFIERS)
     if window:
         query += " created:" + Horizon.qualifier(window)
     if fresh:
         query += " updated:>=" + datetime.fromtimestamp(
             time.time() - 7 * 86400, timezone.utc).strftime("%Y-%m-%d")
     return query
+
+
+def build_issue_search_queries(expression, window=None, fresh=0):
+    """Compile one or more queries, applying shared filters to every OR branch."""
+    return [build_issue_search_query(branch, window=window, fresh=fresh)
+            for branch in split_search_or_branches(expression)]
 
 
 def has_assignees(item):
@@ -76,8 +129,7 @@ def retire_assigned_pending(con):
     return retired
 
 
-def query_window(api, expression, window=None, fresh=0):
-    q = build_issue_search_query(expression, window=window, fresh=fresh)
+def _query_compiled_window(api, q, fresh=0):
     items = []
     page = 1
     total = None
@@ -89,12 +141,41 @@ def query_window(api, expression, window=None, fresh=0):
             raise GitHubError("Search horizon incomplete; cursor retained")
         total = result["total_count"]
         if not fresh and total >= 1000:
-            return [], total  # Split before spending hydration work on a capped window.
+            return [], total, True  # Split before spending hydration work on a capped window.
         rows = result["items"]
         items.extend(rows)
         if fresh or not rows or page * 100 >= total:
-            return items, total
+            return items, total, False
         page += 1
+
+
+def query_expression_window(api, expression, window=None, fresh=0):
+    """Search all OR branches, deduplicate their union, and report saturation."""
+    queries = build_issue_search_queries(expression, window=window, fresh=fresh)
+    if len(queries) == 1:
+        rows, total, saturated = _query_compiled_window(api, queries[0], fresh=fresh)
+        return rows, total, saturated, [total]
+    merged = {}
+    branch_totals = []
+    for query in queries:
+        rows, total, saturated = _query_compiled_window(api, query, fresh=fresh)
+        branch_totals.append(total)
+        if saturated:
+            return [], sum(branch_totals), True, branch_totals
+        for item in rows:
+            repository = item.get("repository_url", "")
+            number = item.get("number")
+            identity = (repository.lower(), number) if repository and number is not None else json.dumps(
+                item, sort_keys=True, separators=(",", ":"))
+            merged.setdefault(identity, item)
+    return list(merged.values()), sum(branch_totals), False, branch_totals
+
+
+def query_window(api, expression, window=None, fresh=0):
+    """Backward-compatible two-value wrapper around branch-aware search."""
+    rows, total, _saturated, _branch_totals = query_expression_window(
+        api, expression, window=window, fresh=fresh)
+    return rows, total
 
 
 def merge_evidence(api, repo, cache):
@@ -389,14 +470,23 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
 
     def search_and_queue(lane, expression, prioritize_recent=False):
         window = horizon.window(expression)
-        rows, total = query_window(api, expression, window)
-        recent, _ = query_window(api, expression, fresh=30)
+        rows, total, saturated, branch_totals = query_expression_window(api, expression, window)
+        recent, fresh_total, _fresh_saturated, fresh_branch_totals = query_expression_window(
+            api, expression, fresh=30)
         counts[lane + ".raw"] += len(rows) + len(recent)
+        queries = build_issue_search_queries(expression, window=window)
+        fresh_queries = build_issue_search_queries(expression, fresh=30)
         print(json.dumps({"phase": "SEARCH", "lane": lane, "expression": expression,
-                          "query": build_issue_search_query(expression, window=window),
-                          "fresh_query": build_issue_search_query(expression, fresh=30),
+                          "query": queries[0] if len(queries) == 1 else queries,
+                          "queries": queries,
+                          "fresh_query": fresh_queries[0] if len(fresh_queries) == 1 else fresh_queries,
+                          "fresh_queries": fresh_queries,
                           "partition": horizon.qualifier(window), "total_count": total,
-                          "returned": len(rows), "fresh": len(recent)}), flush=True)
+                          "branch_total_counts": branch_totals,
+                          "fresh_total_count": fresh_total,
+                          "fresh_branch_total_counts": fresh_branch_totals,
+                          "returned": len(rows), "fresh": len(recent),
+                          "saturated": saturated}), flush=True)
         # Persist the raw horizon before hydration; bounded work never drops the unprocessed
         # remainder of a search partition.
         for item in [*recent, *rows]:
@@ -425,7 +515,7 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                 if identity not in priority_ids:
                     priority_ids.append(identity)
         con.commit()
-        horizon.complete(expression, window, 1000 if total >= 1000 else len(rows), 1000)
+        horizon.complete(expression, window, len(rows), 1000, saturated=saturated)
 
     try:
         # A small, quality-oriented paid-program query runs every cycle. It is additive:

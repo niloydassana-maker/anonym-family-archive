@@ -35,9 +35,9 @@ class Horizon:
             return datetime.fromtimestamp(epoch, timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
         return f'{stamp(window[1])}..{stamp(window[2])}'
 
-    def complete(self, query, window, returned, limit):
+    def complete(self, query, window, returned, limit, *, saturated=None):
         ident, lo, hi = window
-        capped = returned >= limit
+        capped = returned >= limit if saturated is None else saturated
         with closing(self.connect()) as con, con:
             status = 'split' if capped and lo < hi else 'saturated' if capped else 'complete'
             changed = con.execute('UPDATE windows SET status=? WHERE id=? AND status="pending"',
