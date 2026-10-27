@@ -51,26 +51,33 @@ def merge_evidence(api, repo, cache):
     """Measure how many pull requests this repository has merged, once per cycle.
 
     A bounty is paid on merge, so merge history is the only durable evidence that a
-    repository pays outside work. Two light search calls per repository, and every
-    issue in the same repository reuses the verdict, so the cost tracks the number
-    of repositories reaching candidate status rather than the size of the queue.
+    repository pays outside work. Every issue in the same repository reuses the
+    verdict, so the cost tracks the number of repositories that reach candidate
+    status rather than the size of the queue.
+
+    This uses GraphQL deliberately. `search/issues` is capped at 30 requests per
+    minute for the whole account, and discovery already spends that allowance on its
+    own lane queries: the first live run of this gate died at 16:08:56 with
+    "API rate limit exceeded" after five lane searches consumed the minute.
+    GraphQL draws on the 5,000-point core allowance instead.
 
     A failed probe records that fact and yields no verdict. It is never a rejection:
-    a throttled search says nothing about the repository.
+    a throttled query says nothing about the repository.
     """
     if repo in cache:
         return cache[repo]
-    evidence = {}
-    for key, query in (("merged", "repo:%s is:pr is:merged" % repo),
-                       ("total", "repo:%s is:pr" % repo)):
-        try:
-            result = api.api("search/issues?" + urlencode({"q": query, "per_page": 1}))
-            evidence[key] = int(result["total_count"])
-        except (GitHubError, OSError, ValueError, KeyError, TypeError) as exc:
-            evidence = {"unavailable": str(exc)[:160]}
-            break
-    cache[repo] = evidence
-    return evidence
+    owner, name = repo.split("/", 1)
+    query = ("query($owner:String!,$name:String!){repository(owner:$owner,name:$name){"
+             "merged:pullRequests(states:MERGED){totalCount} all:pullRequests{totalCount}}}")
+    try:
+        result = api.api("graphql", "POST",
+                         {"query": query, "variables": {"owner": owner, "name": name}})
+        node = (result or {})["data"]["repository"]
+        cache[repo] = {"merged": int(node["merged"]["totalCount"]),
+                       "total": int(node["all"]["totalCount"])}
+    except (GitHubError, OSError, ValueError, KeyError, TypeError) as exc:
+        cache[repo] = {"unavailable": str(exc)[:160]}
+    return cache[repo]
 
 
 def context_candidates(api, item, visited=None):

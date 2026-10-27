@@ -40,6 +40,21 @@ class GitHub:
     def __init__(self, token=None):
         self.token = token or os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
 
+    THROTTLE = re.compile(r"rate limit exceeded|secondary rate limit|abuse detection", re.I)
+    THROTTLE_TRIES = 4
+
+    @staticmethod
+    def throttle_wait(message):
+        """Search allows 30 requests per minute, so its ceiling clears within a minute.
+
+        Honour an explicit retry-after when GitHub sends one; otherwise wait out the
+        rolling minute. Bounded, because an unbounded wait hides a real outage.
+        """
+        match = re.search(r"retry.after[:= ]+(\d+)", message, re.I)
+        if match:
+            return min(int(match.group(1)), 120)
+        return 65
+
     def api(self, endpoint, method="GET", data=None, paginate=False):
         command = ["gh", "api", endpoint, "--method", method]
         if paginate:
@@ -51,11 +66,23 @@ class GitHub:
         environment = dict(os.environ)
         if self.token:
             environment["GH_TOKEN"] = self.token
-        result = subprocess.run(command, input=encoded, capture_output=True, timeout=90, env=environment)
-        if result.returncode:
+        message = ""
+        for attempt in range(self.THROTTLE_TRIES):
+            result = subprocess.run(command, input=encoded, capture_output=True, timeout=90, env=environment)
+            if not result.returncode:
+                return json.loads(result.stdout) if result.stdout.strip() else None
             # gh itself masks authentication; do not include body/environment.
-            raise GitHubError(result.stderr.decode("utf-8", errors="replace")[-1500:])
-        return json.loads(result.stdout) if result.stdout.strip() else None
+            message = result.stderr.decode("utf-8", errors="replace")[-1500:]
+            if not self.THROTTLE.search(message) or attempt + 1 >= self.THROTTLE_TRIES:
+                raise GitHubError(message)
+            wait = self.throttle_wait(message)
+            # A transient ceiling is not a failure of the lane: wait it out and
+            # retry, and say so on the wire so a slow run is never mistaken for a
+            # hung one.
+            print(json.dumps({"phase": "THROTTLE", "endpoint": endpoint[:160],
+                              "attempt": attempt + 1, "wait_s": wait}), flush=True)
+            time.sleep(wait)
+        raise GitHubError(message)
 
     def pages(self, endpoint, **params):
         """Require complete pagination; a failed page never means empty supply."""
