@@ -607,3 +607,55 @@ Third cycle, verbatim:
 `HARD_ISSUE_EVIDENCE_MISSING` again dominates (30) and remains untouched, as measured. Raw counts across
 cycles are not comparable — each cycle searches a different set — so nothing here is claimed as a trend.
 
+### 9. The fourth cycle proves the approach is exhausted (`40569290480`, head `c6da2e6`)
+
+```
+{"mode": "LIVE", "counts": {"normal.raw": 763, "startup.raw": 173, "founder.raw": 982, "programs.raw": 44,
+ "HARD_ISSUE_EVIDENCE_MISSING": 31, "CURRENT_ISSUER_OFFER_MISSING": 24,
+ "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN": 2, "CLOSED_OR_READ_ONLY": 2,
+ "NON_PAYMENT_OR_INSTRUCTION_EXFILTRATION": 1},
+ "qualified_fresh": 0, "qualified_unique": 0, "dispatched": [], "pending_hydration": 4253}
+```
+
+**D6 — a provenance clause read as a verdict.** `MarkDude-design/ALLurbaseRnotbelong2us#2` was refused on
+its owner's own bookkeeping:
+
+> "6445766848 (rounds/005 provenance column — actually a bus #3 pointer, **cross-thread by design**;
+> checker artifact, listed for completeness)."
+
+`by design` there qualifies a pointer between two threads. Same defect family as D1 (a pointer is not a
+verdict), so `cross_reference()` now also rejects a marker whose clause names a pointer, artifact or
+provenance. One case added, suite **28 → 29**.
+
+**D7 — and then the same issue re-keyed on a different sentence.** Re-auditing `#2` minutes later, the
+gate now fires on:
+
+> "**Out-of-turn by design:** this deposit does not answer any open question and expects no reply."
+
+A 75-comment pilot session log is written *like a project* — turns, deposits, acknowledgements — so it
+keeps producing by-design-sounding sentences that describe its own protocol, not a reported behaviour.
+Excluding one sentence simply moved the key to the next one. **This is the measurement that ends the
+phrase work**: no further regex can settle whether a document is a code-change request, because the
+question is about the document's class, not its vocabulary.
+
+The class-level gate — "does this issue request a code change at all?" — is therefore not a nicety, it is
+the actual fix. It stays **unbuilt**, and the reason is measured rather than assumed: it needs a
+hand-labelled sample across the paying programmes to find a threshold that does not throw away real bug
+reports, and a gate guessed without that sample would over-reject, which is the same sin as under-rejecting.
+
+Honest tally of every by-design refusal measured in this supplement (7 distinct issues):
+
+| issue | class | refusal verdict |
+| --- | --- | --- |
+| `Expensify/App#105153` | bug report, is a funded bounty | **correct** — true positive |
+| `Ensrick/vermintide-2-tweaker#948` | feature request, owner says untested by design | defensible reason, wrong class |
+| `Ensrick/vermintide-2-tweaker#760` | bug report | **wrong** — real work was deleted |
+| `ach1992/bot-refactor#51` | authorisation-pending batch | **wrong** — real work was deleted |
+| `limitlessprojects/Go-Hybrid#940` | triage board | right refusal, wrong reason |
+| `MyZubster-Ecosystem/myzubster#1613` | pilot invitation | right refusal, wrong reason |
+| `MarkDude-design/ALLurbaseRnotbelong2us#2` | pilot session log | right refusal, wrong reason |
+
+One clear true positive in seven. Six rules tightened, 19 → 29 cases, four live defects corrected. That is
+the real state of this gate: it is now careful about *sentences* and still blind about *documents*.
+
+

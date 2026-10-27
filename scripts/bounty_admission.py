@@ -80,6 +80,13 @@ BY_DESIGN = re.compile(
 # ``wontfix`` label is still read, through BY_DESIGN_LABELS below.
 REFERENCE_BEFORE = re.compile(r"(?:closed/|label(?:l)?ed|tagged|per|see)\s*:?\s*$", re.I)
 REFERENCE_AFTER = re.compile(r"\s*(?:#\d+|\((?:see|per)\s*#\d+)")
+# A marker inside a provenance clause is audit bookkeeping, not a statement about the reported
+# behaviour. Measured live 2026-10-27 on MarkDude-design/ALLurbaseRnotbelong2us#2, whose owner
+# logged "6445766848 (rounds/005 provenance column - actually a bus #3 pointer, cross-thread by
+# design; checker artifact, listed for completeness)": "by design" there qualifies a pointer
+# between threads. The issue itself is a pilot session log, not a code-change request.
+META_ARTIFACT = re.compile(
+    r"\b(?:pointer|artifacts?|artefacts?|cross[- ]thread\w*|provenance|checker)\b", re.I)
 # An aggregate board is not a bug report, so nothing written on it can be a verdict on one
 # behaviour. Measured live 2026-10-27 on limitlessprojects/Go-Hybrid#940, "Triage Board
 # (auto-updated daily - pin me)", where a status bullet about CI freshness was read as a
@@ -258,10 +265,18 @@ def marker_sentence(body, match, limit=240):
 
 
 def cross_reference(body, match):
-    """Is this marker a pointer to another issue rather than a verdict on this one?"""
+    """Is this marker a pointer or bookkeeping rather than a verdict on this issue?
+
+    Two shapes are refused as declarative. The tight one looks at the words abutting the
+    marker (``closed/wontfix #627``, ``see #412``). The wider one reads the clause the marker
+    sits in: an owner describing a cross-thread pointer or a checker artifact is writing
+    provenance, and ``by design`` then qualifies the pointer, not the behaviour.
+    """
     before = body[max(0, match.start() - 24):match.start()]
     after = body[match.end():match.end() + 24]
-    return bool(REFERENCE_BEFORE.search(before) or REFERENCE_AFTER.match(after))
+    if REFERENCE_BEFORE.search(before) or REFERENCE_AFTER.match(after):
+        return True
+    return bool(META_ARTIFACT.search(body[max(0, match.start() - 60):match.end()]))
 
 
 def declared_by_design(context):

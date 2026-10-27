@@ -240,6 +240,12 @@ class PrecisionOnUnseenTrafficTests(unittest.TestCase):
             login="maintainer", association="OWNER")]))
         self.assertEqual(verdict["verdict"], "BY_DESIGN")
 
+    def test_a_provenance_clause_is_not_a_verdict_about_the_behaviour(self):
+        body = ("6445766848 (rounds/005 provenance column - actually a bus #3 pointer, "
+                "cross-thread by design; checker artifact, listed for completeness).")
+        self.assertIsNone(declared_by_design(context([comment(
+            body, login="MarkDude-design", association="OWNER")])))
+
     def test_the_quote_always_contains_the_words_that_fired_the_gate(self):
         filler = "status line " * 40
         body = filler + "This works as designed. It is not a bug."

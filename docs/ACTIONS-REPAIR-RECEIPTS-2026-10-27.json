@@ -922,13 +922,13 @@
     "why_still_unachieved": "the chain reaches engineering and engineering now refuses on evidence, but no pull request has been opened, nothing has merged and no payout exists"
   },
   "repair_supplement_4": {
-    "observed_at": "2026-10-27T19:26:00+00:00",
-    "head_sha_observed": "0142093ca04288e84ac40b8e6240c8e1ff5129dd",
-    "working_tree": "the ambiguity fix for 'no code change' (D5) and its two cases, uncommitted on top of head_sha_observed; everything else in this supplement is committed and CI-green on that SHA",
+    "observed_at": "2026-10-27T19:38:00+00:00",
+    "head_sha_observed": "c6da2e6fb569215a9ae63452be1257045ad456f6",
+    "working_tree": "the provenance-clause rule (D6) and its case, uncommitted on top of head_sha_observed; everything else in this supplement is committed and CI-green on that SHA",
     "changed_files": {
-      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md": "M +57/-1",
-      "scripts/bounty_admission.py": "M +6/-1",
-      "scripts/test_by_design_gate.py": "M +12/-0"
+      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md": "M +52/-0",
+      "scripts/bounty_admission.py": "M +17/-2",
+      "scripts/test_by_design_gate.py": "M +6/-0"
     },
     "changed_files_source": "git status --porcelain and git diff --numstat HEAD, derived on write",
     "changed_files_excluded": {
@@ -1041,8 +1041,50 @@
       },
       "why_this_cycle_mattered": "it refused a fifth issue, on a sentence that meant the opposite of the marker that fired - which is how D5 was found"
     },
+    "audit_cycle_4": {
+      "run": "40569290480",
+      "event": "workflow_dispatch",
+      "trigger": "manual, labelled - not the heartbeat",
+      "head_sha": "c6da2e6fb569215a9ae63452be1257045ad456f6",
+      "started_at": "2026-10-27T19:29:00Z",
+      "concluded": "success",
+      "concluded_at": "2026-10-27T19:31:26Z",
+      "summary_at": "2026-10-27T19:31:18.246949+00:00",
+      "summary_counts": {
+        "normal.raw": 763,
+        "startup.raw": 173,
+        "founder.raw": 982,
+        "programs.raw": 44,
+        "HARD_ISSUE_EVIDENCE_MISSING": 31,
+        "CURRENT_ISSUER_OFFER_MISSING": 24,
+        "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN": 2,
+        "CLOSED_OR_READ_ONLY": 2,
+        "NON_PAYMENT_OR_INSTRUCTION_EXFILTRATION": 1
+      },
+      "qualified_fresh": 0,
+      "qualified_unique": 0,
+      "dispatched": [],
+      "pending_hydration": 4253,
+      "refusals_found_here": [
+        {
+          "repo": "MarkDude-design/ALLurbaseRnotbelong2us",
+          "issue_number": 2,
+          "reason": "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN",
+          "reported_comments": 75,
+          "visible_comments": 75
+        },
+        {
+          "repo": "Ensrick/vermintide-2-tweaker",
+          "issue_number": 948,
+          "reason": "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN",
+          "reported_comments": 13,
+          "visible_comments": 13
+        }
+      ],
+      "why_this_cycle_mattered": "it is the cycle that ended the phrase work: one refusal was corrected by D6, and the same issue re-keyed on a different sentence afterwards"
+    },
     "cycles_are_not_comparable_by_count": {
-      "observed": "normal.raw 598, 42, 98; programs.raw 33, 590, 263; declared_by_design 2, 1, 1",
+      "observed": "normal.raw 598, 42, 98, 763; programs.raw 33, 590, 263, 44; declared_by_design 2, 1, 1, 2",
       "conclusion": "the search lanes return different sets each cycle, so a count delta is not evidence that a rule changed behaviour; the controlled comparison is live_before_after below, read from the API through the production function"
     },
     "findings": [
@@ -1108,6 +1150,30 @@
         "verdict": "wrong refusal - 'no code change or new release is authorized yet' defers work, it does not declare the reported behaviour intended; the two meanings share one phrase",
         "repair": "'no code change' now has to carry its verdict - \\bno code change (?:is )?(?:needed|required|necessary)\\b",
         "found_how": "the third live cycle, refused 6 minutes after the D4 fix was pushed, on the first issue that cycle turned up"
+      },
+      {
+        "id": "D6",
+        "defect": "a marker inside a provenance clause was read as a verdict: 'by design' qualified a pointer between two threads, not the reported behaviour",
+        "evidence_issue": "MarkDude-design/ALLurbaseRnotbelong2us#2",
+        "evidence_title": "Native-speaker bus v0 - Meraki <-> Z (direct-session pilot)",
+        "evidence_sentence": "6445766848 (rounds/005 provenance column - actually a bus #3 pointer, cross-thread by design; checker artifact, listed for completeness).",
+        "evidence_authority": {
+          "login": "MarkDude-design",
+          "author_association": "OWNER",
+          "created_at": "2026-10-27T18:07:20Z"
+        },
+        "verdict": "right refusal, wrong reason - the document is a pilot session log, not a code-change request, and the sentence describes audit bookkeeping",
+        "repair": "cross_reference() also rejects a marker whose clause names a pointer, artifact, provenance or checker",
+        "found_how": "the fourth live cycle, on an issue nobody had inspected"
+      },
+      {
+        "id": "D7",
+        "defect": "not a regex defect but the limit of the approach: after D6 excluded one sentence, the same issue re-keyed on a different one",
+        "evidence_issue": "MarkDude-design/ALLurbaseRnotbelong2us#2",
+        "evidence_sentence": "Out-of-turn by design: this deposit does not answer any open question and expects no reply.",
+        "verdict": "unfixable by vocabulary - a 75-comment pilot log is written like a project (turns, deposits, acknowledgements), so it keeps producing by-design sentences about its own protocol",
+        "repair": "none attempted. The class-level gate 'does this issue request a code change at all' is the actual fix and stays unbuilt until a hand-labelled sample across the paying programmes exists",
+        "found_how": "the same audit run, minutes after D6 - recorded rather than chased"
       }
     ],
     "correction_to_supplement_3": {
@@ -1161,6 +1227,18 @@
         "before": "BY_DESIGN",
         "after": null,
         "note": "no longer decided by a deferral ('no code change ... is authorized yet')"
+      },
+      {
+        "issue": "MarkDude-design/ALLurbaseRnotbelong2us#2",
+        "before": "BY_DESIGN",
+        "after": "BY_DESIGN",
+        "note": "the provenance sentence is excluded by D6, but the same pilot log re-keys on another by-design sentence - right refusal, wrong reason, not fixable at phrase level"
+      },
+      {
+        "issue": "Ensrick/vermintide-2-tweaker#948",
+        "before": "BY_DESIGN",
+        "after": "BY_DESIGN",
+        "note": "unchanged: 'all new weapon/receiver combinations remain in-game untested by design' is the owner stating an intended state; the class is a feature request"
       }
     ],
     "measurement_method": "each issue read live from the API and pushed through the production declared_by_design() before and after; not judged by eye and not inferred from cycle counts",
@@ -1183,13 +1261,13 @@
         "test_repository_intent": 11,
         "test_program_offers": 15,
         "test_queue_ordering": 17,
-        "test_by_design_gate": 28,
+        "test_by_design_gate": 29,
         "test_preparation_terminal": 13,
         "test_discovery_heartbeat": 19,
         "test_fresh_discovery_schedule": 7
       },
       "by_design_gate_cases_before": 19,
-      "by_design_gate_cases_after": 28,
+      "by_design_gate_cases_after": 29,
       "new_cases": [
         "a pointer to another issue is not a verdict here",
         "a declarative won't-fix still counts",
@@ -1199,7 +1277,8 @@
         "a bare 'This is not a bug.' still is the marker",
         "a deferral of authorised work is not a by-design verdict",
         "'no code change is needed' still is a verdict",
-        "the quote always contains the words that fired the gate"
+        "the quote always contains the words that fired the gate",
+        "a provenance clause about a pointer is not a verdict on the behaviour"
       ],
       "ruff": "0 findings on bounty_admission.py, test_by_design_gate.py and two adjacent files"
     },
@@ -1218,15 +1297,15 @@
       "repaired_sha": "0142093ca04288e84ac40b8e6240c8e1ff5129dd",
       "verification_run": "40567923333",
       "verification_note": "workflow_dispatch, because the contracts workflow only triggers on scripts/** and .github/workflows/** and this repair touched .gitignore",
-      "verified_suites": "12 'Ran N tests' summaries plus the ICU suite's own format, including 28 for the by-design gate - the suites genuinely executed, not just a clean checkout"
+      "verified_suites": "12 'Ran N tests' summaries plus the ICU suite's own format, including 28 for the by-design gate at that SHA - the suites genuinely executed, not just a clean checkout"
     },
     "combined_goal": "NOT_YET_ACHIEVED",
-    "why_still_unachieved": "dispatched is empty in all three cycles; no pull request was opened, nothing merged and no payout exists",
+    "why_still_unachieved": "dispatched is empty in all four cycles; no pull request was opened, nothing merged and no payout exists",
     "supply_finding": {
-      "observation": "four of the five issues the by-design gate refused were not bug reports at all - a triage board, an invitation to an opt-in pilot, a docs/contest deliverable, and a payment batch the owner deferred",
-      "ratio": "1 of 5 refusals was a true positive",
-      "meaning": "the gate was catching non-code documents by accident of vocabulary, which is why it kept firing on the wrong words",
-      "binding_filter": "HARD_ISSUE_EVIDENCE_MISSING, measured at 40 refusals in the second cycle and 38 in the first; that remains the gate that does the real filtering",
+      "observation": "six of the seven issues the by-design gate refused were not bug reports at all - a triage board, an invitation to an opt-in pilot, a docs/contest deliverable, a payment batch the owner deferred, a feature request, and a pilot session log",
+      "ratio": "1 of 7 refusals was a clear true positive",
+      "meaning": "the gate was catching non-code documents by accident of vocabulary, which is why it kept firing on the wrong words; D7 records the measurement that ended the phrase work - after one sentence was excluded, the same pilot log re-keyed on a different by-design sentence",
+      "binding_filter": "HARD_ISSUE_EVIDENCE_MISSING, measured at 40, 38, 30 and 31 refusals across the four cycles; that remains the gate that does the real filtering",
       "missing_gate": "does this issue request a code change at all?",
       "why_not_built_here": "it needs its own measurement across the paying programmes before it can be tightened without over-rejecting genuine work; recorded and unbuilt rather than guessed"
     }
