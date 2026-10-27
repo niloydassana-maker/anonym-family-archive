@@ -39,4 +39,8 @@ jobs:
 
         python3 -W error scripts/test_admission_trust.py
 
-        python3 -W error scripts/test_repository_intent.py'
+        python3 -W error scripts/test_repository_intent.py
+
+        python3 -W error scripts/test_program_offers.py
+
+        python3 -W error scripts/test_queue_ordering.py'

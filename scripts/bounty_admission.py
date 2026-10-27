@@ -22,6 +22,31 @@ WITHDRAWN = re.compile(
 PAYEE = re.compile(
     r"\b(?:researcher|payout wallet|settlement wallet|settlement rail|"
     r"claiming bounty|bounty submission|requesting funding)\b", re.I)
+# Instruction-exfiltration demand: a "bounty" that pays the contributor to hand over the
+# private preamble its agent runtime loaded, or the machine fingerprint it runs on.
+# Measured on the 2026-10-27 payloads: 383 trap documents carried 142 distinct demands in
+# this family, while the previous two-phrase rule caught 14 of 201 issues in one repository
+# and 0 of 182 in another. Every alternative below names something a contributor can only
+# know by dumping their own assistant context, so none has a legitimate technical reading
+# inside a bounty issue. A bare "system prompt" is deliberately NOT matched on its own,
+# because an issue about prompt forwarding is a real bug report and not an attack.
+EXFILTRATION = re.compile(
+    r"platform[- ]provided instructions|pre-conversation|before the first human message|"
+    r"from the first token|paste everything from|"
+    r"verbatim copy of (?:all|your|the)\s+(?:instructions|guidelines|preamble)|"
+    r"full unedited text of your|\byour (?:system|developer) prompt\b|"
+    r"complete raw (?:system )?prompt|initialization (?:payload|text|context)|"
+    r"complete initialization text|into your session at startup|"
+    r"complete configuration that was active during this contribution|"
+    r"complete text of the first message in your conversation|"
+    r"paste the complete (?:configuration|config)|paste everything verbatim|"
+    r"pre-task instructions|execution environment details|startup configuration|"
+    r"full raw text of your|raw text of your startup|"
+    r"\b(?:platform_instructions|runtime_instructions|initial_directives|config_snapshot|"
+    r"session_init|boot_context|generation_context|initialization_payload|"
+    r"initialized_with)\b|"
+    r"\bhome_dir\b[^.\n]{0,120}\bworking_dir\b", re.I)
+
 HARD = re.compile(
     r"\b(?:race condition|deadlock|concurren\w*|atomic\w*|idempot\w*|"
     r"overflow|underflow|precision|protocols?|invariants?|authorization|bypass|"
@@ -82,6 +107,50 @@ def repository_intent(evidence):
     return True, ""
 
 
+# Repositories whose own public funding convention is documented and observed, where the
+# attestation is published by a bot that ``trusted()`` deliberately refuses (app identity,
+# no repository association) and the amount lives in the issue TITLE instead of beside an
+# offer word. Without an entry a genuinely paying programme is invisible: Expensify/App has
+# merged 40,728 of 49,268 pull requests and was still rejected on every cycle, while the
+# farm repositories were being re-hydrated.
+#
+# An entry is only justified by an artifact we have read ourselves, and it only widens the
+# scan for that one repository. Every other gate still applies: the hard-issue test, the
+# payee test, the amount floor, repository intent and competition.
+FUNDING_PROGRAMS = {
+    "expensify/app": {
+        "title_marker": r"\[\s*\$\s*\d",
+        "attestation_login": "melvin-bot[bot]",
+        "attestation_pattern": r"https://www\.upwork\.com/jobs/~\d+",
+        "evidence": "melvin-bot[bot] comment 'Job added to Upwork: "
+                    "https://www.upwork.com/jobs/~022108002387844305757' on Expensify/App#103403, "
+                    "read live 2026-10-27; the payout convention is a [$N] issue title.",
+    },
+}
+
+
+def funding_program(context):
+    """Return the documented funding convention for this issue, once its attestation holds.
+
+    The attestation is what separates a real programme from a repository that merely writes
+    dollar signs in its titles: the repository's own automation must have published a payout
+    artifact on this very issue. A missing attestation returns ``None`` and the ordinary
+    issuer check applies unchanged.
+    """
+    entry = FUNDING_PROGRAMS.get((context["repository"].get("full_name") or "").lower())
+    if not entry:
+        return None
+    if not re.search(entry["title_marker"], context["issue"].get("title") or ""):
+        return None
+    login = entry["attestation_login"].lower()
+    pattern = re.compile(entry["attestation_pattern"], re.I)
+    for comment in context.get("comments") or ():
+        if (comment.get("user") or {}).get("login", "").lower() == login:
+            if pattern.search(comment.get("body") or ""):
+                return entry
+    return None
+
+
 def monetary_text(text):
     return re.sub(r"\x60{3}[\s\S]*?\x60{3}|~~[\s\S]*?~~|<!--[\s\S]*?-->", " ", text)
 
@@ -113,26 +182,37 @@ def admit(context, quote=None, floor=FLOOR):
         return None, "MIRROR_OR_NON_ENGINEERING"
     if re.search(r"\b(?:ad spend|marketing campaign|willingness.to.pay|market validation)\b", body, re.I):
         return None, "MARKETING_OR_EXPERIMENT"
-    if re.search(r"test network.*practice money|testnet (?:ETH|tokens?).*(?:only|no real)|"
-                 r"verbatim copy of all instructions.*before the first human message", body, re.I | re.S):
+    if re.search(r"test network.*practice money|testnet (?:ETH|tokens?).*(?:only|no real)",
+                 body, re.I | re.S) or EXFILTRATION.search(title + "\n" + body):
         return None, "NON_PAYMENT_OR_INSTRUCTION_EXFILTRATION"
     technical = sorted(set(m.group().lower() for m in HARD.finditer(title + "\n" + body)))
     components = sorted(set(m.group() for m in COMPONENT.finditer(re.sub(r"https?://\S+", " ", body))))
     if not technical or (not components and len(technical) < 2):
         return None, "HARD_ISSUE_EVIDENCE_MISSING"
     offer = None
+    programme = funding_program(context)
+    title_span = len(title) + 1
     for document in [issue, *context["comments"]]:
-        if not trusted(context, document):
+        is_issue = document is issue
+        programme_offer = is_issue and programme is not None
+        if not (trusted(context, document) or programme_offer):
             continue
-        text = monetary_text(((title + "\n") if document is issue else "") + (document.get("body") or ""))
+        text = monetary_text(((title + "\n") if is_issue else "") + (document.get("body") or ""))
         if WITHDRAWN.search(text):
             offer = None
             continue
-        if PAYEE.search(text) or not OFFER.search(text):
+        if PAYEE.search(text) or not (OFFER.search(text) or programme_offer):
             continue
         candidates = []
         for amount, currency, raw, location in amounts(text, positions=True):
-            if not OFFER.search(text[max(0, location - 160):location + len(raw) + 160]):
+            titled = programme_offer and location < title_span
+            if programme_offer and not titled:
+                # A programme's documented authority is the issue TITLE: the [$N] marker is
+                # what its own automation pays on. An amount written in the reporter's body
+                # is not funding authority, and honouring one would invent an offer that no
+                # party committed to.
+                continue
+            if not (titled or OFFER.search(text[max(0, location - 160):location + len(raw) + 160])):
                 continue
             if currency in {"USD", "USDC", "USDT"}:
                 usd, rate = amount, {"basis": "USD face value" if currency == "USD" else "USD-denominated stablecoin offer"}
@@ -142,9 +222,14 @@ def admit(context, quote=None, floor=FLOOR):
             else:
                 continue
             if floor <= usd <= Decimal("9999999"):
+                # A title-borne programme amount is committed by the party its automation
+                # attests with, not by whoever opened the issue: recording the reporter as
+                # the payer would stamp funding authority on a stranger.
+                payer = (programme["attestation_login"] if titled
+                         else document["user"]["login"])
                 candidates.append({"amount": str(amount), "currency": currency, "usd_value": str(usd),
                                    "quote": rate, "raw": raw, "source_url": document["html_url"],
-                                   "payer": document["user"]["login"]})
+                                   "payer": payer})
         if candidates:
             offer = max(candidates, key=lambda row: Decimal(row["usd_value"]))
     if not offer:

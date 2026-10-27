@@ -144,7 +144,9 @@ def pending_window(rows, limit=HYDRATION_BATCH, per_repo=HYDRATION_PER_REPO):
     sources from each repository first, then fills the rest of the batch from the
     leftovers, so breadth is gained without ever shrinking the per-cycle budget and
     a queue that genuinely holds a single origin still receives the full batch.
-    ``rows`` are ``(task_id, payload, lanes)`` tuples in durable queue order.
+    ``rows`` are queue tuples whose first three fields are
+    ``(task_id, payload, lanes)``, in durable queue order. Extra trailing fields are
+    ignored here and read by the caller.
     """
     chosen, counted, rest = [], Counter(), []
     for row in rows:
@@ -161,6 +163,101 @@ def pending_window(rows, limit=HYDRATION_BATCH, per_repo=HYDRATION_PER_REPO):
     return chosen
 
 
+INTENT_PRECHECK_MAX = 150
+INTENT_REFRESH_S = 7 * 86400
+REPO_INTENT_RETIRED = "rejected_repository_intent"
+QUEUE_WINDOW = 2000
+
+
+def repository_of(payload):
+    url = (json.loads(payload).get("repository_url") or "") if payload else ""
+    return url.split("/repos/")[-1] if "/repos/" in url else ""
+
+
+def queue_window(con, limit=QUEUE_WINDOW):
+    """Half the queue from the backlog edge, half from the fresh edge.
+
+    ``ORDER BY checked,rowid`` alone made a new candidate unreachable: with 3,131 rows
+    waiting and a hydration batch of 60, a candidate discovered this cycle sat behind
+    roughly fifty cycles of work, and the six-hour re-queue then pushed refreshed rows
+    behind the same block. Reading both edges keeps the backlog draining while a
+    candidate found now is judged now.
+    """
+    half = max(1, limit // 2)
+    rows, seen = [], set()
+    for query in (
+        "SELECT task_id,payload,lanes,signature,rowid FROM pending WHERE status='pending' "
+        "ORDER BY checked,rowid LIMIT ?",
+        "SELECT task_id,payload,lanes,signature,rowid FROM pending WHERE status='pending' "
+        "ORDER BY rowid DESC LIMIT ?",
+    ):
+        for row in con.execute(query, (half,)):
+            if row[0] in seen:
+                continue
+            seen.add(row[0])
+            rows.append(row)
+    return rows
+
+
+def precheck_repository_intent(api, con, rows, cache, limit=INTENT_PRECHECK_MAX):
+    """Classify the repositories behind the queue before paying to hydrate them.
+
+    Hydration is the expensive step: it fetches the issue and every comment. On the
+    2026-10-27 backlog 885 of 3,311 queued rows sat in repositories that merge nothing,
+    and each was re-hydrated on every cycle only to be rejected afterwards. The verdict is
+    therefore taken once per repository, remembered in ``repo_intent``, and the rows of a
+    rejected repository are retired permanently instead of being re-queued six hours later.
+
+    Only unprobed repositories, or verdicts older than a week, cost a probe, and at most
+    ``limit`` repositories are probed per cycle, largest queue share first, so a farm with
+    hundreds of rows is classified before an origin that contributed one.
+    """
+    counts = Counter(repository_of(row[1]) for row in rows)
+    counts.pop("", None)
+    known = {r[0]: (r[1], r[2]) for r in con.execute(
+        "SELECT repository,verdict,probed_at FROM repo_intent")}
+    verdicts = {repo: verdict for repo, (verdict, _) in known.items()}
+    stale = time.time() - INTENT_REFRESH_S
+    due = [repo for repo, _ in counts.most_common(limit)
+           if repo not in known or (known[repo][1] or 0) < stale]
+    probed = 0
+    for repo in due:
+        evidence = merge_evidence(api, repo, cache)
+        ok, reason = repository_intent(evidence)
+        verdicts[repo] = "OK" if ok else reason
+        con.execute("INSERT OR REPLACE INTO repo_intent VALUES(?,?,?,?,?,?)",
+                    (repo, verdicts[repo], evidence.get("merged"), evidence.get("total"),
+                     json.dumps(evidence)[:400], time.time()))
+        probed += 1
+    con.commit()
+    retired = 0
+    for row in rows:
+        if verdicts.get(repository_of(row[1])) != "REPOSITORY_DOES_NOT_MERGE":
+            continue
+        retired += con.execute(
+            "UPDATE pending SET status=? WHERE task_id=? AND status='pending'",
+            (REPO_INTENT_RETIRED, row[0])).rowcount
+    con.commit()
+    return verdicts, probed, retired
+
+
+def preferred_order(rows, verdicts):
+    """Known-good repositories first, freshest candidate first inside that band.
+
+    A repository whose merge history is measured and healthy deserves the batch before an
+    unknown one, and inside a band the most recently updated issue is the one most likely
+    to still be unfunded-and-open when we arrive.
+    """
+    good, rest = [], []
+    for row in rows:
+        if verdicts.get(repository_of(row[1])) == "OK":
+            good.append(row)
+        elif verdicts.get(repository_of(row[1])) != "REPOSITORY_DOES_NOT_MERGE":
+            rest.append(row)
+    good.sort(key=lambda row: row[3] or "", reverse=True)
+    return good + rest
+
+
 def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=None):
     folder = Path(state_dir or os.environ.get("BOUNTY_STATE_DIR", Path(__file__).resolve().parents[1] / "scratch/actions-discovery"))
     folder.mkdir(parents=True, exist_ok=True)
@@ -172,6 +269,8 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
     con.execute("CREATE TABLE IF NOT EXISTS pending(task_id TEXT PRIMARY KEY, payload TEXT, lanes TEXT, "
                 "signature TEXT, checked REAL DEFAULT 0, status TEXT DEFAULT 'pending')")
     con.execute("CREATE TABLE IF NOT EXISTS metadata(name TEXT PRIMARY KEY,value TEXT)")
+    con.execute("CREATE TABLE IF NOT EXISTS repo_intent(repository TEXT PRIMARY KEY, verdict TEXT, "
+                "merged INTEGER, total INTEGER, evidence TEXT, probed_at REAL)")
     policy = hashlib.sha256("\n".join(Path(__file__).with_name(name).read_text(encoding="utf-8-sig")
                                      for name in ("bounty_admission.py", "actions_github.py")).encode()).hexdigest()
     old_policy = con.execute("SELECT value FROM metadata WHERE name='admission_policy'").fetchone()
@@ -185,6 +284,7 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
     counts = Counter()
     candidates = {}
     intent_cache = {}
+    verdicts = {r[0]: r[1] for r in con.execute("SELECT repository,verdict FROM repo_intent")}
     try:
         for lane in lanes:
             start_row = con.execute("SELECT position FROM cursors WHERE lane=?", (lane,)).fetchone()
@@ -201,29 +301,48 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                 # Persist the raw horizon before hydration; bounded work never
                 # drops the unprocessed remainder of a search partition.
                 for item in [*recent, *rows]:
-                    identity = task_id(item["repository_url"].split("/repos/")[-1], item["number"])
+                    repository = item["repository_url"].split("/repos/")[-1]
+                    identity = task_id(repository, item["number"])
                     old = con.execute("SELECT lanes,signature,checked,status FROM pending WHERE task_id=?", (identity,)).fetchone()
                     lanes_seen = set(json.loads(old[0])) if old else set()
                     lanes_seen.add(lane)
                     signature = item.get("updated_at", "")
                     pending = not old or old[1] != signature or time.time() - old[2] > 21600
+                    status = "pending" if pending else old[3]
+                    if verdicts.get(repository) == "REPOSITORY_DOES_NOT_MERGE":
+                        # A classified farm never returns to the queue, however often its
+                        # refreshed signature asks for another look.
+                        status = REPO_INTENT_RETIRED
                     con.execute("INSERT OR REPLACE INTO pending VALUES(?,?,?,?,?,?)",
                                 (identity, json.dumps(item), json.dumps(sorted(lanes_seen)), signature,
-                                 old[2] if old else 0, "pending" if pending else old[3]))
+                                 old[2] if old else 0, status))
                 con.commit()
                 horizon.complete(expression, window, 1000 if total >= 1000 else len(rows), 1000)
             con.execute("INSERT OR REPLACE INTO cursors VALUES(?,?)",
                         (lane, (start + queries_per_lane) % len(QUERIES[lane])))
             con.commit()
-        queued = con.execute("SELECT task_id,payload,lanes FROM pending WHERE status='pending' "
-                             "ORDER BY checked,rowid LIMIT 2000").fetchall()
+        queued = queue_window(con)
+        verdicts, probed_intent, retired = precheck_repository_intent(
+            api, con, queued, intent_cache)
+        queued = preferred_order(queued, verdicts)
+        print(json.dumps({"phase": "REPOSITORY_PRECHECK", "queued": len(queued),
+                          "distinct_repositories": len({repository_of(row[1]) for row in queued}),
+                          "probed": probed_intent, "retired": retired,
+                          "known_good": sum(1 for row in queued
+                                            if verdicts.get(repository_of(row[1])) == "OK")}),
+              flush=True)
         pending_rows = pending_window(queued)
         if len(pending_rows) < len(queued):
             print(json.dumps({"phase": "HYDRATION_WINDOW", "queued": len(queued),
                               "selected": len(pending_rows),
                               "distinct_repositories": len({json.loads(row[1]).get("repository_url", "")
                                                             for row in pending_rows})}), flush=True)
-        for source_id, payload, lane_json in pending_rows:
+        # Read the queue row positionally: ``queue_window`` yields
+        # (task_id,payload,lanes,signature,rowid) so a freshly discovered source can be
+        # recognised at the newest edge, while a window built elsewhere may carry fewer
+        # columns. The first three are the durable contract.
+        for row in pending_rows:
+            source_id, payload, lane_json = row[0], row[1], row[2]
             item, source_lanes = json.loads(payload), json.loads(lane_json)
             try:
                 for context in context_candidates(api, item):

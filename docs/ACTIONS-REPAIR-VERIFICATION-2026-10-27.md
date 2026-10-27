@@ -75,3 +75,133 @@ The repaired infrastructure has live canary and test receipts. **Sustained quali
 The next owner must continue the global backlog and fresh searches, audit remaining false negatives with original evidence, dispatch genuine funded uncontested hard issues, and observe Cline intake, untouched baseline, native verification, real red-to-green regression, publication and remote follow-through. Count discovered, qualified, claimed, blocked, published and merged work separately. Do not lower gates or invent prices to produce a nonzero number.
 
 The original audit and this supplement are API/disk evidence. No authenticated browser screen receipt or direct control of the OpenCode session is claimed. DeepSeek receives the handoff prompt in the adjacent document; the user must submit it in the selected session.
+
+## Supplement 2: four repairs, measured before and after
+
+Seven consecutive discovery cycles had reported `qualified = 0` and `dispatched = 0`, and the
+`candidates` table held 0 rows in every artifact. The four repairs below were derived from that
+backlog rather than from a hunch, and each one is measured against live API data, both before and
+after. `combined_goal` stays `NOT_YET_ACHIEVED`.
+
+### 1. Instruction exfiltration was measured, then the rule was widened (not guessed)
+
+The backlog contained repositories that pay a contributor to hand over the private preamble its
+agent runtime loaded. Coverage of the previous two-phrase rule, and of the replacement, over the
+same stored bodies:
+
+| repository | before | after |
+| --- | --- | --- |
+| `ClankerNation/OpenAgents` | 14 / 201 | **201 / 201** |
+| `UnsafeLabs/Bounty-Hunters` | 0 / 182 | **171 / 182** |
+
+The 11 remaining `UnsafeLabs` documents read as ordinary acceptance criteria in the sampled text and
+were left unmatched rather than forced. False positives were measured, not assumed: **0 / 40** known
+funded issues across `Expensify/App`, `drizzle-team/drizzle-orm`, `limitlessprojects/Go-Hybrid` and
+`oll4com/spaceapp`. A bare "system prompt" is deliberately not matched - an issue about editing or
+forwarding a prompt is an ordinary bug report. `EXFILTRATION` is applied to the title **and** the
+body; scanning the title alone missed the demand whenever the title was innocent.
+
+### 2. A documented paying programme was invisible because its attestation comes from a bot
+
+`Expensify/App` has merged 40,729 of 49,272 pull requests and pays on a `[$N]` issue title, attested
+by `melvin-bot[bot]` publishing a `https://www.upwork.com/jobs/~...` comment. `trusted()` refuses
+that login on purpose (app identity, no repository association) and the title carries no
+`bounty`/`reward` word, so every Expensify issue was rejected. `FUNDING_PROGRAMS` now records the
+convention for that one repository, and the entry is only honoured once the repository's own
+automation has published a payout artifact **on that very issue**.
+
+Measured through the production path (`GitHub().issue_context()` then `admit()`):
+
+- `Expensify/App#103403` - ADMITTED, USD 250, payer `melvin-bot[bot]`, `competition()` **clear**.
+- `Expensify/App#94622` - ADMITTED, USD 250, payer `melvin-bot[bot]`.
+- `Expensify/App#100290` - still `HARD_ISSUE_EVIDENCE_MISSING`.
+
+Two corrections were found by testing this path and both are now enforced in code:
+
+- **Funding authority is title-only for a programme.** An untrusted reporter could otherwise write
+  "a bounty of $5000" in the body of a `[$250]` issue and be admitted at 5000. A programme amount
+  must sit inside the title; a body amount is never funding authority.
+- **The payer was mislabelled.** The verdict named the issue reporter as payer, stamping funding
+  authority on a party who pays nothing. For a title-borne programme amount the payer is now the
+  attesting login.
+
+### 3. The queue could not reach a fresh candidate
+
+`ORDER BY checked,rowid` reads oldest-first. With 3,131 rows at `checked=0` and
+`HYDRATION_BATCH = 60`, a candidate found this cycle sat behind roughly 52 cycles of work, and the
+six-hour re-queue pushed refreshed rows behind the same block. `queue_window()` now reads half the
+window from the backlog edge and half from the newest edge; `INSERT OR REPLACE` gives a re-queued row
+a fresh rowid, so a refresh is reachable immediately. A regression fixture reproduces the old
+behaviour and asserts the fresh row is absent from it and present in the new window.
+
+### 4. Farm repositories consumed 38.1% of the queue to reach one rejection
+
+Of 3,311 queued rows, **885 (26.7%)** sat in repositories already rejected on merge history and
+**1,261 (38.1%)** in 14 farm/trap repositories. Each was re-hydrated every cycle only to be rejected
+afterwards. `repo_intent` now stores the verdict once per repository (7-day refresh, 150-repository
+probe budget, largest share first), known farms are force-retired at insert time, and
+`preferred_order()` puts repositories with measured merge history ahead of unknown ones while an
+unprobed repository stays in the queue - absence of evidence is still never rejection.
+
+### 5. The new supply lane, and whether it can actually be seen
+
+The `programs` lane adds 7 expressions, each verified live to return results from a repository whose
+merge history is real. Reachability was then measured through the production window rules, because
+`query_window` refuses to hydrate a window whose total reaches 1000:
+
+| expression | total | first-cycle behaviour |
+| --- | --- | --- |
+| `repo:Expensify/App label:External` | 432 | yields now |
+| `repo:eclipse-mosquitto/mosquitto label:"Status: Available"` | 192 | yields now |
+| `repo:stakwork/sphinx-tribes label:bounties` | 66 | yields now |
+| `repo:stakwork/sphinx-tribes-frontend label:bounties` | 41 | yields now |
+| `repo:keepassxreboot/keepassxc label:"bounty :moneybag:"` | 3 | yields now |
+| `label:bounties archived:false` | 127 | yields now |
+| `label:"Status: Available" archived:false` | 3,389 | deferred to horizon subdivision |
+
+`#105153` (USD 175) is on the first page the Expensify window reads; the 432-item window paginates
+fully, so `#103403` is reachable in the same cycle. `--lane` defaults to `all` and the cursor is
+written with `INSERT OR REPLACE`, so the lane rotates through all 7 expressions.
+
+### 6. What the yield actually is, and which gate binds
+
+29 issues sampled across the verified paying programmes, through the production gate:
+
+| verdict | count |
+| --- | --- |
+| `QUALIFIED` | 1 |
+| `HARD_ISSUE_EVIDENCE_MISSING` | 26 |
+| `CURRENT_ISSUER_OFFER_MISSING` | 2 |
+
+The hard-evidence test is the binding constraint, at roughly 3.4% qualify rate. It was **deliberately
+not loosened**: it is the "genuinely hard" requirement itself, and the remaining rejections were
+re-checked against live source - `oll4com/spaceapp` fails on competing pull requests (54/40/34/31),
+`mergeos-bounties` `[50 MRG]` parses to zero USD, `limitlessprojects/Go-Hybrid` "Bounty" carries no
+USD, and `keepassxreboot/keepassxc#99` sits below the USD 80 floor.
+
+### 7. Verification
+
+- New deterministic suites: `scripts/test_program_offers.py` (15 cases) and
+  `scripts/test_queue_ordering.py` (17 cases), wired into `actions-contracts.yml`; all 9 gated
+  suites pass under `python -W error`, Ruff reports 0, the workflow parses.
+- A real regression was caught by the existing gate and fixed: `discover()` unpacked three fields
+  from a queue row that now carries five, which raised
+  `ValueError: too many values to unpack` in `test_hydration_budget_keeps_every_unprocessed_search_result`.
+  The read is now positional over the first three durable fields.
+- Four suites outside the CI gate fail for reasons unrelated to these changes and are recorded
+  rather than "fixed": `test_dispatch_transport_live_receipts.py` and
+  `test_fleet_recovery_live_receipts.py` require fixture snapshots through environment variables,
+  `test_deepseek_inbound_suite.py` requires a dedicated inbound TokenHarbor key pool, and
+  `test_fleet_retry_policy.py` targets `kaggle_engine_worker`, whose Kaggle lane is retired.
+- The diff touches only the exfiltration rule, the programme table, `admit()` eligibility and payer,
+  the queue window, the repository pre-check, the query lane and the CI test list. `FLOOR`,
+  `TRUSTED_BOTS`, the hard-evidence test and `competition()` are unchanged.
+
+### 8. Boundary
+
+A funded hard issue now passes the **full admission path** with competition clear, which had never
+happened before these repairs. That is not a delivery. No qualified issue has yet been dispatched by
+a scheduled discovery cycle, no pull request has been opened from this lane, nothing has merged, and
+no payout exists. Qualified influx is not yet sustained across cycles. `combined_goal` therefore
+remains `NOT_YET_ACHIEVED`, and discovery remains a lottery whose outcome is never revenue until a
+payout is observed.

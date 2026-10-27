@@ -61,5 +61,14 @@
     "opire.dev mcp is:issue is:open",
     "bountyhub agent is:issue is:open",
     "bountyhub-bot agent is:issue is:open"
+  ],
+  "programs": [
+    "repo:Expensify/App label:External is:issue is:open",
+    "repo:eclipse-mosquitto/mosquitto label:\"Status: Available\" is:issue is:open",
+    "repo:stakwork/sphinx-tribes label:bounties is:issue is:open",
+    "repo:stakwork/sphinx-tribes-frontend label:bounties is:issue is:open",
+    "repo:keepassxreboot/keepassxc label:\"bounty :moneybag:\" is:issue is:open",
+    "label:\"Status: Available\" is:issue is:open archived:false",
+    "label:bounties is:issue is:open archived:false"
   ]
 }

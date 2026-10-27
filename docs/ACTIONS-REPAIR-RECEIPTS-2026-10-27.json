@@ -490,5 +490,181 @@
       "bytes": 1824,
       "sha256": "c2907589374ed4506ffe58267faf1212d2936675dd87a6b59a3cbeb0c475b210"
     }
-  ]
+  ],
+  "repair_supplement_2": {
+    "observed_at": "2026-10-27T17:51:11.871809+00:00",
+    "head_sha": "bd9167bf14af054ee4e473f90468ff0360a2f087",
+    "working_tree": "four repairs uncommitted on top of head_sha",
+    "changed_files": {
+      ".github/workflows/actions-contracts.yml": "+5 -1",
+      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md": "+130 -0",
+      "scripts/actions_dispatch.py": "+125 -6",
+      "scripts/bounty_admission.py": "+92 -7",
+      "scripts/bounty_queries.json": "+10 -1",
+      "scripts/test_program_offers.py": "new, 9235 bytes",
+      "scripts/test_queue_ordering.py": "new, 9601 bytes"
+    },
+    "untouched_by_design": [
+      "FLOOR",
+      "TRUSTED_BOTS",
+      "hard-evidence test",
+      "competition()"
+    ],
+    "fix_1_exfiltration": {
+      "rule": "EXFILTRATION applied to title and body; a bare 'system prompt' is not matched",
+      "coverage_before_after": {
+        "ClankerNation/OpenAgents": {
+          "before": "14/201",
+          "after": "201/201"
+        },
+        "UnsafeLabs/Bounty-Hunters": {
+          "before": "0/182",
+          "after": "171/182"
+        }
+      },
+      "unmatched_remaining": "11 UnsafeLabs documents read as ordinary acceptance criteria",
+      "false_positives": "0/40 known funded issues across Expensify/App, drizzle-team/drizzle-orm, limitlessprojects/Go-Hybrid, oll4com/spaceapp",
+      "evidence": "scratch/_exfil_measure.out.txt, scratch/_exfil_misses.out.txt"
+    },
+    "fix_2_funding_program": {
+      "rule": "FUNDING_PROGRAMS honours a documented programme convention only when that repository's own automation published a payout artifact on that issue",
+      "amount_authority": "title only for a programme entry; a body amount written by an untrusted reporter is never funding authority",
+      "payer": "the attesting login, never the reporter",
+      "measured": [
+        {
+          "issue": "Expensify/App#103403",
+          "verdict": "ADMITTED",
+          "usd": "250",
+          "payer": "melvin-bot[bot]",
+          "competition": "clear"
+        },
+        {
+          "issue": "Expensify/App#94622",
+          "verdict": "ADMITTED",
+          "usd": "250",
+          "payer": "melvin-bot[bot]"
+        },
+        {
+          "issue": "Expensify/App#100290",
+          "verdict": "HARD_ISSUE_EVIDENCE_MISSING"
+        }
+      ],
+      "evidence": "scratch/_seed_yield_after.out.txt, scratch/_gate_probe_20261027_payerfix.out.txt"
+    },
+    "fix_3_queue_window": {
+      "defect": "ORDER BY checked,rowid read oldest-first, so a fresh candidate waited behind the backlog and a six-hour requeue waited behind it again",
+      "measured_backlog": {
+        "rows_at_checked_0": 3131,
+        "hydration_batch": 60,
+        "cycles_to_reach": 52
+      },
+      "repair": "queue_window() reads half the window from the backlog edge and half from the newest edge; INSERT OR REPLACE gives a requeued row a fresh rowid",
+      "evidence": "scripts/test_queue_ordering.py"
+    },
+    "fix_4_repository_precheck": {
+      "measured_backlog": {
+        "queued_rows": 3311,
+        "rows_in_intent_rejected_repositories": 885,
+        "share": "26.7%",
+        "rows_in_14_farm_trap_repositories": 1261,
+        "share_farm": "38.1%"
+      },
+      "repair": "repo_intent stores one verdict per repository (7-day refresh, 150-repository probe budget, largest share first); known farms are force-retired at insert; an unprobed repository is never rejected",
+      "evidence": "scripts/test_queue_ordering.py, scripts/test_repository_intent.py"
+    },
+    "fix_5_programs_lane": {
+      "expressions": 7,
+      "reachability_measured_through_production_window": [
+        {
+          "expression": "repo:Expensify/App label:External",
+          "total": 432,
+          "first_cycle": "yields now"
+        },
+        {
+          "expression": "repo:eclipse-mosquitto/mosquitto label:\"Status: Available\"",
+          "total": 192,
+          "first_cycle": "yields now"
+        },
+        {
+          "expression": "repo:stakwork/sphinx-tribes label:bounties",
+          "total": 66,
+          "first_cycle": "yields now"
+        },
+        {
+          "expression": "repo:stakwork/sphinx-tribes-frontend label:bounties",
+          "total": 41,
+          "first_cycle": "yields now"
+        },
+        {
+          "expression": "repo:keepassxreboot/keepassxc label:\"bounty :moneybag:\"",
+          "total": 3,
+          "first_cycle": "yields now"
+        },
+        {
+          "expression": "label:bounties archived:false",
+          "total": 127,
+          "first_cycle": "yields now"
+        },
+        {
+          "expression": "label:\"Status: Available\" archived:false",
+          "total": 3389,
+          "first_cycle": "deferred to horizon subdivision"
+        }
+      ],
+      "qualified_issue_on_first_page_read": "Expensify/App#105153 (USD 175)",
+      "older_qualified_reachable_by_full_pagination": "Expensify/App#103403",
+      "rotation": "--lane defaults to all; cursors written with INSERT OR REPLACE, so all 7 expressions cycle",
+      "evidence": "scratch/_program_reachability.out.txt, scratch/_verify_program_queries.out.txt"
+    },
+    "measured_yield": {
+      "sampled_issues": 29,
+      "distribution": {
+        "QUALIFIED": 1,
+        "HARD_ISSUE_EVIDENCE_MISSING": 26,
+        "CURRENT_ISSUER_OFFER_MISSING": 2
+      },
+      "qualify_rate": "3.4%",
+      "binding_gate": "HARD_ISSUE_EVIDENCE_MISSING",
+      "deliberately_not_loosened": true,
+      "rechecked_rejections": [
+        "oll4com/spaceapp fails competition (54/40/34/31 competing pull requests)",
+        "mergeos-bounties [50 MRG] / [100 MRG] parse to zero USD",
+        "limitlessprojects/Go-Hybrid \"Bounty\" carries no USD",
+        "keepassxreboot/keepassxc#99 sits below the USD 80 floor"
+      ],
+      "evidence": "scratch/_seed_yield_after.out.txt"
+    },
+    "gates": {
+      "ci_gated_suites": 9,
+      "all_pass_under_python_W_error": true,
+      "new_suites_wired_into": ".github/workflows/actions-contracts.yml",
+      "ruff": "0 findings on changed files",
+      "workflow_yaml": "parses"
+    },
+    "regression_found_and_fixed": {
+      "suite": "scripts/test_actions_migration.py",
+      "case": "test_hydration_budget_keeps_every_unprocessed_search_result",
+      "cause": "discover() unpacked three fields from a queue row that now carries five",
+      "fix": "positional read of the first three durable fields; the window stays 5-column",
+      "after": "32 cases pass"
+    },
+    "failures_outside_the_ci_gate": [
+      "test_dispatch_transport_live_receipts.py requires DISPATCH_REGRESSION_FIXTURES",
+      "test_fleet_recovery_live_receipts.py requires FLEET_RECOVERY_SNAPSHOT",
+      "test_deepseek_inbound_suite.py requires a dedicated inbound TokenHarbor key pool",
+      "test_fleet_retry_policy.py targets kaggle_engine_worker, whose Kaggle lane is retired"
+    ],
+    "combined_goal": "NOT_YET_ACHIEVED",
+    "why_still_unachieved": [
+      "no qualified issue has been dispatched by a scheduled discovery cycle",
+      "no pull request has been opened from this lane",
+      "nothing has merged",
+      "no payout exists; collected remains zero",
+      "qualified influx is not yet sustained across cycles"
+    ],
+    "changed_files_source": "git diff --numstat and git status --porcelain, derived on write",
+    "changed_files_excluded": {
+      "docs/ACTIONS-REPAIR-RECEIPTS-2026-10-27.json": "self-referential, cannot state its own size"
+    }
+  }
 }
