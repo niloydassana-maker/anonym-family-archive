@@ -524,6 +524,7 @@ success - one full run spent relearning the same `blocked` verdict.
 | `limitlessprojects/Go-Hybrid#940` | `BY_DESIGN` | **`None`** | no longer decided by a status board |
 | `Ensrick/vermintide-2-tweaker#760` | `BY_DESIGN` | **`None`** | no longer decided by a pointer to another issue |
 | `MyZubster-Ecosystem/myzubster#1613` | `BY_DESIGN` | **`None`** | no longer decided by a compound word (`not a bug-fix task`) |
+| `ach1992/bot-refactor#51` | `BY_DESIGN` | **`None`** | no longer decided by a deferral (`no code change ... is authorized yet`) |
 
 The controls from Supplement 3 section 4 (`#94622`, `#103403` at `250 USD`) are unaffected: they never
 matched a marker, and nothing here adds one.
@@ -531,7 +532,7 @@ matched a marker, and nothing here adds one.
 ### 5. Verification at this revision
 
 - 13 gated suites under `python -W error`, **`TOTAL_BAD=0`**: 32, 6, 12, ICU (own format, exit 0), 8, 7,
-  11, 15, 17, **26**, 13, 19, 7.
+  11, 15, 17, **28**, 13, 19, 7.
 - Ruff: **0 findings** on `bounty_admission.py`, `test_by_design_gate.py` and the two adjacent files.
 
 ### 6. Boundary, unchanged
@@ -551,3 +552,58 @@ missing gate is the one recorded as an open gap in Supplement 3 section 6 - "doe
 code change at all?". That gate is deliberately **not** built here: it needs its own measurement across
 the paying programmes before it can be tightened without over-rejecting genuine work. It stays recorded
 and unbuilt rather than guessed.
+
+### 8. Fifth defect, found on the third cycle (`40568059921`, head `0142093`)
+
+The third manual cycle dispatched nothing and refused one issue as by-design:
+
+```
+{"phase": "ADMISSION", "repo": "ach1992/bot-refactor", "issue_number": 51,
+ "reason": "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN", "reported_comments": 81, "visible_comments": 81}
+```
+
+Read live, the owner's sentence is the opposite of a verdict:
+
+> "DEFERRED BATCH: the owner explicitly wants to finish checking all items before one coherent
+> correction batch; **no code change** or new release is authorized yet."
+
+**D5.** `\bno code change\b` matched a *deferral of authorised work*. "No code change or new release is
+authorized yet" means the work exists and is waiting; "no code change needed" means the behaviour is
+intended. One phrase, two opposite meanings, and the gate took the wrong one — refusing a real work item
+and labelling it by design.
+
+The phrase now has to carry its verdict:
+
+```python
+r"\bno code change (?:is )?(?:needed|required|necessary)\b"
+```
+
+Two cases pin it: a deferral (`... is authorized yet`) resolves to `None`, and
+"No code change is needed here" still resolves to `BY_DESIGN`. Suite **26 → 28**.
+
+Before/after on all five live issues, through the production function:
+
+| issue | before | after | why |
+| --- | --- | --- | --- |
+| `Expensify/App#105153` | `BY_DESIGN` | `BY_DESIGN` | true positive preserved |
+| `limitlessprojects/Go-Hybrid#940` | `BY_DESIGN` | `None` | a board, not a verdict |
+| `Ensrick/vermintide-2-tweaker#760` | `BY_DESIGN` | `None` | a pointer, not a verdict |
+| `MyZubster-Ecosystem/myzubster#1613` | `BY_DESIGN` | `None` | a compound word, not a verdict |
+| `ach1992/bot-refactor#51` | `BY_DESIGN` | `None` | a deferral, not a verdict |
+
+Four of five refusals were wrong. That ratio is the actual result of this repair: the by-design gate was
+the least reliable gate in the pipeline, and it was refusing qualified influx while reporting a clean
+pass. It is now stricter in the right places and still admits the one genuine by-design report.
+
+Third cycle, verbatim:
+
+```
+{"mode": "LIVE", "counts": {"normal.raw": 98, "startup.raw": 80, "founder.raw": 18, "programs.raw": 263,
+ "CURRENT_ISSUER_OFFER_MISSING": 25, "HARD_ISSUE_EVIDENCE_MISSING": 30,
+ "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN": 1, "CLOSED_OR_READ_ONLY": 1},
+ "qualified_fresh": 0, "qualified_unique": 0, "dispatched": [], "pending_hydration": 4554}
+```
+
+`HARD_ISSUE_EVIDENCE_MISSING` again dominates (30) and remains untouched, as measured. Raw counts across
+cycles are not comparable — each cycle searches a different set — so nothing here is claimed as a trend.
+

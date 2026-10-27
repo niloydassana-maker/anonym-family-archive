@@ -228,6 +228,18 @@ class PrecisionOnUnseenTrafficTests(unittest.TestCase):
         verdict = declared_by_design(context([comment("This is not a bug.")]))
         self.assertEqual(verdict["verdict"], "BY_DESIGN")
 
+    def test_a_deferral_is_not_a_by_design_verdict(self):
+        body = ("DEFERRED BATCH: the owner explicitly wants to finish checking all items before one "
+                "coherent correction batch; no code change or new release is authorized yet.")
+        self.assertIsNone(declared_by_design(context([comment(
+            body, login="ach1992", association="OWNER")])))
+
+    def test_no_code_change_needed_is_still_a_verdict(self):
+        verdict = declared_by_design(context([comment(
+            "No code change is needed here: the SDK already deduplicates the events.",
+            login="maintainer", association="OWNER")]))
+        self.assertEqual(verdict["verdict"], "BY_DESIGN")
+
     def test_the_quote_always_contains_the_words_that_fired_the_gate(self):
         filler = "status line " * 40
         body = filler + "This works as designed. It is not a bug."

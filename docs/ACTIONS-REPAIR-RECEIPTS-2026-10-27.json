@@ -922,13 +922,13 @@
     "why_still_unachieved": "the chain reaches engineering and engineering now refuses on evidence, but no pull request has been opened, nothing has merged and no payout exists"
   },
   "repair_supplement_4": {
-    "observed_at": "2026-10-27T19:14:00+00:00",
-    "head_sha_observed": "23e88c5b3bfb6755eb5a84826a268478a1db29dd",
-    "working_tree": "the hyphenated-compound rule (D4) and its two cases, uncommitted on top of head_sha_observed; everything else in this supplement is committed and CI-green",
+    "observed_at": "2026-10-27T19:26:00+00:00",
+    "head_sha_observed": "0142093ca04288e84ac40b8e6240c8e1ff5129dd",
+    "working_tree": "the ambiguity fix for 'no code change' (D5) and its two cases, uncommitted on top of head_sha_observed; everything else in this supplement is committed and CI-green on that SHA",
     "changed_files": {
-      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md": "M +50/-9",
-      "scripts/bounty_admission.py": "M +5/-1",
-      "scripts/test_by_design_gate.py": "M +10/-0"
+      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md": "M +57/-1",
+      "scripts/bounty_admission.py": "M +6/-1",
+      "scripts/test_by_design_gate.py": "M +12/-0"
     },
     "changed_files_source": "git status --porcelain and git diff --numstat HEAD, derived on write",
     "changed_files_excluded": {
@@ -1009,8 +1009,40 @@
       },
       "why_this_cycle_mattered": "it refused a third issue the first round of fixes had left untouched, which is how D4 was found"
     },
+    "audit_cycle_3": {
+      "run": "40568059921",
+      "event": "workflow_dispatch",
+      "trigger": "manual, labelled - not the heartbeat",
+      "head_sha": "0142093ca04288e84ac40b8e6240c8e1ff5129dd",
+      "started_at": "2026-10-27T19:19:26Z",
+      "concluded": "success",
+      "concluded_at": "2026-10-27T19:21:36Z",
+      "summary_at": "2026-10-27T19:21:28.286387+00:00",
+      "summary_counts": {
+        "normal.raw": 98,
+        "startup.raw": 80,
+        "founder.raw": 18,
+        "programs.raw": 263,
+        "CURRENT_ISSUER_OFFER_MISSING": 25,
+        "HARD_ISSUE_EVIDENCE_MISSING": 30,
+        "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN": 1,
+        "CLOSED_OR_READ_ONLY": 1
+      },
+      "qualified_fresh": 0,
+      "qualified_unique": 0,
+      "dispatched": [],
+      "pending_hydration": 4554,
+      "refusal_found_here": {
+        "repo": "ach1992/bot-refactor",
+        "issue_number": 51,
+        "reason": "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN",
+        "reported_comments": 81,
+        "visible_comments": 81
+      },
+      "why_this_cycle_mattered": "it refused a fifth issue, on a sentence that meant the opposite of the marker that fired - which is how D5 was found"
+    },
     "cycles_are_not_comparable_by_count": {
-      "observed": "normal.raw 598 then 42, programs.raw 33 then 590, declared_by_design 2 then 1",
+      "observed": "normal.raw 598, 42, 98; programs.raw 33, 590, 263; declared_by_design 2, 1, 1",
       "conclusion": "the search lanes return different sets each cycle, so a count delta is not evidence that a rule changed behaviour; the controlled comparison is live_before_after below, read from the API through the production function"
     },
     "findings": [
@@ -1061,6 +1093,21 @@
         "verdict": "right refusal, wrong reason - it is an invitation to a pilot, not a bug report, and the phrase describes the work item rather than the behaviour",
         "repair": "not a bug / not a defect must end their word ((?![\\w-]))",
         "found_how": "the second live cycle, after the first three rules were already pushed - the gate's own output was re-read rather than assumed clean"
+      },
+      {
+        "id": "D5",
+        "defect": "the phrase 'no code change' was read as a verdict about the behaviour, so an owner deferring authorised work was recorded as declaring the behaviour by design",
+        "evidence_issue": "ach1992/bot-refactor#51",
+        "evidence_title": "Unified Payment UX/UI: consistent Telegram messages, actions and browser pages across payment methods",
+        "evidence_sentence": "DEFERRED BATCH: the owner explicitly wants to finish checking all items before one coherent correction batch; no code change or new release is authorized yet.",
+        "evidence_authority": {
+          "login": "ach1992",
+          "author_association": "OWNER",
+          "created_at": "2026-10-27T03:53:22Z"
+        },
+        "verdict": "wrong refusal - 'no code change or new release is authorized yet' defers work, it does not declare the reported behaviour intended; the two meanings share one phrase",
+        "repair": "'no code change' now has to carry its verdict - \\bno code change (?:is )?(?:needed|required|necessary)\\b",
+        "found_how": "the third live cycle, refused 6 minutes after the D4 fix was pushed, on the first issue that cycle turned up"
       }
     ],
     "correction_to_supplement_3": {
@@ -1108,6 +1155,12 @@
         "before": "BY_DESIGN",
         "after": null,
         "note": "no longer decided by a compound word ('not a bug-fix task')"
+      },
+      {
+        "issue": "ach1992/bot-refactor#51",
+        "before": "BY_DESIGN",
+        "after": null,
+        "note": "no longer decided by a deferral ('no code change ... is authorized yet')"
       }
     ],
     "measurement_method": "each issue read live from the API and pushed through the production declared_by_design() before and after; not judged by eye and not inferred from cycle counts",
@@ -1130,13 +1183,13 @@
         "test_repository_intent": 11,
         "test_program_offers": 15,
         "test_queue_ordering": 17,
-        "test_by_design_gate": 26,
+        "test_by_design_gate": 28,
         "test_preparation_terminal": 13,
         "test_discovery_heartbeat": 19,
         "test_fresh_discovery_schedule": 7
       },
       "by_design_gate_cases_before": 19,
-      "by_design_gate_cases_after": 26,
+      "by_design_gate_cases_after": 28,
       "new_cases": [
         "a pointer to another issue is not a verdict here",
         "a declarative won't-fix still counts",
@@ -1144,6 +1197,8 @@
         "an aggregate board body alone is excused",
         "a hyphenated compound is not the marker",
         "a bare 'This is not a bug.' still is the marker",
+        "a deferral of authorised work is not a by-design verdict",
+        "'no code change is needed' still is a verdict",
         "the quote always contains the words that fired the gate"
       ],
       "ruff": "0 findings on bounty_admission.py, test_by_design_gate.py and two adjacent files"
@@ -1152,10 +1207,24 @@
       "scratch/_audit_by_design_two.py - reads live comments and runs the production gate over them",
       "scratch/_update_receipts_4.py - this record, file stats derived from git"
     ],
+    "build_repair_not_a_test_failure": {
+      "run": "40567470550",
+      "head_sha": "4498d4f0fa464b299dc41beb37b35e0903f6c318",
+      "failed_step": "Run actions/checkout@v4",
+      "raw_error": "fatal: No url found for submodule path '_bounty_repo' in .gitmodules",
+      "cause": "a concurrent commit (ca6fe54, not part of this work) recorded the nested clone _bounty_repo as a gitlink with no .gitmodules entry; actions/checkout runs git submodule foreach while removing auth and dies before any suite runs",
+      "why_it_mattered": "a gate that cannot check out cannot certify anything, and the red would have masked the next real regression",
+      "repair": "git rm --cached _bounty_repo (index only, directory left on disk) + .gitignore entry; solana-validator-block-ordering keeps its gitlink because it has a real .gitmodules entry",
+      "repaired_sha": "0142093ca04288e84ac40b8e6240c8e1ff5129dd",
+      "verification_run": "40567923333",
+      "verification_note": "workflow_dispatch, because the contracts workflow only triggers on scripts/** and .github/workflows/** and this repair touched .gitignore",
+      "verified_suites": "12 'Ran N tests' summaries plus the ICU suite's own format, including 28 for the by-design gate - the suites genuinely executed, not just a clean checkout"
+    },
     "combined_goal": "NOT_YET_ACHIEVED",
-    "why_still_unachieved": "dispatched is empty in both cycles; no pull request was opened, nothing merged and no payout exists",
+    "why_still_unachieved": "dispatched is empty in all three cycles; no pull request was opened, nothing merged and no payout exists",
     "supply_finding": {
-      "observation": "three of the four issues the by-design gate touched were not bug reports at all - a triage board, an invitation to an opt-in pilot, and a docs/contest deliverable",
+      "observation": "four of the five issues the by-design gate refused were not bug reports at all - a triage board, an invitation to an opt-in pilot, a docs/contest deliverable, and a payment batch the owner deferred",
+      "ratio": "1 of 5 refusals was a true positive",
       "meaning": "the gate was catching non-code documents by accident of vocabulary, which is why it kept firing on the wrong words",
       "binding_filter": "HARD_ISSUE_EVIDENCE_MISSING, measured at 40 refusals in the second cycle and 38 in the first; that remains the gate that does the real filtering",
       "missing_gate": "does this issue request a code change at all?",

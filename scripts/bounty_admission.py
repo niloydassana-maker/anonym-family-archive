@@ -61,9 +61,14 @@ EXFILTRATION = re.compile(
 # earlier comment.
 BY_DESIGN = re.compile(
     r"\bworks as (?:designed|intended)\b|\bworking as (?:designed|intended)\b|"
-    r"\bby design\b|\bnot a bug(?![\w-])|\bnot a defect(?![\w-])|\bno code change\b|"
+    r"\bby design\b|\bnot a bug(?![\w-])|\bnot a defect(?![\w-])|"
+    r"\bno code change (?:is )?(?:needed|required|necessary)\b|"
     r"\bwon'?t fix\b|"
     r"\bexpected behaviou?r\b[^.\n]{0,60}\bby design\b", re.I)
+# ``no code change`` alone is ambiguous, so it only counts when it is a verdict about the
+# behaviour ("no code change needed/required"). Measured live 2026-10-27 on
+# ach1992/bot-refactor#51, whose owner wrote "DEFERRED BATCH: ... no code change or new release
+# is authorized yet" - a deferral of authorised work, the opposite of "this is intended".
 # ``not a bug`` must end its word: "not a bug-fix task" is a description of the *work item*, not a
 # verdict on a reported behaviour, and the hyphen made the phrase match anyway. Measured live
 # 2026-10-27 on MyZubster-Ecosystem/myzubster#1613, whose maintainer wrote that the issue "remains
