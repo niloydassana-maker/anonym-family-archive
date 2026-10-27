@@ -73,11 +73,31 @@ class GitHub:
         if issue.get("pull_request"):
             raise ValueError("Task is a pull request, not an issue")
         comments = list(self.pages(f"repos/{repo}/issues/{number}/comments"))
+        complete = len(comments) == issue["comments"]
+        count_evidence = {"rest_reported": issue["comments"], "rest_visible": len(comments)}
+        if not complete:
+            # REST's issue counter can include comments absent from the visible
+            # connection. Confirm the visible count and terminal ID independently;
+            # never manufacture missing comments or silently call them complete.
+            query = ("query($owner:String!,$name:String!,$number:Int!){repository(owner:$owner,name:$name){"
+                     "issue(number:$number){comments(last:1){totalCount nodes{databaseId}}}}}")
+            try:
+                result = self.api("graphql", "POST", {"query": query, "variables": {
+                    "owner": repo.split("/")[0], "name": repo.split("/")[1], "number": number}})
+                if result.get("errors"):
+                    raise GitHubError("Visible comment count could not be independently established")
+                connection = result["data"]["repository"]["issue"]["comments"]
+                last = connection["nodes"][-1]["databaseId"] if connection["nodes"] else None
+                count_evidence.update(graphql_visible=connection["totalCount"], graphql_last_id=last)
+                complete = (connection["totalCount"] == len(comments)
+                            and last == (comments[-1]["id"] if comments else None))
+            except GitHubError as exc:
+                count_evidence["diagnostic"] = str(exc)
         return {"repo": repo, "issue_number": number, "title": issue["title"],
                 "body": issue.get("body") or "", "issue": issue,
                 "repository": metadata, "comments": comments,
                 "author_comments": [c.get("body") or "" for c in comments],
-                "fetched_at": utcnow(), "complete_comments": len(comments) == issue["comments"]}
+                "fetched_at": utcnow(), "complete_comments": complete, "comment_count_evidence": count_evidence}
 
 
 class StateStore:

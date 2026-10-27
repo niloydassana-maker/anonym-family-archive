@@ -120,6 +120,22 @@ class TransportTests(unittest.TestCase):
         self.assertTrue(result["complete_comments"])
         self.assertEqual(len(result["body"]), 50000)
 
+    def test_stale_rest_counter_needs_independent_visible_count_and_last_id(self):
+        api = GitHub()
+        issue = {"title": "fixture", "body": "full context", "comments": 3}
+        def get(url, *args, **kwargs):
+            if url == "graphql":
+                return {"data": {"repository": {"issue": {"comments": {
+                    "totalCount": 2, "nodes": [{"databaseId": 12}]}}}}}
+            if "/comments?" in url:
+                return [[{"id": 11}, {"id": 12}]]
+            return issue if "/issues/" in url else {}
+        with patch.object(api, "api", side_effect=get):
+            result = api.issue_context("owner/repo", 1)
+        self.assertTrue(result["complete_comments"])
+        self.assertEqual(result["comment_count_evidence"]["rest_reported"], 3)
+        self.assertEqual(result["comment_count_evidence"]["graphql_visible"], 2)
+
     def test_unsafe_task_identity_rejected(self):
         for repo, number in [("a/b;echo", 1), ("a/b", "$(shell)"), ("a/b", True)]:
             with self.assertRaises(ValueError):

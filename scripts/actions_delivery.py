@@ -85,8 +85,8 @@ def runtime():
     ok, diagnostic = worker.configure_cline_for_engine()
     if not ok:
         raise RuntimeError(diagnostic)
-    # Only the loopback gateway child retains provider secrets. Target commands
-    # do not inherit the key pool or the private harness's read token.
+    # Remove credentials from ordinary child environments. This is not a
+    # hostile-code sandbox; write credentials live in the separate publisher job.
     for name in list(os.environ):
         if re.search(r"TOKEN|SECRET|PASSWORD|API_KEY|GH_PAT", name, re.I):
             os.environ.pop(name, None)
