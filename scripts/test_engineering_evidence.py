@@ -141,6 +141,43 @@ class AdmitTests(unittest.TestCase):
             "Reproduced in src/pages/Report/ReportComposer.tsx.", [attestation()]))
         self.assertEqual(verdict["source_locations"], ["src/pages/Report/ReportComposer.tsx"])
 
+    def test_authoritative_analysis_comment_can_locate_a_real_funded_bug(self):
+        """Regression for Expensify/App#85907's analysis in the comment thread."""
+        ctx = context(
+            "[$250] Chat - Emojis pasted from Slack render as images",
+            "Steps reproduce the broken image. Expected: emoji text. Actual: broken image.",
+            [attestation()])
+        analysis_url = "https://github.com/Expensify/App/issues/1#issuecomment-42"
+        ctx["comments"].append({
+            "user": {"login": "MelvinBot"},
+            "author_association": "CONTRIBUTOR",
+            "html_url": analysis_url,
+            "body": ("Root cause is in the paste handler: "
+                     "https://github.com/Expensify/App/blob/main/"
+                     "src/hooks/useHtmlPaste/index.ts#L148-L170"),
+        })
+
+        verdict, reason = admit(ctx)
+
+        self.assertEqual(reason, "")
+        self.assertEqual(verdict["funding"]["usd_value"], "250")
+        self.assertEqual(verdict["source_locations"], ["src/hooks/useHtmlPaste/index.ts"])
+        self.assertIn(analysis_url, verdict["engineering_evidence_sources"])
+
+    def test_untrusted_comment_cannot_supply_engineering_evidence(self):
+        ctx = context("[$175] Please add dark mode", "It would be nice.", [attestation()])
+        ctx["comments"].append({
+            "user": {"login": "random-user"},
+            "author_association": "NONE",
+            "html_url": "https://github.com/Expensify/App/issues/1#issuecomment-43",
+            "body": "https://github.com/Expensify/App/blob/main/src/app.ts",
+        })
+
+        verdict, reason = admit(ctx)
+
+        self.assertIsNone(verdict)
+        self.assertEqual(reason, "HARD_ISSUE_EVIDENCE_MISSING")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

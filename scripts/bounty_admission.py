@@ -391,7 +391,20 @@ def _permalink_sources(body, repository):
     return sorted(found)
 
 
-def engineering_evidence(title, body, repository=None):
+def _engineering_unit(text, repository, source_url=""):
+    """Extract evidence from one document without joining unrelated comments."""
+    technical = sorted({match.group().lower() for match in HARD.finditer(text)})
+    sanitized = re.sub(r"https?://\S+", " ", text)
+    components = sorted({match.group() for match in COMPONENT.finditer(sanitized)})
+    locations = sorted({name for name in components if SOURCE_PATH.search(name)}
+                       | set(_permalink_sources(text, repository)))
+    vocabulary = bool(technical) and (bool(components) or len(technical) >= 2)
+    return {"technical_signals": technical, "component_references": components,
+            "source_locations": locations, "source_url": source_url,
+            "qualified": vocabulary or bool(locations)}
+
+
+def engineering_evidence(title, body, repository=None, issue_context=None):
     """What in this report shows an engineer where the defect actually is?
 
     Two independent kinds of evidence, and neither one is difficulty by itself:
@@ -406,13 +419,28 @@ def engineering_evidence(title, body, repository=None):
     Measured rather than guessed: on that issue the raw body yields the path and the sanitised
     body yields nothing, which is why permalinks are read from the body before sanitisation.
     """
-    text = f"{title}\n{body or ''}"
-    technical = sorted({m.group().lower() for m in HARD.finditer(text)})
-    components = sorted({m.group() for m in COMPONENT.finditer(re.sub(r"https?://\S+", " ", body or ""))})
-    localised = sorted({name for name in components if SOURCE_PATH.search(name)}
-                       | set(_permalink_sources(body, repository)))
+    issue = (issue_context or {}).get("issue") or {}
+    units = [_engineering_unit(f"{title}\n{body or ''}", repository,
+                               issue.get("html_url", ""))]
+    if issue_context:
+        # Maintainers and a programme's documented analysis automation can identify the
+        # relevant code path in comments even when the original issue template only says
+        # "App Component: Other". Untrusted commenter prose does not qualify, and each
+        # document is scored separately so unrelated comments cannot be combined to pass.
+        for document in issue_context.get("comments") or ():
+            if not analysis_authority(issue_context, document):
+                continue
+            comment_body = document.get("body") or ""
+            if comment_body.strip():
+                units.append(_engineering_unit(comment_body, repository,
+                                                document.get("html_url", "")))
+    technical = sorted({signal for unit in units for signal in unit["technical_signals"]})
+    components = sorted({reference for unit in units for reference in unit["component_references"]})
+    localised = sorted({location for unit in units for location in unit["source_locations"]})
+    sources = [unit["source_url"] for unit in units if unit["qualified"] and unit["source_url"]]
     return {"technical_signals": technical, "component_references": components,
-            "source_locations": localised}
+            "source_locations": localised, "evidence_units": units,
+            "evidence_sources": list(dict.fromkeys(sources))}
 
 
 def engineering_signal(evidence):
@@ -422,6 +450,9 @@ def engineering_signal(evidence):
     component or a second word - and a located source file is added as a second, equal way in.
     Anything else is still refused, so this widens the vocabulary, not the standard.
     """
+    units = evidence.get("evidence_units")
+    if units is not None:
+        return any(unit["qualified"] for unit in units)
     technical = evidence["technical_signals"]
     vocabulary = bool(technical) and (bool(evidence["component_references"]) or len(technical) >= 2)
     return vocabulary or bool(evidence["source_locations"])
@@ -447,7 +478,9 @@ def admit(context, quote=None, floor=FLOOR):
         # its quote are recoverable with declared_by_design(context) and are recorded in the
         # verification ledger for the issue this gate was measured on.
         return None, "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN"
-    evidence = engineering_evidence(title, body, metadata.get("full_name") or context.get("repo"))
+    evidence = engineering_evidence(title, body,
+                                    metadata.get("full_name") or context.get("repo"),
+                                    issue_context=context)
     if not engineering_signal(evidence):
         # Named for the old, narrower test on purpose: one counter keeps the refusal rate
         # comparable across the change. The proof below carries which evidence was missing.
@@ -500,6 +533,7 @@ def admit(context, quote=None, floor=FLOOR):
         return None, "CURRENT_ISSUER_OFFER_MISSING"
     return {"funding": offer, "technical_signals": technical, "component_references": components,
             "source_locations": evidence["source_locations"],
+            "engineering_evidence_sources": evidence["evidence_sources"],
             "source_issue": issue["html_url"], "fetched_at": context["fetched_at"]}, ""
 
 
