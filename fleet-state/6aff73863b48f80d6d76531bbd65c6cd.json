@@ -1,0 +1,43 @@
+{
+  "task_id": "6aff73863b48f80d6d76531bbd65c6cd",
+  "repo": "Expensify/App",
+  "issue_number": 104231,
+  "status": "DISPATCHING",
+  "dispatch_id": "5e46d2cb247a4b4aba363ac0bbe4e321",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/104231",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "regression"
+    ],
+    "component_references": [
+      "EMAIL"
+    ],
+    "source_locations": [
+      "src/libs/actions/Policy/Policy.ts",
+      "src/pages/workspace/copyPolicySettings/CopyPolicySettingsSelectFeaturesPage.tsx",
+      "src/pages/workspace/duplicate/WorkspaceDuplicateSelectFeaturesForm.tsx",
+      "src/pages/workspace/duplicate/utils.ts"
+    ],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/104231#issuecomment-6217186039"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/104231",
+    "fetched_at": "2026-10-27T21:03:43.950348+00:00"
+  },
+  "lanes": [
+    "programs"
+  ],
+  "dispatched_at": "2026-10-27T21:03:53.833637+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-27T21:03:53.833656+00:00"
+}
