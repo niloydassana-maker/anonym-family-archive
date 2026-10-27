@@ -19,7 +19,9 @@ from bounty_admission import admit, competition, NON_WORK, repository_intent
 from bounty_fx import quote
 from discovery_horizon import Horizon
 
-QUERIES = json.loads(Path(__file__).with_name("bounty_queries.json").read_text(encoding="utf-8"))
+QUERY_CONFIG = json.loads(Path(__file__).with_name("bounty_queries.json").read_text(encoding="utf-8"))
+PRIORITY_PROGRAM_QUERIES = tuple(QUERY_CONFIG.pop("priority_programs", ()))
+QUERIES = QUERY_CONFIG
 
 
 def query_window(api, expression, window=None, fresh=0):
@@ -174,28 +176,42 @@ def repository_of(payload):
     return url.split("/repos/")[-1] if "/repos/" in url else ""
 
 
-def queue_window(con, limit=QUEUE_WINDOW):
-    """Half the queue from the backlog edge, half from the fresh edge.
+def queue_window(con, limit=QUEUE_WINDOW, priority_ids=()):
+    """Prioritize current-cycle matches, then read both edges of the backlog.
 
     ``ORDER BY checked,rowid`` alone made a new candidate unreachable: with 3,131 rows
     waiting and a hydration batch of 60, a candidate discovered this cycle sat behind
     roughly fifty cycles of work, and the six-hour re-queue then pushed refreshed rows
-    behind the same block. Reading both edges keeps the backlog draining while a
-    candidate found now is judged now.
+    behind the same block. A bounded priority list now keeps fresh query hits in the
+    hydration window even when later queries add thousands of rows in the same cycle;
+    the remaining capacity still drains both the backlog and newest queue edge.
     """
-    half = max(1, limit // 2)
     rows, seen = [], set()
-    for query in (
-        "SELECT task_id,payload,lanes,signature,rowid FROM pending WHERE status='pending' "
-        "ORDER BY checked,rowid LIMIT ?",
-        "SELECT task_id,payload,lanes,signature,rowid FROM pending WHERE status='pending' "
-        "ORDER BY rowid DESC LIMIT ?",
-    ):
-        for row in con.execute(query, (half,)):
-            if row[0] in seen:
-                continue
+    select = ("SELECT task_id,payload,lanes,signature,rowid FROM pending "
+              "WHERE status='pending' AND task_id=?")
+    for identity in priority_ids:
+        if len(rows) >= limit:
+            break
+        row = con.execute(select, (identity,)).fetchone()
+        if row and row[0] not in seen:
             seen.add(row[0])
             rows.append(row)
+    remaining = max(0, limit - len(rows))
+    if remaining:
+        half = max(1, remaining // 2)
+        for query in (
+            "SELECT task_id,payload,lanes,signature,rowid FROM pending WHERE status='pending' "
+            "ORDER BY checked,rowid LIMIT ?",
+            "SELECT task_id,payload,lanes,signature,rowid FROM pending WHERE status='pending' "
+            "ORDER BY rowid DESC LIMIT ?",
+        ):
+            for row in con.execute(query, (half,)):
+                if len(rows) >= limit:
+                    break
+                if row[0] in seen:
+                    continue
+                seen.add(row[0])
+                rows.append(row)
     return rows
 
 
@@ -241,13 +257,14 @@ def precheck_repository_intent(api, con, rows, cache, limit=INTENT_PRECHECK_MAX)
     return verdicts, probed, retired
 
 
-def preferred_order(rows, verdicts):
+def preferred_order(rows, verdicts, priority_ids=()):
     """Known-good repositories first, freshest candidate first inside that band.
 
     A repository whose merge history is measured and healthy deserves the batch before an
     unknown one, and inside a band the most recently updated issue is the one most likely
     to still be unfunded-and-open when we arrive.
     """
+    priority_ids = set(priority_ids)
     good, rest = [], []
     for row in rows:
         if verdicts.get(repository_of(row[1])) == "OK":
@@ -255,7 +272,14 @@ def preferred_order(rows, verdicts):
         elif verdicts.get(repository_of(row[1])) != "REPOSITORY_DOES_NOT_MERGE":
             rest.append(row)
     good.sort(key=lambda row: row[3] or "", reverse=True)
-    return good + rest
+    # Keep current-cycle query matches ahead of the backlog after repository precheck.
+    # Known-good repositories still outrank unprobed ones, and within each band priority
+    # follows the fresh-search ordering supplied by queue_window.
+    good_priority = [row for row in good if row[0] in priority_ids]
+    good_rest = [row for row in good if row[0] not in priority_ids]
+    rest_priority = [row for row in rest if row[0] in priority_ids]
+    rest_other = [row for row in rest if row[0] not in priority_ids]
+    return good_priority + good_rest + rest_priority + rest_other
 
 
 def retry_eligible(state):
@@ -304,47 +328,62 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
     counts = Counter()
     candidates = {}
     intent_cache = {}
+    priority_ids = []
     verdicts = {r[0]: r[1] for r in con.execute("SELECT repository,verdict FROM repo_intent")}
+
+    def search_and_queue(lane, expression, prioritize_recent=False):
+        window = horizon.window(expression)
+        rows, total = query_window(api, expression, window)
+        recent, _ = query_window(api, expression, fresh=30)
+        counts[lane + ".raw"] += len(rows) + len(recent)
+        print(json.dumps({"phase": "SEARCH", "lane": lane, "query": expression,
+                          "partition": horizon.qualifier(window), "total_count": total,
+                          "returned": len(rows), "fresh": len(recent)}), flush=True)
+        # Persist the raw horizon before hydration; bounded work never drops the unprocessed
+        # remainder of a search partition.
+        for item in [*recent, *rows]:
+            repository = item["repository_url"].split("/repos/")[-1]
+            identity = task_id(repository, item["number"])
+            old = con.execute("SELECT lanes,signature,checked,status FROM pending WHERE task_id=?",
+                              (identity,)).fetchone()
+            lanes_seen = set(json.loads(old[0])) if old else set()
+            lanes_seen.add(lane)
+            signature = item.get("updated_at", "")
+            pending = not old or old[1] != signature or time.time() - old[2] > 21600
+            status = "pending" if pending else old[3]
+            if verdicts.get(repository) == "REPOSITORY_DOES_NOT_MERGE":
+                status = REPO_INTENT_RETIRED
+            con.execute("INSERT OR REPLACE INTO pending VALUES(?,?,?,?,?,?)",
+                        (identity, json.dumps(item), json.dumps(sorted(lanes_seen)), signature,
+                         old[2] if old else 0, status))
+        if prioritize_recent:
+            for item in recent:
+                repository = item["repository_url"].split("/repos/")[-1]
+                identity = task_id(repository, item["number"])
+                if identity not in priority_ids:
+                    priority_ids.append(identity)
+        con.commit()
+        horizon.complete(expression, window, 1000 if total >= 1000 else len(rows), 1000)
+
     try:
+        # A small, quality-oriented paid-program query runs every cycle. It is additive:
+        # the normal, startup, founder, and rotating program lanes below continue to scan
+        # their full configured horizons.
+        for expression in PRIORITY_PROGRAM_QUERIES:
+            search_and_queue("programs", expression, prioritize_recent=True)
         for lane in lanes:
             start_row = con.execute("SELECT position FROM cursors WHERE lane=?", (lane,)).fetchone()
             start = start_row[0] if start_row else 0
             for offset in range(min(queries_per_lane, len(QUERIES[lane]))):
                 expression = QUERIES[lane][(start + offset) % len(QUERIES[lane])]
-                window = horizon.window(expression)
-                rows, total = query_window(api, expression, window)
-                recent, _ = query_window(api, expression, fresh=30)
-                counts[lane + ".raw"] += len(rows) + len(recent)
-                print(json.dumps({"phase": "SEARCH", "lane": lane, "query": expression,
-                                  "partition": horizon.qualifier(window), "total_count": total,
-                                  "returned": len(rows), "fresh": len(recent)}), flush=True)
-                # Persist the raw horizon before hydration; bounded work never
-                # drops the unprocessed remainder of a search partition.
-                for item in [*recent, *rows]:
-                    repository = item["repository_url"].split("/repos/")[-1]
-                    identity = task_id(repository, item["number"])
-                    old = con.execute("SELECT lanes,signature,checked,status FROM pending WHERE task_id=?", (identity,)).fetchone()
-                    lanes_seen = set(json.loads(old[0])) if old else set()
-                    lanes_seen.add(lane)
-                    signature = item.get("updated_at", "")
-                    pending = not old or old[1] != signature or time.time() - old[2] > 21600
-                    status = "pending" if pending else old[3]
-                    if verdicts.get(repository) == "REPOSITORY_DOES_NOT_MERGE":
-                        # A classified farm never returns to the queue, however often its
-                        # refreshed signature asks for another look.
-                        status = REPO_INTENT_RETIRED
-                    con.execute("INSERT OR REPLACE INTO pending VALUES(?,?,?,?,?,?)",
-                                (identity, json.dumps(item), json.dumps(sorted(lanes_seen)), signature,
-                                 old[2] if old else 0, status))
-                con.commit()
-                horizon.complete(expression, window, 1000 if total >= 1000 else len(rows), 1000)
+                search_and_queue(lane, expression)
             con.execute("INSERT OR REPLACE INTO cursors VALUES(?,?)",
                         (lane, (start + queries_per_lane) % len(QUERIES[lane])))
             con.commit()
-        queued = queue_window(con)
+        queued = queue_window(con, priority_ids=priority_ids)
         verdicts, probed_intent, retired = precheck_repository_intent(
             api, con, queued, intent_cache)
-        queued = preferred_order(queued, verdicts)
+        queued = preferred_order(queued, verdicts, priority_ids)
         print(json.dumps({"phase": "REPOSITORY_PRECHECK", "queued": len(queued),
                           "distinct_repositories": len({repository_of(row[1]) for row in queued}),
                           "probed": probed_intent, "retired": retired,

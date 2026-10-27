@@ -21,6 +21,7 @@ from actions_dispatch import (
     INTENT_REFRESH_S,
     QUEUE_WINDOW,
     REPO_INTENT_RETIRED,
+    pending_window,
     preferred_order,
     precheck_repository_intent,
     queue_window,
@@ -108,6 +109,49 @@ class QueueWindowTests(unittest.TestCase):
         live = add(con, "a/repo", 3)
         con.commit()
         self.assertEqual([row[0] for row in queue_window(con)], [live])
+
+    def test_fresh_search_hit_survives_rows_added_by_later_queries(self):
+        con = database()
+        for number in range(QUEUE_WINDOW + 100):
+            add(con, "backlog/repo", number)
+        fresh = add(con, "paid-program/repo", 1, updated="2026-10-27T12:00:00Z")
+        # Simulate later global query results pushing the original hit outside both
+        # ordinary queue edges before the cycle reaches hydration.
+        for number in range(QUEUE_WINDOW + 1000, QUEUE_WINDOW + 1000 + QUEUE_WINDOW):
+            add(con, "later-query/repo", number)
+        con.commit()
+
+        ordinary = {row[0] for row in queue_window(con)}
+        self.assertNotIn(fresh, ordinary)
+
+        prioritized = queue_window(con, priority_ids=[fresh])
+        self.assertEqual(prioritized[0][0], fresh)
+        self.assertIn(fresh, {row[0] for row in pending_window(prioritized)})
+
+
+class PriorityPreferredOrderTests(unittest.TestCase):
+    def test_current_cycle_good_repository_hit_stays_ahead_of_newer_backlog(self):
+        con = database()
+        priority = add(con, "known/repo", 1, updated="2026-10-26T00:00:00Z")
+        newer = add(con, "known/repo", 2, updated="2026-10-27T12:00:00Z")
+        rows = list(con.execute(
+            "SELECT task_id,payload,lanes,signature,rowid FROM pending ORDER BY rowid"))
+
+        ordered = preferred_order(rows, {"known/repo": "OK"}, {priority})
+        self.assertEqual([row[0] for row in ordered], [priority, newer])
+
+
+class PriorityQueryConfigTests(unittest.TestCase):
+    def test_paid_program_fast_lane_is_additive_to_global_lanes(self):
+        from actions_dispatch import PRIORITY_PROGRAM_QUERIES, QUERIES
+
+        self.assertEqual(len(PRIORITY_PROGRAM_QUERIES), 1)
+        query = PRIORITY_PROGRAM_QUERIES[0]
+        self.assertIn('label:External', query)
+        self.assertIn('label:Bug', query)
+        self.assertIn('-label:"Awaiting Payment"', query)
+        self.assertIn('bounty in:title', QUERIES['normal'])
+        self.assertTrue(any(query.startswith('label:"Status: Available"') for query in QUERIES['programs']))
 
 
 class PrecheckTests(unittest.TestCase):

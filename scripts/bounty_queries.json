@@ -1,4 +1,7 @@
 {
+  "priority_programs": [
+    "repo:Expensify/App label:External label:Bug in:title \"$250\" -label:\"Awaiting Payment\" is:issue is:open"
+  ],
   "normal": [
     "commenter:algora-pbc is:issue is:open \"bounty\"",
     "label:\"💎 Bounty\" is:issue is:open",
