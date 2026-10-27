@@ -111,6 +111,25 @@ HARD = re.compile(
 COMPONENT = re.compile(
     r"(?<!https://)(?:[\w.-]+/)+[\w.-]+\.[a-zA-Z0-9]+|"
     r"\b[A-Za-z_][A-Za-z0-9_:]*\(\)|\b(?:E[A-Z0-9_]{4,}|[A-Z][A-Za-z]+Error)\b")
+# `test_component_not_invented_from_url` fixes the master contract: an arbitrary URL is not a
+# component reference, so COMPONENT keeps reading the sanitised body. That contract is right -
+# an attachment link or a vendor doc says nothing about where the defect lives.
+#
+# It also hid a measured refusal. Expensify/App#105168 (open, Bug|Engineering, titled [$175])
+# states its entire defect location as a permalink to one of its own files, and the sanitiser
+# deleted it, so the only evidence in the report was invisible to the gate. The distinction
+# that matters is ownership, not shape: a permalink into THE SAME repository is the report
+# pointing at the code, while any other URL stays exactly as excluded as the contract says.
+# So permalinks are read separately, matched against this repository's own full name, and only
+# a source file counts.
+GITHUB_PERMALINK = re.compile(
+    r"https?://(?:www\.)?(?P<host>github\.com|raw\.githubusercontent\.com)/"
+    r"(?P<path>[^\s)\"'<>\[\]]+)", re.I)
+# A located path only localises a defect when it points at source. A documentation path
+# ("docs/guide.md") says a report was researched; it does not say where the bug is.
+SOURCE_PATH = re.compile(
+    r"\.(?:ts|tsx|js|jsx|mjs|cjs|py|rs|go|java|kt|kts|rb|php|cs|c|cc|cpp|cxx|h|hpp|m|mm|"
+    r"swift|scala|ex|exs|sh|ps1|sql|vue|svelte|lua|pl|dart)$", re.I)
 MONEY = re.compile(
     r"(?<![\w.])(?:(?P<c1>\$|€|£|₹|USD|USDC|USDT|EUR|GBP|INR|SGD|AED|ETH|SOL)\s*"
     r"(?P<a1>\d+(?:,\d{3})*(?:\.\d+)?)(?P<m1>[kK])?|"
@@ -343,6 +362,71 @@ def amounts(text, positions=False):
         yield (*value, match.start()) if positions else value
 
 
+def _permalink_sources(body, repository):
+    """Repository-relative source paths this report links to inside its own repository.
+
+    Ownership is the test, not URL shape: ``https://example.org/a/file.py`` stays excluded
+    exactly as ``test_component_not_invented_from_url`` requires, while a permalink whose path
+    begins with this repository's own ``owner/name`` is the report quoting its own code.
+    """
+    full_name = (repository or "").strip("/").lower()
+    if full_name.count("/") != 1:
+        return []
+    owner, name = full_name.split("/")
+    found = set()
+    for match in GITHUB_PERMALINK.finditer(body or ""):
+        host = match.group("host").lower()
+        path = match.group("path").split("#")[0].split("?")[0]
+        segments = [segment for segment in path.split("/") if segment]
+        if len(segments) < 3 or segments[0].lower() != owner or segments[1].lower() != name:
+            continue
+        rest = segments[2:]
+        if host == "raw.githubusercontent.com":
+            rest = rest[1:]                       # <ref>/<path...>
+        elif rest[0].lower() in {"blob", "tree", "raw", "blame"}:
+            rest = rest[2:]                       # blob/<ref>/<path...>
+        candidate = "/".join(rest)
+        if candidate and SOURCE_PATH.search(candidate):
+            found.add(candidate)
+    return sorted(found)
+
+
+def engineering_evidence(title, body, repository=None):
+    """What in this report shows an engineer where the defect actually is?
+
+    Two independent kinds of evidence, and neither one is difficulty by itself:
+
+      * domain vocabulary (HARD) - a race, a parser, a crash. The original test.
+      * a source location - someone already found the file, either as a path in the prose or
+        as a permalink into this repository. This is what funded UI work looked like on
+        2026-10-27: Expensify/App#105168 named ``Day.tsx`` and stated expected vs actual, and
+        the vocabulary test could not see a genuine $175 defect because a date picker contains
+        no deadlock.
+
+    Measured rather than guessed: on that issue the raw body yields the path and the sanitised
+    body yields nothing, which is why permalinks are read from the body before sanitisation.
+    """
+    text = f"{title}\n{body or ''}"
+    technical = sorted({m.group().lower() for m in HARD.finditer(text)})
+    components = sorted({m.group() for m in COMPONENT.finditer(re.sub(r"https?://\S+", " ", body or ""))})
+    localised = sorted({name for name in components if SOURCE_PATH.search(name)}
+                       | set(_permalink_sources(body, repository)))
+    return {"technical_signals": technical, "component_references": components,
+            "source_locations": localised}
+
+
+def engineering_signal(evidence):
+    """Did this report say anything an engineer can act on?
+
+    The vocabulary bar is unchanged from the original gate - one domain word plus either a
+    component or a second word - and a located source file is added as a second, equal way in.
+    Anything else is still refused, so this widens the vocabulary, not the standard.
+    """
+    technical = evidence["technical_signals"]
+    vocabulary = bool(technical) and (bool(evidence["component_references"]) or len(technical) >= 2)
+    return vocabulary or bool(evidence["source_locations"])
+
+
 def admit(context, quote=None, floor=FLOOR):
     """Return proof or a reason; untrusted payee text never becomes an offer."""
     issue, metadata = context["issue"], context["repository"]
@@ -363,10 +447,12 @@ def admit(context, quote=None, floor=FLOOR):
         # its quote are recoverable with declared_by_design(context) and are recorded in the
         # verification ledger for the issue this gate was measured on.
         return None, "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN"
-    technical = sorted(set(m.group().lower() for m in HARD.finditer(title + "\n" + body)))
-    components = sorted(set(m.group() for m in COMPONENT.finditer(re.sub(r"https?://\S+", " ", body))))
-    if not technical or (not components and len(technical) < 2):
+    evidence = engineering_evidence(title, body, metadata.get("full_name") or context.get("repo"))
+    if not engineering_signal(evidence):
+        # Named for the old, narrower test on purpose: one counter keeps the refusal rate
+        # comparable across the change. The proof below carries which evidence was missing.
         return None, "HARD_ISSUE_EVIDENCE_MISSING"
+    technical, components = evidence["technical_signals"], evidence["component_references"]
     offer = None
     programme = funding_program(context)
     title_span = len(title) + 1
@@ -413,6 +499,7 @@ def admit(context, quote=None, floor=FLOOR):
     if not offer:
         return None, "CURRENT_ISSUER_OFFER_MISSING"
     return {"funding": offer, "technical_signals": technical, "component_references": components,
+            "source_locations": evidence["source_locations"],
             "source_issue": issue["html_url"], "fetched_at": context["fetched_at"]}, ""
 
 

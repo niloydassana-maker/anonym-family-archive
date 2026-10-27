@@ -1309,5 +1309,95 @@
       "missing_gate": "does this issue request a code change at all?",
       "why_not_built_here": "it needs its own measurement across the paying programmes before it can be tightened without over-rejecting genuine work; recorded and unbuilt rather than guessed"
     }
+  },
+  "repair_supplement_5": {
+    "observed_at": "2026-10-27T19:56:24+00:00",
+    "head_sha_observed": "8439a46",
+    "working_tree": "dirty (see changed_files)",
+    "changed_files": [
+      ".github/workflows/actions-contracts.yml",
+      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md",
+      "scripts/bounty_admission.py",
+      "scripts/test_engineering_evidence.py"
+    ],
+    "changed_files_source": "git status --porcelain, excluding scratch/ and _bounty_repo/",
+    "purpose": "admission was refusing funded, fully specified work whose only defect location is a permalink into its own repository",
+    "findings": [
+      {
+        "id": "D8",
+        "summary": "the body is sanitised with re.sub(r'https?://\\S+', ' ') before COMPONENT runs, so a GitHub permalink - the one piece of evidence in the report - is deleted",
+        "measured_on": "Expensify/App#105168",
+        "measurement": {
+          "raw_body_components": 1,
+          "sanitised_body_components": 0
+        },
+        "repair": "permalink sources are read from the raw body, scoped to this repository's own owner/name, and only a source extension counts",
+        "master_contract": "test_component_not_invented_from_url kept unchanged: an arbitrary URL still never becomes a component reference"
+      },
+      {
+        "id": "D9",
+        "summary": "HARD is backend vocabulary, so a precisely specified UI defect can never pass however actionable it is",
+        "repair": "the vocabulary test is preserved exactly, and a located source file is added as an equal way in",
+        "preserved_by": [
+          "test_the_original_bar_is_unchanged"
+        ]
+      }
+    ],
+    "replay": {
+      "run": "40570886106",
+      "refusals_replayed": 27,
+      "cleared_evidence_gate": 2,
+      "still_refused": 25,
+      "programme_funded_refusals_in_cycle": 0,
+      "cleared": [
+        [
+          "oll4com/spaceapp#207",
+          "CURRENT_ISSUER_OFFER_MISSING"
+        ],
+        [
+          "sybil-solutions/local-ai-registry#219",
+          "ADMITTED"
+        ]
+      ],
+      "method": "scratch/_audit_hard_gate_after.py re-hydrates each refusal and asks the shipped admit() for its verdict; a changed reason means the evidence gate cleared and something later stopped it"
+    },
+    "direct_target": {
+      "issue": "Expensify/App#105168",
+      "before": "HARD_ISSUE_EVIDENCE_MISSING",
+      "after": "ADMITTED",
+      "funding": {
+        "amount": "175",
+        "currency": "USD",
+        "payer": "melvin-bot[bot]"
+      },
+      "source_location": "src/components/DatePicker/CalendarPicker/Day.tsx"
+    },
+    "correction_recorded": "the claim that every real frontend bounty was being discarded is not supported: none of the 27 refusals in that cycle were programme-funded. The defect is real and cost exactly the permalink-only class",
+    "gates_after_change": {
+      "suites": 14,
+      "total_bad": 0,
+      "warning_mode": "-W error",
+      "case_counts": [
+        32,
+        6,
+        12,
+        "ICU-own-format",
+        8,
+        7,
+        11,
+        15,
+        17,
+        29,
+        13,
+        19,
+        7,
+        12
+      ],
+      "new_suite": "scripts/test_engineering_evidence.py (12 cases)",
+      "ruff": "clean on scripts/bounty_admission.py and the new suite",
+      "master_suites_modified": 0
+    },
+    "combined_goal": "NOT_YET_ACHIEVED",
+    "why_still_unachieved": "admission is not delivery: no verified PR exists, and this change alters which issues reach the engineer, not whether one lands"
   }
 }

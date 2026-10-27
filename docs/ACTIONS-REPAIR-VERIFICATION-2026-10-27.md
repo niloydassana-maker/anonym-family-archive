@@ -659,3 +659,71 @@ One clear true positive in seven. Six rules tightened, 19 → 29 cases, four liv
 the real state of this gate: it is now careful about *sentences* and still blind about *documents*.
 
 
+
+## Supplement 5 - the evidence gate, measured on a real funded refusal (2026-10-27)
+
+### D8. The sanitiser deleted the only evidence in the report
+
+`admit()` builds `components` from `re.sub(r"https?://\S+", " ", body)`. On
+`Expensify/App#105168` (open, labelled `Bug`/`Engineering`, titled `[$175] Date picker: Highlight
+today's date in the calendar`) the entire defect location is a permalink:
+
+    https://github.com/Expensify/App/blob/f91330a.../src/components/DatePicker/CalendarPicker/Day.tsx#L12-L19
+
+Measured on the live body: the raw text yields
+`src/components/DatePicker/CalendarPicker/Day.tsx`; the sanitised text yields nothing. The
+report was refused `HARD_ISSUE_EVIDENCE_MISSING` while quoting its own file.
+
+The sanitiser itself is correct and is fixed by a master test
+(`test_component_not_invented_from_url`: `https://example.org/a/file.py` must never become a
+component). So the repair does not weaken it. It adds a separate, ownership-scoped read: a
+GitHub permalink whose path begins with **this repository's own** `owner/name` is the report
+pointing at its own code, and only when the remainder ends in a source extension.
+
+### D9. The vocabulary bar was the only way in
+
+`HARD` is backend vocabulary (race, deadlock, parser, crash, consensus...). A date-picker
+report contains none of it, so a well-specified $175 defect could not pass however precise it
+was. The bar is now: the original vocabulary test **unchanged**, or a located source file.
+
+Measured, not assumed. `test_the_original_bar_is_unchanged` pins one vocabulary word alone
+still refusing, and two words still passing.
+
+### What changed, measured on the same issues
+
+Replayed the 27 `HARD_ISSUE_EVIDENCE_MISSING` refusals of run `40570886106` through the edited
+production `admit()`:
+
+| measure | value |
+| --- | --- |
+| refusals replayed | 27 |
+| cleared the evidence gate | **2** (`oll4com/spaceapp#207` -> offer missing; `sybil-solutions/local-ai-registry#219` -> admitted, 1000 USD via `0xSero`) |
+| still refused | 25 |
+| programme-funded refusals in that cycle | **0** |
+
+Direct target, the issue this gate was measured on:
+
+| issue | before | after |
+| --- | --- | --- |
+| `Expensify/App#105168` | `HARD_ISSUE_EVIDENCE_MISSING` | **ADMITTED**, 175 USD, payer `melvin-bot[bot]`, location `src/components/DatePicker/CalendarPicker/Day.tsx` |
+
+### Correction to the claim that prompted this repair
+
+The claim was that every real frontend bounty across the paying programmes was being discarded
+by this gate. That is **not** what the data shows, and it is recorded here so the wrong lesson
+is not learned. None of the 27 refusals in that cycle came from the one programme whose funding
+authority is documented (`Expensify/App`); they were un-programmed repositories, several of them
+trap or playground repos. The defect is real, and it cost exactly the class it hit - reports
+whose only evidence is a permalink into their own repository - not the whole queue.
+
+### Gates after the change
+
+14 CI suites, all green locally with `-W error`, `TOTAL_BAD=0`: 32, 6, 12, ICU (own format), 8,
+7, 11, 15, 17, 29, 13, 19, 7, **12**. Ruff clean on both touched scripts. The new suite
+`scripts/test_engineering_evidence.py` (12 cases) is wired into `actions-contracts.yml`, and the
+existing master suites were not modified.
+
+### Still open
+
+`combined_goal` remains `NOT_YET_ACHIEVED`: admission is not delivery. No verified PR exists,
+and this repair changes which issues reach the engineer, not whether one lands.

@@ -52,4 +52,6 @@ jobs:
 
         python3 -W error scripts/test_discovery_heartbeat.py
 
-        python3 -W error scripts/test_fresh_discovery_schedule.py'
+        python3 -W error scripts/test_fresh_discovery_schedule.py
+
+        python3 -W error scripts/test_engineering_evidence.py'
