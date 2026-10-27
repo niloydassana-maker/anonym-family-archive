@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 from datetime import datetime, timezone
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -107,6 +108,17 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
     con.execute("CREATE TABLE IF NOT EXISTS candidates(task_id TEXT PRIMARY KEY, payload TEXT, updated_at TEXT)")
     con.execute("CREATE TABLE IF NOT EXISTS pending(task_id TEXT PRIMARY KEY, payload TEXT, lanes TEXT, "
                 "signature TEXT, checked REAL DEFAULT 0, status TEXT DEFAULT 'pending')")
+    con.execute("CREATE TABLE IF NOT EXISTS metadata(name TEXT PRIMARY KEY,value TEXT)")
+    policy = hashlib.sha256("\n".join(Path(__file__).with_name(name).read_text(encoding="utf-8-sig")
+                                     for name in ("bounty_admission.py", "actions_github.py")).encode()).hexdigest()
+    old_policy = con.execute("SELECT value FROM metadata WHERE name='admission_policy'").fetchone()
+    if not old_policy or old_policy[0] != policy:
+        # A repaired gate must revisit old rejections instead of preserving a
+        # stale zero-result verdict in the restored Actions cache.
+        con.execute("UPDATE pending SET status='pending',checked=0")
+        con.execute("DELETE FROM candidates")
+        con.execute("INSERT OR REPLACE INTO metadata VALUES('admission_policy',?)", (policy,))
+        con.commit()
     counts = Counter()
     candidates = {}
     try:

@@ -158,6 +158,17 @@ class TransportTests(unittest.TestCase):
                 counts = dict(con.execute("SELECT status,count(*) FROM pending GROUP BY status"))
             con.close()
             self.assertEqual(counts, {"checked": 60, "pending": 41})
+            con = sqlite3.connect(Path(folder) / "discovery.sqlite3")
+            con.execute("UPDATE metadata SET value='previous broken policy' WHERE name='admission_policy'")
+            con.execute("UPDATE pending SET status='checked'")
+            con.commit()
+            con.close()
+            with patch("builtins.print"):
+                discover(["normal"], queries_per_lane=1, state_dir=folder)
+            con = sqlite3.connect(Path(folder) / "discovery.sqlite3")
+            counts = dict(con.execute("SELECT status,count(*) FROM pending GROUP BY status"))
+            con.close()
+            self.assertEqual(counts, {"checked": 60, "pending": 41})
 
     def test_current_open_competition(self):
         pr = {"title": "Fix #7", "body": "", "head": {"ref": "fix/7", "sha": "a", "repo": None}, "html_url": "unit fixture"}
