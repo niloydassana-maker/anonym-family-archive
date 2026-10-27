@@ -1,0 +1,849 @@
+{
+  "audit_date": "2026-10-27",
+  "prepared_at": "2026-10-27T14:01:57.003966+00:00",
+  "verdict": "FAIL: influx + quality + live hard-issue delivery not established",
+  "deployed_sha_at_capture": "5920df2d897b853c7bff3db2f2f944767b2d37ed",
+  "baselines": {
+    "recovered_monolith": "a376f67",
+    "repaired_kaggle": "2ce3a85",
+    "initial_actions": "06b3f14"
+  },
+  "scope": {
+    "runs": 27,
+    "first_created_at": "2026-10-27T08:55:00Z",
+    "last_created_at": "2026-10-27T13:24:24Z",
+    "logs_available": 26,
+    "visual_receipts": "Unavailable: browser/app surface inventory empty"
+  },
+  "metrics": {
+    "conclusions": {
+      "success": 10,
+      "failure": 10,
+      "cancelled": 7
+    },
+    "events": {
+      "repository_dispatch": 26,
+      "workflow_dispatch": 1
+    },
+    "green_no_change_no_pr": 9,
+    "missing_cline_fallback": 17,
+    "proxy_bom_failures": 2,
+    "uploaded_artifacts": 0,
+    "actions_dispatch_ledger_rows": 14,
+    "startup_candidate_rows": 13,
+    "silo_candidate_rows": 8,
+    "unique_startup_silo": 15,
+    "overlap": 6,
+    "qualifying_hard_issue_deliveries_established": 0
+  },
+  "run_outcomes": [
+    {
+      "run_id": 40511749430,
+      "conclusion": "success",
+      "target": "airdropia/earn-ops#21",
+      "no_changes": true,
+      "no_pr": true,
+      "proxy_bom_error": true,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40508328803,
+      "conclusion": "success",
+      "target": "xaviercallens/HiveMind#247",
+      "no_changes": true,
+      "no_pr": true,
+      "proxy_bom_error": true,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40502275358,
+      "conclusion": "success",
+      "target": "paraloom-labs/paraloom-wallet#135",
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [
+        "https://github.com/paraloom-labs/paraloom-wallet/pull/136"
+      ],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40499250966,
+      "conclusion": "failure",
+      "target": "paraloom-labs/paraloom-wallet#133",
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40495377102,
+      "conclusion": "success",
+      "target": "FuRongJun-1999/dsh-bounty#1840",
+      "no_changes": true,
+      "no_pr": true,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40495280971,
+      "conclusion": "failure",
+      "target": "paraloom-labs/paraloom-wallet#128",
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40495260909,
+      "conclusion": "failure",
+      "target": "paraloom-labs/paraloom-wallet#127",
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40494840038,
+      "conclusion": "failure",
+      "target": "paraloom-labs/paraloom-wallet#128",
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40494820049,
+      "conclusion": "failure",
+      "target": "paraloom-labs/paraloom-wallet#127",
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40494420509,
+      "conclusion": "success",
+      "target": "mojtabarozegar11-ship-it/Saeit#1395",
+      "no_changes": true,
+      "no_pr": true,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40494357107,
+      "conclusion": "failure",
+      "target": "paraloom-labs/paraloom-wallet#128",
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40494332930,
+      "conclusion": "failure",
+      "target": "paraloom-labs/paraloom-wallet#127",
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40493929918,
+      "conclusion": "failure",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40493904660,
+      "conclusion": "failure",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40490562196,
+      "conclusion": "success",
+      "target": "FuRongJun-1999/dsh-bounty#71",
+      "no_changes": true,
+      "no_pr": true,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40490506748,
+      "conclusion": "cancelled",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40489601206,
+      "conclusion": "cancelled",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40489531263,
+      "conclusion": "cancelled",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40488695345,
+      "conclusion": "cancelled",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40488648279,
+      "conclusion": "cancelled",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40488387835,
+      "conclusion": "cancelled",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40488368808,
+      "conclusion": "cancelled",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40487271448,
+      "conclusion": "failure",
+      "target": null,
+      "no_changes": false,
+      "no_pr": false,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": false,
+      "created_prs": [],
+      "log_exit": 1
+    },
+    {
+      "run_id": 40481203052,
+      "conclusion": "success",
+      "target": "izznat/test-info#3",
+      "no_changes": true,
+      "no_pr": true,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40481190453,
+      "conclusion": "success",
+      "target": "izznat/test-info#2",
+      "no_changes": true,
+      "no_pr": true,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40478998755,
+      "conclusion": "success",
+      "target": "isearchxsolve/anonym-family-archive#1",
+      "no_changes": true,
+      "no_pr": true,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    },
+    {
+      "run_id": 40476874918,
+      "conclusion": "success",
+      "target": "isearchxsolve/anonym-family-archive#1",
+      "no_changes": true,
+      "no_pr": true,
+      "proxy_bom_error": false,
+      "missing_cline_fallback": true,
+      "created_prs": [],
+      "log_exit": 0
+    }
+  ],
+  "query_receipts": {
+    "matrix_counts": {
+      "run_hunter_dispatcher.py": 15,
+      "startup_hunter_parallel.py": 21,
+      "agentic_silo_hunter.py": 17
+    },
+    "queries": [
+      {
+        "lane": "normal",
+        "query": "commenter:algora-pbc is:issue is:open \"bounty\"",
+        "captured_at": "2026-10-27T13:44:51.298133+00:00",
+        "total_count": 30,
+        "incomplete_results": false,
+        "rows_returned": 25,
+        "sample": [
+          {
+            "repo": "hexgrad/kokoro",
+            "number": 290,
+            "title": "Donation/funding for german language",
+            "labels": []
+          },
+          {
+            "repo": "Feel-ix-343/markdown-oxide",
+            "number": 274,
+            "title": "\"Unresolved Reference\" on .md files in subfolders",
+            "labels": [
+              "good first issue",
+              "devin"
+            ]
+          },
+          {
+            "repo": "Feel-ix-343/markdown-oxide",
+            "number": 269,
+            "title": "Unresolved reference when using `[[` and `]]`",
+            "labels": [
+              "good first issue",
+              "devin"
+            ]
+          },
+          {
+            "repo": "Feel-ix-343/markdown-oxide",
+            "number": 263,
+            "title": "[Feature request] Add aliases to workspace symbols",
+            "labels": [
+              "good first issue",
+              "devin"
+            ]
+          }
+        ]
+      },
+      {
+        "lane": "startup",
+        "query": "label:bounty \"wallet\" OR \"solana\" OR \"token\" is:issue is:open",
+        "captured_at": "2026-10-27T13:44:54.684746+00:00",
+        "total_count": 1763,
+        "incomplete_results": false,
+        "rows_returned": 25,
+        "sample": [
+          {
+            "repo": "relayhop/sn-monetization-runtime",
+            "number": 1343,
+            "title": "[radar] SN open bounty 2026-10-27T10:25",
+            "labels": [
+              "radar",
+              "sn",
+              "bounty"
+            ]
+          },
+          {
+            "repo": "relayhop/sn-monetization-runtime",
+            "number": 1341,
+            "title": "[radar] SN open bounty 2026-10-26T23:46",
+            "labels": [
+              "radar",
+              "sn",
+              "bounty"
+            ]
+          },
+          {
+            "repo": "hanzoai/cli",
+            "number": 11,
+            "title": "Fix README commands that match no hanzo subcommand",
+            "labels": [
+              "documentation",
+              "good first issue",
+              "bounty",
+              "bounty:starter"
+            ]
+          },
+          {
+            "repo": "INDIGOAZUL/la-tanda-web",
+            "number": 426,
+            "title": "Validator guide: !verify needs a memo transaction; 4 GB / 50 GB is too small for a replay from genesis",
+            "labels": [
+              "bounty",
+              "assigned",
+              "tier-2"
+            ]
+          }
+        ]
+      },
+      {
+        "lane": "silo",
+        "query": "polar.sh agent is:issue is:open \"bounty\"",
+        "captured_at": "2026-10-27T13:44:57.248128+00:00",
+        "total_count": 17,
+        "incomplete_results": false,
+        "rows_returned": 16,
+        "sample": [
+          {
+            "repo": "WholeTroutMedia/open-source-bounties",
+            "number": 3,
+            "title": "[Verified Fix Ready (Exit Code 0) - Sealed for Original Repo Owner & @jaharoni Review] Kludex/starlette#649 - Optional Recursive Lifespan Event Dispatching Across Mounted Sub-Applications",
+            "labels": [
+              "bounty-draft",
+              "difficulty: hard",
+              "audit: extend-stalled",
+              "forked: WholeTroutMedia",
+              "verified: exit-0"
+            ]
+          },
+          {
+            "repo": "commonworld-one/commonworld",
+            "number": 146,
+            "title": "Outbound link report",
+            "labels": []
+          },
+          {
+            "repo": "freedom-winds/BountyScout",
+            "number": 1300,
+            "title": "\ud83c\udfaf Bounty Alert: 14 New Opportunityies found",
+            "labels": [
+              "bounty-alert"
+            ]
+          },
+          {
+            "repo": "gewenbo888/ai-for-money",
+            "number": 1,
+            "title": "\u3010\u5b9e\u6218\u89e3\u5bc6\u3011\u6211\u7528 AI \u667a\u80fd\u4f53\u626b\u8361 GitHub \u5f00\u6e90\u60ac\u8d4f\uff1a48 \u5c0f\u65f6\u5408\u5e76 6 \u4e2a PR \u65a9\u83b7  \u7f8e\u91d1\u5168\u6d41\u7a0b",
+            "labels": []
+          }
+        ]
+      }
+    ]
+  },
+  "source_snapshot": [
+    {
+      "path": ".github/workflows/engine2.yml",
+      "sha256": "068e214c74acb2a561ab3d6c63cee3a9f4a95d2d06aa5e6a359673b797586865",
+      "tracked": true
+    },
+    {
+      "path": "scripts/run-cline.sh",
+      "sha256": "3b65405d6e09ea6247f04d8e631552950c0e1f0e98c612d3f819783c8ed25657",
+      "tracked": true
+    },
+    {
+      "path": "scripts/collect-changes.py",
+      "sha256": "c0663ab5b9ab0a9665877597edd01b2055405bee979fea0af836fbacdce5dbda",
+      "tracked": true
+    },
+    {
+      "path": "scripts/report-result.sh",
+      "sha256": "3f2737ea03928e658579b3c9750a8649927cae9643f85e492450f5df1db3cf4d",
+      "tracked": true
+    },
+    {
+      "path": "scripts/bootstrap-node.sh",
+      "sha256": "d29f8f7817f10f10cf6ac580f3f5ed917d3bdd63181722e040efa9fce5771be1",
+      "tracked": true
+    },
+    {
+      "path": "scripts/tokenharbor_router.py",
+      "sha256": "a8fdb6549e32d55c52d158a4687f2d4fe62e809fb55425908d4ceec1679c201b",
+      "tracked": true
+    },
+    {
+      "path": "scripts/tokenharbor_cline_proxy.py",
+      "sha256": "2034c8fe6f061cd27b55c04e81ef815a60d29cec042af5bb8ce0ecc4d6ceb6e1",
+      "tracked": true
+    },
+    {
+      "path": "scripts/run_hunter_dispatcher.py",
+      "sha256": "84eb7fc8e68bc7fce3d57268aa145a49cbb93206478b8602690f74e1a3cdfbd0",
+      "tracked": true
+    },
+    {
+      "path": "scripts/startup_hunter_parallel.py",
+      "sha256": "b25d08032e7534239d2b585da50543a6825a699afce0967bfcb784df0d0088a5",
+      "tracked": false
+    },
+    {
+      "path": "scripts/agentic_silo_hunter.py",
+      "sha256": "7f4ebcc01a28c1fb70d7e78d9f4a01bfbdbb39b650074fbb6d41fe8d795e0b8a",
+      "tracked": false
+    },
+    {
+      "path": "scripts/run_four_cline_fleet.py",
+      "sha256": "d2b0fd4010a7b18388bd921d029ece04996ddbe8eab22d2cfbf29d1c56cbe581",
+      "tracked": false
+    },
+    {
+      "path": "scripts/autonomous_icu_pipeline.py",
+      "sha256": "cb3efb0be3cfe3a2b8185ee27be49b4b3c727c7182bb216552f66859b02c3f91",
+      "tracked": true
+    }
+  ],
+  "historical_source_hashes": [
+    {
+      "commit": "a376f67",
+      "path": "scripts/autonomous_icu_pipeline.py",
+      "sha256": "2b770a2d5cdc04d0c3e7daf236b0ae9e06b37ce927d1cf490ac41fd85a044e09",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "2ce3a85",
+      "path": "scripts/kaggle_engine_worker.py",
+      "sha256": "9268ebd876bb193024e74d213bb7f6ae672ff4d1d30163838a599a498af83446",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "06b3f14",
+      "path": ".github/workflows/engine2.yml",
+      "sha256": "8dee9fcd568f64f581fa704c5fa40aad67c1214a631b80f5e1d43a9a5ee66d23",
+      "masked_native_test_failures": true,
+      "installs_clite_package": true,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "06b3f14",
+      "path": "scripts/run-cline.sh",
+      "sha256": "833ae9f8cf79516b483d9054c5f527484ecf376db66ba74a51f6dbc2bc5a7b64",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "06b3f14",
+      "path": "scripts/collect-changes.py",
+      "sha256": "ee7ace45c93fac15a2b7af246d210782e01e7287e8ea74b13eea02be1ef40d00",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": false
+    },
+    {
+      "commit": "06b3f14",
+      "path": "scripts/report-result.sh",
+      "sha256": "3f2737ea03928e658579b3c9750a8649927cae9643f85e492450f5df1db3cf4d",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "28faa87",
+      "path": ".github/workflows/engine2.yml",
+      "sha256": "80e1319e2e49c9af6539a89a5193790bc6f0d0476dbe439d2d6e50ed500aa8a5",
+      "masked_native_test_failures": true,
+      "installs_clite_package": true,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "747a827",
+      "path": ".github/workflows/engine2.yml",
+      "sha256": "7108e7f0022e052fbce7886e2a64f1c1a4e2eccca5c1bbb502b9ecc8fac2472d",
+      "masked_native_test_failures": true,
+      "installs_clite_package": true,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "e532f4d",
+      "path": ".github/workflows/engine2.yml",
+      "sha256": "068e214c74acb2a561ab3d6c63cee3a9f4a95d2d06aa5e6a359673b797586865",
+      "masked_native_test_failures": true,
+      "installs_clite_package": true,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "e532f4d",
+      "path": "scripts/run-cline.sh",
+      "sha256": "833ae9f8cf79516b483d9054c5f527484ecf376db66ba74a51f6dbc2bc5a7b64",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "e532f4d",
+      "path": "scripts/collect-changes.py",
+      "sha256": "ee7ace45c93fac15a2b7af246d210782e01e7287e8ea74b13eea02be1ef40d00",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": false
+    },
+    {
+      "commit": "5920df2",
+      "path": ".github/workflows/engine2.yml",
+      "sha256": "068e214c74acb2a561ab3d6c63cee3a9f4a95d2d06aa5e6a359673b797586865",
+      "masked_native_test_failures": true,
+      "installs_clite_package": true,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "5920df2",
+      "path": "scripts/run-cline.sh",
+      "sha256": "3b65405d6e09ea6247f04d8e631552950c0e1f0e98c612d3f819783c8ed25657",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "5920df2",
+      "path": "scripts/collect-changes.py",
+      "sha256": "c0663ab5b9ab0a9665877597edd01b2055405bee979fea0af836fbacdce5dbda",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": true
+    },
+    {
+      "commit": "5920df2",
+      "path": "scripts/report-result.sh",
+      "sha256": "3f2737ea03928e658579b3c9750a8649927cae9643f85e492450f5df1db3cf4d",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "5920df2",
+      "path": "scripts/tokenharbor_router.py",
+      "sha256": "a8fdb6549e32d55c52d158a4687f2d4fe62e809fb55425908d4ceec1679c201b",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": null
+    },
+    {
+      "commit": "5920df2",
+      "path": "scripts/tokenharbor_cline_proxy.py",
+      "sha256": "2034c8fe6f061cd27b55c04e81ef815a60d29cec042af5bb8ce0ecc4d6ceb6e1",
+      "masked_native_test_failures": false,
+      "installs_clite_package": false,
+      "lockfile_excluded": null
+    }
+  ],
+  "tests": {
+    "at": "2026-10-27T13:50:46.422181+00:00",
+    "scope": "Isolated regression fixtures; not Actions E2E receipts",
+    "results": [
+      {
+        "command": [
+          "python",
+          "-W",
+          "error",
+          "scripts/test_partition_regressions.py"
+        ],
+        "exit_code": 0,
+        "log": "test_partition_regressions.log",
+        "log_sha256": "e7b4221b7b7efc157bae2de9c5ca1ba35da4219c6b7c083215c6e7a068cc8472",
+        "test_unchanged": true
+      },
+      {
+        "command": [
+          "python",
+          "-W",
+          "error",
+          "scripts/test_icu_pipeline_suite.py"
+        ],
+        "exit_code": 0,
+        "log": "test_icu_pipeline_suite.log",
+        "log_sha256": "48b988c465f56ab0d405e32e84d9eb5aad89a9ee51ed0d42c306df0b2032ddfc",
+        "test_unchanged": true
+      },
+      {
+        "command": [
+          "python",
+          "-W",
+          "error",
+          "scripts/test_cline_delivery_ownership.py"
+        ],
+        "exit_code": 0,
+        "log": "test_cline_delivery_ownership.log",
+        "log_sha256": "2d349f4589b4bf76b09806a766979ed5ec32aad19456e96801da28964f3e26c3",
+        "test_unchanged": true
+      }
+    ]
+  },
+  "npm_executables": [
+    {
+      "name": "@cline/cli",
+      "version": "0.0.13",
+      "bin": {
+        "clite": "bin/clite"
+      }
+    },
+    {
+      "name": "cline",
+      "version": "3.0.74",
+      "bin": {
+        "cline": "bin/cline"
+      }
+    }
+  ],
+  "repair_stages": {
+    "R0": {
+      "status": "PLANNED",
+      "findings": [
+        "F07",
+        "F19"
+      ]
+    },
+    "R1": {
+      "status": "PLANNED",
+      "findings": [
+        "F01",
+        "F02",
+        "F03",
+        "F08"
+      ]
+    },
+    "R2": {
+      "status": "PLANNED",
+      "findings": [
+        "F06",
+        "F09",
+        "F11",
+        "F18",
+        "F19"
+      ]
+    },
+    "R3": {
+      "status": "PLANNED",
+      "findings": [
+        "F03",
+        "F04",
+        "F10",
+        "F11",
+        "F17"
+      ]
+    },
+    "R4": {
+      "status": "PLANNED",
+      "findings": [
+        "F07",
+        "F14",
+        "F15",
+        "F16",
+        "F20"
+      ]
+    },
+    "R5": {
+      "status": "PLANNED",
+      "findings": [
+        "F04",
+        "F05",
+        "F06",
+        "F13"
+      ]
+    },
+    "R6": {
+      "status": "PLANNED",
+      "findings": [
+        "F12",
+        "F13",
+        "F14",
+        "F20"
+      ]
+    },
+    "R7": {
+      "status": "PLANNED",
+      "findings": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14",
+        "F15",
+        "F16",
+        "F17",
+        "F18",
+        "F19",
+        "F20"
+      ]
+    }
+  },
+  "raw_evidence": {
+    "directory": "scratch\\actions-e2e-audit-20261027",
+    "file_count": 187,
+    "manifest_sha256": "3463a9941dae8a5ba37fc1aff6bd1fa7179b28609407194e674c69f599ee765d"
+  },
+  "closing_check": {
+    "captured_at": "2026-10-27T14:04:34.823964+00:00",
+    "remote_sha": "5920df2d897b853c7bff3db2f2f944767b2d37ed",
+    "latest_run_id": 40511749430,
+    "reported_total_runs": 27
+  },
+  "document_sha256": {
+    "docs/ACTIONS-THREE-LAYER-E2E-AUDIT-2026-10-27.md": "e100c2c41b7bb045efd6ec083c085f6424488649a583a6948957a0b87a4f0c24",
+    "docs/ACTIONS-MIGRATION-REPAIR-PATH-2026-10-27.md": "4d2f3776ecabe7118c9af8d7c946da90786219377952439ec86273d0e5ece516"
+  }
+}
