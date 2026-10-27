@@ -22,14 +22,62 @@ from discovery_horizon import Horizon
 QUERY_CONFIG = json.loads(Path(__file__).with_name("bounty_queries.json").read_text(encoding="utf-8"))
 PRIORITY_PROGRAM_QUERIES = tuple(QUERY_CONFIG.pop("priority_programs", ()))
 QUERIES = QUERY_CONFIG
+SEARCH_QUALIFIERS = (
+    "is:issue", "is:open", "is:public", "archived:false",
+    "-label:type/experiment", "no:assignee", "-linked:pr",
+)
+QUERY_POLICY_VERSION = "unassigned-no-closing-pr-v1"
+QUERY_EXCLUDED_ASSIGNED = "query_excluded_assigned"
+
+
+def build_issue_search_query(expression, window=None, fresh=0):
+    """Compile each lane expression with the shared GitHub-side eligibility filters.
+
+    Parentheses keep the shared qualifiers attached to every branch of expressions
+    containing OR. GitHub can enforce issue state, visibility, archive, assignee and
+    closing-PR relations at search time; predicates without GitHub search qualifiers
+    remain in the existing evidence-based admission contract.
+    """
+    expression = str(expression or "").strip()
+    query = (f"({expression}) " if expression else "") + " ".join(SEARCH_QUALIFIERS)
+    if window:
+        query += " created:" + Horizon.qualifier(window)
+    if fresh:
+        query += " updated:>=" + datetime.fromtimestamp(
+            time.time() - 7 * 86400, timezone.utc).strftime("%Y-%m-%d")
+    return query
+
+
+def has_assignees(item):
+    """Read assignment evidence carried by GitHub search results/cache rows."""
+    assignees = item.get("assignees")
+    if isinstance(assignees, list):
+        return bool(assignees)
+    return assignees not in (None, "")
+
+
+def retire_assigned_pending(con):
+    """Retire cached search rows that the new server-side query now excludes.
+
+    The Actions cache can outlive a query-policy deployment. Replaying an old assigned
+    hit would bypass `no:assignee` even though all new GitHub searches use it, so migrate
+    that cached search evidence once when the policy changes.
+    """
+    retired = 0
+    for identity, payload in con.execute("SELECT task_id,payload FROM pending").fetchall():
+        try:
+            item = json.loads(payload)
+        except (TypeError, json.JSONDecodeError):
+            continue
+        if isinstance(item, dict) and has_assignees(item):
+            retired += con.execute(
+                "UPDATE pending SET status=? WHERE task_id=?",
+                (QUERY_EXCLUDED_ASSIGNED, identity)).rowcount
+    return retired
 
 
 def query_window(api, expression, window=None, fresh=0):
-    q = expression + " is:issue is:open is:public archived:false -label:type/experiment"
-    if window:
-        q += " created:" + Horizon.qualifier(window)
-    if fresh:
-        q += " updated:>=" + datetime.fromtimestamp(time.time() - 7 * 86400, timezone.utc).strftime("%Y-%m-%d")
+    q = build_issue_search_query(expression, window=window, fresh=fresh)
     items = []
     page = 1
     total = None
@@ -315,16 +363,24 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
     con.execute("CREATE TABLE IF NOT EXISTS metadata(name TEXT PRIMARY KEY,value TEXT)")
     con.execute("CREATE TABLE IF NOT EXISTS repo_intent(repository TEXT PRIMARY KEY, verdict TEXT, "
                 "merged INTEGER, total INTEGER, evidence TEXT, probed_at REAL)")
-    policy = hashlib.sha256("\n".join(Path(__file__).with_name(name).read_text(encoding="utf-8-sig")
-                                     for name in ("bounty_admission.py", "actions_github.py")).encode()).hexdigest()
+    policy_material = "\n".join(Path(__file__).with_name(name).read_text(encoding="utf-8-sig")
+                                for name in ("bounty_admission.py", "actions_github.py"))
+    policy_material += "\nquery-policy=" + QUERY_POLICY_VERSION
+    policy_material += "\nquery-qualifiers=" + " ".join(SEARCH_QUALIFIERS)
+    policy = hashlib.sha256(policy_material.encode()).hexdigest()
     old_policy = con.execute("SELECT value FROM metadata WHERE name='admission_policy'").fetchone()
     if not old_policy or old_policy[0] != policy:
-        # A repaired gate must revisit old rejections instead of preserving a
-        # stale zero-result verdict in the restored Actions cache.
+        # A changed search/admission policy must revisit the cache without letting old
+        # search hits bypass a newly pushed-down query filter.
         con.execute("UPDATE pending SET status='pending',checked=0")
         con.execute("DELETE FROM candidates")
         con.execute("INSERT OR REPLACE INTO metadata VALUES('admission_policy',?)", (policy,))
+        assigned_retired = retire_assigned_pending(con)
         con.commit()
+        print(json.dumps({"phase": "SEARCH_POLICY_MIGRATION",
+                          "version": QUERY_POLICY_VERSION,
+                          "qualifiers": list(SEARCH_QUALIFIERS),
+                          "assigned_cache_rows_retired": assigned_retired}), flush=True)
     counts = Counter()
     candidates = {}
     intent_cache = {}
@@ -336,7 +392,9 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
         rows, total = query_window(api, expression, window)
         recent, _ = query_window(api, expression, fresh=30)
         counts[lane + ".raw"] += len(rows) + len(recent)
-        print(json.dumps({"phase": "SEARCH", "lane": lane, "query": expression,
+        print(json.dumps({"phase": "SEARCH", "lane": lane, "expression": expression,
+                          "query": build_issue_search_query(expression, window=window),
+                          "fresh_query": build_issue_search_query(expression, fresh=30),
                           "partition": horizon.qualifier(window), "total_count": total,
                           "returned": len(rows), "fresh": len(recent)}), flush=True)
         # Persist the raw horizon before hydration; bounded work never drops the unprocessed
@@ -349,9 +407,13 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
             lanes_seen = set(json.loads(old[0])) if old else set()
             lanes_seen.add(lane)
             signature = item.get("updated_at", "")
-            pending = not old or old[1] != signature or time.time() - old[2] > 21600
+            was_query_excluded = bool(old and old[3] == QUERY_EXCLUDED_ASSIGNED)
+            pending = (was_query_excluded or not old or old[1] != signature
+                       or time.time() - old[2] > 21600)
             status = "pending" if pending else old[3]
-            if verdicts.get(repository) == "REPOSITORY_DOES_NOT_MERGE":
+            if has_assignees(item):
+                status = QUERY_EXCLUDED_ASSIGNED
+            elif verdicts.get(repository) == "REPOSITORY_DOES_NOT_MERGE":
                 status = REPO_INTENT_RETIRED
             con.execute("INSERT OR REPLACE INTO pending VALUES(?,?,?,?,?,?)",
                         (identity, json.dumps(item), json.dumps(sorted(lanes_seen)), signature,
