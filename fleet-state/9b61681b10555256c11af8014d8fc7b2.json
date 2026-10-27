@@ -1,0 +1,53 @@
+{
+  "task_id": "9b61681b10555256c11af8014d8fc7b2",
+  "repo": "Expensify/App",
+  "issue_number": 101616,
+  "status": "DISPATCHING",
+  "dispatch_id": "b525f58763de47068e78a4540e1a410b",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/101616",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "regression",
+      "regressions"
+    ],
+    "component_references": [
+      "16/18.7.8",
+      "EMAIL",
+      "src/components/Search/index.tsx",
+      "src/hooks/useSearchPageSetup.ts",
+      "tests/ui/SearchPageTest.tsx"
+    ],
+    "source_locations": [
+      "src/components/Search/index.tsx",
+      "src/hooks/useSearchPageSetup.ts",
+      "src/libs/HttpUtils.ts",
+      "src/libs/Middleware/FailureTracking.ts",
+      "src/libs/SearchUIUtils.ts",
+      "src/pages/Search/SearchTypeMenuNarrow.tsx",
+      "tests/ui/SearchPageTest.tsx"
+    ],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/101616",
+      "https://github.com/Expensify/App/issues/101616#issuecomment-5735082997",
+      "https://github.com/Expensify/App/issues/101616#issuecomment-6454855892"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/101616",
+    "fetched_at": "2026-10-27T22:36:24.527670+00:00"
+  },
+  "lanes": [
+    "programs"
+  ],
+  "dispatched_at": "2026-10-27T22:36:34.063149+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-27T22:36:34.063172+00:00"
+}
