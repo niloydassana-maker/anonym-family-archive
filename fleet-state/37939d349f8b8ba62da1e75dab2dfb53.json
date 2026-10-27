@@ -2,7 +2,7 @@
   "task_id": "37939d349f8b8ba62da1e75dab2dfb53",
   "repo": "xpex-systems-ai/GXEON-AI",
   "issue_number": 452,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "f5a3ffb8106e422c85cfc455a46dd3cf",
   "admission": {
     "funding": {
@@ -32,6 +32,12 @@
     "startup"
   ],
   "dispatched_at": "2026-10-27T18:21:18.948255+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-27T18:21:25.492929+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-27T18:21:38.307398+00:00",
+  "owner": "40559211885:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40559211885",
+  "harness_sha": "ff608856a6e57896ca15c370e404b1b5c5f9e31d",
+  "claimed_at": "2026-10-27T18:21:38.307379+00:00"
 }
