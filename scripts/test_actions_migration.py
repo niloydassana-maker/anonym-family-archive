@@ -197,6 +197,13 @@ class TransportTests(unittest.TestCase):
         api = SimpleNamespace(api=lambda _: {"check_runs": rows}, pages=lambda _: [])
         self.assertEqual(classify_checks(api, "owner/project", "head")["state"], "PASSED")
 
+    def test_maintainer_approval_is_pending_not_a_code_repair(self):
+        rows = [{"id": 1, "name": "native", "status": "completed", "conclusion": "action_required"}]
+        api = SimpleNamespace(api=lambda _: {"check_runs": rows}, pages=lambda _: [])
+        proof = classify_checks(api, "owner/project", "head")
+        self.assertEqual(proof["state"], "PENDING")
+        self.assertEqual(proof["failures"], [])
+
 
 class ReleaseTests(unittest.TestCase):
     def setUp(self):

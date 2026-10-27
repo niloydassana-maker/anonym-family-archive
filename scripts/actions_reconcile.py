@@ -24,12 +24,13 @@ def classify_checks(api, repo, head):
         if key not in latest or row["id"] > latest[key]["id"]:
             latest[key] = row
     failures = [r for r in latest.values() if r["status"] == "completed"
-                and r.get("conclusion") in ("failure", "timed_out", "cancelled", "action_required", "startup_failure")]
+                and r.get("conclusion") in ("failure", "timed_out", "cancelled", "startup_failure")]
     latest_status = {}
     for row in statuses:  # newest first
         latest_status.setdefault(row["context"], row)
     failures += [r for r in latest_status.values() if r["state"] in ("error", "failure")]
-    pending = any(r["status"] != "completed" for r in latest.values()) or any(
+    pending = any(r["status"] != "completed" or r.get("conclusion") == "action_required"
+                  for r in latest.values()) or any(
         r["state"] == "pending" for r in latest_status.values())
     return {"head_sha": head, "checks": list(latest.values()), "statuses": list(latest_status.values()),
             "failures": failures, "state": "FAILED" if failures else "PENDING" if pending else
