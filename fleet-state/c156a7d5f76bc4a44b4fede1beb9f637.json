@@ -2,7 +2,7 @@
   "task_id": "c156a7d5f76bc4a44b4fede1beb9f637",
   "repo": "Expensify/App",
   "issue_number": 85907,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "1af62fd907a24dddb98b7cc8faa662f8",
   "admission": {
     "funding": {
@@ -41,11 +41,71 @@
   ],
   "dispatched_at": "2026-10-27T21:20:47.530403+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-27T21:21:12.970644+00:00",
+  "updated_at": "2026-10-27T21:27:07.334450+00:00",
   "owner": "40586011874:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40586011874",
   "harness_sha": "4ba9af5074c1ad977fa7b185f93806c6fabcdb93",
-  "claimed_at": "2026-10-27T21:21:12.970626+00:00"
+  "claimed_at": "2026-10-27T21:21:12.970626+00:00",
+  "at": "2026-10-27T21:26:53.819133+00:00",
+  "reason": "Cline preparation blocked: Blocked: the reproducible defect in issue #85907 (Slack emoji <img> tags pasted into the Composer render as broken images) is already fixed by a merged, production-deployed PR whose regression tests already ship on the upstream default branch, so no new code change is required on this repository. Evidence: (1) upstream default branch main tip = 468344bc4c23c10d83d1994696ac77d15a1feb77 (2026-10-27) already contains the fix in src/hooks/useHtmlPaste/index.ts - isEmojiImage(), getEmojiReplacementText() and replaceEmojiImagesInHTML() replace Slack emoji <img> nodes (dataset.stringifyEmoji or dataset.stringifyType==='emoji') with their shortcode/alt while preserving surrounding HTML and routing to handlePastedHTML, instead of emitting a.slack-edge.com markdown images. (2) Regression coverage for exactly this scenario already exists at tests/ui/hooks/useHtmlPasteTest/index.tsx ('uses the Slack emoji shortcode metadata while preserving surrounding HTML formatting', legacy stringify-type fallback, and normal-image-first cases). (3) PR #89625 'fix: convert Slack emoji images to shortcodes on paste' merged 2026-10-16; its merge commit 3a7583633e7b88186cc4623cd46e00f30282bd64 is an ancestor of main (verified with git merge-base --is-ancestor). (4) melvin-bot comment 6299224665 states the resolution was deployed to production in version 9.5.14-3 subject to a 7-day regression period. (5) Payment summary comment 6428189742 lists https://github.com/Expensify/App/pull/89625 as the resolving PR for this issue (assignee @Uzaifm127, reviewer @truph01). The only open content is the assignee's finalized follow-up plan (comment 6451147442) proposing three additional follow-up PRs (emoji images from 7 other apps, iOS Safari, skin-tone shortcode conversion) that explicitly await maintainer confirmation ('After your confirmation, we will start working on follow up PR and follow up issues') and are the assignee's own planned work. There is no live funding for a new change on this issue. Therefore this is an already-resolved/already-competing claim: no product edits were made and no fix/bounty-85907 branch was created.",
+  "declared_reason": "Blocked: the reproducible defect in issue #85907 (Slack emoji <img> tags pasted into the Composer render as broken images) is already fixed by a merged, production-deployed PR whose regression tests already ship on the upstream default branch, so no new code change is required on this repository. Evidence: (1) upstream default branch main tip = 468344bc4c23c10d83d1994696ac77d15a1feb77 (2026-10-27) already contains the fix in src/hooks/useHtmlPaste/index.ts - isEmojiImage(), getEmojiReplacementText() and replaceEmojiImagesInHTML() replace Slack emoji <img> nodes (dataset.stringifyEmoji or dataset.stringifyType==='emoji') with their shortcode/alt while preserving surrounding HTML and routing to handlePastedHTML, instead of emitting a.slack-edge.com markdown images. (2) Regression coverage for exactly this scenario already exists at tests/ui/hooks/useHtmlPasteTest/index.tsx ('uses the Slack emoji shortcode metadata while preserving surrounding HTML formatting', legacy stringify-type fallback, and normal-image-first cases). (3) PR #89625 'fix: convert Slack emoji images to shortcodes on paste' merged 2026-10-16; its merge commit 3a7583633e7b88186cc4623cd46e00f30282bd64 is an ancestor of main (verified with git merge-base --is-ancestor). (4) melvin-bot comment 6299224665 states the resolution was deployed to production in version 9.5.14-3 subject to a 7-day regression period. (5) Payment summary comment 6428189742 lists https://github.com/Expensify/App/pull/89625 as the resolving PR for this issue (assignee @Uzaifm127, reviewer @truph01). The only open content is the assignee's finalized follow-up plan (comment 6451147442) proposing three additional follow-up PRs (emoji images from 7 other apps, iOS Safari, skin-tone shortcode conversion) that explicitly await maintainer confirmation ('After your confirmation, we will start working on follow up PR and follow up issues') and are the assignee's own planned work. There is no live funding for a new change on this issue. Therefore this is an already-resolved/already-competing claim: no product edits were made and no fix/bounty-85907 branch was created.",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/Expensify--App--85907",
+    "base_sha": "468344bc4c23c10d83d1994696ac77d15a1feb77",
+    "default_branch": "main",
+    "sources": [
+      {
+        "path": "package.json",
+        "sha256": "1fc5981dce9a480059e88c13ea5d00bd81263262dc084f529f33cfffc18a6c11"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "01223b45aa826d74ec3b5b363402ebfa34f7a942f37cf05aafd40f7c6f497867"
+      },
+      {
+        "path": ".nvmrc",
+        "sha256": "2a4a3fac7ea8694f168266bd3a930b3fc5faa6e503d577d99c024f74582e4cb5"
+      },
+      {
+        "path": ".bun-version",
+        "sha256": "d03d8b268b4171328ac2458ce8ca82d69a1fde38469d4e4faae4f8fa8d8a5e35"
+      },
+      {
+        "path": "CLAUDE.md",
+        "sha256": "a53a5ff41062b8e6f8ebcb52acfa5248b24b4c4c7f0f00ea2cfbca91086bd2a4"
+      },
+      {
+        "path": ".github/workflows/test.yml",
+        "sha256": "e47a7ad0f11b255ae847be6fb5bc0a8ef5dc882b27c3ad1a5aacf22dec57a7af"
+      },
+      {
+        "path": ".github/workflows/preDeploy.yml",
+        "sha256": "bcd954e33e88110524a2a64d55dc3d57075b6871539c108a44f5d410b82c7e2e"
+      },
+      {
+        "path": ".github/workflows/typecheck.yml",
+        "sha256": "1b6c9fc4b8302ab6a2d15c901ecd08f5b1e6a72a2566a9462913a477b8b4ae58"
+      },
+      {
+        "path": ".github/workflows/lint.yml",
+        "sha256": "c320f7cd1382810f0e508d58cad09810571e3ff07b59e481bc4f7f1f3f5c14e9"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/85907",
+      "payer": "melvin-bot[bot]"
+    }
+  },
+  "finished_at": "2026-10-27T21:27:06.210415+00:00"
 }
