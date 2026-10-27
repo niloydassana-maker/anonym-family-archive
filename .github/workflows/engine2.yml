@@ -46,6 +46,10 @@ jobs:
       with:
         ref: ${{ github.sha }}
         persist-credentials: false
+        sparse-checkout: '/scripts/
+
+          /.github/'
+        sparse-checkout-cone-mode: false
     - name: Validate original task and reserve durable ownership
       id: claim
       env:
@@ -71,6 +75,10 @@ jobs:
       with:
         ref: ${{ github.sha }}
         persist-credentials: false
+        sparse-checkout: '/scripts/
+
+          /.github/'
+        sparse-checkout-cone-mode: false
     - uses: actions/download-artifact@v4
       with:
         name: task-claim-${{ github.run_id }}
@@ -108,6 +116,10 @@ jobs:
       with:
         ref: ${{ github.sha }}
         persist-credentials: false
+        sparse-checkout: '/scripts/
+
+          /.github/'
+        sparse-checkout-cone-mode: false
     - uses: actions/download-artifact@v4
       with:
         name: task-engineering-${{ github.run_id }}
@@ -144,6 +156,10 @@ jobs:
       with:
         ref: ${{ github.sha }}
         persist-credentials: false
+        sparse-checkout: '/scripts/
+
+          /.github/'
+        sparse-checkout-cone-mode: false
     - uses: actions/download-artifact@v4
       with:
         pattern: task-*

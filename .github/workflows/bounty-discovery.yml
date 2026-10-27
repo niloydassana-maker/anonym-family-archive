@@ -20,6 +20,10 @@ jobs:
     - uses: actions/checkout@v4
       with:
         persist-credentials: false
+        sparse-checkout: '/scripts/
+
+          /.github/'
+        sparse-checkout-cone-mode: false
     - uses: actions/cache/restore@v4
       with:
         path: ${{ env.BOUNTY_STATE_DIR }}
