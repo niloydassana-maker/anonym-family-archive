@@ -26,17 +26,54 @@ SEARCH_QUALIFIERS = (
     "is:issue", "is:open", "is:public", "archived:false",
     "-label:type/experiment", "no:assignee", "-linked:pr",
 )
-QUERY_POLICY_VERSION = "unassigned-no-closing-pr-branches-v2"
+QUERY_POLICY_VERSION = "unassigned-no-closing-pr-contextual-branches-v3"
 QUERY_EXCLUDED_ASSIGNED = "query_excluded_assigned"
+SEARCH_QUALIFIER_ATOM = re.compile(r"^-?[A-Za-z][A-Za-z0-9_-]*:")
+
+
+def _search_atoms(expression):
+    """Tokenize GitHub search text without splitting quoted phrases or groups."""
+    atoms = []
+    start = None
+    quoted = False
+    escaped = False
+    depth = 0
+    for index, char in enumerate(expression):
+        if start is None and not char.isspace():
+            start = index
+        if char == '"' and not escaped:
+            quoted = not quoted
+        elif not quoted:
+            if char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+            elif char.isspace() and depth == 0 and start is not None:
+                atoms.append(expression[start:index])
+                start = None
+        escaped = char == "\\" and not escaped
+        if char != "\\":
+            escaped = False
+    if start is not None:
+        atoms.append(expression[start:])
+    return atoms
+
+
+def _is_search_qualifier(atom):
+    return bool(SEARCH_QUALIFIER_ATOM.match(atom))
 
 
 def split_search_or_branches(expression):
-    """Split configured top-level ``OR`` expressions without splitting quoted text.
+    """Expand top-level OR alternatives while preserving shared query context.
 
-    GitHub's REST issue-search endpoint does not preserve the same semantics when an
-    entire text expression is wrapped in parentheses. Compile each disjunction branch
-    as its own query instead, so common eligibility qualifiers can be ANDed into every
-    branch before search results are returned.
+    Lane expressions use a common text/qualifier prefix before the first alternative and
+    may put common search qualifiers (such as is:issue and is:open) after the last one.
+    Distribute that prefix and suffix into every branch. Without this step, splitting
+    `label:bounty auth OR permission` silently turns the second query into an unscoped
+    search for permission across GitHub.
+
+    GitHub's REST issue-search endpoint changed semantics when a whole expression was
+    wrapped in parentheses, so each expanded branch is searched independently instead.
     """
     expression = str(expression or "").strip()
     branches = []
@@ -71,7 +108,33 @@ def split_search_or_branches(expression):
     branches.append(expression[start:].strip())
     if any(not branch for branch in branches):
         raise ValueError("Empty branch in GitHub OR search expression")
-    return branches
+    if len(branches) == 1:
+        return branches
+
+    first_atoms = _search_atoms(branches[0])
+    last_atoms = _search_atoms(branches[-1])
+    if not first_atoms or not last_atoms:
+        raise ValueError("Missing alternative in GitHub OR search expression")
+    if _is_search_qualifier(first_atoms[-1]):
+        raise ValueError("Place shared query context before the first OR alternative")
+
+    shared_prefix = first_atoms[:-1]
+    suffix_start = len(last_atoms)
+    while suffix_start and _is_search_qualifier(last_atoms[suffix_start - 1]):
+        suffix_start -= 1
+    last_alternative = last_atoms[:suffix_start]
+    if not last_alternative:
+        raise ValueError("Missing final alternative in GitHub OR search expression")
+    shared_suffix = last_atoms[suffix_start:]
+
+    expanded = [" ".join([*shared_prefix, first_atoms[-1], *shared_suffix])]
+    for branch in branches[1:-1]:
+        atoms = _search_atoms(branch)
+        if not atoms:
+            raise ValueError("Empty branch in GitHub OR search expression")
+        expanded.append(" ".join([*shared_prefix, *atoms, *shared_suffix]))
+    expanded.append(" ".join([*shared_prefix, *last_alternative, *shared_suffix]))
+    return expanded
 
 
 def build_issue_search_query(expression, window=None, fresh=0):
@@ -86,7 +149,11 @@ def build_issue_search_query(expression, window=None, fresh=0):
     expression = str(expression or "").strip()
     if len(split_search_or_branches(expression)) != 1:
         raise ValueError("Compile OR expressions with build_issue_search_queries")
-    query = (expression + " " if expression else "") + " ".join(SEARCH_QUALIFIERS)
+    atoms = _search_atoms(expression)
+    for qualifier in SEARCH_QUALIFIERS:
+        if qualifier not in atoms:
+            atoms.append(qualifier)
+    query = " ".join(atoms)
     if window:
         query += " created:" + Horizon.qualifier(window)
     if fresh:

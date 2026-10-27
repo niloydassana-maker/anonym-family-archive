@@ -9,7 +9,7 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from actions_dispatch import discover, query_window
+from actions_dispatch import build_issue_search_queries, discover, query_window
 from actions_github import GitHub, GitHubError, StateStore, task_id
 from actions_reconcile import classify_checks
 from actions_release import (git, manifest, protect_baseline_tests, regression_proof,
@@ -90,6 +90,33 @@ class AdmissionTests(unittest.TestCase):
 
 
 class TransportTests(unittest.TestCase):
+    def test_or_search_carries_common_bounty_context_and_trailing_filters(self):
+        expressions = [
+            ('label:bounty "auth" OR "permission" OR "unauthorized" is:issue is:open',
+             ['"auth"', '"permission"', '"unauthorized"']),
+            ('"/bounty" "wallet" OR "solana" OR "token" is:issue is:open',
+             ['"wallet"', '"solana"', '"token"']),
+        ]
+        for expression, alternatives in expressions:
+            with self.subTest(expression=expression):
+                queries = build_issue_search_queries(expression)
+                self.assertEqual(len(queries), len(alternatives))
+                for query, alternative in zip(queries, alternatives):
+                    self.assertIn(alternative, query)
+                    self.assertIn("label:bounty" if expression.startswith("label:") else '"/bounty"', query)
+                    self.assertIn("is:issue", query)
+                    self.assertIn("is:open", query)
+                    self.assertIn("no:assignee", query)
+                    self.assertIn("-linked:pr", query)
+                    self.assertNotIn(" OR ", query)
+                    self.assertEqual(query.count("is:issue"), 1)
+                    self.assertEqual(query.count("is:open"), 1)
+
+    def test_or_inside_quoted_text_is_not_split(self):
+        queries = build_issue_search_queries('"wallet OR token" is:issue is:open')
+        self.assertEqual(len(queries), 1)
+        self.assertIn('"wallet OR token"', queries[0])
+
     def test_complete_search_pagination(self):
         calls = []
         def get(endpoint):

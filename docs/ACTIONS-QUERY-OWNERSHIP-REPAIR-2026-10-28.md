@@ -42,6 +42,31 @@ revisits cached rows, deletes stale candidate snapshots, and retires cached sear
 assignees so an old Actions cache cannot bypass the new server-side filter. If GitHub later
 returns the issue after it becomes unassigned, the row is eligible for hydration again.
 
+## Second live regression: OR branches lost their shared context
+
+The first branch-aware compiler still had a supply bug. It split
+`label:bounty "auth" OR "permission" OR "unauthorized" is:issue is:open` into three
+queries, but only the first retained `label:bounty`; the last query also alone retained the
+trailing issue qualifiers. In live discovery run
+[`40602001407`](https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40602001407),
+the fresh branch totals were `[1, 66696, 11774]`. The second branch had become a global search
+for “permission”, and the third a global search for “unauthorized”. Its non-fresh search
+stopped after a saturated branch and recorded `[35, 761471]` before subdividing the horizon.
+
+The compiler now carries the leading shared context and trailing search qualifiers into every
+alternative. A live REST comparison with the same filters now returns branch totals
+`[35, 34, 5]` for `label:bounty` plus `auth`, `permission`, or `unauthorized`. Another repaired
+query, `label:bounty "tool" OR "function calling"`, returns `[134, 0]`. The compiler still
+searches each branch independently and unions duplicate issues; it does not use a parenthesized
+whole query.
+
+This repair only changes search scope and cache policy version. It does not change the payer,
+engineering, repository-intent, or competition gates. Run `40602001407` had raw lane counts
+`programs=36`, `normal=83`, `startup=142`, `founder=5`; its bounded sample recorded 31
+`CURRENT_ISSUER_OFFER_MISSING`, 43 `HARD_ISSUE_EVIDENCE_MISSING`, 4 closed/read-only,
+4 by-design, and 3 mirror/non-engineering refusals. It qualified and dispatched zero tasks.
+That is evidence of continued supply noise, not a quality-approved task receipt.
+
 ## Live evidence
 
 - `GET /repos/Expensify/App/issues/101616`: state `open`; three assignees.
@@ -78,12 +103,14 @@ native GitHub search qualifier.
 
 - `python -W error -m py_compile scripts/actions_dispatch.py scripts/discovery_horizon.py` -
   passed.
-- `python -W error scripts/test_actions_migration.py` - 32 passed, 1 Windows-specific skip.
 - `python -W error scripts/test_dispatcher_horizon.py` - 16 passed.
 - `python -W error scripts/test_queue_ordering.py` - 20 passed.
 - `python -W error scripts/test_icu_pipeline_suite.py` - all 16 sections passed, 100% green.
-- Runtime smoke check verified quoted `OR` text is not split, both branches receive every
-  shared qualifier, branch results are unioned, and per-branch totals are retained.
+- `python -W error scripts/test_actions_migration.py` runs 34 tests: 33 passed and the
+  Windows-only newline-path case skipped. New tests verify common prefix/suffix retention in
+  all alternatives and preserve `OR` inside quoted text.
+- Runtime smoke check verified quoted `OR` text is not split, every branch retains shared
+  context and server qualifiers, branch results are unioned, and per-branch totals are retained.
 - Running the branch-aware compiler against GitHub's live REST API for
   `bountyhub-bot is:issue is:open` produced `branch_counts=[5]`, three returned issue rows,
   and `saturated=false`. GitHub's reported total and returned item count differed in this
@@ -91,6 +118,6 @@ native GitHub search qualifier.
   tasks.
 - `git diff --check` - passed.
 
-The follow-up branch-aware compiler is verified locally and has a live REST query receipt.
-Its next Actions discovery receipt is still required to establish deployed candidate flow;
-the zero-hit run above remains a failed regression receipt.
+The contextual branch compiler is verified locally and against live GitHub REST search.
+The query compiler change still needs a new Actions run for a deployed receipt; the prior
+Actions cycle is a regression receipt showing exactly why the context fix was needed.
