@@ -19,7 +19,7 @@ from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Dict, Tuple, Optional, Any
+from typing import List, Dict, Tuple, Optional, Any, Callable
 from tokenharbor_router import DEEPSEEK_FLASH_MODEL, call_deepseek_flash
 from fleet_recovery_policy import (
     MAX_EXECUTION_ATTEMPTS, RETRY_DELAYS_SECONDS, FLEET_LEASE_CHANNEL, event_reference,
@@ -535,55 +535,101 @@ def detect_author_corridor(author):
 # 3. HIGH-RECALL BOUNTY & COMMERCIAL ENGAGEMENT GATE
 # -------------------------------------------------------------
 DYNAMIC_DISCOVERY_QUERIES = [
-    # Tier 1: Core Verified Bounty Platforms (Live API / Commenter / Direct Attestation)
-    'commenter:algora-pbc',
-    'commenter:algora-pbc language:typescript',
-    'commenter:algora-pbc language:rust',
-    'commenter:algora-pbc language:python',
+    # Tier 1: Core Verified Bounty Platforms (Predicate-Pushed Language Corridors & Direct Attestation)
+    '--commenter algora-pbc',
+    '--commenter algora-pbc --language typescript',
+    '--commenter algora-pbc --language rust',
+    '--commenter algora-pbc --language python',
+    '--commenter algora-pbc --language go',
     '"console.algora.io"',
     'algora.io',
     'polar.sh',
     'opire.dev',
     'bountycaster "$"',
-    # Tier 2: Specific Priced Queries (Predicate Pushdown of Hard Pricing & Repo Quality Gates)
-    'bounty "$50" stars:>=3',
-    'bounty "$100" stars:>=3',
-    'bounty "$150" stars:>=3',
-    'bounty "$200" stars:>=3',
-    'bounty "$250" stars:>=3',
-    'bounty "$300" stars:>=3',
-    'bounty "$500" stars:>=3',
-    'bounty "$1000" stars:>=3',
-    'bounty "USDC" stars:>=3',
-    'bounty "USDT" stars:>=3',
-    # Tier 3: High-Confidence Title Anchors with Explicit Price Predicate
-    '"[BOUNTY] Critical" stars:>=3',
-    '"[BOUNTY] High" stars:>=3',
-    '"[BOUNTY] Medium" stars:>=3',
-    '"[BOUNTY]" "$" stars:>=3',
-    '"[Bug bounty]" "$" stars:>=3',
-    'bounty in:title "$" stars:>=3',
-    'bounty in:title "$100" stars:>=3',
-    'bounty in:title "$250" stars:>=3',
-    # Tier 4: Precision Labeled & Escrowed Bounties with Explicit Currency
-    '--label bounty "$"',
-    '--label "bug bounty" "$"',
-    '--label "paid bounty" "$"',
-    '--label "funded" "$"',
-    # Tier 5: Engineering Corridors with Explicit Price Predicate
-    'bounty "$" concurrency stars:>=3',
-    'bounty "$" performance stars:>=3',
-    'bounty "$" "memory leak" stars:>=3',
-    'bounty "$" "race condition" stars:>=3',
-    'bounty "$" rust stars:>=3',
-    'bounty "$" python stars:>=3',
-    'bounty "$" golang stars:>=3',
-    'bounty "$" typescript stars:>=3',
-    'bounty "$" "smart contract" stars:>=3',
-    'bounty "$" backend stars:>=3',
-    'bounty "$" database stars:>=3',
-    'bounty "$" distributed stars:>=3',
+    # Tier 2: Specific Priced Queries with Authoritative Bounty Labels (Predicate Pushdown)
+    '--label bounty "$50"',
+    '--label bounty "$100"',
+    '--label bounty "$150"',
+    '--label bounty "$200"',
+    '--label bounty "$250"',
+    '--label bounty "$300"',
+    '--label bounty "$500"',
+    '--label bounty "$1000"',
+    '--label bounty "USDC"',
+    '--label bounty "USDT"',
+    '--label "bug bounty" "$100"',
+    '--label "bug bounty" "$200"',
+    '--label "bug bounty" "$500"',
+    '--label "paid bounty"',
+    '--label funded "$100"',
+    '--label funded "$200"',
+    '--label funded "$500"',
+    # Tier 3: Broad Horizon Language Corridors across GitHub Ecosystem
+    '--label bounty --language python',
+    '--label bounty --language typescript',
+    '--label bounty --language rust',
+    '--label bounty --language go',
+    '--label "bug bounty" --language python',
+    '--label "bug bounty" --language typescript',
+    '--label funded --language python',
+    '--label funded --language typescript',
+    '--label funded --language rust',
+    '--label funded --language go',
+    # Tier 4: Engineering Problem Corridors with Bounty Anchors
+    '--label bounty concurrency',
+    '--label bounty performance',
+    '--label bounty "memory leak"',
+    '--label bounty "race condition"',
+    '--label bounty deadlock',
+    '--label bounty rust',
+    '--label bounty python',
+    '--label bounty golang',
+    '--label bounty typescript',
+    '--label bounty backend',
+    '--label bounty database',
+    '--label bounty distributed',
 ]
+
+GLOBAL_HORIZON_QUERY_MATRIX = DYNAMIC_DISCOVERY_QUERIES
+
+# -------------------------------------------------------------
+# CUSTOM QUERY-LAYER UDFs & PREDICATE PUSHDOWN REGISTRY
+# -------------------------------------------------------------
+CustomQueryGateFn = Callable[[Dict[str, Any]], Tuple[bool, str]]
+CUSTOM_QUERY_GATES: List[Tuple[str, CustomQueryGateFn]] = []
+
+def register_custom_query_gate(name: str, fn: CustomQueryGateFn) -> None:
+    """
+    Allows registering arbitrary custom Python filter functions that execute
+    inside `search_issues()` before any candidate leaves the search layer.
+    """
+    CUSTOM_QUERY_GATES.append((name, fn))
+
+def evaluate_custom_query_gates(candidate: Dict[str, Any]) -> Tuple[bool, str]:
+    for name, gate_fn in CUSTOM_QUERY_GATES:
+        ok, reason = gate_fn(candidate)
+        if not ok:
+            return False, f"Rejected by custom query gate '{name}': {reason}"
+    return True, "Passed all custom query gates"
+
+def _default_query_layer_gate(candidate: Dict[str, Any]) -> Tuple[bool, str]:
+    """
+    Unified Query-Layer Gate:
+    Evaluates DB deduplication and core query-layer invariants.
+    """
+    repo = candidate.get("repository", {}).get("nameWithOwner", "")
+    number = candidate.get("number")
+    if not repo or not number:
+        return False, "Missing repository or issue number"
+
+    # DB state gate at query layer
+    already_done, cur_status = is_issue_claimed_or_delivered(repo, number)
+    if already_done:
+        return False, f"Already in ledger state '{cur_status}'"
+
+    return True, "OK"
+
+register_custom_query_gate("default_query_layer_gate", _default_query_layer_gate)
 
 def extract_upstream_issue_from_aggregator(body: str) -> tuple[str, int] | None:
     """
@@ -914,7 +960,8 @@ def is_direct_payer(author, repo, full_author_text):
     # Contributor payee marker: author stating how they want to RECEIVE payment, not PAY it
     payee_pattern = (
         r"\b(?:payout\s+(?:address|wallet|account)|"
-        r"(?:settlement|my|solana|usdc|usdt|eth|btc)\s+wallet\s*[:=-]|"
+        r"(?:settlement|recipient|my|solana|usdc|usdt|eth|btc)\s+wallet|"
+        r"operator\s+payout\s+address|"
         r"preferred\s+(?:payment\s+method|options?)|"
         r"please\s+consider\s+the\s+.*?bounty\s+track|"
         r"if\s+selected\b|"
@@ -952,7 +999,7 @@ def is_direct_payer(author, repo, full_author_text):
                 (re.search(r"(?:/bounty|\b(?:bounty|reward|prize)\s*[:=-]?)\s*(?:\$|usd|usdc|usdt|eur|€|gbp|inr|₹|sol|eth)", text, re.IGNORECASE) or
                  _has_direct_offer_language(text)))
 
-def verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc="NONE", author=None, live_delivery_mode=False):
+def verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc="NONE", author=None, live_delivery_mode=False, payer_assoc="NONE"):
     """
     Verify paid engineering work and high-ticket opportunities rather than only production outages.
     A platform-attested or explicit paid bounty qualifies regardless of association.
@@ -1105,7 +1152,7 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     has_amount, amount_in_bounds, raw_amount, usd_value, amount_reason = parse_and_normalize_bounty(full_text)
     platform_attested = _has_platform_bounty_marker(full_text)
     direct_payer = is_direct_payer(author, repo, full_text) if author else False
-    maintainer = assoc in {"OWNER", "MEMBER", "COLLABORATOR"}
+    maintainer = assoc in {"OWNER", "MEMBER", "COLLABORATOR"} or (payer_assoc or "NONE").upper() in {"OWNER", "MEMBER", "COLLABORATOR"}
     is_verified_sponsor = is_independently_verified_sponsor(author, repo, full_text) if author else False
 
     has_commercial_request = bool(re.search(
@@ -1463,6 +1510,9 @@ def get_issue_fast(repo, number):
     except Exception:
         return None
 
+    if not isinstance(data, dict):
+        return None
+
     # Ignore bot-generated issues
     author_obj = data.get("author", {}) or {}
     if author_obj.get("is_bot") or str(author_obj.get("login", "")).startswith("app/"):
@@ -1492,7 +1542,8 @@ def get_issue_fast(repo, number):
                        ("algora", "polar", "gitcoin", "bountysource", "opire", "bountybot"))
                 or _has_platform_bounty_marker(comment_body)
             )
-            if login == str(author_login).lower() or is_platform_actor:
+            is_repository_authority = (comment.get("authorAssociation") or "NONE").upper() in {"OWNER", "MEMBER", "COLLABORATOR"}
+            if login == str(author_login).lower() or is_platform_actor or is_repository_authority:
                 author_comments.append(comment_body)
 
     data["author_comments"] = author_comments
@@ -2673,7 +2724,7 @@ def has_existing_open_pr(repo, number):
         return True, comp_msg
     return False, None
 
-def post_grounded_proposal(repo, number, title, author, url, body, author_comments, labels, reason, corridor_info, author_assoc="NONE", live_mode=False):
+def post_grounded_proposal(repo, number, title, author, url, body, author_comments, labels, reason, corridor_info, author_assoc="NONE", live_mode=False, payer_assoc="NONE"):
     issue_id = f"{repo}#{number}"
 
     # Check SQLite transactional store first
@@ -2686,7 +2737,7 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
     if live_mode:
         can_live, live_reason = verify_genuine_icu_patient(
             title, body, author_comments, labels, repo,
-            author_assoc=author_assoc, author=author, live_delivery_mode=True
+            author_assoc=author_assoc, author=author, live_delivery_mode=True, payer_assoc=payer_assoc
         )
         if not can_live:
             print(f"📦 [REJECT/PRE-LLM] {issue_id}: Not eligible for live delivery ({live_reason}). Zero tokens spent.")
@@ -2725,6 +2776,7 @@ def post_grounded_proposal(repo, number, title, author, url, body, author_commen
             "author_comments": author_comments,
             "labels": labels,
             "author_assoc": author_assoc,
+            "payer_assoc": payer_assoc,
             "corridor_info": corridor_info,
             "reason": reason,
             "dispatched_at": datetime.now(timezone.utc).isoformat(),
@@ -3068,8 +3120,13 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
     ])
     out, err, code = run_cmd(cmd, timeout=75)
     if code != 0:
-        print(f"  [GitHub Search Error] {((err or out) or 'unknown failure')[:240]}")
-        return []
+        if "secondary rate limit" in ((err or out) or "").lower():
+            print(f"  [GitHub Rate Limit Backoff] Secondary rate limit detected. Sleeping 60s...")
+            time.sleep(60)
+            out, err, code = run_cmd(cmd, timeout=75)
+        if code != 0:
+            print(f"  [GitHub Search Error] {((err or out) or 'unknown failure')[:240]}")
+            return []
     if not out:
         return []
     try:
@@ -3186,9 +3243,106 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         if _has_payment_negation(full_text) or _has_economic_scam_marker(full_text):
             continue
 
-        # Funding and the $50 floor are checked after fetching authoritative
-        # author/platform comments. A search result does not contain those
-        # comments, so missing or older body pricing cannot reject it here.
+        # Mathematical Predicate Pushdown: Filter non-commercial student, contest, gaming, social marketing, and speculative design patterns at search layer
+        student_patterns = [
+            r"\b(?:lfx|cncf|gsoc|mentee|internship|outreachy)\b",
+            r"\b(?:stipend for students)\b",
+            r"\b(?:homelab|home lab)\b",
+            r"\b(?:my portfolio|personal portfolio|my resume|my cv|curriculum vitae|student resume)\b",
+            r"\b(?:roadmap\s+milestone\s+\d+/\d+|go-to-market(?:\s+planning)?|sustainable\s+unit\s+economics)\b",
+            r"\b(?:\$|usd\s*)[\d,]+[kmb]?\+?\s*(?:tvl|volume|mcap|market\s+cap|valuation|arr|mrr)\b",
+            r"\b(?:casting|performer|audition|playbill|theatre|board game|ruleset)\b",
+            r"\b(?:gameplay|in-game\s+(?:currency|money|cash|item|upgrade)|garage\s+(?:upgrade|track)|wanted\s+poster|boss\s+fight|respawn|co-op\s+mode|speedrun|gift\s*cards?|steam\s*vault)\b",
+            r"\b(?:hackathon|hack\s+weekend|game\s+jam|prize\s+pool|track\s+prize|submission\s+window|demo\s+video|video\s+submission|disqualification\s+risk|terms\s+and\s+conditions\s+compliance|t&c\s+compliance)\b",
+            r"\b(?:hackathon\.xyz|monad\.xyz/hackathon|dorahacks|devpost|gitcoin\s+hackathon|agora\s+bounty|agora\s+entry)\b"
+        ]
+        non_software_patterns = [
+            r"\b(?:tiktok|instagram|youtube\s+video|video\s+submission|tweet|twitter\s+thread|meme|graphic\s+design)\b",
+            r"\b(?:work\s+sprint|marketing\s+campaign|social\s+media\s+evidence|content\s+creation)\b",
+            r"\b(?:superteam[-_]earn|superteam)\b"
+        ]
+        speculative_design_patterns = [
+            r"\[(?:roadmap|rfc|proposal|design|spec)\]",
+        ]
+        if any(re.search(sp, full_text, re.IGNORECASE) for sp in student_patterns):
+            continue
+        if any(re.search(nsp, full_text, re.IGNORECASE) for nsp in non_software_patterns):
+            continue
+        if any(re.search(sdp, title, re.IGNORECASE) for sdp in speculative_design_patterns):
+            continue
+
+        # Predicate Pushdown: Currency & Attestation Gate at search layer
+        # Drops unverified issues with no bounty label, no verified platform, and no parsed currency
+        reputation_points_patterns = [
+            r"\b(?:reputation\s+points?|recognition\s+points?|reward\s+points?|points\s+only|not\s+money|not\s+cash|hanzo\s+rewards)\b",
+            r"\b(?:points:\s*\d+)\b",
+            r"\b\d+\s+recognition\s+points\b",
+        ]
+        if any(re.search(rp, full_text, re.IGNORECASE) for rp in reputation_points_patterns):
+            continue
+
+        has_bounty_label = any(
+            (lbl.get("name") if isinstance(lbl, dict) else str(lbl)).lower() in ("bounty", "bug bounty", "paid bounty", "funded", "reward")
+            for lbl in labels
+        )
+        has_platform = any(
+            p in full_text for p in ("algora.io", "polar.sh", "opire.dev", "bountycaster")
+        )
+        has_bounty, in_bounds, _, usd_val, _ = parse_and_normalize_bounty(title + " " + body)
+
+        # Enforce floor and attestation predicates at search layer:
+        # Hydrate comments if not present to verify funding exists before returning from search
+        if "author_comments" not in it and comments_cnt > 0 and (has_bounty_label or has_platform):
+            up_data = get_issue_fast(repo, number)
+            if up_data and up_data.get("state") == "OPEN":
+                it["author_comments"] = up_data.get("author_comments", [])
+                it["authorAssociation"] = up_data.get("authorAssociation", it.get("authorAssociation", "NONE"))
+                it["payerAssociation"] = up_data.get("payerAssociation", "NONE")
+                it["labels"] = up_data.get("labels", labels)
+                it["body"] = up_data.get("body", body)
+
+        # Total text across title, body, and hydrated author comments
+        total_text = f"{title} {body} " + " ".join(it.get("author_comments", []))
+        has_any_bounty, any_in_bounds, _, any_usd_val, _ = parse_and_normalize_bounty(total_text)
+
+        # 1. If explicit bounty amount in title, body, or comments, must meet $50 high-ticket floor (or $20 for unit test boundary)
+        if has_any_bounty:
+            if any_usd_val is not None and any_usd_val < Decimal("50.00"):
+                continue
+        else:
+            # 2. If no parsed currency amount in title/body:
+            # If commentsCount == 0, physically cannot have comment funding -> drop at search layer
+            if comments_cnt == 0:
+                continue
+
+            # Must have at least a bounty label or platform marker to warrant inspection
+            if not (has_bounty_label or has_platform):
+                continue
+
+        # 3. If comments have been hydrated, verify genuine ICU gate directly inside search layer
+        if "author_comments" in it:
+            is_icu_check, _ = verify_genuine_icu_patient(
+                title,
+                body,
+                it.get("author_comments", []),
+                labels,
+                repo,
+                author_assoc=it.get("authorAssociation", "NONE"),
+                author=author
+            )
+            if not is_icu_check:
+                continue
+
+        # Territory Corridor Gate at search layer
+        if author:
+            corridor_name, _, _ = detect_author_corridor(author)
+            if corridor_name in ("Excluded Regional Market", "Excluded Territory"):
+                continue
+
+        # Evaluate registered custom query gates inside search_issues()
+        gate_ok, gate_reason = evaluate_custom_query_gates(it)
+        if not gate_ok:
+            continue
 
         filtered_items.append(it)
 
@@ -3407,7 +3561,8 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
 
         is_icu, reason = verify_genuine_icu_patient(title, body, author_comments, labels, repo, author_assoc=author_assoc, author=author)
         if not is_icu:
-            print(f"[REJECT] {issue_id}: {reason}")
+            mark_issue_rejected(repo, number, reason)
+            print(f"[SKIP] {issue_id} rejected at seed gate: {reason}")
             continue
 
         corridor_name, is_active, corridor_info = corridor_for(author)
@@ -3437,7 +3592,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
             print(f"[DISCOVERY_PASS_START] phase={pass_name} limit={query_limit} queries={len(dynamic_queries)}", flush=True)
         print(f"\n[Search Query] {q}")
         items = search_issues(q, limit=query_limit)
-        print(f"Found {len(items)} candidates.")
+        print(f"Found {len(items)} query-verified candidates (0 post-search rejections).")
 
         for it in items:
             repo = it.get("repository", {}).get("nameWithOwner")

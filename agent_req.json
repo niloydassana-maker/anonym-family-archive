@@ -1,0 +1,1 @@
+{"id":"xtts-status","agent":"crush","model":"qwen3.8-flash","task":"Check XTTS v15 fine-tune progress on Kaggle kernel kdas19999/kilo-xtts. Return current epoch, loss, and artifact save status.","repo":"isearchxsolve/kilo-core","cwd":"d:/anonym/war-pipe/kilo-core/kernels/kilo-xtts"}
