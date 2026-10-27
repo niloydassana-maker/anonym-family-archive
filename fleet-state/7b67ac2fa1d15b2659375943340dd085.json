@@ -1,0 +1,53 @@
+{
+  "task_id": "7b67ac2fa1d15b2659375943340dd085",
+  "repo": "Expensify/App",
+  "issue_number": 102333,
+  "status": "DISPATCHING",
+  "dispatch_id": "8bb4b674af59422fb1dfe9885b4aab49",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/102333",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "regression",
+      "regressions",
+      "transaction",
+      "transactions"
+    ],
+    "component_references": [
+      "EMAIL"
+    ],
+    "source_locations": [
+      "src/components/ExpenseHeaderApprovalButton.tsx",
+      "src/components/MoneyReportHeaderPrimaryAction/ApprovePrimaryAction.tsx",
+      "src/components/Search/SearchList/ListItem/ExpenseReportListItem.tsx",
+      "src/libs/ReportUtils.ts",
+      "src/libs/actions/IOU/Hold.ts",
+      "src/libs/actions/IOU/PayMoneyRequest.ts",
+      "src/libs/actions/IOU/ReportWorkflow.ts",
+      "src/libs/actions/User.ts"
+    ],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/102333#issuecomment-5837655679",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-5890891618"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/102333",
+    "fetched_at": "2026-10-27T21:59:48.693437+00:00"
+  },
+  "lanes": [
+    "founder",
+    "normal",
+    "programs"
+  ],
+  "dispatched_at": "2026-10-27T21:59:59.700921+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-27T21:59:59.700937+00:00"
+}
