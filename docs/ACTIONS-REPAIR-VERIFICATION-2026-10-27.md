@@ -360,6 +360,18 @@ refused to fire again. The limitation is stated plainly - GitHub exposes no API 
 `schedule` event, so a heartbeat-triggered run is a `workflow_dispatch`. It restores cadence; it does
 not impersonate the scheduler.
 
+#### Follow-up cadence repair (22:30Z)
+
+Live inspection later that evening found the workflow was still enabled, but the newest scheduled
+run was at 19:44Z; subsequent discovery runs were manual. The 45-minute fallback therefore allowed
+multiple 15-minute schedule slots to pass before restoring intake. The default threshold is now 20
+minutes (one 15-minute interval plus five minutes of scheduler delay). The live-run guard, fail-closed
+probe, and 20-minute post-fire cooldown remain unchanged. The loop also renews its file-lock lease
+every cycle; stale-lock takeover now holds cleanly when Windows reports the lock file is still open.
+The heartbeat unit suite asserts the 19/20-minute boundary, lease renewal, and open-lock behavior.
+The earlier 18:33/18:40 receipts above describe the original 45-minute threshold and remain
+historical evidence.
+
 ### 9. Repair: a stale test that encoded a contract the code no longer has
 
 `scripts/test_fresh_discovery_schedule.py` asserted that the `--live` CLI reaches `run_pipeline_cycle`,

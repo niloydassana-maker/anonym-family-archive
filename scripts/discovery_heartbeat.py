@@ -13,6 +13,9 @@ exists, asks GitHub itself to dispatch the workflow through the public API. It n
 phase, never touches a task, and holds whenever any run is queued or in flight, so it cannot
 duplicate work; the decision is fail-closed on a probe error.
 
+The discovery workflow is scheduled every 15 minutes. The 20-minute default allows five minutes
+for scheduler delay, then restores discovery cadence if no run has appeared.
+
 The decision is a pure function so the edges can be pinned without touching the network.
 """
 from __future__ import annotations
@@ -51,7 +54,7 @@ def parse_stamp(value):
         return None
 
 
-def heartbeat_decision(runs, now, max_age_minutes=45, cooldown_minutes=20, last_fire=None):
+def heartbeat_decision(runs, now, max_age_minutes=20, cooldown_minutes=20, last_fire=None):
     """Decide whether to dispatch the discovery workflow. Returns ``(fire, reason)``.
 
     Refusals, in order:
@@ -129,6 +132,15 @@ def record(state_path, receipt):
         handle.write(json.dumps(receipt, sort_keys=True) + "\n")
 
 
+def refresh_lock(handle):
+    """Renew the held lock lease so a live loop is never mistaken for a dead owner."""
+    lease = f"{os.getpid()} {time.time():.6f}".encode("ascii")
+    os.ftruncate(handle, 0)
+    os.lseek(handle, 0, os.SEEK_SET)
+    os.write(handle, lease)
+    os.fsync(handle)
+
+
 def acquire_lock(path, stale_minutes):
     """One evaluator at a time; take over a lock nobody has touched for ``stale_minutes``."""
     path = Path(path)
@@ -136,15 +148,22 @@ def acquire_lock(path, stale_minutes):
     try:
         handle = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
     except FileExistsError:
-        age = time.time() - path.stat().st_mtime
+        try:
+            age = time.time() - path.stat().st_mtime
+        except FileNotFoundError:
+            age = stale_minutes * 60
         if age < stale_minutes * 60:
             return None
-        path.unlink(missing_ok=True)
+        try:
+            path.unlink(missing_ok=True)
+        except PermissionError:
+            # Windows refuses to unlink an open lock. Treat that as a live owner and fail closed.
+            return None
         try:
             handle = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         except FileExistsError:
             return None
-    os.write(handle, str(os.getpid()).encode())
+    refresh_lock(handle)
     return handle
 
 
@@ -183,7 +202,7 @@ def main(argv=None):
     parser.add_argument("--repo", default=DEFAULT_REPO)
     parser.add_argument("--workflow", default=DEFAULT_WORKFLOW)
     parser.add_argument("--ref", default=DEFAULT_REF)
-    parser.add_argument("--max-age-minutes", type=int, default=45)
+    parser.add_argument("--max-age-minutes", type=int, default=20)
     parser.add_argument("--cooldown-minutes", type=int, default=20)
     parser.add_argument("--state", default=str(Path("scratch") / "discovery-heartbeat.jsonl"))
     parser.add_argument("--lock", default=str(Path("scratch") / "discovery-heartbeat.lock"))
@@ -207,6 +226,11 @@ def main(argv=None):
                 status = 0
             if not args.loop:
                 return status
+            try:
+                refresh_lock(lock)
+            except OSError as exc:
+                print("VERDICT: HOLD lock_refresh_error " + type(exc).__name__ + ": " + str(exc))
+                return 2
             time.sleep(args.interval)
     except KeyboardInterrupt:
         return 0

@@ -54,6 +54,10 @@ class DecisionTests(unittest.TestCase):
     def test_a_recent_run_holds(self):
         self.assertEqual(self.decide([run(5)]), (False, "fresh"))
 
+    def test_default_stale_threshold_matches_one_discovery_interval_plus_delay(self):
+        self.assertEqual(self.decide([run(19)]), (False, "fresh"))
+        self.assertEqual(self.decide([run(20)]), (True, "stale"))
+
     def test_the_newest_run_decides_not_the_oldest(self):
         self.assertEqual(self.decide([run(10, number=2), run(400, number=1)]), (False, "fresh"))
 
@@ -61,8 +65,8 @@ class DecisionTests(unittest.TestCase):
         self.assertEqual(self.decide([run(60)]), (True, "stale"))
 
     def test_the_age_boundary_is_inclusive(self):
-        self.assertEqual(self.decide([run(44)]), (False, "fresh"))
-        self.assertEqual(self.decide([run(45)]), (True, "stale"))
+        self.assertEqual(self.decide([run(19)], max_age_minutes=20), (False, "fresh"))
+        self.assertEqual(self.decide([run(20)], max_age_minutes=20), (True, "stale"))
 
     def test_no_history_fires_because_nothing_else_will_start_it(self):
         self.assertEqual(self.decide([]), (True, "no_history"))
@@ -94,7 +98,7 @@ class EvaluateTests(unittest.TestCase):
         self.state = self.root / "heartbeat.jsonl"
         self.args = argparse.Namespace(
             repo="isearchxsolve/anonym-family-archive", workflow="bounty-discovery.yml",
-            ref="master", max_age_minutes=45, cooldown_minutes=20, state=str(self.state))
+            ref="master", max_age_minutes=20, cooldown_minutes=20, state=str(self.state))
 
     def evaluate(self, runs, dry_run=False, ok=True):
         buffer = io.StringIO()
@@ -183,6 +187,31 @@ class LockTests(unittest.TestCase):
         handle = heartbeat.acquire_lock(path, stale_minutes=15)
         self.assertIsNotNone(handle)
         os.close(handle)
+
+    def test_a_held_lock_renews_its_lease(self):
+        import os
+        import time as clock
+        path = self.root / "beat.lock"
+        handle = heartbeat.acquire_lock(path, stale_minutes=15)
+        self.assertIsNotNone(handle)
+        try:
+            old = clock.time() - 3600
+            os.utime(path, (old, old))
+            heartbeat.refresh_lock(handle)
+            self.assertGreater(path.stat().st_mtime, old + 1800)
+            self.assertEqual(path.read_text(encoding="ascii").split()[0], str(os.getpid()))
+        finally:
+            os.close(handle)
+
+    def test_stale_lock_that_cannot_be_unlinked_holds_without_crashing(self):
+        import os
+        import time as clock
+        path = self.root / "beat.lock"
+        path.write_text("999999", encoding="ascii")
+        old = clock.time() - 3600
+        os.utime(path, (old, old))
+        with mock.patch.object(Path, "unlink", side_effect=PermissionError("lock is open")):
+            self.assertIsNone(heartbeat.acquire_lock(path, stale_minutes=15))
 
 
 if __name__ == "__main__":
