@@ -22,7 +22,9 @@ jobs:
         persist-credentials: false
         sparse-checkout: '/scripts/
 
-          /.github/'
+          /.github/
+
+          /.gitmodules'
         sparse-checkout-cone-mode: false
     - uses: actions/cache/restore@v4
       with:

@@ -1,0 +1,3 @@
+[submodule "solana-validator-block-ordering"]
+	path = solana-validator-block-ordering
+	url = https://github.com/isearchxsolve/solana-validator-block-ordering.git
