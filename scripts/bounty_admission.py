@@ -61,9 +61,13 @@ EXFILTRATION = re.compile(
 # earlier comment.
 BY_DESIGN = re.compile(
     r"\bworks as (?:designed|intended)\b|\bworking as (?:designed|intended)\b|"
-    r"\bby design\b|\bnot a bug\b|\bnot a defect\b|\bno code change\b|"
+    r"\bby design\b|\bnot a bug(?![\w-])|\bnot a defect(?![\w-])|\bno code change\b|"
     r"\bwon'?t fix\b|"
     r"\bexpected behaviou?r\b[^.\n]{0,60}\bby design\b", re.I)
+# ``not a bug`` must end its word: "not a bug-fix task" is a description of the *work item*, not a
+# verdict on a reported behaviour, and the hyphen made the phrase match anyway. Measured live
+# 2026-10-27 on MyZubster-Ecosystem/myzubster#1613, whose maintainer wrote that the issue "remains
+# an invitation to test real Seller-Free onboarding, not a bug-fix task or payable bounty".
 # A bare ``wontfix`` is deliberately NOT prose here. In prose it is almost always the name of
 # a label or a pointer to another issue ("Closed/wontfix #627 ..."), which says nothing about
 # the behaviour reported on this issue. Measured live 2026-10-27 on

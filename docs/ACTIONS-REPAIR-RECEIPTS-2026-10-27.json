@@ -922,12 +922,13 @@
     "why_still_unachieved": "the chain reaches engineering and engineering now refuses on evidence, but no pull request has been opened, nothing has merged and no payout exists"
   },
   "repair_supplement_4": {
-    "observed_at": "2026-10-27T19:06:00+00:00",
-    "head_sha_observed": "de8cc08e662ff989177f599bf74053e9872910b8",
+    "observed_at": "2026-10-27T19:14:00+00:00",
+    "head_sha_observed": "23e88c5b3bfb6755eb5a84826a268478a1db29dd",
+    "working_tree": "the hyphenated-compound rule (D4) and its two cases, uncommitted on top of head_sha_observed; everything else in this supplement is committed and CI-green",
     "changed_files": {
-      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md": "M +113/-3",
-      "scripts/bounty_admission.py": "M +46/-6",
-      "scripts/test_by_design_gate.py": "M +37/-0"
+      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md": "M +50/-9",
+      "scripts/bounty_admission.py": "M +5/-1",
+      "scripts/test_by_design_gate.py": "M +10/-0"
     },
     "changed_files_source": "git status --porcelain and git diff --numstat HEAD, derived on write",
     "changed_files_excluded": {
@@ -976,6 +977,42 @@
         }
       ]
     },
+    "audit_cycle_2": {
+      "run": "40566248018",
+      "event": "workflow_dispatch",
+      "trigger": "manual, labelled - not the heartbeat",
+      "head_sha": "23e88c5b3bfb6755eb5a84826a268478a1db29dd",
+      "started_at": "2026-10-27T19:07:32Z",
+      "concluded": "success",
+      "concluded_at": "2026-10-27T19:10:01Z",
+      "summary_counts": {
+        "normal.raw": 42,
+        "startup.raw": 611,
+        "founder.raw": 204,
+        "programs.raw": 590,
+        "HARD_ISSUE_EVIDENCE_MISSING": 40,
+        "CURRENT_ISSUER_OFFER_MISSING": 13,
+        "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN": 1,
+        "unknown_or_competing": 2,
+        "CLOSED_OR_READ_ONLY": 1
+      },
+      "qualified_fresh": 0,
+      "qualified_unique": 0,
+      "dispatched": [],
+      "pending_hydration": 4136,
+      "refusal_found_here": {
+        "repo": "MyZubster-Ecosystem/myzubster",
+        "issue_number": 1613,
+        "reason": "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN",
+        "reported_comments": 52,
+        "visible_comments": 52
+      },
+      "why_this_cycle_mattered": "it refused a third issue the first round of fixes had left untouched, which is how D4 was found"
+    },
+    "cycles_are_not_comparable_by_count": {
+      "observed": "normal.raw 598 then 42, programs.raw 33 then 590, declared_by_design 2 then 1",
+      "conclusion": "the search lanes return different sets each cycle, so a count delta is not evidence that a rule changed behaviour; the controlled comparison is live_before_after below, read from the API through the production function"
+    },
     "findings": [
       {
         "id": "D1",
@@ -1009,6 +1046,21 @@
         "evidence_issue": "limitlessprojects/Go-Hybrid#940",
         "verdict": "a receipt that does not show its trigger is not a receipt",
         "repair": "marker_sentence() centres a long line on the marker instead of taking its head"
+      },
+      {
+        "id": "D4",
+        "defect": "a hyphenated compound was read as the marker: 'not a bug' matched inside 'not a bug-fix task', because a hyphen is a word boundary",
+        "evidence_issue": "MyZubster-Ecosystem/myzubster#1613",
+        "evidence_title": "[PILOT / OPT-IN] Contributors as Marketplace sellers - showcase your services and skills",
+        "evidence_sentence": "this issue remains an invitation to test real Seller-Free onboarding, not a bug-fix task or payable bounty",
+        "evidence_authority": {
+          "login": "danieldirimini-myzubster",
+          "author_association": "COLLABORATOR",
+          "created_at": "2026-10-15T20:18:01Z"
+        },
+        "verdict": "right refusal, wrong reason - it is an invitation to a pilot, not a bug report, and the phrase describes the work item rather than the behaviour",
+        "repair": "not a bug / not a defect must end their word ((?![\\w-]))",
+        "found_how": "the second live cycle, after the first three rules were already pushed - the gate's own output was re-read rather than assumed clean"
       }
     ],
     "correction_to_supplement_3": {
@@ -1050,8 +1102,15 @@
         "before": "BY_DESIGN",
         "after": null,
         "note": "no longer decided by a pointer to another issue"
+      },
+      {
+        "issue": "MyZubster-Ecosystem/myzubster#1613",
+        "before": "BY_DESIGN",
+        "after": null,
+        "note": "no longer decided by a compound word ('not a bug-fix task')"
       }
     ],
+    "measurement_method": "each issue read live from the API and pushed through the production declared_by_design() before and after; not judged by eye and not inferred from cycle counts",
     "controls_unaffected": {
       "Expensify/App#94622": "admitted at 250 USD",
       "Expensify/App#103403": "admitted at 250 USD",
@@ -1071,18 +1130,20 @@
         "test_repository_intent": 11,
         "test_program_offers": 15,
         "test_queue_ordering": 17,
-        "test_by_design_gate": 24,
+        "test_by_design_gate": 26,
         "test_preparation_terminal": 13,
         "test_discovery_heartbeat": 19,
         "test_fresh_discovery_schedule": 7
       },
       "by_design_gate_cases_before": 19,
-      "by_design_gate_cases_after": 24,
+      "by_design_gate_cases_after": 26,
       "new_cases": [
         "a pointer to another issue is not a verdict here",
         "a declarative won't-fix still counts",
         "an aggregate board title is excused",
         "an aggregate board body alone is excused",
+        "a hyphenated compound is not the marker",
+        "a bare 'This is not a bug.' still is the marker",
         "the quote always contains the words that fired the gate"
       ],
       "ruff": "0 findings on bounty_admission.py, test_by_design_gate.py and two adjacent files"
@@ -1092,6 +1153,13 @@
       "scratch/_update_receipts_4.py - this record, file stats derived from git"
     ],
     "combined_goal": "NOT_YET_ACHIEVED",
-    "why_still_unachieved": "dispatched is empty this cycle; no pull request was opened, nothing merged and no payout exists"
+    "why_still_unachieved": "dispatched is empty in both cycles; no pull request was opened, nothing merged and no payout exists",
+    "supply_finding": {
+      "observation": "three of the four issues the by-design gate touched were not bug reports at all - a triage board, an invitation to an opt-in pilot, and a docs/contest deliverable",
+      "meaning": "the gate was catching non-code documents by accident of vocabulary, which is why it kept firing on the wrong words",
+      "binding_filter": "HARD_ISSUE_EVIDENCE_MISSING, measured at 40 refusals in the second cycle and 38 in the first; that remains the gate that does the real filtering",
+      "missing_gate": "does this issue request a code change at all?",
+      "why_not_built_here": "it needs its own measurement across the paying programmes before it can be tightened without over-rejecting genuine work; recorded and unbuilt rather than guessed"
+    }
   }
 }

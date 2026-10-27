@@ -405,14 +405,34 @@ no longer reports a correct refusal as a fault.
 
 ---
 
-## Supplement 4: the first two refusals the live pipeline made on its own, audited against source
+## Supplement 4: the first refusals the live pipeline made on its own, audited against source
 
 Cycle: **`40564874763`**, `workflow_dispatch` on `de8cc08e662ff989177f599bf74053e9872910b8`, started
 18:58:27Z, completed **success** 19:00:44Z, 1 job (`discover`). This run was **dispatched manually to
 observe the gate at cycle level**; it was not fired by the heartbeat, whose own receipts are in
 Supplement 3 section 8.
 
-Summary line as emitted:
+Second cycle, after the first three rules were pushed on `23e88c5b3bfb6755eb5a84826a268478a1db29dd`:
+**`40566248018`**, started 19:07:32Z, completed **success** 19:10:01Z. Also a manual dispatch. It
+refused a third issue I had never seen, which is how D4 below was found:
+
+```
+{"at": "2026-10-27T19:09:55.599592+00:00", "mode": "LIVE",
+ "counts": {"normal.raw": 42, "startup.raw": 611, "founder.raw": 204, "programs.raw": 590,
+            "HARD_ISSUE_EVIDENCE_MISSING": 40, "CURRENT_ISSUER_OFFER_MISSING": 13,
+            "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN": 1, "unknown_or_competing": 2,
+            "CLOSED_OR_READ_ONLY": 1},
+ "qualified_fresh": 0, "qualified_unique": 0, "dispatched": [], "pending_hydration": 4136}
+{"phase":"ADMISSION","repo":"MyZubster-Ecosystem/myzubster","issue_number":1613,
+ "reason":"REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN","reported_comments":52,"visible_comments":52}
+```
+
+The raw counts move a lot between cycles because the search lanes return different sets each time
+(`normal.raw` 598 then 42, `programs.raw` 33 then 590), so cycle-to-cycle count deltas are **not**
+evidence that a rule changed behaviour. The controlled comparison is section 4: the same issues, read
+from the API, run through the production function before and after each change.
+
+Summary line from the first cycle, as emitted:
 
 ```
 {"at": "2026-10-27T19:00:39.762164+00:00", "mode": "LIVE",
@@ -441,8 +461,9 @@ back from the API and pushed through the production function (`scratch/_audit_by
 |---|---|---|---|---|
 | `limitlessprojects/Go-Hybrid#940` | *Triage Board (auto-updated daily - pin me)* | "**CI freshness:** 23/27 heads fully green. The 4 red-`quick` heads ... are a **stale-merge-ref artifact** ..." | `limitlessprojects`, OWNER, 2026-10-20 | **right refusal, wrong reason** - the issue is a status board, not a bug report, so nothing on it is a verdict about one behaviour. Its honest refusal reason is the hard-evidence gate it fails next, not a declaration of intent. |
 | `Ensrick/vermintide-2-tweaker#760` | *[CWV] Outrider uses Kruber body animations on Saltzpyre* | "Closed/wontfix #627 records the rejected custom launcher model history." | `Ensrick`, OWNER | **wrong** - a pointer to another issue's label and history is not a statement about the behaviour reported here. |
+| `MyZubster-Ecosystem/myzubster#1613` | *[PILOT / OPT-IN] Contributors as Marketplace sellers* | "... this issue remains **an invitation to test real Seller-Free onboarding**, not a bug-fix task or payable bounty." | `danieldirimini-myzubster`, COLLABORATOR | **right refusal, wrong reason** - it is an invitation to a pilot, not a bug report; and the marker matched *inside* `not a bug-fix task`, which is a description of the work item, not a verdict on a behaviour. |
 
-Two defects, both structural rather than one-off typos:
+Four defects, all structural rather than one-off typos:
 
 - **D1, a pointer read as a verdict.** A bare `wontfix` in prose is overwhelmingly the name of a label or
   a cross-reference (`Closed/wontfix #627`), and the prose regex accepted it as a declaration.
@@ -451,6 +472,10 @@ Two defects, both structural rather than one-off typos:
 - **D3, found while reading the receipts: the quote could hide its own trigger.** The stored excerpt was
   taken from the start of the line, 240 characters, so on #940 it showed the CI-status bullet and cut off
   before the words that fired the gate. A receipt that does not show the trigger is not a receipt.
+- **D4, a hyphenated compound read as the marker.** `not a bug` matched inside `not a bug-fix task`,
+  because a hyphen is a word boundary. Found on the *second* cycle, on an issue the first round of fixes
+  had left untouched - which is the argument for re-reading the gate's own output instead of trusting one
+  round of repairs.
 
 Why this matters more than the run it saves: a false by-design refusal **silently deletes qualified
 influx**, which is the first thing this pipeline exists to produce. The `HARD_ISSUE_EVIDENCE_MISSING`
@@ -484,9 +509,12 @@ success - one full run spent relearning the same `blocked` verdict.
     reason comes from the gates that follow.
   - **`marker_sentence()`** now centres a long line on the marker instead of truncating from the start,
     so the stored quote always contains the words that fired the gate.
-- `scripts/test_by_design_gate.py`: new class `PrecisionOnUnseenTrafficTests`, 5 cases - a pointer is not
-  a verdict, a declarative `won't fix` still counts, a board title is excused, a board body is excused,
-  and the quote always shows the marker. Suite 19 -> **24**.
+  - **`not a bug` / `not a defect` must end their word** (`(?![\w-])`), so a hyphenated compound cannot
+    stand in for the verdict.
+- `scripts/test_by_design_gate.py`: new class `PrecisionOnUnseenTrafficTests`, 7 cases - a pointer is not
+  a verdict, a declarative `won't fix` still counts, a board title is excused, a board body is excused, a
+  hyphenated compound is not the marker, a bare "This is not a bug." still is, and the quote always shows
+  the marker. Suite 19 -> **26**.
 
 ### 4. Before and after, on the same live issues
 
@@ -495,6 +523,7 @@ success - one full run spent relearning the same `blocked` verdict.
 | `Expensify/App#105153` | `BY_DESIGN` | **`BY_DESIGN`** | true positive preserved; sentence "*This works as designed. It is not a bug.*", `MelvinBot`, `CONTRIBUTOR` |
 | `limitlessprojects/Go-Hybrid#940` | `BY_DESIGN` | **`None`** | no longer decided by a status board |
 | `Ensrick/vermintide-2-tweaker#760` | `BY_DESIGN` | **`None`** | no longer decided by a pointer to another issue |
+| `MyZubster-Ecosystem/myzubster#1613` | `BY_DESIGN` | **`None`** | no longer decided by a compound word (`not a bug-fix task`) |
 
 The controls from Supplement 3 section 4 (`#94622`, `#103403` at `250 USD`) are unaffected: they never
 matched a marker, and nothing here adds one.
@@ -502,11 +531,23 @@ matched a marker, and nothing here adds one.
 ### 5. Verification at this revision
 
 - 13 gated suites under `python -W error`, **`TOTAL_BAD=0`**: 32, 6, 12, ICU (own format, exit 0), 8, 7,
-  11, 15, 17, **24**, 13, 19, 7.
+  11, 15, 17, **26**, 13, 19, 7.
 - Ruff: **0 findings** on `bounty_admission.py`, `test_by_design_gate.py` and the two adjacent files.
 
 ### 6. Boundary, unchanged
 
-`dispatched: []` this cycle, so this supplement adds **no PR, no merge, no payout**. What it adds is a
-gate that refuses on a sentence that actually exists and quotes it, and two measured false attributions
+`dispatched: []` in both cycles, so this supplement adds **no PR, no merge, no payout**. What it adds is a
+gate that refuses on a sentence that actually exists and quotes it, and three measured false attributions
 that will no longer remove real work from the queue. `combined_goal` remains **`NOT_YET_ACHIEVED`**.
+
+### 7. The finding underneath the four defects
+
+Three of the four issues the by-design gate touched were **not bug reports at all**: a triage board, an
+invitation to an opt-in pilot, and (from Supplement 3) a docs/contest deliverable. The gate was catching
+them by accident of vocabulary rather than by what they are, which is why it kept firing on the wrong
+words. `HARD_ISSUE_EVIDENCE_MISSING` refuses 38-40 per cycle and remains the binding filter; the honest
+reading is that **the search lanes are surfacing a large share of non-code-request documents**, and the
+missing gate is the one recorded as an open gap in Supplement 3 section 6 - "does this issue request a
+code change at all?". That gate is deliberately **not** built here: it needs its own measurement across
+the paying programmes before it can be tightened without over-rejecting genuine work. It stays recorded
+and unbuilt rather than guessed.

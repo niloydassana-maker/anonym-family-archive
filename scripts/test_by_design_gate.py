@@ -218,6 +218,16 @@ class PrecisionOnUnseenTrafficTests(unittest.TestCase):
         ctx["issue"]["body"] = "Auto-updated status board. Do not comment here."
         self.assertIsNone(declared_by_design(ctx))
 
+    def test_a_hyphenated_compound_is_not_the_marker(self):
+        body = ("this issue remains an invitation to test real Seller-Free onboarding, "
+                "not a bug-fix task or payable bounty.")
+        self.assertIsNone(declared_by_design(context([comment(
+            body, login="danieldirimini-myzubster", association="COLLABORATOR")])))
+
+    def test_the_bare_verdict_still_matches_at_the_end_of_a_sentence(self):
+        verdict = declared_by_design(context([comment("This is not a bug.")]))
+        self.assertEqual(verdict["verdict"], "BY_DESIGN")
+
     def test_the_quote_always_contains_the_words_that_fired_the_gate(self):
         filler = "status line " * 40
         body = filler + "This works as designed. It is not a bug."
