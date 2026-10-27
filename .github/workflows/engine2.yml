@@ -116,7 +116,8 @@ jobs:
         id: open_pr
         working-directory: workspace
         env:
-          GH_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           TARGET_REPO: ${{ steps.task.outputs.target_repo }}
           ISSUE_NUM: ${{ steps.task.outputs.issue_number }}
           ISSUE_TITLE: ${{ steps.task.outputs.title }}
