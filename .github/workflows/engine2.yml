@@ -20,7 +20,7 @@ on:
         default: false
 
 concurrency:
-  group: bounty-engine-worker
+  group: bounty-engine-worker-${{ github.event.client_payload.repo || inputs.target_repo || github.run_id }}-${{ github.event.client_payload.issue_number || inputs.issue_number || 'standalone' }}
   cancel-in-progress: false
 
 permissions:
