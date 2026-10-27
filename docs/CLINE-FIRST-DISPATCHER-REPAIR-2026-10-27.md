@@ -110,14 +110,21 @@ a 3600-second deadline. Cline read the complete context and repository. A plan
 command failure subsequently reached Cline's repair path. This demonstrates the
 handoff and repair routing, not a verified implementation or payment.
 
-A fresh funding and competition check admitted CaravanaCloud/
-rinha-de-backend-2024-q1-impl#3 ($50 platform-attested bounty). The public queue
-returned the full payload for task
-`BT-1793080291-CaravanaCloud_rinha-de-backend-2024-q1-impl-3`.
-The two Omi candidates did not pass the fresh open/fetch check and were not queued.
-The withdrawn Kyo #392 offer received an acknowledged SKIPPED withdrawal.
+A direct audit-to-queue validation accidentally bypassed the normal GitHub search
+query and admitted CaravanaCloud/rinha-de-backend-2024-q1-impl#3 ($50 platform
+offer). The live fleet queue echoed task
+`BT-1793080291-CaravanaCloud_rinha-de-backend-2024-q1-impl-3`; Engine 4 claimed it.
+Cline immediately established from the GitHub API that the upstream repo is archived
+and read-only, then blocked before engineering. We confirmed the normal search query
+with `--archived=false` returns zero for that repository, sent an acknowledged SKIPPED
+withdrawal, and excluded this attempt from qualified influx. The two Omi candidates
+did not pass the fresh open/fetch check and were not queued. Kyo #392 also received an
+acknowledged withdrawal after its maintainer said the bounty was being removed.
 
 Evidence: fleet-deployment.json, engine-2-live-cline-first.json,
-qualified-influx-live.json, qualified-queue-echo.json, kyo-withdrawal.json.
-These are in the local evidence directory listed above. A successful native run,
-verified PR, and sustained qualified throughput remain unproven at this checkpoint.
+qualified-influx-live.json, qualified-queue-echo.json, caravana-withdrawal.json,
+kyo-withdrawal.json.
+These are in the local evidence directory listed above. No successful native run or verified PR is evidenced for the new qualified task stream.
+The archived-repository admission is a documented quality miss in the direct audit path;
+normal query admission has an archived-repository filter. Sustained qualified throughput
+remains unproven at this checkpoint.
