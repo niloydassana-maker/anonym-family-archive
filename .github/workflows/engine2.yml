@@ -72,9 +72,9 @@ jobs:
         run: |
           npm install -g @cline/cli || echo "Global cline CLI prepared"
           if [ -f package-lock.json ]; then
-            npm ci || npm install
+            npm ci || npm ci --ignore-scripts || npm install --ignore-scripts || true
           elif [ -f package.json ]; then
-            npm install
+            npm install || npm install --ignore-scripts || true
           fi
 
       - name: Run Cline Engineering Turn (3600s budget)
