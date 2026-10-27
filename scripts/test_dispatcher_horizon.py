@@ -74,6 +74,10 @@ class DispatcherHorizonTests(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertNotIn('--no-assignee', argv)
         self.assertNotIn('--comments', argv)
+        query = argv[argv.index('--internal-search-query') + 1]
+        self.assertIn('is:public', query)
+        self.assertIn('archived:false', query)
+        self.assertIn('-label:type/experiment', query)
 
     def test_unlabelled_comment_funding_and_authority_survive(self):
         data = dict(state='OPEN', authorAssociation='CONTRIBUTOR', payerAssociation='MEMBER',
@@ -87,12 +91,37 @@ class DispatcherHorizonTests(unittest.TestCase):
         data = dict(state='OPEN', authorAssociation='CONTRIBUTOR', author_comments=['Can anyone fix this?'])
         self.assertEqual(self.search_fixture(self.candidate(body='Deadlock reproduction.'), data)[0], [])
 
+    def test_live_dispatch_floor_is_enforced_before_candidate_leaves_search(self):
+        below = self.candidate(body='We will pay $49 USDC to fix the deadlock.')
+        at_floor = self.candidate(body='We will pay $50 USDC to fix the deadlock.',
+                                  authorAssociation='MEMBER', author={'login': 'maintainer'})
+        self.assertEqual(self.search_fixture(below)[0], [])
+        self.assertEqual(len(self.search_fixture(at_floor)[0]), 1)
+
     def test_explicit_qualifier_and_global_query_lanes_preserved(self):
         _, argv = self.search_fixture(self.candidate(), query='comments:>2 bounty')
-        self.assertIn('comments:>2 bounty', argv)
+        query = argv[argv.index('--internal-search-query') + 1]
+        self.assertIn('comments:>2 bounty', query)
+        self.assertIn('-label:type/experiment', query)
         self.assertIn('bounty in:title', dispatcher.DYNAMIC_DISCOVERY_QUERIES)
         self.assertIn('"will pay"', dispatcher.DYNAMIC_DISCOVERY_QUERIES)
         self.assertIn('--label bounty', dispatcher.DYNAMIC_DISCOVERY_QUERIES)
+
+    def test_persisted_full_horizon_partition_reaches_rest_search_query(self):
+        window = ('global', 1_000_000, 1_001_000)
+        with ExitStack() as stack:
+            run = stack.enter_context(patch.object(
+                dispatcher, 'run_cmd', return_value=('[]', '', 0)))
+            horizon = stack.enter_context(patch.object(dispatcher, 'DISCOVERY_HORIZON'))
+            horizon.window.return_value = window
+            horizon.qualifier.return_value = '2026-01-01..2026-01-02'
+            horizon.complete.return_value = 'split'
+            stack.enter_context(redirect_stdout(io.StringIO()))
+            dispatcher.search_issues('bounty', limit=1000)
+        argv = run.call_args.args[0]
+        query = argv[argv.index('--internal-search-query') + 1]
+        self.assertIn('created:2026-01-01..2026-01-02', query)
+        self.assertIn('-label:type/experiment', query)
 
     def test_rest_maintainer_offer_not_reporter_affiliation_sets_payer(self):
         issue = dict(author={'login': 'reporter'}, comments=[{'author': {'login': 'maintainer'}, 'body': '/bounty $150'}])

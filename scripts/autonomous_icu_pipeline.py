@@ -350,6 +350,37 @@ def append_csv(entry, csv_path=CSV_FILE):
 
 def run_cmd(cmd_list, timeout=30, retries=2):
     resolved_cmd = list(cmd_list)
+    internal_search_query = None
+    search_limit = None
+    search_sort = "created"
+    search_order = "desc"
+    if (len(resolved_cmd) > 3 and os.path.basename(str(resolved_cmd[0])).lower() in ('gh', 'gh.exe')
+            and resolved_cmd[1:3] == ['search', 'issues'] and '--internal-search-query' in resolved_cmd):
+        query_index = resolved_cmd.index('--internal-search-query')
+        if query_index + 1 >= len(resolved_cmd):
+            return "", "Missing internal GitHub search expression", 2
+        internal_search_query = resolved_cmd[query_index + 1]
+        def option_value(option, default):
+            try:
+                return resolved_cmd[resolved_cmd.index(option) + 1]
+            except (ValueError, IndexError):
+                return default
+        search_limit = max(1, min(1000, int(option_value('--limit', '100'))))
+        search_sort = option_value('--sort', 'created')
+        search_order = option_value('--order', 'desc')
+        resolved_cmd = [arg for i, arg in enumerate(resolved_cmd)
+                        if i not in (query_index, query_index + 1)]
+        import urllib.parse
+        encoded_q = urllib.parse.quote(str(internal_search_query or ''))
+        if search_limit <= 100:
+            resolved_cmd = [
+                'gh', 'api', f'/search/issues?q={encoded_q}&sort={search_sort}&order={search_order}&per_page={search_limit}&page=1',
+                '--jq', '.items',
+            ]
+        else:
+            resolved_cmd = [
+                'gh', 'api', '--paginate', '--slurp', f'/search/issues?q={encoded_q}&sort={search_sort}&order={search_order}&per_page=100',
+            ]
     if (len(resolved_cmd) > 3 and os.path.basename(str(resolved_cmd[0])).lower() in ('gh', 'gh.exe')
             and resolved_cmd[1:3] == ['search', 'issues'] and not resolved_cmd[3].startswith('--')):
         # gh quotes each positional argument containing whitespace. Passing an
@@ -380,6 +411,38 @@ def run_cmd(cmd_list, timeout=30, retries=2):
             last_stdout = res.stdout if preserve_status_columns else res.stdout.strip()
             last_stderr, last_code = res.stderr.strip(), res.returncode
             if res.returncode == 0:
+                if internal_search_query is not None:
+                    try:
+                        response = json.loads(last_stdout or '[]')
+                        if search_limit and search_limit > 100:
+                            pages = response if isinstance(response, list) else []
+                            issues = [issue for page in pages if isinstance(page, dict)
+                                      for issue in (page.get('items') or [])]
+                        else:
+                            issues = response if isinstance(response, list) else []
+                        normalized = []
+                        for issue in issues[:search_limit]:
+                            repository = issue.get('repository') or {}
+                            user = issue.get('user') or {}
+                            author = {'login': user.get('login', '')}
+                            if 'type' in user:
+                                author['is_bot'] = user.get('type') == 'Bot'
+                            normalized.append({
+                                'number': issue.get('number'),
+                                'title': issue.get('title', ''),
+                                'repository': {'nameWithOwner': repository.get('full_name', '')},
+                                'url': issue.get('html_url', ''),
+                                'labels': issue.get('labels', []),
+                                'createdAt': issue.get('created_at', ''),
+                                'updatedAt': issue.get('updated_at', ''),
+                                'commentsCount': issue.get('comments', 0),
+                                'authorAssociation': issue.get('author_association', 'NONE'),
+                                'body': issue.get('body', '') or '',
+                                'author': author,
+                            })
+                        last_stdout = json.dumps(normalized)
+                    except (ValueError, TypeError, AttributeError):
+                        return "", "GitHub Search API returned malformed JSON", 1
                 return last_stdout, last_stderr, 0
         except subprocess.TimeoutExpired as exc:
             partial = exc.stderr or exc.stdout or ""
@@ -548,15 +611,21 @@ DYNAMIC_DISCOVERY_QUERIES = [
     'bounty in:title',
     '"will pay"',
     '"paid task"',
-    '"cash reward"',
     'funded in:title',
     '--label bounty',
     '--label reward',
+    '--commenter algora-pbc "$50"',
+    '--commenter algora-pbc "$100"',
+    '--commenter algora-pbc "$250"',
+    '--commenter algora-pbc "$500"',
+    '--commenter algora-pbc "$1000"',
     '--commenter algora-pbc',
     '"console.algora.io"',
     'algora.io',
     'polar.sh',
     'opire.dev',
+    'opire.dev "$50"',
+    'opire.dev "$100"',
     'bountycaster',
     '"issuehunt.io"',
     '"gitcoin.co/issue"',
@@ -566,6 +635,17 @@ DYNAMIC_DISCOVERY_QUERIES = [
     'reward in:title',
     '"looking to hire"',
     '"paid" in:title',
+    'bounty "$50"',
+    'bounty "$100"',
+    'bounty "$250"',
+    'bounty "$500"',
+    'bounty "$1000"',
+    'bounty concurrency',
+    'bounty "race condition"',
+    'bounty "memory leak"',
+    'bounty compiler',
+    'bounty performance',
+    'bounty distributed',
     'bounty',
 ]
 
@@ -734,6 +814,7 @@ MATERIAL_ENTITY_STOPWORDS = {
 }
 
 MIN_CONSULTING_BOUND_USD = Decimal("20.00")
+MIN_LIVE_DISPATCH_BOUNTY_USD = Decimal("50.00")
 MAX_CONSULTING_BOUND_USD = Decimal("9999999.00")
 
 def strip_markup_and_code(text: str) -> str:
@@ -870,7 +951,13 @@ def parse_and_normalize_bounty(text, crypto_usd_rates=None):
     display = usd_value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     return True, True, raw_text, usd_value, f"Parsed {raw_text} (~${display} USD)"
 
+def _author_login(author) -> str:
+    if isinstance(author, dict):
+        return str(author.get("login") or "").strip()
+    return str(author or "").strip()
+
 def is_independently_verified_sponsor(author, repo, full_author_text):
+    author = _author_login(author)
     if not author:
         return False
     has_budget_commitment = bool(re.search(
@@ -909,11 +996,7 @@ DIRECT_PAYMENT_SIGNALS = [
 ]
 
 def is_direct_payer(author, repo, full_author_text):
-    """
-    Author association is not payment authority. An issue author who explicitly
-    offers a bounded amount is a prospective direct payer; platform-attested
-    bounties are also valid economic evidence regardless of association.
-    """
+    author = _author_login(author)
     if not author:
         return False
 
@@ -989,6 +1072,7 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     A platform-attested or explicit paid bounty qualifies regardless of association.
     Unpriced commercial enquiries remain candidate-packet work, not automated live delivery.
     """
+    author = _author_login(author)
     exclusion = non_engineering_dispatch_reason({'title': title, 'body': body, 'repo': repo})
     if exclusion:
         return False, f"Rejected non-engineering dispatch: {exclusion}"
@@ -1180,7 +1264,7 @@ def verify_genuine_icu_patient(title, body, author_comments, labels, repo, autho
     )
 
     if live_delivery_mode and paid_bounty:
-        if raw_amount.startswith('Tier ') and not (maintainer or platform_attested):
+        if raw_amount.startswith('Tier ') and not (author_assoc == 'OWNER' and has_bounty_label):
             return False, 'Severity is not a monetary commitment; explicit task funding required.'
         if not (platform_attested or direct_payer or maintainer_offer or is_verified_sponsor):
             return False, 'Bounty title/label does not establish payer authority; independent funding required.'
@@ -3115,20 +3199,33 @@ def score_hardness_and_competition(it):
             score += 30
             hardness_hits += 1
 
-    # Near-zero competition bonus (scared away competitors):
-    # Only award bonus if the ticket demonstrates genuine engineering hardness!
+    # High-ticket value bonus ($500+ -> +50 pts, $100+ -> +25 pts)
+    amount_match = re.search(r"[$€£₹]\s*([\d,]+(?:\.\d+)?)", full_text)
+    if amount_match:
+        try:
+            val = float(amount_match.group(1).replace(",", ""))
+            if val >= 500:
+                score += 50
+            elif val >= 100:
+                score += 25
+        except Exception:
+            pass
+
+    # Competition calibration:
+    # Authentic open-source tickets frequently have bot/discussion comments.
+    # Award freshness/low-competition bonus when hardness exists, without punitive drops.
     if hardness_hits > 0:
         if comments_count == 0:
-            score += 80
-        elif comments_count <= 2:
             score += 50
+        elif comments_count <= 2:
+            score += 35
         elif comments_count <= 4:
-            score += 25
-        elif comments_count > 4:
-            score -= 100
+            score += 20
+        elif comments_count > 15:
+            score -= 15
     else:
-        if comments_count > 4:
-            score -= 100
+        if comments_count > 15:
+            score -= 15
 
     return score
 
@@ -3144,17 +3241,17 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
     # ``--label bounty`` still need separate option/value arguments.
     import shlex
     if isinstance(query, str):
-        parts = shlex.split(query) if query.lstrip().startswith('--') else [query]
+        if query.lstrip().startswith('--') or any(c in query for c in (':', '$')):
+            parts = shlex.split(query)
+        else:
+            parts = [query]
     else:
         parts = list(query)
-    # Preserve explicit qualifiers; never silently impose engagement cutoffs.
     has_archived_flag = any(p.startswith("--archived") or p.startswith("archived:") for p in parts)
     has_visibility_flag = any(p.startswith("--visibility") or p.startswith("visibility:") for p in parts)
 
     clean_parts = [p for p in parts if not p.startswith("state:")]
-    cmd = ["gh", "search", "issues"] + clean_parts + [
-        "--state", "open",
-    ]
+    cmd = ["gh", "search", "issues"] + clean_parts + ["--state", "open"]
     if not has_archived_flag:
         cmd.append("--archived=false")
     if not has_visibility_flag:
@@ -3171,6 +3268,27 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
     if limit == 1000 and not any('created:' in p or p == '--created' for p in parts):
         horizon_window = DISCOVERY_HORIZON.window(str(query))
         cmd.extend(['--created', DISCOVERY_HORIZON.qualifier(horizon_window)])
+
+    api_source_query = " ".join(str(part) for part in clean_parts)
+    if isinstance(query, str) and query.lstrip().startswith('--'):
+        query_tokens = shlex.split(query)
+        if len(query_tokens) >= 2 and query_tokens[0] == '--label':
+            api_source_query = f'label:"{query_tokens[1]}" ' + ' '.join(query_tokens[2:])
+        elif len(query_tokens) >= 2 and query_tokens[0] == '--commenter':
+            api_source_query = f'commenter:{query_tokens[1]} ' + ' '.join(query_tokens[2:])
+    if horizon_window:
+        # The legacy ``gh search --created`` arguments are not forwarded through
+        # the REST adapter, so carry the exact persisted partition in ``q``.
+        api_source_query = " ".join(part for part in (
+            api_source_query,
+            f'created:{DISCOVERY_HORIZON.qualifier(horizon_window)}',
+        ) if part)
+    search_query = " ".join(part for part in (
+        api_source_query,
+        "is:issue is:open is:public archived:false -label:type/experiment",
+    ) if part)
+    cmd.extend(["--internal-search-query", search_query])
+
     out, err, code = run_cmd(cmd, timeout=75)
     if code != 0:
         if "secondary rate limit" in ((err or out) or "").lower():
@@ -3190,6 +3308,13 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
     if not isinstance(raw_items, list):
         print(f"[SEARCH_ERROR] query={query!r} expected GitHub results array", flush=True)
         return []
+    # If raw_items is paginated pages containing 'items', flatten them
+    if raw_items and isinstance(raw_items[0], dict) and "items" in raw_items[0]:
+        flattened = []
+        for page in raw_items:
+            if isinstance(page, dict) and isinstance(page.get("items"), list):
+                flattened.extend(page["items"])
+        raw_items = flattened
     if horizon_window:
         status = DISCOVERY_HORIZON.complete(str(query), horizon_window, len(raw_items), limit)
         print(f"[SEARCH_HORIZON] query={query!r} range={DISCOVERY_HORIZON.qualifier(horizon_window)} "
@@ -3199,13 +3324,36 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
 
     filtered_items = []
     for it in raw_items:
+        # Normalize repository nameWithOwner robustly across CLI and REST payloads
+        repo_name = None
+        if isinstance(it.get("repository"), dict):
+            repo_name = it["repository"].get("nameWithOwner")
+        if not repo_name:
+            for url_key in ("url", "html_url", "repository_url"):
+                val = it.get(url_key)
+                if val:
+                    m = re.search(r"github\.com/(?:repos/)?([^/]+/[^/]+?)(?:/(?:issues|pull)/\d+)?(?:/|$)", val)
+                    if m:
+                        repo_name = m.group(1)
+                        break
+        it["repository"] = {"nameWithOwner": repo_name} if repo_name else {}
+
+        if "commentsCount" not in it:
+            it["commentsCount"] = it.get("comments", 0)
+        if "authorAssociation" not in it:
+            it["authorAssociation"] = it.get("author_association", "NONE")
+        if "author" not in it:
+            it["author"] = it.get("user") or {}
+        if "createdAt" not in it:
+            it["createdAt"] = it.get("created_at", "")
+
         repo = it.get("repository", {}).get("nameWithOwner")
         number = it.get("number")
         title = it.get("title", "")
         body = it.get("body", "") or ""
         labels = it.get("labels", [])
         _author_assoc = (it.get("authorAssociation") or "NONE").upper()
-        author = (it.get("author") or {}).get("login", "")
+        author = it.get("author", {}).get("login", "") if isinstance(it.get("author"), dict) else str(it.get("author") or "")
 
         if not repo or not number:
             continue
@@ -3316,7 +3464,7 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
 
         need_comments = False
         if body_has_bounty:
-            if body_usd_val is not None and body_usd_val < MIN_CONSULTING_BOUND_USD:
+            if body_usd_val is not None and body_usd_val < MIN_LIVE_DISPATCH_BOUNTY_USD:
                 continue
             if not body_in_bounds:
                 continue
@@ -3335,6 +3483,12 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
             if is_icu_body:
                 # Fast path: already verified from title/body; delivery cycle will verify fresh comments
                 need_comments = False
+            elif body_has_bounty and body_usd_val is None:
+                # Keep volatile-crypto candidates discoverable without inventing
+                # an FX quote. The live delivery gate still blocks them until
+                # it can establish a real USD value and payer authority.
+                it['funding_quote_required'] = True
+                need_comments = False
             else:
                 if comments_cnt == 0:
                     continue
@@ -3343,9 +3497,17 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
             # No bounty amount in body
             if comments_cnt == 0:
                 continue
-            # Only hydrate if there is an explicit bounty marker (label, platform bot query, or offer language)
+            # Funding-oriented search terms are already a query-time signal.
+            # Hydrate their comments so an unlabelled maintainer offer is not
+            # discarded just because the issue body omitted the amount.
+            query_has_funding_signal = bool(re.search(
+                r"\b(?:bounty|reward|funded|paid\s+task|cash\s+reward|will\s+pay)\b",
+                query_str,
+                re.IGNORECASE,
+            ))
             has_marker = (
                 query_is_platform or
+                query_has_funding_signal or
                 _has_platform_bounty_marker(f"{title} {body}") or
                 any(re.search(r"\b(?:bounty|bug\s+bounty|reward|funded|bountied)\b", _label_name(lbl), re.IGNORECASE) for lbl in (labels or [])) or
                 bool(re.search(r"\[(?:bug\s+)?bounty(?:\s+[^\]]+)?\]", title or "", re.IGNORECASE)) or
@@ -3369,9 +3531,10 @@ def search_issues(query, limit=1000, sort_by="created", order="desc"):
         total_text = f"{title} {body} " + " ".join(it.get("author_comments", []))
         has_any_bounty, any_in_bounds, _, any_usd_val, _ = parse_and_normalize_bounty(total_text)
 
-        # 1. If explicit bounty amount in title, body, or comments, must meet consulting floor ($20.00)
+        # The live dispatcher has a $50 high-ticket floor; apply it before a
+        # candidate leaves search so the later dispatch path cannot reject it.
         if has_any_bounty:
-            if any_usd_val is not None and any_usd_val < MIN_CONSULTING_BOUND_USD:
+            if any_usd_val is not None and any_usd_val < MIN_LIVE_DISPATCH_BOUNTY_USD:
                 continue
             if not any_in_bounds:
                 continue
@@ -3697,7 +3860,7 @@ def run_pipeline_cycle(live_mode=False, anytime=False, search_limit=1000, fresh_
             # Baba's Headroom Conservation Law: High-Ticket Complex Tasks Only
             # Reject bounties under the approved $50-$200 high-ticket floor.
             has_bounty, in_bounds, raw_text, usd_val, _ = parse_and_normalize_bounty(title + " " + body + " " + " ".join(author_comments))
-            if usd_val is not None and usd_val < Decimal("50.00"):
+            if usd_val is not None and usd_val < MIN_LIVE_DISPATCH_BOUNTY_USD:
                 print(f"[REJECT/HEADROOM] {issue_id}: Bounty ${usd_val} below the $50 high-ticket floor. Headroom reserved exclusively for high-ticket complex tasks.")
                 continue
 

@@ -46,6 +46,7 @@ class DeliveryOwnershipTests(unittest.TestCase):
             task = {'repo': 'unit/runtime', 'issue_number': 7, 'body': 'Full issue fixture.\n' * 6000,
                     'prior_failures': ['Complete previous failure.\n' * 2000]}
             calls = []
+            prompts = []
 
             def cline_command(cwd, prompt):
                 return ['unit-cline', prompt]
@@ -53,6 +54,7 @@ class DeliveryOwnershipTests(unittest.TestCase):
             def execute(argv, **kwargs):
                 calls.append('cline')
                 prompt = argv[-1]
+                prompts.append(prompt)
                 self.assertLess(len(prompt), 12000)
                 context = Path(re.search(r'from (.+\.context\.json);', prompt)[1])
                 self.assertEqual(json.loads(context.read_text(encoding='utf-8')), task)
@@ -76,6 +78,9 @@ class DeliveryOwnershipTests(unittest.TestCase):
                  redirect_stdout(io.StringIO()):
                 report = worker.run_cline_claim_intake(task, SimpleNamespace(run_id='isolated-unit-run'))
             self.assertEqual(calls[0], 'cline')
+            self.assertIn('concrete code change', prompts[0])
+            self.assertIn('willingness-to-pay research', prompts[0])
+            self.assertIn('Do not turn a rejected/non-engineering issue into a fallback proposal', prompts[0])
             self.assertEqual(report['plan'].baseline_tests, [['corepack', 'pnpm@9', 'test']])
             self.assertEqual(report['base_sha'], sha)
 

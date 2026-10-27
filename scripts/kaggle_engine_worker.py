@@ -2760,6 +2760,14 @@ def run_cline_claim_intake(task, lease):
 Read the ENTIRE issue and prior failure context from {context_path}; do not truncate or summarize away requirements.
 Repository: {repo}. Issue: #{number}. Your active fleet run: {lease.run_id}.
 
+Before preparing tools or a test plan, classify the issue from its complete text and repository state.
+Proceed only when it requests a concrete code change to this repository (a reproducible defect,
+specific engineering feature, or focused code-level maintenance) and the funding/claim is still live.
+If it is market validation, willingness-to-pay research, a grant/proposal request, a generic product
+idea without a repository change, a documentation/marketing deliverable, withdrawn funding, or an
+already-competing pull request, write action=blocked with the exact evidence and leave the checkout
+unchanged. Do not turn a rejected/non-engineering issue into a fallback proposal or pull request.
+
 You have full freedom to inspect the repository and provision the required tools, pinned versions,
 dependencies, environment and configuration. Read its AGENTS.md, manifests, lockfiles, CI and setup docs.
 Choose the actual native commands yourself. Diagnose and repair installation/configuration failures;
