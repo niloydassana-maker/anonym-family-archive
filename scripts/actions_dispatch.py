@@ -98,6 +98,36 @@ def dispatch(api, store, context, proof, lanes, remote_repair=False):
     return identity
 
 
+HYDRATION_BATCH = 60
+HYDRATION_PER_REPO = 4
+
+
+def pending_window(rows, limit=HYDRATION_BATCH, per_repo=HYDRATION_PER_REPO):
+    """Breadth-first hydration window over queued search results.
+
+    GitHub search returns a repository as a unit: one project can publish hundreds
+    of matching issues and consume the whole per-cycle hydration budget while every
+    unrelated origin waits forever. Selection therefore takes at most ``per_repo``
+    sources from each repository first, then fills the rest of the batch from the
+    leftovers, so breadth is gained without ever shrinking the per-cycle budget and
+    a queue that genuinely holds a single origin still receives the full batch.
+    ``rows`` are ``(task_id, payload, lanes)`` tuples in durable queue order.
+    """
+    chosen, counted, rest = [], Counter(), []
+    for row in rows:
+        repository = json.loads(row[1]).get("repository_url", "").split("/repos/")[-1]
+        if len(chosen) < limit and counted[repository] < per_repo:
+            counted[repository] += 1
+            chosen.append(row)
+        else:
+            rest.append(row)
+    for row in rest:
+        if len(chosen) >= limit:
+            break
+        chosen.append(row)
+    return chosen
+
+
 def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=None):
     folder = Path(state_dir or os.environ.get("BOUNTY_STATE_DIR", Path(__file__).resolve().parents[1] / "scratch/actions-discovery"))
     folder.mkdir(parents=True, exist_ok=True)
@@ -151,7 +181,14 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
             con.execute("INSERT OR REPLACE INTO cursors VALUES(?,?)",
                         (lane, (start + queries_per_lane) % len(QUERIES[lane])))
             con.commit()
-        pending_rows = con.execute("SELECT task_id,payload,lanes FROM pending WHERE status='pending' ORDER BY checked,rowid LIMIT 60").fetchall()
+        queued = con.execute("SELECT task_id,payload,lanes FROM pending WHERE status='pending' "
+                             "ORDER BY checked,rowid LIMIT 2000").fetchall()
+        pending_rows = pending_window(queued)
+        if len(pending_rows) < len(queued):
+            print(json.dumps({"phase": "HYDRATION_WINDOW", "queued": len(queued),
+                              "selected": len(pending_rows),
+                              "distinct_repositories": len({json.loads(row[1]).get("repository_url", "")
+                                                            for row in pending_rows})}), flush=True)
         for source_id, payload, lane_json in pending_rows:
             item, source_lanes = json.loads(payload), json.loads(lane_json)
             try:
