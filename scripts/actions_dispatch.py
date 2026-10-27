@@ -15,7 +15,7 @@ from urllib.parse import urlencode
 import uuid
 
 from actions_github import GitHub, GitHubError, StateStore, task_id, utcnow
-from bounty_admission import admit, competition, NON_WORK
+from bounty_admission import admit, competition, NON_WORK, repository_intent
 from bounty_fx import quote
 from discovery_horizon import Horizon
 
@@ -45,6 +45,32 @@ def query_window(api, expression, window=None, fresh=0):
         if fresh or not rows or page * 100 >= total:
             return items, total
         page += 1
+
+
+def merge_evidence(api, repo, cache):
+    """Measure how many pull requests this repository has merged, once per cycle.
+
+    A bounty is paid on merge, so merge history is the only durable evidence that a
+    repository pays outside work. Two light search calls per repository, and every
+    issue in the same repository reuses the verdict, so the cost tracks the number
+    of repositories reaching candidate status rather than the size of the queue.
+
+    A failed probe records that fact and yields no verdict. It is never a rejection:
+    a throttled search says nothing about the repository.
+    """
+    if repo in cache:
+        return cache[repo]
+    evidence = {}
+    for key, query in (("merged", "repo:%s is:pr is:merged" % repo),
+                       ("total", "repo:%s is:pr" % repo)):
+        try:
+            result = api.api("search/issues?" + urlencode({"q": query, "per_page": 1}))
+            evidence[key] = int(result["total_count"])
+        except (GitHubError, OSError, ValueError, KeyError, TypeError) as exc:
+            evidence = {"unavailable": str(exc)[:160]}
+            break
+    cache[repo] = evidence
+    return evidence
 
 
 def context_candidates(api, item, visited=None):
@@ -151,6 +177,7 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
         con.commit()
     counts = Counter()
     candidates = {}
+    intent_cache = {}
     try:
         for lane in lanes:
             start_row = con.execute("SELECT position FROM cursors WHERE lane=?", (lane,)).fetchone()
@@ -200,6 +227,14 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                         print(json.dumps({"phase": "ADMISSION", "repo": context["repo"], "issue_number": context["issue_number"],
                                           "reason": reason, "reported_comments": context["issue"].get("comments"),
                                           "visible_comments": len(context["comments"])}), flush=True)
+                        continue
+                    merge_ok, merge_reason = repository_intent(
+                        merge_evidence(api, context["repo"], intent_cache))
+                    if not merge_ok:
+                        counts[merge_reason] += 1
+                        print(json.dumps({"phase": "REPOSITORY_INTENT", "repo": context["repo"],
+                                          "issue_number": context["issue_number"], "reason": merge_reason,
+                                          "evidence": intent_cache.get(context["repo"])}), flush=True)
                         continue
                     competition(api, context["repo"], context["issue_number"])
                     candidates.setdefault(identity, {"context": context, "proof": proof, "lanes": set()})["lanes"].update(source_lanes)

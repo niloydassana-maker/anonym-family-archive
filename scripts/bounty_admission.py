@@ -56,6 +56,32 @@ def trusted(context, document):
             or login.removesuffix("[bot]") in TRUSTED_BOTS)
 
 
+MERGE_EVIDENCE_MIN = 10
+
+
+def repository_intent(evidence):
+    """Return (ok, reason) from the repository's measured merge history.
+
+    A bounty is paid on merge, so a repository that carries many pull requests and
+    has merged none has demonstrated it does not pay, whatever its own issues say.
+    Measured shape of that failure (2026-10-27): one repository took 4,458 pull
+    requests and merged 0, while still publishing funded-looking issues, and its
+    CONTRIBUTING.md declared the bounties symbolic.
+
+    Absence of evidence is never rejection. A repository with fewer than
+    MERGE_EVIDENCE_MIN pull requests, or an unreachable probe, gets no verdict --
+    a new project that has not merged yet must not be refused on silence.
+    """
+    if not evidence:
+        return True, ""
+    merged, total = evidence.get("merged"), evidence.get("total")
+    if merged is None or total is None:
+        return True, ""
+    if int(total) >= MERGE_EVIDENCE_MIN and int(merged) == 0:
+        return False, "REPOSITORY_DOES_NOT_MERGE"
+    return True, ""
+
+
 def monetary_text(text):
     return re.sub(r"\x60{3}[\s\S]*?\x60{3}|~~[\s\S]*?~~|<!--[\s\S]*?-->", " ", text)
 
