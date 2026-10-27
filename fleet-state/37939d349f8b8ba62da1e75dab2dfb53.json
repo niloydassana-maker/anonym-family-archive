@@ -2,7 +2,7 @@
   "task_id": "37939d349f8b8ba62da1e75dab2dfb53",
   "repo": "xpex-systems-ai/GXEON-AI",
   "issue_number": 452,
-  "status": "CLAIMED",
+  "status": "FAILED_ENGINEER",
   "dispatch_id": "f5a3ffb8106e422c85cfc455a46dd3cf",
   "admission": {
     "funding": {
@@ -33,11 +33,22 @@
   ],
   "dispatched_at": "2026-10-27T18:21:18.948255+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-27T18:21:38.307398+00:00",
+  "updated_at": "2026-10-27T18:23:47.421819+00:00",
   "owner": "40559211885:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40559211885",
   "harness_sha": "ff608856a6e57896ca15c370e404b1b5c5f9e31d",
-  "claimed_at": "2026-10-27T18:21:38.307379+00:00"
+  "claimed_at": "2026-10-27T18:21:38.307379+00:00",
+  "diagnostic": "Cline preparation blocked: Issue #452 is not a request for a concrete code change to xpex-systems-ai/GXEON-AI. Its full text describes an EXTERNAL contest submission: 'GXEON PAID-WORK #002 \u2014 TokenGems/Jupiter docs review (research ready, no submission or payout)'. It is a documentation/market deliverable for superteam.fun (Try-a-Solana-project feedback bounty for TokenGems/Jupiter), with state 'RESEARCH_READY / NOT_SUBMITTED / NOT_PAID' and remaining operator actions that are entirely off-repository: (1) add own observations to a draft, (2) post a comment on the TokenGems Jupiter page via the operator's own wallet, (3) follow @tokengems and repost the announcement on X, (4) submit profile/links via Superteam Earn. Its only artifact is a 'Companion bundle' prepared in conversation (GXEON_TokenGems_Jupiter_Review.zip: REPORT.md, POST_READY.md, safe-order.mjs, safe-order.test.mjs) that is NOT part of this repository, and a note that the advertised prize is '350 USDC; ... Not a guaranteed payment' and 'Not a fixed-price software contract'. When the operator's priority is guaranteed per-task USDC, the issue itself says to 'leave this as a candidate and keep scanning fixed-fee work'. No reproducible defect, feature, or code-level maintenance is requested; therefore per the classification rules this is a market/documentation deliverable, not an engineering task, and it must be blocked. Additionally, an open PR already carries competing artifacts for the same non-engineering deliverable: PR #453 'docs(gxeon): evidence-first proof of work for Superteam Earn applications' adds docs/gxeon-os/portfolio/TOKENGEMS_JUP_DISCOVERY_AUDIT_20261013.md plus SUPERTEAM_PROJECT_APPLICATION_*.md and SUPERTEAM_PROOF_OF_WORK_20261012.md, i.e. it already covers this TokenGems/Jupiter review workstream. No product edits were made; the checkout is unchanged (git status clean).",
+  "at": "2026-10-27T18:23:36.333171+00:00",
+  "failures": [
+    {
+      "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40559211885",
+      "status": "FAILED_ENGINEER",
+      "diagnostic": "Cline preparation blocked: Issue #452 is not a request for a concrete code change to xpex-systems-ai/GXEON-AI. Its full text describes an EXTERNAL contest submission: 'GXEON PAID-WORK #002 \u2014 TokenGems/Jupiter docs review (research ready, no submission or payout)'. It is a documentation/market deliverable for superteam.fun (Try-a-Solana-project feedback bounty for TokenGems/Jupiter), with state 'RESEARCH_READY / NOT_SUBMITTED / NOT_PAID' and remaining operator actions that are entirely off-repository: (1) add own observations to a draft, (2) post a comment on the TokenGems Jupiter page via the operator's own wallet, (3) follow @tokengems and repost the announcement on X, (4) submit profile/links via Superteam Earn. Its only artifact is a 'Companion bundle' prepared in conversation (GXEON_TokenGems_Jupiter_Review.zip: REPORT.md, POST_READY.md, safe-order.mjs, safe-order.test.mjs) that is NOT part of this repository, and a note that the advertised prize is '350 USDC; ... Not a guaranteed payment' and 'Not a fixed-price software contract'. When the operator's priority is guaranteed per-task USDC, the issue itself says to 'leave this as a candidate and keep scanning fixed-fee work'. No reproducible defect, feature, or code-level maintenance is requested; therefore per the classification rules this is a market/documentation deliverable, not an engineering task, and it must be blocked. Additionally, an open PR already carries competing artifacts for the same non-engineering deliverable: PR #453 'docs(gxeon): evidence-first proof of work for Superteam Earn applications' adds docs/gxeon-os/portfolio/TOKENGEMS_JUP_DISCOVERY_AUDIT_20261013.md plus SUPERTEAM_PROJECT_APPLICATION_*.md and SUPERTEAM_PROOF_OF_WORK_20261012.md, i.e. it already covers this TokenGems/Jupiter review workstream. No product edits were made; the checkout is unchanged (git status clean).",
+      "at": "2026-10-27T18:23:36.333171+00:00"
+    }
+  ],
+  "finished_at": "2026-10-27T18:23:46.732183+00:00"
 }
