@@ -920,5 +920,178 @@
     ],
     "combined_goal": "NOT_YET_ACHIEVED",
     "why_still_unachieved": "the chain reaches engineering and engineering now refuses on evidence, but no pull request has been opened, nothing has merged and no payout exists"
+  },
+  "repair_supplement_4": {
+    "observed_at": "2026-10-27T19:06:00+00:00",
+    "head_sha_observed": "de8cc08e662ff989177f599bf74053e9872910b8",
+    "changed_files": {
+      "docs/ACTIONS-REPAIR-VERIFICATION-2026-10-27.md": "M +113/-3",
+      "scripts/bounty_admission.py": "M +46/-6",
+      "scripts/test_by_design_gate.py": "M +37/-0"
+    },
+    "changed_files_source": "git status --porcelain and git diff --numstat HEAD, derived on write",
+    "changed_files_excluded": {
+      "docs/ACTIONS-REPAIR-RECEIPTS-2026-10-27.json": "self-referential, cannot state its own size",
+      "scratch/": "evidence harnesses, not shipped; named explicitly below"
+    },
+    "purpose": "audit the by-design gate against the first refusals it made on issues no human had inspected, and correct an over-claimed mechanism in Supplement 3",
+    "audit_cycle": {
+      "run": "40564874763",
+      "event": "workflow_dispatch",
+      "trigger": "manual, labelled - not the heartbeat; the heartbeat's own receipts are in repair_supplement_3.fix_heartbeat.live_receipts",
+      "head_sha": "de8cc08e662ff989177f599bf74053e9872910b8",
+      "started_at": "2026-10-27T18:58:27Z",
+      "concluded": "success",
+      "concluded_at": "2026-10-27T19:00:44Z",
+      "summary_at": "2026-10-27T19:00:39.762164+00:00",
+      "summary_counts": {
+        "normal.raw": 598,
+        "startup.raw": 806,
+        "founder.raw": 32,
+        "programs.raw": 33,
+        "CURRENT_ISSUER_OFFER_MISSING": 17,
+        "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN": 2,
+        "HARD_ISSUE_EVIDENCE_MISSING": 38,
+        "unknown_or_competing": 1,
+        "CLOSED_OR_READ_ONLY": 2
+      },
+      "qualified_fresh": 0,
+      "qualified_unique": 0,
+      "dispatched": [],
+      "pending_hydration": 3873,
+      "refusals_emitted": [
+        {
+          "repo": "limitlessprojects/Go-Hybrid",
+          "issue_number": 940,
+          "reason": "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN",
+          "reported_comments": 3,
+          "visible_comments": 3
+        },
+        {
+          "repo": "Ensrick/vermintide-2-tweaker",
+          "issue_number": 760,
+          "reason": "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN",
+          "reported_comments": 13,
+          "visible_comments": 13
+        }
+      ]
+    },
+    "findings": [
+      {
+        "id": "D1",
+        "defect": "a bare 'wontfix' in prose is a label name or a cross-reference, and the prose regex read it as a declaration",
+        "evidence_issue": "Ensrick/vermintide-2-tweaker#760",
+        "evidence_sentence": "Closed/wontfix #627 records the rejected custom launcher model history.",
+        "evidence_authority": {
+          "login": "Ensrick",
+          "author_association": "OWNER"
+        },
+        "verdict": "wrong refusal - a pointer to another issue's history is not a statement about the behaviour reported here",
+        "repair": "bare \\bwontfix\\b removed from BY_DESIGN prose; the label path (BY_DESIGN_LABELS) still reads a real wontfix label; declarative \\bwon'?t fix\\b prose is kept"
+      },
+      {
+        "id": "D2",
+        "defect": "nothing restricted declarations to issues that are actually bug reports, so a status bullet on an aggregate board could decide an issue's fate",
+        "evidence_issue": "limitlessprojects/Go-Hybrid#940",
+        "evidence_title": "Triage Board (auto-updated daily - pin me)",
+        "evidence_quote": "- **CI freshness:** 23/27 heads fully green. The 4 red-`quick` heads (#405 #569 #572 #709) are a **stale-merge-ref artifact** ...",
+        "evidence_authority": {
+          "login": "limitlessprojects",
+          "author_association": "OWNER",
+          "created_at": "2026-10-20T10:48:42Z"
+        },
+        "verdict": "right refusal, wrong reason - the honest reason is the hard-evidence gate it fails next, not a declaration of intent",
+        "repair": "AGGREGATE_DOCUMENT (triage board / auto-updated / pin me) makes declared_by_design() return None; the following gates decide on their own terms"
+      },
+      {
+        "id": "D3",
+        "defect": "the stored quote was truncated from the start of the line, so it could cut off the very words that fired the gate",
+        "evidence_issue": "limitlessprojects/Go-Hybrid#940",
+        "verdict": "a receipt that does not show its trigger is not a receipt",
+        "repair": "marker_sentence() centres a long line on the marker instead of taking its head"
+      }
+    ],
+    "correction_to_supplement_3": {
+      "where": "repair_supplement_3.fix_refusal_not_redispatched.measured_loop",
+      "was_claimed": "the candidate table carried the refused original forward",
+      "was_wrong_because": "CI runs with BOUNTY_STATE_DIR=/tmp/bounty-discovery, so no candidate row survives between runs",
+      "actual_mechanism": "the control store held FAILED_ENGINEER for the identity, and FAILED_* is retryable by design, so the same original was admitted and dispatched again",
+      "repair_unchanged": true,
+      "status": "corrected inline in section 5 of the ledger, recorded here rather than rewritten silently"
+    },
+    "second_refusal_measured": {
+      "delivery_run": "40562829637",
+      "redispatched_at": "2026-10-27T18:44:57Z",
+      "concluded": "failure",
+      "concluded_at": "2026-10-27T18:57:40Z",
+      "jobs": {
+        "claim": "success",
+        "engineer": "failure",
+        "publish": "skipped",
+        "reconcile": "success"
+      },
+      "meaning": "one full delivery run spent relearning the verdict the previous run already held"
+    },
+    "live_before_after": [
+      {
+        "issue": "Expensify/App#105153",
+        "before": "BY_DESIGN",
+        "after": "BY_DESIGN",
+        "note": "true positive preserved; sentence 'This works as designed. It is not a bug.', MelvinBot, CONTRIBUTOR"
+      },
+      {
+        "issue": "limitlessprojects/Go-Hybrid#940",
+        "before": "BY_DESIGN",
+        "after": null,
+        "note": "no longer decided by a status board"
+      },
+      {
+        "issue": "Ensrick/vermintide-2-tweaker#760",
+        "before": "BY_DESIGN",
+        "after": null,
+        "note": "no longer decided by a pointer to another issue"
+      }
+    ],
+    "controls_unaffected": {
+      "Expensify/App#94622": "admitted at 250 USD",
+      "Expensify/App#103403": "admitted at 250 USD",
+      "why": "neither ever matched a marker, and nothing in this supplement adds one"
+    },
+    "why_this_mattered": "a false by-design refusal silently deletes qualified influx; HARD_ISSUE_EVIDENCE_MISSING is the measured binding gate (38 refusals this cycle, 26/29 in the earlier sample) and the by-design gate must not become a second, quieter filter that removes real work",
+    "gates_after_change": {
+      "suites": 13,
+      "total_bad": 0,
+      "case_counts": {
+        "test_actions_migration": 32,
+        "test_partition_regressions": 6,
+        "test_cline_delivery_ownership": 12,
+        "test_icu_pipeline_suite": "own summary format, exit 0",
+        "test_discovery_breadth": 8,
+        "test_admission_trust": 7,
+        "test_repository_intent": 11,
+        "test_program_offers": 15,
+        "test_queue_ordering": 17,
+        "test_by_design_gate": 24,
+        "test_preparation_terminal": 13,
+        "test_discovery_heartbeat": 19,
+        "test_fresh_discovery_schedule": 7
+      },
+      "by_design_gate_cases_before": 19,
+      "by_design_gate_cases_after": 24,
+      "new_cases": [
+        "a pointer to another issue is not a verdict here",
+        "a declarative won't-fix still counts",
+        "an aggregate board title is excused",
+        "an aggregate board body alone is excused",
+        "the quote always contains the words that fired the gate"
+      ],
+      "ruff": "0 findings on bounty_admission.py, test_by_design_gate.py and two adjacent files"
+    },
+    "evidence_harnesses": [
+      "scratch/_audit_by_design_two.py - reads live comments and runs the production gate over them",
+      "scratch/_update_receipts_4.py - this record, file stats derived from git"
+    ],
+    "combined_goal": "NOT_YET_ACHIEVED",
+    "why_still_unachieved": "dispatched is empty this cycle; no pull request was opened, nothing merged and no payout exists"
   }
 }

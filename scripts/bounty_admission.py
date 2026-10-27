@@ -62,8 +62,20 @@ EXFILTRATION = re.compile(
 BY_DESIGN = re.compile(
     r"\bworks as (?:designed|intended)\b|\bworking as (?:designed|intended)\b|"
     r"\bby design\b|\bnot a bug\b|\bnot a defect\b|\bno code change\b|"
-    r"\bwon'?t fix\b|\bwontfix\b|"
+    r"\bwon'?t fix\b|"
     r"\bexpected behaviou?r\b[^.\n]{0,60}\bby design\b", re.I)
+# A bare ``wontfix`` is deliberately NOT prose here. In prose it is almost always the name of
+# a label or a pointer to another issue ("Closed/wontfix #627 ..."), which says nothing about
+# the behaviour reported on this issue. Measured live 2026-10-27 on
+# Ensrick/vermintide-2-tweaker#760, which the gate refused on exactly that sentence. A real
+# ``wontfix`` label is still read, through BY_DESIGN_LABELS below.
+REFERENCE_BEFORE = re.compile(r"(?:closed/|label(?:l)?ed|tagged|per|see)\s*:?\s*$", re.I)
+REFERENCE_AFTER = re.compile(r"\s*(?:#\d+|\((?:see|per)\s*#\d+)")
+# An aggregate board is not a bug report, so nothing written on it can be a verdict on one
+# behaviour. Measured live 2026-10-27 on limitlessprojects/Go-Hybrid#940, "Triage Board
+# (auto-updated daily - pin me)", where a status bullet about CI freshness was read as a
+# declaration about the issue.
+AGGREGATE_DOCUMENT = re.compile(r"\btriage board\b|\bauto[- ]updated\b|\bpin me\b", re.I)
 REAL_BUG = re.compile(
     r"\b(?:this|that|it)\s+(?:is|remains)\s+(?:still\s+)?a\s+"
     r"(?:real|genuine|valid)\s+(?:bug|defect|regression)\b|"
@@ -212,11 +224,35 @@ def analysis_authority(context, document):
 
 
 def marker_sentence(body, match, limit=240):
-    """Quote the line carrying the marker, never the whole comment."""
+    """Quote the line carrying the marker, never the whole comment.
+
+    When the line is longer than the limit the excerpt is centred on the marker instead of
+    taken from the start of the line: a receipt that truncates before the words that fired
+    the gate proves nothing about why the gate fired. Measured live 2026-10-27 on
+    limitlessprojects/Go-Hybrid#940, whose stored quote showed a CI-status bullet and hid the
+    declaration further along the same line.
+    """
     start = body.rfind("\n", 0, match.start()) + 1
     stop = body.find("\n", match.end())
     line = " ".join(body[start:len(body) if stop < 0 else stop].split())
-    return line if len(line) <= limit else line[:limit - 3].rstrip() + "..."
+    if len(line) <= limit:
+        return line
+    marker = " ".join(match.group(0).split())
+    at = line.lower().find(marker.lower())
+    if at < 0:
+        return line[:limit - 3].rstrip() + "..."
+    room = max(0, (limit - 3 - len(marker)) // 2)
+    begin = max(0, at - room)
+    end = min(len(line), begin + limit - 3)
+    begin = max(0, end - (limit - 3))
+    return ("..." if begin else "") + line[begin:end].strip() + "..."
+
+
+def cross_reference(body, match):
+    """Is this marker a pointer to another issue rather than a verdict on this one?"""
+    before = body[max(0, match.start() - 24):match.start()]
+    after = body[match.end():match.end() + 24]
+    return bool(REFERENCE_BEFORE.search(before) or REFERENCE_AFTER.match(after))
 
 
 def declared_by_design(context):
@@ -225,8 +261,12 @@ def declared_by_design(context):
     Labels are only consulted when no authoritative comment settled the question, and an
     authoritative statement that the behaviour *is* a defect clears both, including a label
     that was applied earlier. Silence returns ``None`` -- an absence of a declaration is not
-    a declaration.
+    a declaration. An aggregate board returns ``None`` as well: nothing written on a board is
+    a verdict about one reported behaviour.
     """
+    issue = context["issue"]
+    if AGGREGATE_DOCUMENT.search((issue.get("title") or "") + "\n" + (issue.get("body") or "")):
+        return None
     verdict, cleared = None, False
     for document in context.get("comments") or ():
         if not analysis_authority(context, document):
@@ -235,7 +275,8 @@ def declared_by_design(context):
         if REAL_BUG.search(body):
             verdict, cleared = None, True
             continue
-        match = BY_DESIGN.search(body)
+        match = next((found for found in BY_DESIGN.finditer(body)
+                      if not cross_reference(body, found)), None)
         if not match:
             continue
         verdict, cleared = {
@@ -248,7 +289,6 @@ def declared_by_design(context):
         }, False
     if cleared or verdict:
         return verdict
-    issue = context["issue"]
     labels = {str(label.get("name") if isinstance(label, dict) else label).strip().lower()
               for label in (issue.get("labels") or ())}
     hit = labels & BY_DESIGN_LABELS

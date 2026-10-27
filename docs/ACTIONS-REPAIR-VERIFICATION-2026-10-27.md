@@ -293,9 +293,11 @@ The fired cycle at 18:44:55Z re-dispatched **the same original** that had alread
  "dispatched": ["818bf873582db6114e20b66a7cdc8ee8"], "pending_hydration": 3137}
 ```
 
-`qualified_fresh: 0` with a non-empty `dispatched` is the loop in one line: the candidate table carried
-the refused original forward and the dispatch gate accepted it, because its recorded status was
-`FAILED_ENGINEER` and failures are retryable by design. `scripts/actions_dispatch.py` now exposes
+`qualified_fresh: 0` with a non-empty `dispatched` is the loop in one line. The durable record that let
+it through is the control store's `FAILED_ENGINEER` - failures are retryable by design - and not a
+carried candidate row, because CI runs with an ephemeral `BOUNTY_STATE_DIR=/tmp/bounty-discovery`.
+The first draft of this paragraph said "the candidate table carried the refused original forward"; that
+was an inferred mechanism and it was wrong. Correction recorded in Supplement 4, item 1. `scripts/actions_dispatch.py` now exposes
 `retry_eligible(state)` - only a recorded `FAILED_*` may be re-dispatched, and a `REJECTED_*` is
 counted separately as `terminal_refusal` instead of hiding inside `already_owned`.
 
@@ -400,3 +402,111 @@ The chain now reaches engineering, and engineering now refuses on evidence inste
 still **no pull request, no merge and no payout**, and `combined_goal` remains `NOT_YET_ACHIEVED`. What
 changed is that the pipeline no longer spends delivery runs to relearn verdicts it already holds, and it
 no longer reports a correct refusal as a fault.
+
+---
+
+## Supplement 4: the first two refusals the live pipeline made on its own, audited against source
+
+Cycle: **`40564874763`**, `workflow_dispatch` on `de8cc08e662ff989177f599bf74053e9872910b8`, started
+18:58:27Z, completed **success** 19:00:44Z, 1 job (`discover`). This run was **dispatched manually to
+observe the gate at cycle level**; it was not fired by the heartbeat, whose own receipts are in
+Supplement 3 section 8.
+
+Summary line as emitted:
+
+```
+{"at": "2026-10-27T19:00:39.762164+00:00", "mode": "LIVE",
+ "counts": {"normal.raw": 598, "startup.raw": 806, "founder.raw": 32, "programs.raw": 33,
+            "CURRENT_ISSUER_OFFER_MISSING": 17, "REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN": 2,
+            "HARD_ISSUE_EVIDENCE_MISSING": 38, "unknown_or_competing": 1, "CLOSED_OR_READ_ONLY": 2},
+ "qualified_fresh": 0, "qualified_unique": 0, "dispatched": [], "pending_hydration": 3873}
+```
+
+Two admission refusals carried the new reason, on issues no human had inspected:
+
+```
+{"phase":"ADMISSION","repo":"limitlessprojects/Go-Hybrid","issue_number":940,
+ "reason":"REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN","reported_comments":3,"visible_comments":3}
+{"phase":"ADMISSION","repo":"Ensrick/vermintide-2-tweaker","issue_number":760,
+ "reason":"REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN","reported_comments":13,"visible_comments":13}
+```
+
+A gate that refuses for a reason is making a claim about a human's words. Both were therefore read
+back from the API and pushed through the production function (`scratch/_audit_by_design_two.py`,
+`declared_by_design()` in `scripts/bounty_admission.py`), not judged by eye.
+
+### 1. What the audit found, before any change
+
+| issue | title | keyed sentence | authority | audit verdict |
+|---|---|---|---|---|
+| `limitlessprojects/Go-Hybrid#940` | *Triage Board (auto-updated daily - pin me)* | "**CI freshness:** 23/27 heads fully green. The 4 red-`quick` heads ... are a **stale-merge-ref artifact** ..." | `limitlessprojects`, OWNER, 2026-10-20 | **right refusal, wrong reason** - the issue is a status board, not a bug report, so nothing on it is a verdict about one behaviour. Its honest refusal reason is the hard-evidence gate it fails next, not a declaration of intent. |
+| `Ensrick/vermintide-2-tweaker#760` | *[CWV] Outrider uses Kruber body animations on Saltzpyre* | "Closed/wontfix #627 records the rejected custom launcher model history." | `Ensrick`, OWNER | **wrong** - a pointer to another issue's label and history is not a statement about the behaviour reported here. |
+
+Two defects, both structural rather than one-off typos:
+
+- **D1, a pointer read as a verdict.** A bare `wontfix` in prose is overwhelmingly the name of a label or
+  a cross-reference (`Closed/wontfix #627`), and the prose regex accepted it as a declaration.
+- **D2, a board read as a bug report.** Nothing restricted declarations to issues that are actually
+  reports, so a status bullet on an aggregate board could decide an issue's fate.
+- **D3, found while reading the receipts: the quote could hide its own trigger.** The stored excerpt was
+  taken from the start of the line, 240 characters, so on #940 it showed the CI-status bullet and cut off
+  before the words that fired the gate. A receipt that does not show the trigger is not a receipt.
+
+Why this matters more than the run it saves: a false by-design refusal **silently deletes qualified
+influx**, which is the first thing this pipeline exists to produce. The `HARD_ISSUE_EVIDENCE_MISSING`
+gate is measured as the binding one (38 refusals this cycle alone, 26/29 in the earlier sample); the
+by-design gate must not become a second, quieter filter that removes real work.
+
+### 2. Correction to Supplement 3 section 5 (recorded, not quietly rewritten)
+
+Supplement 3 said the re-dispatch loop happened because "the candidate table carried the refused original
+forward". That was an inferred mechanism and it was **wrong**: CI runs with
+`BOUNTY_STATE_DIR=/tmp/bounty-discovery`, so no candidate row survives between runs. The durable record
+that actually let the same identity through is the control store's `FAILED_ENGINEER`, which is retryable
+by design. The repair (`retry_eligible()`) is unchanged and still correct; only its stated justification
+is now exact. The paragraph in section 5 carries the correction inline.
+
+Second measured instance of the loop, for the record: delivery run **`40562829637`** (re-dispatched at
+18:44Z) completed **failure** at 18:57:40Z - claim success, engineer failure, publish skipped, reconcile
+success - one full run spent relearning the same `blocked` verdict.
+
+### 3. The repairs
+
+- `scripts/bounty_admission.py`
+  - **Prose regex:** bare `\bwontfix\b` removed from `BY_DESIGN`. A real `wontfix` label is still read,
+    through `BY_DESIGN_LABELS`, which is where a label belongs. `won't fix` prose remains a marker
+    because it is a declarative sentence ("We won't fix this").
+  - **`cross_reference(body, match)`** and a `finditer` scan: a marker occurrence preceded by
+    `closed/`/`labelled`/`tagged`/`per`/`see` or followed by `#123` is a pointer, not a verdict, and is
+    skipped so a later genuine declaration in the same comment can still be read.
+  - **`AGGREGATE_DOCUMENT`** (`triage board`, `auto-updated`, `pin me`): if the issue itself is a board,
+    `declared_by_design()` returns `None` immediately - the question does not apply, and the honest
+    reason comes from the gates that follow.
+  - **`marker_sentence()`** now centres a long line on the marker instead of truncating from the start,
+    so the stored quote always contains the words that fired the gate.
+- `scripts/test_by_design_gate.py`: new class `PrecisionOnUnseenTrafficTests`, 5 cases - a pointer is not
+  a verdict, a declarative `won't fix` still counts, a board title is excused, a board body is excused,
+  and the quote always shows the marker. Suite 19 -> **24**.
+
+### 4. Before and after, on the same live issues
+
+| issue | before | after | note |
+|---|---|---|---|
+| `Expensify/App#105153` | `BY_DESIGN` | **`BY_DESIGN`** | true positive preserved; sentence "*This works as designed. It is not a bug.*", `MelvinBot`, `CONTRIBUTOR` |
+| `limitlessprojects/Go-Hybrid#940` | `BY_DESIGN` | **`None`** | no longer decided by a status board |
+| `Ensrick/vermintide-2-tweaker#760` | `BY_DESIGN` | **`None`** | no longer decided by a pointer to another issue |
+
+The controls from Supplement 3 section 4 (`#94622`, `#103403` at `250 USD`) are unaffected: they never
+matched a marker, and nothing here adds one.
+
+### 5. Verification at this revision
+
+- 13 gated suites under `python -W error`, **`TOTAL_BAD=0`**: 32, 6, 12, ICU (own format, exit 0), 8, 7,
+  11, 15, 17, **24**, 13, 19, 7.
+- Ruff: **0 findings** on `bounty_admission.py`, `test_by_design_gate.py` and the two adjacent files.
+
+### 6. Boundary, unchanged
+
+`dispatched: []` this cycle, so this supplement adds **no PR, no merge, no payout**. What it adds is a
+gate that refuses on a sentence that actually exists and quotes it, and two measured false attributions
+that will no longer remove real work from the queue. `combined_goal` remains **`NOT_YET_ACHIEVED`**.

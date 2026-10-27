@@ -190,5 +190,42 @@ class LabelTests(unittest.TestCase):
         self.assertIsNotNone(proof, reason)
 
 
+class PrecisionOnUnseenTrafficTests(unittest.TestCase):
+    """Rules added after auditing the first two refusals the live pipeline made on its own.
+
+    Both were imprecise: one keyed on a pointer to another issue, one read a status bullet on
+    an aggregate board. A wrong by-design refusal silently deletes qualified influx, which is
+    the thing this pipeline exists to produce, so each gets a rule and a case.
+    """
+
+    def test_a_pointer_to_another_issue_is_not_a_verdict_here(self):
+        body = "Closed/wontfix #627 records the rejected custom launcher model history."
+        self.assertIsNone(declared_by_design(context([comment(body, login="Ensrick",
+                                                           association="OWNER")])))
+
+    def test_a_declarative_wont_fix_still_counts(self):
+        verdict = declared_by_design(context([comment("We won't fix this.", login="Ensrick",
+                                                     association="OWNER")]))
+        self.assertEqual(verdict["verdict"], "BY_DESIGN")
+
+    def test_an_aggregate_board_is_not_a_bug_report(self):
+        ctx = context([comment(DECLARATION)])
+        ctx["issue"]["title"] = "Triage Board (auto-updated daily - pin me)"
+        self.assertIsNone(declared_by_design(ctx))
+
+    def test_a_board_body_alone_is_enough_to_excuse_it(self):
+        ctx = context([comment(DECLARATION, login="limitlessprojects", association="OWNER")])
+        ctx["issue"]["body"] = "Auto-updated status board. Do not comment here."
+        self.assertIsNone(declared_by_design(ctx))
+
+    def test_the_quote_always_contains_the_words_that_fired_the_gate(self):
+        filler = "status line " * 40
+        body = filler + "This works as designed. It is not a bug."
+        verdict = declared_by_design(context([comment(body)]))
+        self.assertEqual(verdict["verdict"], "BY_DESIGN")
+        self.assertIn("works as designed", verdict["quote"])
+        self.assertLessEqual(len(verdict["quote"]), 243)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
