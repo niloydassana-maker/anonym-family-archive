@@ -1,0 +1,494 @@
+{
+  "observed_at": "2026-10-27T15:31:35.458324+00:00",
+  "code_sha": "5c4811cf2b1b5b5aef34d6c7a1ab255392551e1c",
+  "combined_goal": "NOT_YET_ACHIEVED",
+  "verified_bounty_prs_from_repair_runs": 0,
+  "runs": [
+    {
+      "conclusion": "",
+      "databaseId": 40531780003,
+      "headSha": "5c4811cf2b1b5b5aef34d6c7a1ab255392551e1c",
+      "name": "Bounty discovery and reconciliation",
+      "status": "in_progress",
+      "url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40531780003"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40531287767,
+      "headSha": "5c4811cf2b1b5b5aef34d6c7a1ab255392551e1c",
+      "name": "Actions migration contracts",
+      "status": "completed",
+      "url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40531287767"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40530967628,
+      "headSha": "b78c061a529601390f4908642883e890c6af757c",
+      "name": "Actions migration contracts",
+      "status": "completed",
+      "url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40530967628"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40530525138,
+      "headSha": "5bc9023fdda8d361561d36a47f763056fea51807",
+      "name": "bounty canary  #",
+      "status": "completed",
+      "url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40530525138"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40530523348,
+      "headSha": "5bc9023fdda8d361561d36a47f763056fea51807",
+      "name": "Actions migration contracts",
+      "status": "completed",
+      "url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40530523348"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40529552133,
+      "headSha": "72ebc3f5d3f19e0b668dac38f45396392290167c",
+      "name": "Bounty discovery and reconciliation",
+      "status": "completed",
+      "url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40529552133"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40528756264,
+      "headSha": "72ebc3f5d3f19e0b668dac38f45396392290167c",
+      "name": "Bounty discovery and reconciliation",
+      "status": "completed",
+      "url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40528756264"
+    },
+    {
+      "conclusion": "success",
+      "databaseId": 40528748332,
+      "headSha": "72ebc3f5d3f19e0b668dac38f45396392290167c",
+      "name": "bounty canary  #",
+      "status": "completed",
+      "url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40528748332"
+    }
+  ],
+  "model_wire": {
+    "at": "2026-10-27T15:24:47.276318+00:00",
+    "diagnostic": "Cline live tool round trip verified: provider=openai-compatible, model=deepseek-v4.1-flash:free, completions=2, tool_results=1",
+    "gateway": {
+      "ok": true,
+      "model": "deepseek-v4.1-flash:free",
+      "total_keys": 17,
+      "states": {
+        "READY": 14,
+        "LEASED": 0,
+        "COOLDOWN": 3,
+        "DISABLED": 0
+      },
+      "cooldowns": [
+        {
+          "key_index": 0,
+          "remaining_seconds": 3591.83
+        },
+        {
+          "key_index": 1,
+          "remaining_seconds": 3592.51
+        },
+        {
+          "key_index": 2,
+          "remaining_seconds": 52.615
+        }
+      ],
+      "last_http_status": 200,
+      "received_requests": 2,
+      "last_request_path": "/v1/chat/completions",
+      "completed_requests": 2,
+      "forwarded_tool_definitions": 8,
+      "forwarded_tool_results": 1
+    }
+  },
+  "discovery": [
+    {
+      "run_id": 40528756264,
+      "latest_cycle": {
+        "at": "2026-10-27T15:15:28.026996+00:00",
+        "mode": "LIVE",
+        "counts": {
+          "normal.raw": 611,
+          "startup.raw": 598,
+          "founder.raw": 33,
+          "INCOMPLETE_COMMENTS": 14,
+          "HARD_ISSUE_EVIDENCE_MISSING": 28,
+          "unknown_or_competing": 3,
+          "CURRENT_ISSUER_OFFER_MISSING": 14,
+          "NON_PAYMENT_OR_INSTRUCTION_EXFILTRATION": 1
+        },
+        "qualified_fresh": 0,
+        "qualified_unique": 0,
+        "dispatched": [],
+        "pending_hydration": 545
+      }
+    },
+    {
+      "run_id": 40529552133,
+      "latest_cycle": {
+        "at": "2026-10-27T15:19:33.259925+00:00",
+        "mode": "LIVE",
+        "counts": {
+          "normal.raw": 42,
+          "startup.raw": 73,
+          "founder.raw": 57,
+          "CURRENT_ISSUER_OFFER_MISSING": 18,
+          "INCOMPLETE_COMMENTS": 19,
+          "unknown_or_competing": 4,
+          "HARD_ISSUE_EVIDENCE_MISSING": 19
+        },
+        "qualified_fresh": 0,
+        "qualified_unique": 0,
+        "dispatched": [],
+        "pending_hydration": 525
+      }
+    }
+  ],
+  "comment_counter_receipt": {
+    "repo": "auscaster/frantic-board",
+    "number": 540,
+    "complete_comments": true,
+    "evidence": {
+      "rest_reported": 60,
+      "rest_visible": 50,
+      "graphql_visible": 50,
+      "graphql_last_id": 6397002893
+    },
+    "fetched_at": "2026-10-27T15:23:06.801034+00:00"
+  },
+  "raw_evidence_manifest": [
+    {
+      "path": "scratch/actions-repair-20261027/action-runtime-sources.json",
+      "bytes": 784,
+      "sha256": "20dc87a58b30ea2d67d1ae99e501b87f42bdb3899e8451f6b6c40c0e6516d4de"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/anmolkumar912331-oss--javascript-learning--1.json",
+      "bytes": 183876,
+      "sha256": "c31aac2b53f830b8ee41e3fa6449b195012fc3dd708774402799b2110bbcb62f"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40524970510.log",
+      "bytes": 24378,
+      "sha256": "c48f383ff3959902982a73f04ff91ace6f1d7d1324fa56c116eed7025dce9cb2"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40525139616/task-claim-40525139616/claim.json",
+      "bytes": 50,
+      "sha256": "df50c2d16aae9d568ec4da72d2526a1d1831a9ef97529c836d2b491830512761"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40525139616/task-engineering-40525139616/claim.json",
+      "bytes": 50,
+      "sha256": "df50c2d16aae9d568ec4da72d2526a1d1831a9ef97529c836d2b491830512761"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40525139616/task-engineering-40525139616/engineering-result.json",
+      "bytes": 136,
+      "sha256": "61a51589110da1f3e6001909c4d64ee3ce576cd7b3d12d830c174f3c652e7fd4"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40525139616/task-engineering-40525139616/model-wire.json",
+      "bytes": 780,
+      "sha256": "3bf0baccfb634b3b2ca1dae376b5a1299e3fb0fc9ef6a9b61176d71dfe9ac104"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40528748332/task-claim-40528748332/claim.json",
+      "bytes": 50,
+      "sha256": "59963023d6ad9793fa918bf5f479bf8a1dd57a40b162edb747b35b0132d250a8"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40528748332/task-engineering-40528748332/claim.json",
+      "bytes": 50,
+      "sha256": "59963023d6ad9793fa918bf5f479bf8a1dd57a40b162edb747b35b0132d250a8"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40528748332/task-engineering-40528748332/engineering-result.json",
+      "bytes": 136,
+      "sha256": "cb147754ed5583ade09789e0917243053689668e1c1b5a21c82a8ac3693b4bc8"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40528748332/task-engineering-40528748332/model-wire.json",
+      "bytes": 857,
+      "sha256": "530247caaf7987a905ea44a33bd87b72269cc1f7569641f1658b9bcada98948d"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40530525138/task-claim-40530525138/claim.json",
+      "bytes": 50,
+      "sha256": "4949c4e31f94cc3c0025abd3875b0948159ed8ed0fb7acb5359f029779f3ed7f"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40530525138/task-engineering-40530525138/claim.json",
+      "bytes": 50,
+      "sha256": "4949c4e31f94cc3c0025abd3875b0948159ed8ed0fb7acb5359f029779f3ed7f"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40530525138/task-engineering-40530525138/engineering-result.json",
+      "bytes": 136,
+      "sha256": "700e5b7d164a988f906092905ff224b5c671d135253ed406f42fcd88b1a605d8"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-40530525138/task-engineering-40530525138/model-wire.json",
+      "bytes": 855,
+      "sha256": "fa1c8e3ef3ed694193581d923a4615e978d3aa845b01b82e8307ba12862883de"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/canary-status.json",
+      "bytes": 15203,
+      "sha256": "cb1b38cb315a8ac326641b1103216a1034245962c0b8a75812596faa2ab63dd9"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/ClankerNation--OpenAgents--183.json",
+      "bytes": 47906,
+      "sha256": "1cd60f82dd85d8b8c527cd037d66d179c7d1b330ff59a50f3edc4a57d2bd8a35"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/comment-counter-live-receipt.json",
+      "bytes": 279,
+      "sha256": "651e1bc44ad22c6e67b93a67d332cc6e9d6c1f760aa18513bcc075752255e78d"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/diamond-search.json",
+      "bytes": 220073,
+      "sha256": "6f4d5554622ef37d9647aa9e2550da15360c760cf0aa0786e9353e27f45946be"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/discovery-40528756264/discovery-40528756264/discovery.sqlite3",
+      "bytes": 4370432,
+      "sha256": "ea76b8013fce30c9234f245f1a39d107f2af985525059f8b304edf90d1887cc2"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/discovery-40528756264/discovery-40528756264/horizon.sqlite3",
+      "bytes": 8192,
+      "sha256": "1c8c41925ceabf416747a3958fbb7595e04c16c7a553f05fb825487ac5da7ff6"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/discovery-40528756264/discovery-40528756264/receipts.jsonl",
+      "bytes": 389,
+      "sha256": "453e223a00972b6ab640d17aa07950e501ba09ad4eeee2d6b3a8160618dcfbc2"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/discovery-40529552133/discovery-40529552133/discovery.sqlite3",
+      "bytes": 4616192,
+      "sha256": "5f19f2f37a53e2499a3a0c40bfd7d6d8cf8f050a68d0df9711356e714dad86ce"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/discovery-40529552133/discovery-40529552133/horizon.sqlite3",
+      "bytes": 8192,
+      "sha256": "2e174b478f36f2295b70772606207726e167bdb3a326f7257a8b229113275544"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/discovery-40529552133/discovery-40529552133/receipts.jsonl",
+      "bytes": 730,
+      "sha256": "d6a82a7ff9a99f16de50cd84b5760c2b5438854d5f3294a08ffb8f93978885b1"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/global-discovery/discovery.sqlite3",
+      "bytes": 274432,
+      "sha256": "79cf7822159a51a995a7b0f04c0d26d47ae20f8601bfa050d8b3fe592820edbe"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/global-discovery/horizon.sqlite3",
+      "bytes": 8192,
+      "sha256": "236cb041489a815b616896830e9ae527f63e060ed3c28db063c596d3d2134da7"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/global-discovery/receipts.jsonl",
+      "bytes": 264,
+      "sha256": "423a485fe8d489aab7ccb51dcdd0a05f2140b4cc35df800bf7a6f38e79eac403"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/hard-global-search.json",
+      "bytes": 2280542,
+      "sha256": "b81b96b5513a2b97c0edd32b72418d532745f307b69cf2d885f265924089607a"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/limitlessprojects--Go-Hybrid--345.json",
+      "bytes": 99299,
+      "sha256": "9fb02ea8d002439c9e67ca59ec7456673beb8175caad571f93d9929795d30ccc"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/live-discovery/discovery.sqlite3",
+      "bytes": 20480,
+      "sha256": "604e69689115dc0d41f98f905d33fe644ffd20b7ffc928cd6ab4ef7dc8789c70"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/live-discovery/horizon.sqlite3",
+      "bytes": 8192,
+      "sha256": "67c6631ce149c6c4a5b12b85b5ba1b4fb62e1ce2bfa4782649ec38c7337ac0a9"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/live-discovery/receipts.jsonl",
+      "bytes": 246,
+      "sha256": "f0b24bd017f1fd9292f6abc957f4ea762ba788004a1028628102bc7b2fbbeaa6"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/odiseo159-beep--mergit--1.json",
+      "bytes": 52319,
+      "sha256": "860276278ff738ee2cdcc5f5d54f5100e80e0946553d51bc7256ba15c8172b78"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/oll4com--spaceapp--60.json",
+      "bytes": 226399,
+      "sha256": "8faabae5fee1169471b11cfc59d66c7ee9810c91f9f40f74efeb3ddbd3c28869"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/oll4com--spaceapp--62.json",
+      "bytes": 213104,
+      "sha256": "88b8e3aaad1d012283e289259883e234aaa34fe9d44a58969b57795e14053a02"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/oll4com--spaceapp--63.json",
+      "bytes": 185480,
+      "sha256": "82a6ad88e86a9e66172518c195deb42525253cb901f2da5adf21be845bbbf4a0"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/oll4com--spaceapp--64.json",
+      "bytes": 235834,
+      "sha256": "75d62a26ea92fc801ea048a5df02660a6a6a251b20a706200840bddfa1fcfe9c"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/oll4com--spaceapp--65.json",
+      "bytes": 246657,
+      "sha256": "fca0340f16c15c8805e99577b195f199c7024f2773702bf1ea09364583b8064d"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/originals/agentic_silo_hunter.py",
+      "bytes": 20455,
+      "sha256": "7f4ebcc01a28c1fb70d7e78d9f4a01bfbdbb39b650074fbb6d41fe8d795e0b8a"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/originals/run_four_cline_fleet.py",
+      "bytes": 10183,
+      "sha256": "d2b0fd4010a7b18388bd921d029ece04996ddbe8eab22d2cfbf29d1c56cbe581"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/originals/startup_hunter_parallel.py",
+      "bytes": 19807,
+      "sha256": "b25d08032e7534239d2b585da50543a6825a699afce0967bfcb784df0d0088a5"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/originals/working-tree.patch",
+      "bytes": 3875,
+      "sha256": "6b85ada3248d519a2ec764eed89bfea10e1af85b605093d1afa0e083154cb396"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/run-40525134083.log",
+      "bytes": 56718,
+      "sha256": "1d26b0a64dacc8181c3eb72fc8a1f004e01ced390f68cb9aa6f307bc6601c736"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/run-40525139616.log",
+      "bytes": 79091,
+      "sha256": "6eb7761d659784c8402ae3d98ce3b8ed232aa5d3daf9da40d80a298ed6e3defa"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/run-40529552133.log",
+      "bytes": 43036,
+      "sha256": "026b8a10ece7b1fbe93d3a89f7b3047421f6b65e0f4efd947ec50663026fc117"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/run-40530523348.log",
+      "bytes": 67126,
+      "sha256": "92290f15e4015f83885bfa831461e4e1b612e75181cef4b10fb274b141bd8620"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/run-40530525138.log",
+      "bytes": 79653,
+      "sha256": "9d9efcdf8ba5aad63d4cd435a8e980aede02095fe08520f79a8aeb06236d7b9e"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/run-40531287767.log",
+      "bytes": 57967,
+      "sha256": "1d085d389204b03956a1021e2bbdefc53557f4eee31d90f9f5ed044230336a4e"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/tools/actionlint.exe",
+      "bytes": 6432768,
+      "sha256": "54ca21be3de4c7cfa26914aa8b61bd76bf573ef3caac5f80d110558cdf241718"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/tools/actionlint_1.7.12_windows_amd64.zip",
+      "bytes": 2479065,
+      "sha256": "6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification/0.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification/1.log",
+      "bytes": 750,
+      "sha256": "68798e9d4d203d3b2b99a2679502d398335478345575a2ccd40a5d64d33f7d6e"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification/2.log",
+      "bytes": 2073,
+      "sha256": "27d52cdb7431f2b73c7c7fa94f74f42670ba22a5c6794da017ddf522104aa215"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification/3.log",
+      "bytes": 12092,
+      "sha256": "1849c545eb4f8f8be9369e1529906557c0e19c59ec406247f3c3560147e82d2c"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification/4.log",
+      "bytes": 3031,
+      "sha256": "55ede6f15b22cbffd9d905a29c04fb104dabdbef20c19b42fa8dd2e02dd23489"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification/actionlint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification/receipts.json",
+      "bytes": 1824,
+      "sha256": "9ba17e22d7caeb310ca67ce4dc396f7515d51fb644ee6bb4d0c74a87f95b1687"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification/ruff.log",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification-final/0.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification-final/1.log",
+      "bytes": 750,
+      "sha256": "f3763a9993ec08df0542ce8c99b02771207866524b2c623a512adbd5f273cc48"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification-final/2.log",
+      "bytes": 2073,
+      "sha256": "e89b36191d63b7751ce6c49c061ae1388b98f4a9564174dcaeb9046940f82760"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification-final/3.log",
+      "bytes": 12092,
+      "sha256": "ddcb06e690da046b86ec7252ea0611fc9cef828066055de1859361ee46478de3"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification-final/4.log",
+      "bytes": 3516,
+      "sha256": "eff0a22488f8821aecd0e361301a9559e93db3064fd95dcfc36bdfa74bbba79b"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification-final/actions-latest.log",
+      "bytes": 8372,
+      "sha256": "3a1e62484428d3ae70fd2adf442da843563a1ebf265aad74af0d602d78fa7260"
+    },
+    {
+      "path": "scratch/actions-repair-20261027/verification-final/receipts.json",
+      "bytes": 1824,
+      "sha256": "c2907589374ed4506ffe58267faf1212d2936675dd87a6b59a3cbeb0c475b210"
+    }
+  ]
+}
