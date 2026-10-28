@@ -2,7 +2,7 @@
   "task_id": "f0fda21c7b0aa185d04a48ff130e4e58",
   "repo": "Expensify/App",
   "issue_number": 104400,
-  "status": "CLAIMED",
+  "status": "FAILED_ENGINEER",
   "dispatch_id": "71a3eecaa82d4be3b3011db3a0eb4d06",
   "admission": {
     "funding": {
@@ -45,11 +45,22 @@
   ],
   "dispatched_at": "2026-10-28T15:53:09.638840+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T15:53:35.933752+00:00",
+  "updated_at": "2026-10-28T16:51:53.692601+00:00",
   "owner": "40720474625:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40720474625",
   "harness_sha": "646936cc49cbb02c3feef670f38b9c5e10e8fc96",
-  "claimed_at": "2026-10-28T15:53:35.933734+00:00"
+  "claimed_at": "2026-10-28T15:53:35.933734+00:00",
+  "diagnostic": "[Errno 2] No such file or directory: '/tmp/fleet-artifacts/delivery-supervisor/78f03973e11343c1bf924982f87f697c.preparation.json'",
+  "at": "2026-10-28T16:51:31.127904+00:00",
+  "failures": [
+    {
+      "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40720474625",
+      "status": "FAILED_ENGINEER",
+      "diagnostic": "[Errno 2] No such file or directory: '/tmp/fleet-artifacts/delivery-supervisor/78f03973e11343c1bf924982f87f697c.preparation.json'",
+      "at": "2026-10-28T16:51:31.127904+00:00"
+    }
+  ],
+  "finished_at": "2026-10-28T16:51:53.117650+00:00"
 }
