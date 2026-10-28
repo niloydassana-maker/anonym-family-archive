@@ -2,7 +2,7 @@
   "task_id": "6ea16241e9826e7564875e0f6405a2c4",
   "repo": "Cyon0x/earnly",
   "issue_number": 1,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "321b8100bbb54c2cbea73a1eb837175a",
   "admission": {
     "funding": {
@@ -36,11 +36,67 @@
   ],
   "dispatched_at": "2026-10-28T19:21:50.231090+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T19:22:05.400008+00:00",
+  "updated_at": "2026-10-28T19:26:15.381887+00:00",
   "owner": "40753630638:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40753630638",
   "harness_sha": "003b486747f248753363fa0cad5e39e557162dc0",
-  "claimed_at": "2026-10-28T19:22:05.399991+00:00"
+  "claimed_at": "2026-10-28T19:22:05.399991+00:00",
+  "at": "2026-10-28T19:26:01.109150+00:00",
+  "reason": "Cline preparation blocked: Not a concrete code change. Issue Cyon0x/earnly#1 'Contact question: Earnly-Build bounty payments' (author carrerasdarren-cell) is a pure contact/payment-status inquiry: it asks the repo owner to identify/forward the right contact for unpaid USDC-on-Base bounties ($50 for Earnly-Build/earnly#20 / PR #57, $120 for Earnly-Build/earnly#2 / PR #70) published by a DIFFERENT repository 'Earnly-Build/earnly' and merged by a now-404 account 'Abdul-dev-creator'. It contains no defect report, no feature request, and no file/component reference against Cyon0x/earnly. The repository is a solo Next.js prototype (Language TypeScript, 125 tracked files, 1 branch 'main', 0 pull requests in any state, open_issues_count 1 which is issue #1 itself, forks 0). Owner Cyon0x replied (comment 6477156421): 'I work on earnly alone, no other contributors, I have not received any funds or bounty payments relating to the $50 and $120 USDC rewards ... I cannot confirm the status or responsibility for these payments.' The admission 'funding' signal ($120, source comment 6477156421) is a misclassification: that comment is the owner asking the reporter for evidence, NOT an offer to fund any code work, so there is no live funding for an engineering deliverable. This is a market/administrative contact request (bounty/payment dispute about a third-party repo), so per policy it must be blocked rather than converted into a fallback proposal or PR. Checkout left unchanged (read-only clone only; no edits, no branch, no fork, no PR).",
+  "declared_reason": "Not a concrete code change. Issue Cyon0x/earnly#1 'Contact question: Earnly-Build bounty payments' (author carrerasdarren-cell) is a pure contact/payment-status inquiry: it asks the repo owner to identify/forward the right contact for unpaid USDC-on-Base bounties ($50 for Earnly-Build/earnly#20 / PR #57, $120 for Earnly-Build/earnly#2 / PR #70) published by a DIFFERENT repository 'Earnly-Build/earnly' and merged by a now-404 account 'Abdul-dev-creator'. It contains no defect report, no feature request, and no file/component reference against Cyon0x/earnly. The repository is a solo Next.js prototype (Language TypeScript, 125 tracked files, 1 branch 'main', 0 pull requests in any state, open_issues_count 1 which is issue #1 itself, forks 0). Owner Cyon0x replied (comment 6477156421): 'I work on earnly alone, no other contributors, I have not received any funds or bounty payments relating to the $50 and $120 USDC rewards ... I cannot confirm the status or responsibility for these payments.' The admission 'funding' signal ($120, source comment 6477156421) is a misclassification: that comment is the owner asking the reporter for evidence, NOT an offer to fund any code work, so there is no live funding for an engineering deliverable. This is a market/administrative contact request (bounty/payment dispute about a third-party repo), so per policy it must be blocked rather than converted into a fallback proposal or PR. Checkout left unchanged (read-only clone only; no edits, no branch, no fork, no PR).",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/Cyon0x--earnly--1",
+    "base_sha": "21a15398283b6b5e46acdc9994de1353650e3252",
+    "default_branch": "main",
+    "sources": [
+      {
+        "path": "package.json",
+        "sha256": "cf3cf316d9090c23dbed57d40fe5f4eab6aeaab40bc9623977c49716336b7e87"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "97dafa012620fd4391cb8392aa3414cc7ea4d9dfc40a32abb568c6c99e2b5379"
+      },
+      {
+        "path": "vitest.config.mts",
+        "sha256": "27d6494e8f1ee3ddd1e11d08c6f6aa537ca43f695bc238170c05610dce934145"
+      },
+      {
+        "path": "eslint.config.mjs",
+        "sha256": "870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493"
+      },
+      {
+        "path": "next.config.ts",
+        "sha256": "614bce25b089c3f19b1e17a6346c74b858034040154c6621e7d35303004767cc"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "13425566962d18893e83bc52f43ac102becb6363dd00bd18b98db479c9c6cdb2"
+      },
+      {
+        "path": "AGENTS.md",
+        "sha256": "63f2c50380ed6303237cce215ce27af1d620d094c215e28d1b1538a3c070e3bb"
+      },
+      {
+        "path": "README.md",
+        "sha256": "7219615b11e616b9b86028f8119c2a3dcec2b8ccff53c3ac04768a5606c11276"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "120",
+      "currency": "USD",
+      "usd_value": "120",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$120",
+      "source_url": "https://github.com/Cyon0x/earnly/issues/1#issuecomment-6477156421",
+      "payer": "Cyon0x"
+    }
+  },
+  "finished_at": "2026-10-28T19:26:14.636255+00:00"
 }
