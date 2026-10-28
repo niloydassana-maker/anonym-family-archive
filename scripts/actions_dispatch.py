@@ -1023,17 +1023,15 @@ def is_code_change_request(title: str, body: str, labels: list) -> tuple:
             return (False, "REFUSED_NOT_A_CODE_CHANGE: " + reason)
 
     # --- 3. CODE CHANGE: admit --------------------------------------------
+    # Code labels alone are insufficient - they can be applied to anything.
+    # Require at least one code keyword in title/body OR a code file reference.
     has_code_keywords = bool(
         _CODE_TITLE_KEYWORDS & set(title_l.split())
         | _CODE_BODY_KEYWORDS & set(body_l.split())
     )
     has_code_ref = _has_code_reference(body_l)
-    has_code_labels = bool(labels_set & {
-        "bug", "security", "enhancement", "feature", "type/bug",
-        "type/feature", "good first issue", "help wanted",
-    })
 
-    if has_code_keywords or has_code_ref or has_code_labels:
+    if has_code_keywords or has_code_ref:
         return (True, "needs_code_change")
 
     # --- 4. FAIL-OPEN: admit anything ambiguous ----------------------------
