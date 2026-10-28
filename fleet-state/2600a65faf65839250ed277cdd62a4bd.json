@@ -1,0 +1,44 @@
+{
+  "task_id": "2600a65faf65839250ed277cdd62a4bd",
+  "repo": "keepassxreboot/keepassxc",
+  "issue_number": 255,
+  "status": "DISPATCHING",
+  "dispatch_id": "3fd272e43b3e4452b366a26421085acd",
+  "admission": {
+    "funding": {
+      "amount": "200",
+      "currency": "USD",
+      "usd_value": "200",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$200",
+      "source_url": "https://github.com/keepassxreboot/keepassxc/issues/255#issuecomment-569517148",
+      "payer": "droidmonkey"
+    },
+    "technical_signals": [
+      "algorithm",
+      "algorithms",
+      "cryptography",
+      "encryption",
+      "protocol",
+      "throughput"
+    ],
+    "component_references": [],
+    "source_locations": [],
+    "engineering_evidence_sources": [
+      "https://github.com/keepassxreboot/keepassxc/issues/255#issuecomment-446259738",
+      "https://github.com/keepassxreboot/keepassxc/issues/255#issuecomment-4168322158"
+    ],
+    "source_issue": "https://github.com/keepassxreboot/keepassxc/issues/255",
+    "fetched_at": "2026-10-28T06:12:02.796146+00:00"
+  },
+  "lanes": [
+    "founder",
+    "normal",
+    "startup"
+  ],
+  "dispatched_at": "2026-10-28T06:12:08.745563+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T06:12:08.745580+00:00"
+}
