@@ -549,7 +549,9 @@ def validate_bundle(receipt, bundle, root):
     repo, number = repository(receipt["repo"]), issue_number(receipt["issue_number"])
     if task_id(repo, number) != receipt["task_id"]:
         raise ValueError("Release task identity mismatch")
-    subprocess.run(["git", "-c", "core.hooksPath=/dev/null", "clone", "--no-checkout",
+    # F10: Disable submodule recursion to avoid .gitmodules failures blocking delivery.
+    subprocess.run(["git", "-c", "core.hooksPath=/dev/null", "-c", "submodule.recurse=false",
+                    "clone", "--no-checkout",
                     "https://github.com/" + repo + ".git", str(root)], check=True, timeout=180)
     git(root, "fetch", str(bundle), "HEAD")
     head, base = receipt["head_sha"], receipt["base_sha"]
