@@ -85,6 +85,14 @@ jobs:
 
           /.gitmodules'
         sparse-checkout-cone-mode: false
+    - name: Configure runner memory headroom
+      run: |
+        sudo fallocate -l 10G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=10240
+        sudo chmod 600 /swapfile
+        sudo mkswap /swapfile
+        sudo swapon /swapfile
+        echo "=== CONFIGURED 10GB RUNNER SWAP ==="
+        free -h
     - uses: actions/download-artifact@v4
       with:
         name: task-claim-${{ github.run_id }}
@@ -102,6 +110,7 @@ jobs:
         TOKENHARBOR_KEYS_JSON: ${{ secrets.TOKENHARBOR_KEYS_JSON }}
         ENGINE_ID: actions-${{ github.run_id }}
         CLINE_TOTAL_BUDGET_SECONDS: '14400'
+        NODE_OPTIONS: '--max-old-space-size=4096'
       run: python3 -u scripts/actions_delivery.py engineer
       timeout-minutes: 300
     - uses: actions/upload-artifact@v4
