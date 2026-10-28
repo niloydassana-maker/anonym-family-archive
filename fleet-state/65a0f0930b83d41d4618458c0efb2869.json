@@ -2,7 +2,7 @@
   "task_id": "65a0f0930b83d41d4618458c0efb2869",
   "repo": "bolivian-peru/os-moda",
   "issue_number": 3,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "ebc2ca44e0384d279dd137be99fd7c7d",
   "admission": {
     "funding": {
@@ -48,6 +48,12 @@
     "startup"
   ],
   "dispatched_at": "2026-10-28T00:05:10.124445+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-28T00:05:11.837940+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-28T00:05:22.189213+00:00",
+  "owner": "40606461264:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40606461264",
+  "harness_sha": "1cafe162e31ed98ccc25f579aca988e652b692cb",
+  "claimed_at": "2026-10-28T00:05:22.189198+00:00"
 }
