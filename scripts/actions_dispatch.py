@@ -15,7 +15,7 @@ from urllib.parse import urlencode
 import uuid
 
 from actions_github import GitHub, GitHubError, StateStore, task_id, utcnow
-from bounty_admission import admit, competition, NON_WORK, repository_intent
+from bounty_admission import admit, competition, NON_WORK, repository_intent, FUNDING_PROGRAMS
 from bounty_fx import quote
 from discovery_horizon import Horizon
 
@@ -139,6 +139,38 @@ def split_search_or_branches(expression):
     return expanded
 
 
+def _label_value(atom):
+    """Extract the lowercased search-qualifier value after the first ':'.
+
+    Strips surrounding quotes so ``label:"Help Wanted"`` and ``label:External``
+    both normalize for matching against contributor-open signals.
+    """
+    _, _, value = atom.partition(":")
+    return value.strip().strip('"').lower()
+
+
+def _is_contributor_open_expression(expression):
+    """True when the expression advertises contributor-open work despite assignees.
+
+    Help Wanted and External labels mark issues the repository wants outside hands
+    on, even when a triage bot has auto-assigned them. Approved paid-program
+    repositories (FUNDING_PROGRAMS) publish bounties on assigned issues because
+    assignment is their triage convention, not a "do not touch" signal.
+    """
+    atoms = _search_atoms(expression)
+    for atom in atoms:
+        if atom.lower().startswith("label:"):
+            value = _label_value(atom)
+            if value == "external" or "help wanted" in value:
+                return True
+    for atom in atoms:
+        if atom.lower().startswith("repo:"):
+            repo = atom[len("repo:"):].strip().strip('"').lower()
+            if repo in FUNDING_PROGRAMS:
+                return True
+    return False
+
+
 def build_issue_search_query(expression, window=None, fresh=0):
     """Compile one GitHub search branch with shared server-side eligibility filters.
 
@@ -152,7 +184,13 @@ def build_issue_search_query(expression, window=None, fresh=0):
     if len(split_search_or_branches(expression)) != 1:
         raise ValueError("Compile OR expressions with build_issue_search_queries")
     atoms = _search_atoms(expression)
+    contributor_open = _is_contributor_open_expression(expression)
     for qualifier in SEARCH_QUALIFIERS:
+        if qualifier == "no:assignee" and contributor_open:
+            # Contributor-open work (Help Wanted / External labels, or an approved
+            # paid-program repo) is deliberately not filtered to unassigned-only:
+            # triage bots auto-assign these issues while still advertising them.
+            continue
         if qualifier not in atoms:
             atoms.append(qualifier)
     query = " ".join(atoms)
@@ -190,8 +228,12 @@ def has_label(item, label_name):
 
 
 def query_exclusion_status(item):
-    """Return a durable queue status for exclusions enforced by GitHub search."""
-    if has_assignees(item):
+    """Return a durable queue status for exclusions enforced by GitHub search.
+
+    An assigned issue is still contributor-open when the repository labels it
+    Help Wanted: assignment is a triage convention, not a "do not touch" signal.
+    """
+    if has_assignees(item) and not has_label(item, "Help Wanted"):
         return QUERY_EXCLUDED_ASSIGNED
     if has_label(item, "type/experiment"):
         return QUERY_EXCLUDED_EXPERIMENT

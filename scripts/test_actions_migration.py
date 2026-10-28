@@ -10,9 +10,10 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from actions_dispatch import (HYDRATION_BATCH, QUERY_EXCLUDED_EXPERIMENT, QUERY_EXCLUDED_VIDEO_DEMO,
-                              build_issue_search_queries, discover, query_window,
-                              refreshed_query_exclusion, retire_query_excluded_pending)
+from actions_dispatch import (HYDRATION_BATCH, QUERY_EXCLUDED_ASSIGNED, QUERY_EXCLUDED_EXPERIMENT,
+                              QUERY_EXCLUDED_VIDEO_DEMO, build_issue_search_queries, discover,
+                              query_exclusion_status, query_window, refreshed_query_exclusion,
+                              retire_query_excluded_pending)
 from actions_github import GitHub, GitHubError, StateStore, task_id
 from actions_reconcile import classify_checks
 from actions_release import (git, manifest, protect_baseline_tests, regression_proof,
@@ -261,6 +262,43 @@ class TransportTests(unittest.TestCase):
             pages=lambda endpoint, **kwargs: [event] if "/timeline" in endpoint else [],
             api=lambda endpoint: pull)
         self.assertTrue(competition(api, "owner/project", 7))
+
+    def test_contributor_open_expression_omits_no_assignee(self):
+        # Help Wanted label: contributor-open work is not filtered to unassigned-only.
+        query = build_issue_search_queries('label:"Help Wanted" "bug" is:issue is:open')[0]
+        self.assertNotIn("no:assignee", query)
+        self.assertIn('label:"Help Wanted"', query)
+        self.assertIn("is:issue", query)
+        self.assertIn("is:open", query)
+        # External label: contributor-open work is not filtered to unassigned-only.
+        query = build_issue_search_queries('label:External "bug" is:issue is:open')[0]
+        self.assertNotIn("no:assignee", query)
+        self.assertIn("label:External", query)
+        # Approved paid-program repo: Expensify bounties are assigned but contributor-open.
+        query = build_issue_search_queries(
+            'repo:Expensify/App label:Bug in:title "$250" -label:"Awaiting Payment" is:issue is:open'
+        )[0]
+        self.assertNotIn("no:assignee", query)
+        self.assertIn("repo:Expensify/App", query)
+        self.assertIn('in:title "$250"', query)
+        # Standard bounty query keeps no:assignee (existing behavior preserved).
+        query = build_issue_search_queries('label:bounty "wallet" is:issue is:open')[0]
+        self.assertIn("no:assignee", query)
+        self.assertIn("label:bounty", query)
+
+    def test_help_wanted_issue_is_not_excluded_as_assigned(self):
+        # Assigned issue carrying Help Wanted is contributor-open, not excluded.
+        item = {
+            "assignees": [{"login": "bugzero-triage"}],
+            "labels": [{"name": "External"}, {"name": "Help Wanted"}, {"name": "Bug"}],
+        }
+        self.assertEqual(query_exclusion_status(item), "")
+        # Help Wanted alone suffices to override assignment exclusion.
+        item = {"assignees": [{"login": "someone"}], "labels": [{"name": "Help Wanted"}]}
+        self.assertEqual(query_exclusion_status(item), "")
+        # Assigned without Help Wanted is still excluded.
+        item = {"assignees": [{"login": "someone"}], "labels": []}
+        self.assertEqual(query_exclusion_status(item), QUERY_EXCLUDED_ASSIGNED)
 
     def test_live_issue_refresh_reapplies_query_exclusions(self):
         context = {"issue": {"assignees": [{"login": "contributor"}], "labels": []}}

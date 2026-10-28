@@ -215,8 +215,11 @@ class PriorityQueryConfigTests(unittest.TestCase):
         self.assertIn('repo:', query)
         compiled = build_issue_search_queries(query)[0]
         for qualifier in ['is:issue', 'is:open', 'is:public', 'archived:false',
-                          'no:assignee', '-linked:pr']:
+                          '-linked:pr']:
             self.assertIn(qualifier, compiled)
+        # The paid-program query is contributor-open (label:External + approved
+        # paid program), so it is deliberately NOT filtered to unassigned-only.
+        self.assertNotIn('no:assignee', compiled)
         # Additive: the global lanes keep scanning their own horizons, and the generic
         # title query rotates in the normal lane instead of re-flooding the durable
         # queue on every cycle.
