@@ -2,7 +2,7 @@
   "task_id": "4aa54d2e49de6d47ac4c1e6a0dd278a7",
   "repo": "alfrexo95/bounty-bot",
   "issue_number": 53,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "5102762ded674bb5afdda5a4a9f6de5b",
   "admission": {
     "funding": {
@@ -35,11 +35,63 @@
   ],
   "dispatched_at": "2026-10-28T15:53:15.317783+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T15:53:34.727087+00:00",
+  "updated_at": "2026-10-28T15:57:12.058586+00:00",
   "owner": "40720493493:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40720493493",
   "harness_sha": "646936cc49cbb02c3feef670f38b9c5e10e8fc96",
-  "claimed_at": "2026-10-28T15:53:34.727071+00:00"
+  "claimed_at": "2026-10-28T15:53:34.727071+00:00",
+  "at": "2026-10-28T15:57:00.609784+00:00",
+  "reason": "Cline preparation blocked: Not an engineering request against this repository. Issue #53 is an auto-generated bounty notification produced by this repo's own bot template (bounty_bot.py -> crear_notificacion). Its entire body is the bot payload and links only to an external listing: https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/4143, titled '[Bounty] Preserve RFC 7239 `Forwarded` host authority in sub-mounted ASGI `Request.scope_'. The referenced change belongs to Starlette (`starlette/requests.py` in the author's comment patch), which does not exist here. The alfrexo95/bounty-bot checkout at the base SHA contains only the bounty-scraping bot: bounty_bot.py, search_web3_bounties.py, requirements.txt (requests, dbgagent), seen_issues.json, seen_web3.json, and two scheduled notification workflows (.github/workflows/bot.yml, web3_bounties.yml). grep -rin 'starlette|Forwarded|forwarded|requests.py|asgi|scope' over all *.py/*.yml/*.txt returns zero matches. There is no test, build, or lint infrastructure (no pyproject.toml, setup.py, setup.cfg, tox.ini, pytest.ini, Makefile, or tests). No PR targets issue #53; the two open PRs (#55 for issue #54, #34 for issue #21) are AI-agent PRs against sibling auto-generated bounty issues. Funding is an unverified escrow claim in the notification body ('Verifica que el escrow est\u00e9 activo antes de trabajar'); no escrow mechanism exists in this repository. Therefore this is a marketplace/bounty listing with no reproducible defect and no concrete code change for this repository. Checkout left unchanged at the base SHA.",
+  "declared_reason": "Not an engineering request against this repository. Issue #53 is an auto-generated bounty notification produced by this repo's own bot template (bounty_bot.py -> crear_notificacion). Its entire body is the bot payload and links only to an external listing: https://github.com/zhangjiayang6835-cyber/bounty-plaza/issues/4143, titled '[Bounty] Preserve RFC 7239 `Forwarded` host authority in sub-mounted ASGI `Request.scope_'. The referenced change belongs to Starlette (`starlette/requests.py` in the author's comment patch), which does not exist here. The alfrexo95/bounty-bot checkout at the base SHA contains only the bounty-scraping bot: bounty_bot.py, search_web3_bounties.py, requirements.txt (requests, dbgagent), seen_issues.json, seen_web3.json, and two scheduled notification workflows (.github/workflows/bot.yml, web3_bounties.yml). grep -rin 'starlette|Forwarded|forwarded|requests.py|asgi|scope' over all *.py/*.yml/*.txt returns zero matches. There is no test, build, or lint infrastructure (no pyproject.toml, setup.py, setup.cfg, tox.ini, pytest.ini, Makefile, or tests). No PR targets issue #53; the two open PRs (#55 for issue #54, #34 for issue #21) are AI-agent PRs against sibling auto-generated bounty issues. Funding is an unverified escrow claim in the notification body ('Verifica que el escrow est\u00e9 activo antes de trabajar'); no escrow mechanism exists in this repository. Therefore this is a marketplace/bounty listing with no reproducible defect and no concrete code change for this repository. Checkout left unchanged at the base SHA.",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/alfrexo95--bounty-bot--53",
+    "base_sha": "65509fb123516bab8e3af9fd70c968aa0b604d38",
+    "default_branch": "main",
+    "sources": [
+      {
+        "path": "requirements.txt",
+        "sha256": "57939a85f2b6816720fb80a4219ad886a547420927049f58244f09654e7489a0"
+      },
+      {
+        "path": "bounty_bot.py",
+        "sha256": "4e7350b68048ecfe919077b75e9d63b61ede8be5e4a0563dd026ca381b08a5d1"
+      },
+      {
+        "path": "search_web3_bounties.py",
+        "sha256": "dd5d5db11c12b285d8d26d840a43f509f543aa2f591555c836c7e9695d385607"
+      },
+      {
+        "path": ".github/workflows/bot.yml",
+        "sha256": "e5b937a6ddfdf188faa3660105149f65a1c80c63f6e5f75f4420978f4f35938f"
+      },
+      {
+        "path": ".github/workflows/web3_bounties.yml",
+        "sha256": "a8665cd5570b172f6648f30229379161ce6db71b0889bf5be77e276b35e3fb08"
+      },
+      {
+        "path": "seen_issues.json",
+        "sha256": "8510c2814a5d2d5e189714241222aaac844d8cebad41f6885426cc30c3a67cc7"
+      },
+      {
+        "path": "seen_web3.json",
+        "sha256": "b4f8b8fa01fd803024cdb166956b9b2e51a2df88b6553f1b145b4efda55bc156"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/alfrexo95/bounty-bot/issues/53",
+      "payer": "alfrexo95"
+    }
+  },
+  "finished_at": "2026-10-28T15:57:11.463146+00:00"
 }
