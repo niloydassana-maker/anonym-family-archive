@@ -13,8 +13,8 @@
     "state": "open",
     "created_at": "2026-10-27T15:14:59Z",
     "html_url": "https://github.com/alfrexo95/bounty-bot/issues/51",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_external",
+    "hand_label_justification": "Automated bounty escrow link aggregation post with no repository code change requested"
   },
   {
     "task_id": "1",
@@ -30,8 +30,8 @@
     "state": "open",
     "created_at": "2026-06-01T14:37:16Z",
     "html_url": "https://github.com/tine1117/oss-hunter-livefire/issues/1",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Concrete parser defect: parse_duration silently drops days unit in codebase"
   },
   {
     "task_id": "13",
@@ -50,8 +50,8 @@
     "state": "open",
     "created_at": "2026-05-20T13:00:41Z",
     "html_url": "https://github.com/PG-AGI/toingg-jarvis/issues/13",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Feature request for cross-platform packaging and installer build scripts"
   },
   {
     "task_id": "11",
@@ -73,8 +73,8 @@
     "state": "open",
     "created_at": "2026-05-20T12:57:42Z",
     "html_url": "https://github.com/PG-AGI/toingg-jarvis/issues/11",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Feature integration: Pipecat and Gemini API real-time voice integration in backend"
   },
   {
     "task_id": "29",
@@ -95,8 +95,8 @@
     "state": "open",
     "created_at": "2026-05-17T05:53:20Z",
     "html_url": "https://github.com/SecureBananaLabs/bug-bounty/issues/29",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Frontend implementation: replace placeholder AdminPanelPage with functional UI code"
   },
   {
     "task_id": "1",
@@ -114,8 +114,8 @@
     "state": "open",
     "created_at": "2026-05-17T03:33:08Z",
     "html_url": "https://github.com/UnsafeLabs/RFC-5322/issues/1",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Implement RFC 5322 ABNF-compliant email address parser in Python"
   },
   {
     "task_id": "202",
@@ -136,8 +136,8 @@
     "state": "open",
     "created_at": "2026-05-16T09:01:37Z",
     "html_url": "https://github.com/ClankerNation/OpenAgents/issues/202",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "API security fix: implement structured error response schema in FastAPI"
   },
   {
     "task_id": "201",
@@ -158,8 +158,8 @@
     "state": "open",
     "created_at": "2026-05-16T09:01:35Z",
     "html_url": "https://github.com/ClankerNation/OpenAgents/issues/201",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Solidity smart contract defect: add GRACE_PERIOD check in Timelock.sol"
   },
   {
     "task_id": "200",
@@ -180,8 +180,8 @@
     "state": "open",
     "created_at": "2026-05-16T09:01:32Z",
     "html_url": "https://github.com/ClankerNation/OpenAgents/issues/200",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "API middleware defect: differentiate rate limits for authenticated vs anonymous users in ratelimit.py"
   },
   {
     "task_id": "199",
@@ -202,8 +202,8 @@
     "state": "open",
     "created_at": "2026-05-16T09:01:30Z",
     "html_url": "https://github.com/ClankerNation/OpenAgents/issues/199",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "SDK feature: add deployContract helper functions to SDK codebase"
   },
   {
     "task_id": "1668",
@@ -216,8 +216,8 @@
     "state": "open",
     "created_at": "2026-10-27T17:37:45Z",
     "html_url": "https://github.com/MyZubster-Ecosystem/myzubster/issues/1668",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "Meta/federation registry proposal across external Tor node operators"
   },
   {
     "task_id": "633",
@@ -230,8 +230,8 @@
     "state": "open",
     "created_at": "2026-10-27T15:34:54Z",
     "html_url": "https://github.com/momoponwork1415-lgtm/wordpress-bounty-harness/issues/633",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "Experiment measurement and benchmarking tracking ticket"
   },
   {
     "task_id": "3285",
@@ -244,8 +244,8 @@
     "state": "open",
     "created_at": "2026-10-20T21:15:26Z",
     "html_url": "https://github.com/tmsteph/3dvr-portal/issues/3285",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_external",
+    "hand_label_justification": "External contribution tracking to separate hacker-fab upstream repository"
   },
   {
     "task_id": "1665",
@@ -258,8 +258,8 @@
     "state": "open",
     "created_at": "2026-10-27T16:21:05Z",
     "html_url": "https://github.com/MyZubster-Ecosystem/myzubster/issues/1665",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "VPS infrastructure deployment and Tor v3 onion service operational coordination"
   },
   {
     "task_id": "163",
@@ -272,8 +272,8 @@
     "state": "open",
     "created_at": "2026-10-27T17:30:31Z",
     "html_url": "https://github.com/bujiproject-art/agentmidasopendevteam/issues/163",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "Process inquiry asking about bounty availability and payout terms"
   },
   {
     "task_id": "3",
@@ -286,8 +286,8 @@
     "state": "open",
     "created_at": "2026-09-10T13:11:05Z",
     "html_url": "https://github.com/me-fake-you/clearsheet-offers/issues/3",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "Meta strategy and revenue prioritization discussion ticket"
   },
   {
     "task_id": "1575",
@@ -300,8 +300,8 @@
     "state": "open",
     "created_at": "2026-09-11T13:45:07Z",
     "html_url": "https://github.com/Zoverions/AXIOM-MESH/issues/1575",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "Architecture backlog tracking watch findings for future roadmap"
   },
   {
     "task_id": "940",
@@ -314,8 +314,8 @@
     "state": "open",
     "created_at": "2026-10-19T20:42:04Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/940",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "Auto-generated daily triage board by review bot"
   },
   {
     "task_id": "2064",
@@ -328,8 +328,8 @@
     "state": "open",
     "created_at": "2026-10-27T17:19:27Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/2064",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Compiler soundness bug: data race emitted on parenthesized base in hy-emit"
   },
   {
     "task_id": "1467",
@@ -342,8 +342,8 @@
     "state": "open",
     "created_at": "2026-10-27T07:32:09Z",
     "html_url": "https://github.com/SlopDotCash/slopdotcash/issues/1467",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "Meta operational checklist for repository owner"
   },
   {
     "task_id": "62",
@@ -358,8 +358,8 @@
     "state": "open",
     "created_at": "2026-10-26T15:53:35Z",
     "html_url": "https://github.com/kellan/outlanders2-wiki/issues/62",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_external",
+    "hand_label_justification": "Art and graphics extraction request for game tiles and icons"
   },
   {
     "task_id": "157",
@@ -376,8 +376,8 @@
     "state": "open",
     "created_at": "2026-10-21T16:19:34Z",
     "html_url": "https://github.com/lometur/HearthDAoC/issues/157",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Game bot AI logic enhancement in gameplay equipment selection code"
   },
   {
     "task_id": "244",
@@ -392,8 +392,8 @@
     "state": "open",
     "created_at": "2026-10-27T01:07:00Z",
     "html_url": "https://github.com/ddboy19912/bonded/issues/244",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "High-level research vision and methodology manifesto"
   },
   {
     "task_id": "65",
@@ -410,8 +410,8 @@
     "state": "open",
     "created_at": "2026-10-16T05:30:34Z",
     "html_url": "https://github.com/oll4com/spaceapp/issues/65",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Developer tooling feature: single command launcher script for local stack"
   },
   {
     "task_id": "64",
@@ -428,8 +428,8 @@
     "state": "open",
     "created_at": "2026-10-16T05:30:32Z",
     "html_url": "https://github.com/oll4com/spaceapp/issues/64",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Dockerfile multi-stage optimization: per-service container image separation"
   },
   {
     "task_id": "63",
@@ -446,8 +446,8 @@
     "state": "open",
     "created_at": "2026-10-16T05:30:31Z",
     "html_url": "https://github.com/oll4com/spaceapp/issues/63",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Launcher script feature: support rootless Podman engine in run-spaceapp"
   },
   {
     "task_id": "62",
@@ -464,8 +464,8 @@
     "state": "open",
     "created_at": "2026-10-16T05:30:26Z",
     "html_url": "https://github.com/oll4com/spaceapp/issues/62",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Frontend performance: WebGL renderer implementation for 3D memory graph"
   },
   {
     "task_id": "61",
@@ -482,8 +482,8 @@
     "state": "open",
     "created_at": "2026-10-16T05:30:25Z",
     "html_url": "https://github.com/oll4com/spaceapp/issues/61",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Telemetry feature: OTLP span exporter for Temporal worker orchestration"
   },
   {
     "task_id": "60",
@@ -500,8 +500,8 @@
     "state": "open",
     "created_at": "2026-10-16T05:30:20Z",
     "html_url": "https://github.com/oll4com/spaceapp/issues/60",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Test infrastructure: automated Temporal workflow CI tests and determinism gate"
   },
   {
     "task_id": "71",
@@ -518,8 +518,8 @@
     "state": "open",
     "created_at": "2025-01-23T20:00:07Z",
     "html_url": "https://github.com/outerbase/starbasedb/issues/71",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Test implementation: add Vitest unit test suite to codebase"
   },
   {
     "task_id": "2",
@@ -538,8 +538,8 @@
     "state": "open",
     "created_at": "2026-10-26T13:42:45Z",
     "html_url": "https://github.com/WholeTroutMedia/open-source-bounties/issues/2",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_external",
+    "hand_label_justification": "Third-party bounty broker linking to external solution vault behind paywall"
   },
   {
     "task_id": "1",
@@ -558,8 +558,8 @@
     "state": "open",
     "created_at": "2026-10-26T13:42:41Z",
     "html_url": "https://github.com/WholeTroutMedia/open-source-bounties/issues/1",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_external",
+    "hand_label_justification": "Third-party bounty broker linking to external solution vault behind paywall"
   },
   {
     "task_id": "1962",
@@ -575,8 +575,8 @@
     "state": "open",
     "created_at": "2026-10-26T23:47:30Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/1962",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Compiler concurrency feature: serial-by-default execution in fork-join scope"
   },
   {
     "task_id": "1669",
@@ -592,8 +592,8 @@
     "state": "open",
     "created_at": "2026-10-25T08:30:52Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/1669",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Compiler language feature: structured task scopes and cancellation tokens"
   },
   {
     "task_id": "757",
@@ -609,8 +609,8 @@
     "state": "open",
     "created_at": "2026-10-19T02:10:37Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/757",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "FFI compiler bridge refactoring: wasm2go AOT transpiler replacement"
   },
   {
     "task_id": "695",
@@ -626,8 +626,8 @@
     "state": "open",
     "created_at": "2026-10-18T17:07:14Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/695",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Compiler architecture refactoring: desugared MIR pipeline implementation"
   },
   {
     "task_id": "634",
@@ -643,8 +643,8 @@
     "state": "open",
     "created_at": "2026-10-18T11:46:52Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/634",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Compiler analysis replacement: transactional memory regions for task scopes"
   },
   {
     "task_id": "610",
@@ -660,8 +660,8 @@
     "state": "open",
     "created_at": "2026-10-18T09:41:00Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/610",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Compiler verification feature: proof-carrying FFI contract validation"
   },
   {
     "task_id": "605",
@@ -677,8 +677,8 @@
     "state": "open",
     "created_at": "2026-10-18T09:07:30Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/605",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Compiler feature: replayable task island closed concurrency regions"
   },
   {
     "task_id": "462",
@@ -694,8 +694,8 @@
     "state": "open",
     "created_at": "2026-10-17T15:01:39Z",
     "html_url": "https://github.com/limitlessprojects/Go-Hybrid/issues/462",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Compiler backend feature: isolated WASM task cell wire boundary"
   },
   {
     "task_id": "187",
@@ -711,8 +711,8 @@
     "state": "open",
     "created_at": "2026-10-27T17:33:54Z",
     "html_url": "https://github.com/commonworld-one/commonworld/issues/187",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "API routing defect: make section tag slug matching case-insensitive"
   },
   {
     "task_id": "186",
@@ -728,8 +728,8 @@
     "state": "open",
     "created_at": "2026-10-27T17:33:29Z",
     "html_url": "https://github.com/commonworld-one/commonworld/issues/186",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "API query validation fix: return 400 for unknown author handle in GET /v1/posts"
   },
   {
     "task_id": "628",
@@ -750,8 +750,8 @@
     "state": "open",
     "created_at": "2026-07-15T18:14:09Z",
     "html_url": "https://github.com/Ensrick/vermintide-2-tweaker/issues/628",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Mod game script defect: unify synthetic weapon and salvage contracts"
   },
   {
     "task_id": "11398",
@@ -777,8 +777,8 @@
     "state": "open",
     "created_at": "2026-07-25T09:51:18Z",
     "html_url": "https://github.com/SecureBananaLabs/bug-bounty/issues/11398",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "not_code_change_process",
+    "hand_label_justification": "Meta issue asking to automate recursive bug detection and issue creation"
   },
   {
     "task_id": "2850",
@@ -801,8 +801,8 @@
     "state": "open",
     "created_at": "2026-05-31T12:42:16Z",
     "html_url": "https://github.com/SecureBananaLabs/bug-bounty/issues/2850",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "API validation defect: reject empty multipart file uploads with 400"
   },
   {
     "task_id": "2847",
@@ -825,8 +825,8 @@
     "state": "open",
     "created_at": "2026-05-31T12:35:50Z",
     "html_url": "https://github.com/SecureBananaLabs/bug-bounty/issues/2847",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Authentication security defect: verify requester identity in POST /api/auth/refresh"
   },
   {
     "task_id": "2845",
@@ -849,8 +849,8 @@
     "state": "open",
     "created_at": "2026-05-31T12:31:25Z",
     "html_url": "https://github.com/SecureBananaLabs/bug-bounty/issues/2845",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Backend registration bug: fix Date.now() ID mismatch in registerUser"
   },
   {
     "task_id": "2782",
@@ -873,8 +873,8 @@
     "state": "open",
     "created_at": "2026-05-31T09:57:22Z",
     "html_url": "https://github.com/SecureBananaLabs/bug-bounty/issues/2782",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Security policy fix: configure origin allowlist for CORS in apps/api/src/app.js"
   },
   {
     "task_id": "2779",
@@ -897,8 +897,8 @@
     "state": "open",
     "created_at": "2026-05-31T09:50:31Z",
     "html_url": "https://github.com/SecureBananaLabs/bug-bounty/issues/2779",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Security route fix: add authentication middleware to POST /api/users"
   },
   {
     "task_id": "2773",
@@ -921,8 +921,8 @@
     "state": "open",
     "created_at": "2026-05-31T09:43:35Z",
     "html_url": "https://github.com/SecureBananaLabs/bug-bounty/issues/2773",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Security route fix: add authentication middleware to POST /api/proposals"
   },
   {
     "task_id": "105015",
@@ -938,8 +938,8 @@
     "state": "open",
     "created_at": "2026-10-26T14:49:35Z",
     "html_url": "https://github.com/Expensify/App/issues/105015",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Frontend onboarding UX: add error handling and merge instructions for existing email"
   },
   {
     "task_id": "105012",
@@ -956,8 +956,8 @@
     "state": "open",
     "created_at": "2026-10-26T14:30:56Z",
     "html_url": "https://github.com/Expensify/App/issues/105012",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Dependency upgrade: update okhttp library in build manifests"
   },
   {
     "task_id": "104909",
@@ -974,8 +974,8 @@
     "state": "open",
     "created_at": "2026-10-23T20:23:35Z",
     "html_url": "https://github.com/Expensify/App/issues/104909",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Frontend UI change: display workspace default bank account first in Pay menu"
   },
   {
     "task_id": "104821",
@@ -993,8 +993,8 @@
     "state": "open",
     "created_at": "2026-10-23T07:49:56Z",
     "html_url": "https://github.com/Expensify/App/issues/104821",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Frontend UI feature: show selected copilot user and add explicit Next button"
   },
   {
     "task_id": "104742",
@@ -1011,8 +1011,8 @@
     "state": "open",
     "created_at": "2026-10-22T13:59:06Z",
     "html_url": "https://github.com/Expensify/App/issues/104742",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "React performance optimization: eliminate unnecessary Search row re-renders"
   },
   {
     "task_id": "104726",
@@ -1031,8 +1031,8 @@
     "state": "open",
     "created_at": "2026-10-22T12:51:14Z",
     "html_url": "https://github.com/Expensify/App/issues/104726",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Analytics telemetry addition: fire FullStory custom event on Concierge message send"
   },
   {
     "task_id": "104579",
@@ -1049,8 +1049,8 @@
     "state": "open",
     "created_at": "2026-10-21T14:04:42Z",
     "html_url": "https://github.com/Expensify/App/issues/104579",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Frontend navigation guard: show Discard changes modal on unsaved expense edit exit"
   },
   {
     "task_id": "104530",
@@ -1067,8 +1067,8 @@
     "state": "open",
     "created_at": "2026-10-21T05:53:55Z",
     "html_url": "https://github.com/Expensify/App/issues/104530",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Architecture migration: migrate legacy ShareActionHandlerModule to Nitro modules"
   },
   {
     "task_id": "104505",
@@ -1085,8 +1085,8 @@
     "state": "open",
     "created_at": "2026-10-20T20:11:15Z",
     "html_url": "https://github.com/Expensify/App/issues/104505",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "Mobile Android defect: fix native tab bar crash when item count exceeds 6"
   },
   {
     "task_id": "104504",
@@ -1103,7 +1103,7 @@
     "state": "open",
     "created_at": "2026-10-20T20:11:06Z",
     "html_url": "https://github.com/Expensify/App/issues/104504",
-    "hand_label": null,
-    "hand_label_justification": null
+    "hand_label": "needs_code_change",
+    "hand_label_justification": "React hook defect: eliminate infinite setState loop in useSidebarOrderedReports"
   }
 ]

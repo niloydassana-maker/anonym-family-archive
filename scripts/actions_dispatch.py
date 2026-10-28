@@ -873,5 +873,150 @@ def main(argv=None):
         time.sleep(max(30, args.interval))
 
 
-if __name__ == "__main__":
-    main()
+# ---------------------------------------------------------------------------
+# F9 — Class-level admission gate: "does this request a repository code change?"
+# ---------------------------------------------------------------------------
+
+_EXTERNAL_TITLE_PATTERNS = (
+    r"escrow", r"pago\s+garantizado", r"payment\s+guaranteed",
+    r"view\s+link", r"ver\s+enlace", r"off.repo", r"third.?party",
+)
+_EXTERNAL_BODY_PATTERNS = (
+    r"escrow", r"pago\s+garantizado", r"payment\s+guaranteed",
+    r"view\s+link", r"ver\s+enlace", r"off.repo", r"icon\s+extraction",
+    r"graphic\s+asset", r"art\s+asset", r"bounty\s+bot", r"escrow\s+bot",
+)
+_EXTERNAL_LABELS = frozenset({"escrow", "escrow-bot", "payment-link"})
+
+_PROCESS_TITLE_PATTERNS = (
+    r"triage\s+board", r"availability\s+inquiry", r"bounty\s+availability",
+    r"meta\s+checklist", r"meta\s+issue", r"roadmap\s+tracking",
+    r"research\s+manifesto", r"pilot\b",
+)
+_PROCESS_BODY_PATTERNS = (
+    r"triage\s+board", r"availability\s+inquiry", r"bounty\s+availability",
+    r"meta\s+checklist", r"roadmap\s+tracking", r"research\s+manifesto",
+    r"pilot\b", r"bounty\s+harness", r"finish\s+pass",
+)
+_PROCESS_LABELS = frozenset({"triage", "process", "meta", "roadmap", "pilot"})
+
+_CODE_TITLE_KEYWORDS = frozenset({
+    "bug", "fix", "feature", "implement", "refactor", "security", "cors",
+    "auth", "middleware", "endpoint", "parser", "ratelimit", "test",
+    "dependency", "patch", "resolve", "fixes", "closes",
+})
+_CODE_BODY_KEYWORDS = frozenset({
+    "bug", "fix", "feature", "implement", "refactor", "security", "cors",
+    "auth", "middleware", "endpoint", "parser", "ratelimit", "test",
+    "dependency", "patch", "resolve", "closes", "file:", "current code",
+    "expected behavior", "actual behavior",
+})
+_CODE_FILE_EXTENSIONS = frozenset({
+    "py", "js", "ts", "go", "rs", "java", "rb", "php", "cs", "swift",
+    "kt", "cpp", "c", "h", "hpp", "sol", "hy", "vue", "svelte", "dart",
+    "rlib", "wasm",
+})
+_CODE_PATH_PATTERNS = (
+    r"/src/", r"/app/", r"/lib/", r"/pkg/", r"/cmd/", r"/routes/",
+    r"/models/", r"/contracts/", r"/middleware/", r"/api/",
+)
+
+
+def _title_matches_any(title: str, patterns: tuple) -> bool:
+    import re as _re
+    return any(_re.search(p, title) for p in patterns)
+
+
+def _body_matches_any(body: str, patterns: tuple) -> bool:
+    import re as _re
+    return any(_re.search(p, body) for p in patterns)
+
+
+def _label_set(labels: list) -> frozenset:
+    return frozenset(str(l).lower() for l in (labels or []))
+
+
+def _has_code_reference(text: str) -> bool:
+    import re as _re
+    for ext in _CODE_FILE_EXTENSIONS:
+        if _re.search(r"\." + ext + r"\b", text):
+            return True
+    for pat in _CODE_PATH_PATTERNS:
+        if _re.search(pat, text):
+            return True
+    return False
+
+
+def is_code_change_request(title: str, body: str, labels: list) -> tuple:
+    """Classify whether an issue requests a repository code change.
+
+    Returns (True, "needs_code_change") or (True, "unclear_fail_open") to
+    admit the issue to the engineering pipeline.
+
+    Returns (False, "REFUSED_NOT_A_CODE_CHANGE: <reason>") to refuse the
+    issue — only when external or process intent is established with high
+    confidence.
+
+    Fail-open policy: anything that cannot be confidently classified as
+    external or process is admitted.
+    """
+    title_l = (title or "").lower()
+    body_l = (body or "").lower()
+    labels_set = _label_set(labels)
+
+    # --- 1. EXTERNAL: refuse with high confidence --------------------------
+    external_title = _title_matches_any(title_l, _EXTERNAL_TITLE_PATTERNS)
+    external_body = _body_matches_any(body_l, _EXTERNAL_BODY_PATTERNS)
+    external_labels = bool(labels_set & _EXTERNAL_LABELS)
+
+    if external_title or external_body or external_labels:
+        code_labels = labels_set & {
+            "bug", "enhancement", "feature", "security", "good first issue",
+            "help wanted", "type/bug", "type/feature",
+        }
+        if not code_labels:
+            reason = "external"
+            if external_title:
+                reason += ": title matches external patterns"
+            elif external_body:
+                reason += ": body matches external patterns"
+            else:
+                reason += ": label matches external patterns"
+            return (False, "REFUSED_NOT_A_CODE_CHANGE: " + reason)
+
+    # --- 2. PROCESS: refuse with high confidence ---------------------------
+    process_title = _title_matches_any(title_l, _PROCESS_TITLE_PATTERNS)
+    process_body = _body_matches_any(body_l, _PROCESS_BODY_PATTERNS)
+    process_labels = bool(labels_set & _PROCESS_LABELS)
+
+    if process_title or process_body or process_labels:
+        code_keywords = (
+            _CODE_TITLE_KEYWORDS & set(title_l.split())
+            | _CODE_BODY_KEYWORDS & set(body_l.split())
+        )
+        if not code_keywords and not _has_code_reference(body_l):
+            reason = "process"
+            if process_title:
+                reason += ": title matches process patterns"
+            elif process_body:
+                reason += ": body matches process patterns"
+            else:
+                reason += ": label matches process patterns"
+            return (False, "REFUSED_NOT_A_CODE_CHANGE: " + reason)
+
+    # --- 3. CODE CHANGE: admit --------------------------------------------
+    has_code_keywords = bool(
+        _CODE_TITLE_KEYWORDS & set(title_l.split())
+        | _CODE_BODY_KEYWORDS & set(body_l.split())
+    )
+    has_code_ref = _has_code_reference(body_l)
+    has_code_labels = bool(labels_set & {
+        "bug", "security", "enhancement", "feature", "type/bug",
+        "type/feature", "good first issue", "help wanted",
+    })
+
+    if has_code_keywords or has_code_ref or has_code_labels:
+        return (True, "needs_code_change")
+
+    # --- 4. FAIL-OPEN: admit anything ambiguous ----------------------------
+    return (True, "unclear_fail_open")
