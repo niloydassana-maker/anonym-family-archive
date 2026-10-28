@@ -1,0 +1,54 @@
+{
+  "task_id": "891a4b89e320a6a197925cf136d03cdb",
+  "repo": "dotnet/runtime",
+  "issue_number": 36748,
+  "status": "DISPATCHING",
+  "dispatch_id": "4c8b0e432e26419e91eda06e31ba2648",
+  "admission": {
+    "funding": {
+      "amount": "500",
+      "currency": "USD",
+      "usd_value": "500",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$ 500",
+      "source_url": "https://github.com/dotnet/runtime/issues/36748#issuecomment-1970286296",
+      "payer": "clamp03"
+    },
+    "technical_signals": [
+      "abi",
+      "algorithm",
+      "atomic",
+      "atomics",
+      "compiler",
+      "cryptography",
+      "memory",
+      "performance",
+      "precision"
+    ],
+    "component_references": [
+      "./build.sh",
+      "./eng/common/cross/build-rootfs.sh",
+      "eng/common/native/install-dependencies.sh"
+    ],
+    "source_locations": [
+      "./build.sh",
+      "./eng/common/cross/build-rootfs.sh",
+      "eng/common/native/install-dependencies.sh"
+    ],
+    "engineering_evidence_sources": [
+      "https://github.com/dotnet/runtime/issues/36748#issuecomment-1253798546",
+      "https://github.com/dotnet/runtime/issues/36748#issuecomment-1429055659",
+      "https://github.com/dotnet/runtime/issues/36748#issuecomment-3523221877"
+    ],
+    "source_issue": "https://github.com/dotnet/runtime/issues/36748",
+    "fetched_at": "2026-10-28T05:11:29.296440+00:00"
+  },
+  "lanes": [
+    "startup"
+  ],
+  "dispatched_at": "2026-10-28T05:11:43.950711+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T05:11:43.950730+00:00"
+}
