@@ -2,7 +2,7 @@
   "task_id": "891a4b89e320a6a197925cf136d03cdb",
   "repo": "dotnet/runtime",
   "issue_number": 36748,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "4c8b0e432e26419e91eda06e31ba2648",
   "admission": {
     "funding": {
@@ -50,11 +50,51 @@
   ],
   "dispatched_at": "2026-10-28T05:11:43.950711+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T05:12:15.594593+00:00",
+  "updated_at": "2026-10-28T05:18:07.723218+00:00",
   "owner": "40636556767:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40636556767",
   "harness_sha": "1faafe40e39d1b9beda95445f10e139e68924414",
-  "claimed_at": "2026-10-28T05:12:15.594577+00:00"
+  "claimed_at": "2026-10-28T05:12:15.594577+00:00",
+  "at": "2026-10-28T05:17:56.595223+00:00",
+  "reason": "Cline preparation blocked: Issue #36748 'RISC-V support' is a generic architecture-support enquiry/umbrella, not a concrete code change. Body asks 'Are there any plans to support said architecture on future releases of .NET like ARM64 has been added?' It carries no repro, no failing test, and no focused engineering scope; it sits in milestone 'Future' whose description states work 'is not committed'. The requested capability already exists in upstream main (138 riscv* paths in the checkout: src/coreclr/jit/codegenriscv64.cpp, emitriscv64.cpp, lowerriscv64.cpp, lsrariscv64.cpp, targetriscv64.cpp, unwindriscv64.cpp, src/coreclr/vm/riscv64, src/coreclr/pal/src/arch/riscv64, src/coreclr/nativeaot/Runtime/riscv64, src/coreclr/runtime/riscv64, src/mono/mono/mini/mini-riscv.c, cpu-riscv64.mdesc, exceptions-riscv.c, tramp-riscv.c) and was delivered by already-merged PRs #82294, #83714, #83715, #83716, #119203 (all closed). Maintainer jkotas on 2026-08-31 explicitly replied that official Microsoft-built linux-riscv64 binaries are not planned ('we have no current plans to produce such binaries'), i.e. the deliverable is rejected. Funding reference is a legacy $500 gitpay/bountysource bounty recorded on issue comment 1970286296, whose port work clamp03/Samsung already completed and asked to be reassigned; the bountysource mirror is dead (HTTP 000). No open PR competes for this issue (the 3 open riscv PRs #132204, #134456, #132358 are independent community improvements out of scope of the umbrella question). Per the classification rule for 'a generic product idea without a repository change', this is blocked; the checkout is left unchanged with no product edits.",
+  "declared_reason": "Issue #36748 'RISC-V support' is a generic architecture-support enquiry/umbrella, not a concrete code change. Body asks 'Are there any plans to support said architecture on future releases of .NET like ARM64 has been added?' It carries no repro, no failing test, and no focused engineering scope; it sits in milestone 'Future' whose description states work 'is not committed'. The requested capability already exists in upstream main (138 riscv* paths in the checkout: src/coreclr/jit/codegenriscv64.cpp, emitriscv64.cpp, lowerriscv64.cpp, lsrariscv64.cpp, targetriscv64.cpp, unwindriscv64.cpp, src/coreclr/vm/riscv64, src/coreclr/pal/src/arch/riscv64, src/coreclr/nativeaot/Runtime/riscv64, src/coreclr/runtime/riscv64, src/mono/mono/mini/mini-riscv.c, cpu-riscv64.mdesc, exceptions-riscv.c, tramp-riscv.c) and was delivered by already-merged PRs #82294, #83714, #83715, #83716, #119203 (all closed). Maintainer jkotas on 2026-08-31 explicitly replied that official Microsoft-built linux-riscv64 binaries are not planned ('we have no current plans to produce such binaries'), i.e. the deliverable is rejected. Funding reference is a legacy $500 gitpay/bountysource bounty recorded on issue comment 1970286296, whose port work clamp03/Samsung already completed and asked to be reassigned; the bountysource mirror is dead (HTTP 000). No open PR competes for this issue (the 3 open riscv PRs #132204, #134456, #132358 are independent community improvements out of scope of the umbrella question). Per the classification rule for 'a generic product idea without a repository change', this is blocked; the checkout is left unchanged with no product edits.",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/dotnet--runtime--36748",
+    "base_sha": "b386290257e35bddca7b2f8c453a0796915b29ff",
+    "default_branch": "main",
+    "sources": [
+      {
+        "path": "build.sh",
+        "sha256": "85497cddc810ae62c1d8607f3db1645837e851755f15a56cd9040201f920ce3f"
+      },
+      {
+        "path": "eng/common/cross/build-rootfs.sh",
+        "sha256": "fd64668d7a4d94c43fd70fa4bfa0b27375f5cf74f16e74a1237823c4c86fc3a6"
+      },
+      {
+        "path": "eng/common/native/install-dependencies.sh",
+        "sha256": "bf1056e7c8e2e702aba01098fbe50901cf200fa7a568a9c5ec643b5e736e8baa"
+      },
+      {
+        "path": "global.json",
+        "sha256": "cf6151e99ab1adcc202b196e08e90093bbdb9d8784e640bfea18cdaeef71f68f"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "500",
+      "currency": "USD",
+      "usd_value": "500",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$ 500",
+      "source_url": "https://github.com/dotnet/runtime/issues/36748#issuecomment-1970286296",
+      "payer": "clamp03"
+    }
+  },
+  "finished_at": "2026-10-28T05:18:07.069014+00:00"
 }
