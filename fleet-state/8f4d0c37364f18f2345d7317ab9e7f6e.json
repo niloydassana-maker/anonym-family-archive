@@ -2,7 +2,7 @@
   "task_id": "8f4d0c37364f18f2345d7317ab9e7f6e",
   "repo": "alfrexo95/bounty-bot",
   "issue_number": 28,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "e2622cfdcd354bf0a433756a868414f0",
   "admission": {
     "funding": {
@@ -33,6 +33,12 @@
     "startup"
   ],
   "dispatched_at": "2026-10-28T16:04:03.142023+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-28T16:04:05.055106+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-28T16:04:18.896368+00:00",
+  "owner": "40722280120:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40722280120",
+  "harness_sha": "646936cc49cbb02c3feef670f38b9c5e10e8fc96",
+  "claimed_at": "2026-10-28T16:04:18.896352+00:00"
 }
