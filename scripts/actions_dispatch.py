@@ -24,13 +24,35 @@ PRIORITY_DISCOVERY_QUERIES = tuple(QUERY_CONFIG.pop("priority_discovery", ()))
 QUERIES = QUERY_CONFIG
 SEARCH_QUALIFIERS = (
     "is:issue", "is:open", "is:public", "archived:false",
-    "-label:type/experiment", "-label:video-demo", "no:assignee", "-linked:pr",
+    "-label:type/experiment", "-label:video-demo",
+    "-label:type/not-a-bug", "-label:type/question",
+    "-label:not-a-bug", "-label:not-a-defect",
+    "-label:invalid", "-label:wontfix",
+    "-label:expected-behavior", "-label:by-design",
+    "-label:works-as-intended",
+    "no:assignee", "-linked:pr",
 )
-QUERY_POLICY_VERSION = "unassigned-no-closing-pr-no-video-demo-contextual-branches-v4"
+QUERY_POLICY_VERSION = "unassigned-no-closing-pr-no-video-demo-no-not-a-defect-contextual-branches-v5"
 QUERY_EXCLUDED_ASSIGNED = "query_excluded_assigned"
 QUERY_EXCLUDED_EXPERIMENT = "query_excluded_experiment"
 QUERY_EXCLUDED_VIDEO_DEMO = "query_excluded_video_demo"
+QUERY_EXCLUDED_NOT_A_DEFECT = "query_excluded_not_a_defect"
 SEARCH_QUALIFIER_ATOM = re.compile(r"^-?[A-Za-z][A-Za-z0-9_-]*:")
+
+# Labels a repository's own maintainers attach when the reported behaviour is
+# already documented as expected / by design / not a defect. Dispatching an
+# engineer to such an issue is a supply-side false positive: the only possible
+# delivery outcome is a verified refusal (REJECTED_PREPARATION / blocked) and
+# no PR is ever created. These labels gate the search qualifiers below and the
+# live query_exclusion_status() check before dispatch.
+NOT_A_DEFECT_LABELS = (
+    "type/not-a-bug", "type/question",
+    "not-a-bug", "not-a-defect", "not a bug", "not a defect",
+    "invalid", "wontfix",
+    "expected-behavior", "expected behavior",
+    "by-design", "by design",
+    "works-as-intended", "works as intended",
+)
 
 
 def _search_atoms(expression):
@@ -239,7 +261,26 @@ def query_exclusion_status(item):
         return QUERY_EXCLUDED_EXPERIMENT
     if has_label(item, "video-demo"):
         return QUERY_EXCLUDED_VIDEO_DEMO
+    if has_not_a_defect_label(item):
+        return QUERY_EXCLUDED_NOT_A_DEFECT
     return ""
+
+
+def has_not_a_defect_label(item):
+    """True when the live issue carries a maintainer-applied "not a defect" label.
+
+    These labels mean the repository's own maintainers have already classified the
+    reported behaviour as expected / by design / invalid / not a bug. Dispatching an
+    engineer is a false positive: the only possible delivery outcome is a verified
+    refusal and no PR is ever created.
+    """
+    labels = item.get("labels")
+    if not isinstance(labels, list):
+        return False
+    return any(
+        (label.get("name") if isinstance(label, dict) else label) in NOT_A_DEFECT_LABELS
+        for label in labels
+    )
 
 
 def refreshed_query_exclusion(context):
