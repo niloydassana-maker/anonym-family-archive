@@ -249,6 +249,26 @@ def has_label(item, label_name):
     )
 
 
+def repository_velocity(api, repo, cache=None):
+    """Count commits on the default branch in the last 24 hours.
+
+    Cached per cycle to avoid hitting the GitHub search rate limit.
+    Returns the number of commits; higher = busier repo = slower dispatch.
+    """
+    if cache is not None and repo in cache:
+        return cache[repo]
+    owner, name = repo.split("/", 1)
+    since = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%d")
+    try:
+        result = api.api(f"repos/{owner}/{name}/commits?since={since}&per_page=1")
+        count = len(result) if isinstance(result, list) else 0
+    except (GitHubError, OSError, ValueError, TypeError):
+        count = 0
+    if cache is not None:
+        cache[repo] = count
+    return count
+
+
 def query_exclusion_status(item):
     """Return a durable queue status for exclusions enforced by GitHub search.
 
@@ -821,6 +841,18 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
             runs = api.api(f"repos/{store.repo}/actions/runs?per_page=100")["workflow_runs"]
             active = sum(r["status"] != "completed" and r.get("path", "").endswith("engine2.yml") for r in runs)
             headroom = max(0, 4 - active)
+            # F6: Measure velocity per repo and sort by velocity ascending
+            # (quiet repos first) within the candidate set.
+            velocity_cache = {}
+            for identity, candidate in candidates.items():
+                repo = candidate["context"]["repo"]
+                candidate["velocity_24h"] = repository_velocity(api, repo, velocity_cache)
+            candidates = dict(
+                sorted(
+                    candidates.items(),
+                    key=lambda item: item[1].get("velocity_24h", 0),
+                )
+            )
             for identity, candidate in candidates.items():
                 if len(dispatched) >= min(max_dispatches, headroom):
                     break
