@@ -2,7 +2,7 @@
   "task_id": "891a4b89e320a6a197925cf136d03cdb",
   "repo": "dotnet/runtime",
   "issue_number": 36748,
-  "status": "DISPATCHING",
+  "status": "DISPATCHED",
   "dispatch_id": "4c8b0e432e26419e91eda06e31ba2648",
   "admission": {
     "funding": {
@@ -50,5 +50,5 @@
   ],
   "dispatched_at": "2026-10-28T05:11:43.950711+00:00",
   "attempt": 0,
-  "updated_at": "2026-10-28T05:11:43.950730+00:00"
+  "updated_at": "2026-10-28T05:11:45.515405+00:00"
 }
