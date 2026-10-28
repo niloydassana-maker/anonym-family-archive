@@ -157,3 +157,84 @@ and `Bug`. `refreshed_query_exclusion()` returned `query_excluded_assigned`; the
 check independently returned merged PR #103877 as the fix. Both paths now have regression tests
 and a live receipt. This demonstrates the stale task is blocked before another Cline run, while
 the broader zero-qualified outcome remains unresolved.
+
+## Follow-up: global bounty discovery and expired offer repair — 2026-10-28
+
+The every-cycle priority query was still hard-coded to `repo:Expensify/App` and `$250`, despite
+the rotating lanes already searching globally. That made the fast lane narrow and introduced an
+amount-specific bias. It is now the global query `bounty in:title`; it contains no repository or
+account qualifier. The common query compiler still adds `is:issue is:open is:public archived:false
+no:assignee -linked:pr`, while the persistent horizon partitions creation dates from 2008 to the
+present and splits any partition that reaches GitHub's 1,000-result ceiling. A separate last-seven-
+days query brings fresh updates to the front of each bounded hydration window.
+
+### Live breadth and yield
+
+The exact compiled global priority query returned `total_count=347` from GitHub. Those are search
+matches, not 347 payable tasks. The first 30 fresh hydrated matches from this query had 13
+mirror/non-engineering refusals, 13 missing hard engineering evidence, three missing current
+issuer-backed offers, and one false positive that the prior gate admitted. After the repair below,
+that last row is refused too, leaving zero qualified rows in this measured 30-issue sample.
+
+As a separate breadth probe, 11 global source/engineering queries (Algora, Polar, Opire, BountyHub,
+IssueHunt, and technical bounty terms) returned 108 overlapping hits in total. The direct current
+dispatcher admission gate was applied to four issues that an older predicate probe had accepted;
+all four were refused with concrete reasons:
+
+| Live issue | Current dispatcher result |
+| --- | --- |
+| `pursekeeper/api#31` | `CURRENT_ISSUER_OFFER_MISSING` |
+| `angeloasante/Diaspora_AI_Visa_data#20` | `HARD_ISSUE_EVIDENCE_MISSING` |
+| `UnsafeLabs/Bounty-Hunters#825` | `NON_PAYMENT_OR_INSTRUCTION_EXFILTRATION` |
+| `paraloom-labs/paraloom-core#856` | `CURRENT_ISSUER_OFFER_MISSING` |
+
+For example, `paraloom-labs/paraloom-core#856` contains “Reward tier: up to $150 USDC” in a
+report authored by a user with no repository authority. The comment that mentions a payout wallet
+is a claimant's comment, not an issuer commitment. The payer gate correctly refuses to infer a
+funded offer from it.
+
+### Expired issuer offer false positive
+
+The one admitted row was
+[`perria080925-bot/agente-bountie#1`](https://github.com/perria080925-bot/agente-bountie/issues/1),
+an owner-authored `$500 USDC` bounty listing. Its body explicitly says `Deadline: 2026-10-07`, and
+the owner’s later comment repeats that the deadline had passed while describing the code submission
+as complete. The issue remained open and was recently updated, so GitHub's ordinary state and
+recency qualifiers did not remove it. Before repair, `admit()` returned a funding proof for it.
+
+`bounty_admission.py` now recognizes explicit ISO deadlines only in the issue or a funding-authority
+comment. A deadline before the current UTC date returns `EXPIRED_OFFER`; a later trusted comment may
+extend it, while an untrusted comment cannot extend or expire it. Same-day and future deadlines stay
+eligible. A fresh live read of the exact issue and all comments now returns `offer_expired=true`,
+`admitted=false`, `reason=EXPIRED_OFFER`.
+
+GitHub's native issue search can apply its documented qualifiers and custom issue-field filters, but
+free-text deadlines are not a universal issue field across arbitrary repositories. Therefore this
+semantic check still requires the issue body and authoritative comments to be hydrated; representing
+it as a standard query qualifier would be fictitious. The universal query itself is global and uses
+all available server-side qualifiers before returning results.
+
+### Verification receipts
+
+- `python -W error scripts/test_program_offers.py` — 20 passed, including past/today/future dates,
+  trusted extension, untrusted override, and the expired-offer rejection.
+- `python -W error scripts/test_admission_trust.py` — 7 passed.
+- `python -W error scripts/test_queue_ordering.py` — 23 passed.
+- `python -W error scripts/test_discovery_repairs.py` — 16 passed.
+- `python -W error scripts/test_engineering_evidence.py` — 14 passed.
+- `python -W error scripts/test_markup_and_funding_gate.py` — 10 passed.
+- `python -W error scripts/test_by_design_gate.py` — 30 passed.
+- `python -W error scripts/test_actions_migration.py` — 39 passed; one Windows-incompatible
+  newline-path case skipped.
+- `python -W error scripts/test_icu_pipeline_suite.py` — all 16 sections passed, 100% green.
+- `python -W error scripts/test_global_influx_queries.py` — passed against live GitHub, 11 broad
+  queries and 108 overlapping results.
+- `python -W error scripts/test_predicate_pushdown_live.py` — exited 0 with four candidates under its
+  older gate; direct current admission checks refused all four as listed above.
+- Ruff, Python byte-compilation, and `git diff --check` — passed. Git emitted only Windows
+  LF-to-CRLF conversion notices before line-ending normalization.
+
+This repair broadens the fast lane and closes one measured expired-offer false positive. It has not
+yet produced a qualified dispatch or verified PR. The 347 search matches and 108 overlapping broad
+query hits are raw discovery receipts, not proof of eligible influx; the next post-deploy Actions
+receipt must show qualified work and a real verified PR before the goal is called achieved.

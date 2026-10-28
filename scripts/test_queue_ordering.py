@@ -22,6 +22,7 @@ from actions_dispatch import (
     INTENT_REFRESH_S,
     QUEUE_WINDOW,
     REPO_INTENT_RETIRED,
+    build_issue_search_queries,
     pending_window,
     preferred_order,
     precheck_repository_intent,
@@ -183,14 +184,17 @@ class PriorityPreferredOrderTests(unittest.TestCase):
 
 
 class PriorityQueryConfigTests(unittest.TestCase):
-    def test_paid_program_fast_lane_is_additive_to_global_lanes(self):
-        from actions_dispatch import PRIORITY_PROGRAM_QUERIES, QUERIES
+    def test_global_bounty_title_fast_lane_is_additive_to_all_global_lanes(self):
+        from actions_dispatch import PRIORITY_DISCOVERY_QUERIES, QUERIES
 
-        self.assertEqual(len(PRIORITY_PROGRAM_QUERIES), 1)
-        query = PRIORITY_PROGRAM_QUERIES[0]
-        self.assertIn('label:External', query)
-        self.assertIn('label:Bug', query)
-        self.assertIn('-label:"Awaiting Payment"', query)
+        self.assertEqual(len(PRIORITY_DISCOVERY_QUERIES), 1)
+        query = PRIORITY_DISCOVERY_QUERIES[0]
+        self.assertEqual(query, 'bounty in:title')
+        self.assertNotIn('repo:', query)
+        compiled = build_issue_search_queries(query)[0]
+        for qualifier in ['is:issue', 'is:open', 'is:public', 'archived:false',
+                          'no:assignee', '-linked:pr']:
+            self.assertIn(qualifier, compiled)
         self.assertIn('bounty in:title', QUERIES['normal'])
         self.assertTrue(any(query.startswith('label:"Status: Available"') for query in QUERIES['programs']))
 

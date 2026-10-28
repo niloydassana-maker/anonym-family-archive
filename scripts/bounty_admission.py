@@ -1,6 +1,7 @@
 """One evidence-based admission contract for all dispatcher lanes and release."""
 from __future__ import annotations
 
+from datetime import date, datetime, timezone
 from decimal import Decimal
 import re
 
@@ -139,6 +140,12 @@ MONEY = re.compile(
     r"(?P<c2>USDC|USDT|USD|EUR|GBP|INR|SGD|AED|ETH|SOL|\$|€|£|₹))(?![\w]|\.\d)", re.I)
 
 
+EXPLICIT_DEADLINE = re.compile(
+    r"^\s*(?:(?:[-*]\s*)|(?:\d+[.)]\s*))?(?:\*{0,2})(?:submission\s+)?"
+    r"(?:deadline|due\s+date|submit\s+by)(?:\*{0,2})\s*(?::|=|[-–—]|\bis\b)\s*"
+    r"(?:\*{0,2}|`)?(?P<date>20\d{2}-\d{2}-\d{2})\b", re.I)
+
+
 def trusted(context, document):
     """Is this document written by the party that can commit the project's money?
 
@@ -154,6 +161,33 @@ def trusted(context, document):
             or login == owner.lower()
             or login in TRUSTED_BOTS
             or login.removesuffix("[bot]") in TRUSTED_BOTS)
+
+
+def offer_expired(context, today=None):
+    """Does the latest issuer-authored explicit ISO deadline precede today?
+
+    GitHub issue search has no qualifier for a deadline written in arbitrary body text.
+    Read only the issue and funding-authority comments, then let later issuer comments
+    extend an earlier deadline. Untrusted comments cannot revive or expire an offer.
+    """
+    today = today or datetime.now(timezone.utc).date()
+    issue = context["issue"]
+    comments = list(context.get("comments") or ())
+    comments.sort(key=lambda document: document.get("created_at") or "")
+    latest_deadline = None
+    for document in [issue, *comments]:
+        if not trusted(context, document):
+            continue
+        for line in (document.get("body") or "").splitlines():
+            match = EXPLICIT_DEADLINE.search(line)
+            if not match:
+                continue
+            try:
+                latest_deadline = date.fromisoformat(match.group("date"))
+            except ValueError:
+                # A malformed date is not evidence that the offer has expired.
+                continue
+    return latest_deadline is not None and latest_deadline < today
 
 
 MERGE_EVIDENCE_MIN = 10
@@ -467,6 +501,8 @@ def admit(context, quote=None, floor=FLOOR):
         return None, "INCOMPLETE_COMMENTS"
     if issue.get("state") != "open" or metadata.get("archived") or metadata.get("disabled"):
         return None, "CLOSED_OR_READ_ONLY"
+    if offer_expired(context):
+        return None, "EXPIRED_OFFER"
     title, body = issue["title"], issue.get("body") or ""
     if NON_WORK.search(title) or re.search(r"automated\s+(?:superteam\s+)?digest|mirrored from|status:\s*done", body, re.I):
         return None, "MIRROR_OR_NON_ENGINEERING"

@@ -18,9 +18,10 @@ while farm repositories were re-hydrated. The programme is therefore narrow on p
 only a listed repository, only a title-borne amount, only once the repository's own
 automation has published a payout artifact on that very issue.
 """
+from datetime import datetime, timedelta, timezone
 import unittest
 
-from bounty_admission import EXFILTRATION, FLOOR, admit, funding_program
+from bounty_admission import EXFILTRATION, FLOOR, admit, funding_program, offer_expired
 
 # Verbatim demand fragments from the stored trap bodies (see scratch/_exfil_misses.out.txt).
 TRAP_DEMANDS = [
@@ -174,6 +175,61 @@ class FundingProgramTests(unittest.TestCase):
         verdict, reason = admit(ctx)
         self.assertIsNone(verdict)
         self.assertEqual(reason, "CLOSED_OR_READ_ONLY")
+
+
+class ExpiredOfferTests(unittest.TestCase):
+    @staticmethod
+    def funded_issue(deadline):
+        ctx = context("[$250 bounty] Fix race condition in the report composer",
+                      HARD_BODY + "\nDeadline: **%s**" % deadline)
+        ctx["issue"]["user"] = {"login": "Expensify"}
+        ctx["issue"]["author_association"] = "OWNER"
+        return ctx
+
+    @staticmethod
+    def iso_day(offset):
+        return (datetime.now(timezone.utc).date() + timedelta(days=offset)).isoformat()
+
+    def test_issuer_expired_deadline_blocks_admission(self):
+        ctx = self.funded_issue(self.iso_day(-1))
+        verdict, reason = admit(ctx)
+        self.assertIsNone(verdict)
+        self.assertEqual(reason, "EXPIRED_OFFER")
+
+    def test_deadline_today_or_in_future_remains_eligible(self):
+        for offset in (0, 1):
+            with self.subTest(offset=offset):
+                ctx = self.funded_issue(self.iso_day(offset))
+                self.assertFalse(offer_expired(ctx))
+                verdict, reason = admit(ctx)
+                self.assertEqual(reason, "")
+                self.assertIsNotNone(verdict)
+
+    def test_later_issuer_comment_can_extend_a_deadline(self):
+        ctx = self.funded_issue(self.iso_day(-2))
+        ctx["comments"] = [{
+            "user": {"login": "Expensify"}, "author_association": "OWNER",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "html_url": "https://github.com/Expensify/App/issues/1#issuecomment-2",
+            "body": "Deadline: %s" % self.iso_day(1),
+        }]
+        self.assertFalse(offer_expired(ctx))
+
+    def test_untrusted_comment_cannot_extend_the_deadline(self):
+        ctx = self.funded_issue(self.iso_day(-1))
+        ctx["comments"] = [{
+            "user": {"login": "random-user"}, "author_association": "NONE",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "html_url": "https://github.com/Expensify/App/issues/1#issuecomment-3",
+            "body": "Deadline: %s" % self.iso_day(10),
+        }]
+        self.assertTrue(offer_expired(ctx))
+
+    def test_untrusted_issue_author_cannot_expire_an_offer(self):
+        ctx = self.funded_issue(self.iso_day(-1))
+        ctx["issue"]["user"] = {"login": "random-user"}
+        ctx["issue"]["author_association"] = "NONE"
+        self.assertFalse(offer_expired(ctx))
 
 
 if __name__ == "__main__":

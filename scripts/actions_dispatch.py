@@ -20,7 +20,7 @@ from bounty_fx import quote
 from discovery_horizon import Horizon
 
 QUERY_CONFIG = json.loads(Path(__file__).with_name("bounty_queries.json").read_text(encoding="utf-8"))
-PRIORITY_PROGRAM_QUERIES = tuple(QUERY_CONFIG.pop("priority_programs", ()))
+PRIORITY_DISCOVERY_QUERIES = tuple(QUERY_CONFIG.pop("priority_discovery", ()))
 QUERIES = QUERY_CONFIG
 SEARCH_QUALIFIERS = (
     "is:issue", "is:open", "is:public", "archived:false",
@@ -640,10 +640,10 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
         horizon.complete(expression, window, len(rows), 1000, saturated=saturated)
 
     try:
-        # A small, quality-oriented paid-program query runs every cycle. It is additive:
-        # the normal, startup, founder, and rotating program lanes below continue to scan
-        # their full configured horizons.
-        for expression in PRIORITY_PROGRAM_QUERIES:
+        # A global high-intent query runs every cycle so new bounty issues are not delayed
+        # behind the rotating lanes. Standard server-side filters still apply, while the
+        # existing funding, engineering, and competition evidence gates remain unchanged.
+        for expression in PRIORITY_DISCOVERY_QUERIES:
             search_and_queue("programs", expression)
         for lane in lanes:
             start_row = con.execute("SELECT position FROM cursors WHERE lane=?", (lane,)).fetchone()
