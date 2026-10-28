@@ -1,0 +1,49 @@
+{
+  "task_id": "5679d1a43fbf321975970b3f93779aae",
+  "repo": "Expensify/App",
+  "issue_number": 99595,
+  "status": "DISPATCHING",
+  "dispatch_id": "0828485b0b9e4a9db677076f19a7468d",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/99595",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "regression",
+      "transaction",
+      "transactions"
+    ],
+    "component_references": [
+      "EMAIL",
+      "TransactionUtils/index.ts",
+      "dismissToSuperWideRHP()"
+    ],
+    "source_locations": [
+      "TransactionUtils/index.ts",
+      "src/libs/ReportPrimaryActionUtils.ts",
+      "src/libs/TransactionUtils/index.ts",
+      "src/libs/actions/IOU/Duplicate.ts",
+      "src/pages/TransactionDuplicate/DynamicConfirmationPage.tsx"
+    ],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/99595",
+      "https://github.com/Expensify/App/issues/99595#issuecomment-5430965508"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/99595",
+    "fetched_at": "2026-10-28T09:36:15.931595+00:00"
+  },
+  "lanes": [
+    "programs"
+  ],
+  "dispatched_at": "2026-10-28T09:36:28.681057+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T09:36:28.681074+00:00"
+}
