@@ -1,0 +1,40 @@
+{
+  "task_id": "6ea16241e9826e7564875e0f6405a2c4",
+  "repo": "Cyon0x/earnly",
+  "issue_number": 1,
+  "status": "DISPATCHING",
+  "dispatch_id": "321b8100bbb54c2cbea73a1eb837175a",
+  "admission": {
+    "funding": {
+      "amount": "120",
+      "currency": "USD",
+      "usd_value": "120",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$120",
+      "source_url": "https://github.com/Cyon0x/earnly/issues/1#issuecomment-6477156421",
+      "payer": "Cyon0x"
+    },
+    "technical_signals": [
+      "issue",
+      "issues"
+    ],
+    "component_references": [],
+    "source_locations": [],
+    "engineering_evidence_sources": [
+      "https://github.com/Cyon0x/earnly/issues/1",
+      "https://github.com/Cyon0x/earnly/issues/1#issuecomment-6477156421"
+    ],
+    "source_issue": "https://github.com/Cyon0x/earnly/issues/1",
+    "fetched_at": "2026-10-28T19:21:48.745410+00:00"
+  },
+  "lanes": [
+    "founder",
+    "normal",
+    "startup"
+  ],
+  "dispatched_at": "2026-10-28T19:21:50.231090+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T19:21:50.231106+00:00"
+}
