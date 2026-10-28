@@ -2,8 +2,8 @@
   "task_id": "acb559c7610f2a4205d1ec20e332e923",
   "repo": "Expensify/App",
   "issue_number": 100290,
-  "status": "FAILED_MISSING_RECEIPT",
-  "dispatch_id": "f2946e1e394541a8ae9dabf73a4dfc5d",
+  "status": "DISPATCHING",
+  "dispatch_id": "8ce3dbf9211444c0b8a49564f5d660af",
   "admission": {
     "funding": {
       "amount": "250",
@@ -17,8 +17,14 @@
       "payer": "melvin-bot[bot]"
     },
     "technical_signals": [
+      "bug",
       "concurrent",
+      "defect",
+      "failuredata",
       "idempotency",
+      "issue",
+      "issues",
+      "problem",
       "regression"
     ],
     "component_references": [
@@ -42,10 +48,20 @@
       "tests/unit/PaymentUtilsTest.ts"
     ],
     "engineering_evidence_sources": [
-      "https://github.com/Expensify/App/issues/100290#issuecomment-5807400210"
+      "https://github.com/Expensify/App/issues/100290",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-5807400210",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-5807404586",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-5899682185",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-5941369485",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-6291213271",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-6375434647",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-6392399103",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-6421276161",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-6429628671",
+      "https://github.com/Expensify/App/issues/100290#issuecomment-6446836262"
     ],
     "source_issue": "https://github.com/Expensify/App/issues/100290",
-    "fetched_at": "2026-10-28T09:11:34.007005+00:00"
+    "fetched_at": "2026-10-28T22:51:20.328034+00:00"
   },
   "lanes": [
     "founder",
@@ -53,9 +69,9 @@
     "programs",
     "startup"
   ],
-  "dispatched_at": "2026-10-28T09:11:44.284591+00:00",
+  "dispatched_at": "2026-10-28T22:51:30.504649+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T09:20:59.776584+00:00",
+  "updated_at": "2026-10-28T22:51:30.504704+00:00",
   "owner": "40662351154:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
