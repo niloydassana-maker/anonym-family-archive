@@ -2,7 +2,7 @@
   "task_id": "4ccff088508a0eb9583f575973561a6e",
   "repo": "BruceFeIix/picker",
   "issue_number": 1904,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "69e0142e06d34973bc754ebb590d8ab9",
   "admission": {
     "funding": {
@@ -35,11 +35,63 @@
   ],
   "dispatched_at": "2026-10-28T06:12:13.599474+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T06:12:24.757515+00:00",
+  "updated_at": "2026-10-28T06:14:32.449276+00:00",
   "owner": "40642438084:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40642438084",
   "harness_sha": "1faafe40e39d1b9beda95445f10e139e68924414",
-  "claimed_at": "2026-10-28T06:12:24.757500+00:00"
+  "claimed_at": "2026-10-28T06:12:24.757500+00:00",
+  "at": "2026-10-28T06:14:19.480274+00:00",
+  "reason": "Cline preparation blocked: Non-engineering issue. Issue #1904 '[\u6bcf\u65e5\u4fe1\u606f\u6d41] 2025-08-21' is an auto-generated daily RSS/link digest (label 'daily', author_association OWNER, created by BruceFeIix's bot, 54,227-char body of unchecked '- [ ] [title](url)' link lists from ~30 security feeds). It requests no code change: no reproducible defect, no feature, no code-level maintenance. Repo state proves it is machine-generated content, not a work request: .github/workflows/daily.yml runs `gh issue create --title \"[\u6bcf\u65e5\u4fe1\u606f\u6d41] `date +'%Y-%m-%d'`\" -F today.md --label \"daily\"`; yarb.py builds today.md and archive/daily/<year>/<date>.md. The claimed $300 funding is phantom: the only occurrences of '$300' in the body are the InfoSec Write-ups link title \"Day 7: API Hacking \u2014 How I Stole 5000 OAuth Tokens & Won $300\" (and '$800' from \"The CI/CD Betrayal ... $800 Cloud Breach\"); 'bounty' matches are the feed name 'Bug Bounty in InfoSec Write-ups on Medium', and 'cryptography' matches are article titles (e.g. Microsoft 'Quantum-safe security ... next-generation cryptography'). The issue body contains no bounty/funding/payment/reward text (payment=0, reward=0 matches) and 0 comments; hence no live genuine funding existed. Competition signal: open PR #2617 'Fix: [\u6bcf\u65e5\u4fe1\u606f\u6d41] 2026-08-11' shows this issue class is already being handled as automated-bot output, not a spec to implement. Per admission rules this is a documentation/content deliverable that must not be converted into a fallback proposal or pull request. No checkout was materialized at the target path; the repo was only inspected read-only at /tmp/inspect/picker and left unchanged (no edits, no commits, no push, no PR).",
+  "declared_reason": "Non-engineering issue. Issue #1904 '[\u6bcf\u65e5\u4fe1\u606f\u6d41] 2025-08-21' is an auto-generated daily RSS/link digest (label 'daily', author_association OWNER, created by BruceFeIix's bot, 54,227-char body of unchecked '- [ ] [title](url)' link lists from ~30 security feeds). It requests no code change: no reproducible defect, no feature, no code-level maintenance. Repo state proves it is machine-generated content, not a work request: .github/workflows/daily.yml runs `gh issue create --title \"[\u6bcf\u65e5\u4fe1\u606f\u6d41] `date +'%Y-%m-%d'`\" -F today.md --label \"daily\"`; yarb.py builds today.md and archive/daily/<year>/<date>.md. The claimed $300 funding is phantom: the only occurrences of '$300' in the body are the InfoSec Write-ups link title \"Day 7: API Hacking \u2014 How I Stole 5000 OAuth Tokens & Won $300\" (and '$800' from \"The CI/CD Betrayal ... $800 Cloud Breach\"); 'bounty' matches are the feed name 'Bug Bounty in InfoSec Write-ups on Medium', and 'cryptography' matches are article titles (e.g. Microsoft 'Quantum-safe security ... next-generation cryptography'). The issue body contains no bounty/funding/payment/reward text (payment=0, reward=0 matches) and 0 comments; hence no live genuine funding existed. Competition signal: open PR #2617 'Fix: [\u6bcf\u65e5\u4fe1\u606f\u6d41] 2026-08-11' shows this issue class is already being handled as automated-bot output, not a spec to implement. Per admission rules this is a documentation/content deliverable that must not be converted into a fallback proposal or pull request. No checkout was materialized at the target path; the repo was only inspected read-only at /tmp/inspect/picker and left unchanged (no edits, no commits, no push, no PR).",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/BruceFeIix--picker--1904",
+    "base_sha": "e3c9587bf94285b02fba8995631d01276cb23c83",
+    "default_branch": "master",
+    "sources": [
+      {
+        "path": ".github/workflows/daily.yml",
+        "sha256": "2c135adeb99235f4558f29cfaafcccdc1ddd16dc01b5e62087a1e1ac9a11d555"
+      },
+      {
+        "path": ".github/workflows/pick.yml",
+        "sha256": "8751282ab4a2414b15a861edf3cd1c55a970737e83d9994f52d80914ef86e0d7"
+      },
+      {
+        "path": "requirements.txt",
+        "sha256": "9b18ebb479dfafdd2369e0705fbf890ce9c2e48bbcf24b1d117af1b07e50ee80"
+      },
+      {
+        "path": "install.sh",
+        "sha256": "083bab9e9054241c2386e1abeaab8efd473e49b9ef872799d24b1742e86f2bdb"
+      },
+      {
+        "path": "yarb.py",
+        "sha256": "fbdcaa067f17d4a2e328d70d21f2543f44f6445c4ae15a367d5e00b8dbca1ed0"
+      },
+      {
+        "path": "bot.py",
+        "sha256": "cb2c2a85cc762b016838748e7b1551aa7c84257b8f20d73c8c316843e5d576e9"
+      },
+      {
+        "path": "config.yml",
+        "sha256": "8614ba3755bf97b35549f14d5104a7eaf9936a6ba5c1073bc342cec68e19f7ba"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "300",
+      "currency": "USD",
+      "usd_value": "300",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$300",
+      "source_url": "https://github.com/BruceFeIix/picker/issues/1904",
+      "payer": "BruceFeIix"
+    }
+  },
+  "finished_at": "2026-10-28T06:14:31.494852+00:00"
 }
