@@ -139,3 +139,21 @@ It does not claim a new qualified task, dispatch, or verified PR; the preceding 
 receipt still had zero qualified candidates. The next live discovery run must report its own
 qualified, dispatched, and verified-PR counts before influx or delivery quality can be called
 successful.
+
+### Post-repair live cycle
+
+Discovery run [40613382410](https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40613382410)
+completed successfully on repair commit `4e1dfa49a5a48a4422d925207d20b47d6e9d2736`. Its final
+receipt recorded overlapping raw hits of programs 26, normal 864, startup 538, and founder 36;
+admission recorded 37 `HARD_ISSUE_EVIDENCE_MISSING`, 50 `CURRENT_ISSUER_OFFER_MISSING`, five
+`REPORTED_BEHAVIOUR_DECLARED_BY_DESIGN`, and eight `CLOSED_OR_READ_ONLY`. The cycle ended with
+`qualified_fresh=0`, `qualified_unique=0`, `dispatched=[]`, and `pending_hydration=9465`.
+Therefore Cline did not start for a new claim and no PR was produced in this cycle. The broad
+search volume is real, but the receipt does not support claiming qualified influx or delivery.
+
+The live refreshed issue check independently confirmed `Expensify/App#101616` is still open,
+assigned to `wildan-m`, `inimaga`, and `FitseTLT`, with labels `External`, `Daily`, `Overdue`,
+and `Bug`. `refreshed_query_exclusion()` returned `query_excluded_assigned`; the live competition
+check independently returned merged PR #103877 as the fix. Both paths now have regression tests
+and a live receipt. This demonstrates the stale task is blocked before another Cline run, while
+the broader zero-qualified outcome remains unresolved.
