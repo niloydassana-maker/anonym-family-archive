@@ -109,6 +109,75 @@ def validate_preparation(report, path):
         raise ClineDeliverableInvalid(path, "regression_plan missing component")
 
 
+def preflight(checks):
+    """Pre-flight checks before Cline runs.
+
+    Each check is a (subsystem, ok, detail) tuple. If any check fails,
+    raises InfrastructureFault so the failure is classified as
+    infrastructure, not engineering.
+    """
+    for subsystem, ok, detail in checks:
+        if not ok:
+            raise InfrastructureFault(subsystem, detail)
+
+
+def check_disk_space(path, min_free_gb=5):
+    """Check free disk space above a floor."""
+    import shutil
+    try:
+        usage = shutil.disk_usage(path)
+        free_gb = usage.free / (1024 ** 3)
+        return free_gb >= min_free_gb, f"{free_gb:.1f} GB free (need {min_free_gb} GB)"
+    except OSError:
+        return False, "cannot read disk usage"
+
+
+def check_free_memory(min_free_mb=512):
+    """Check free memory above a floor."""
+    try:
+        with open("/proc/meminfo") as f:
+            meminfo = f.read()
+        for line in meminfo.split("\n"):
+            if line.startswith("MemAvailable:"):
+                free_kb = int(line.split()[1])
+                free_mb = free_kb / 1024
+                return free_mb >= min_free_mb, f"{free_mb:.0f} MB free (need {min_free_mb} MB)"
+    except (OSError, ValueError):
+        pass
+    return False, "cannot read memory info"
+
+
+def check_executable(cmd, args=("--version",)):
+    """Check an executable exists and is executable."""
+    import shutil
+    path = shutil.which(cmd)
+    if path is None:
+        return False, f"{cmd} not found on PATH"
+    try:
+        import subprocess
+        result = subprocess.run([cmd] + list(args), capture_output=True, timeout=10)
+        return result.returncode == 0, f"{cmd} version check returned {result.returncode}"
+    except (OSError, subprocess.TimeoutExpired):
+        return False, f"{cmd} not executable"
+
+
+def check_git_version(min_version="2.20"):
+    """Check git version is sufficient."""
+    import subprocess
+    try:
+        result = subprocess.run(["git", "--version"], capture_output=True, text=True, timeout=10)
+        if result.returncode != 0:
+            return False, "git version check failed"
+        version_str = result.stdout.strip().split()[-1]
+        version_parts = [int(x) for x in version_str.split(".")[:3]]
+        min_parts = [int(x) for x in min_version.split(".")[:3]]
+        if version_parts < min_parts:
+            return False, f"git {version_str} < {min_version}"
+        return True, f"git {version_str}"
+    except (OSError, subprocess.TimeoutExpired, ValueError):
+        return False, "git version check failed"
+
+
 def prepared_touched_files(prepared):
     """Derive the set of files the prepared plan will touch, from the contract-validated
     regression plan plus any source paths the plan names."""
@@ -394,6 +463,13 @@ def engineer():
             "run": state.get("owner", ""),
         })
 
+        # F7: Pre-flight checks before Cline runs.
+        preflight([
+            check_disk_space(".", min_free_gb=5),
+            check_free_memory(min_free_mb=512),
+            check_executable("git", ("--version",)),
+            check_git_version("2.20"),
+        ])
         for release_turn in range(1, 4):
             ok, run, diagnostic = worker.run_engineering_iteration_loop(
                 root, repo, number, task["title"], body, arch, plan, cases, base,
