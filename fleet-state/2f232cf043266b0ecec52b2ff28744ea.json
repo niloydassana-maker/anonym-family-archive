@@ -2,8 +2,8 @@
   "task_id": "2f232cf043266b0ecec52b2ff28744ea",
   "repo": "Expensify/App",
   "issue_number": 101234,
-  "status": "FAILED_MISSING_RECEIPT",
-  "dispatch_id": "8e478afe61e047d99df412bc0a4b608d",
+  "status": "DISPATCHING",
+  "dispatch_id": "e6f6c82e28314ae794fc841f6e3c434c",
   "admission": {
     "funding": {
       "amount": "250",
@@ -17,7 +17,14 @@
       "payer": "melvin-bot[bot]"
     },
     "technical_signals": [
+      "bug",
+      "bugs",
+      "failed",
+      "failures",
       "invariant",
+      "issue",
+      "issues",
+      "problem",
       "regression"
     ],
     "component_references": [
@@ -40,18 +47,31 @@
       "src/pages/inbox/report/ReportActionsList.tsx"
     ],
     "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/101234",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-5687317951",
       "https://github.com/Expensify/App/issues/101234#issuecomment-5687516777",
-      "https://github.com/Expensify/App/issues/101234#issuecomment-6290574723"
+      "https://github.com/Expensify/App/issues/101234#issuecomment-5768061147",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-5840148877",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-5899650377",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-5963008262",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-5964029249",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-6155969961",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-6278204093",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-6290574723",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-6375440720",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-6421265457",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-6429628025",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-6442631597"
     ],
     "source_issue": "https://github.com/Expensify/App/issues/101234",
-    "fetched_at": "2026-10-28T08:49:59.443909+00:00"
+    "fetched_at": "2026-10-28T22:51:34.074872+00:00"
   },
   "lanes": [
     "programs"
   ],
-  "dispatched_at": "2026-10-28T08:50:10.029679+00:00",
+  "dispatched_at": "2026-10-28T22:51:44.138155+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T09:03:30.844170+00:00",
+  "updated_at": "2026-10-28T22:51:44.138170+00:00",
   "owner": "40659656985:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
