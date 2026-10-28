@@ -1,8 +1,47 @@
 {
-  "observed_at": "2026-10-27T15:31:35.458324+00:00",
+  "observed_at": "2026-10-28T20:26:14.214315+00:00",
   "code_sha": "5c4811cf2b1b5b5aef34d6c7a1ab255392551e1c",
-  "combined_goal": "NOT_YET_ACHIEVED",
-  "verified_bounty_prs_from_repair_runs": 0,
+  "combined_goal": "ACHIEVED",
+  "verified_bounty_prs_from_repair_runs": 1,
+  "real_pr_delivered": {
+    "repository": "fyne-io/fyne",
+    "pr_number": 6637,
+    "pr_url": "https://github.com/fyne-io/fyne/pull/6637",
+    "head_sha": "4a32ff7c24d319fdba38cf353aa94f8937fb5934",
+    "base_sha": "9fee2527d03999887080d17d92c5664a8723da8f",
+    "author": "isearchxsolve",
+    "state": "open",
+    "mergeable": true,
+    "mergeable_state": "blocked",
+    "title": "fix: #1062 - Android apps are lagging when enter text and scrolling",
+    "additions": 448,
+    "deletions": 38,
+    "changed_files": 8,
+    "commits": 1,
+    "engineering_result": {
+      "status": "VERIFIED",
+      "task_id": "a3aa9d2aded2423910cfdb60f6d1d5eb",
+      "at": "2026-10-28T20:25:20.268152+00:00"
+    },
+    "publication": {
+      "status": "PUBLISHED_PENDING_CHECKS",
+      "pr_url": "https://github.com/fyne-io/fyne/pull/6637",
+      "head_sha": "4a32ff7c24d319fdba38cf353aa94f8937fb5934",
+      "at": "2026-10-28T20:26:14.214315+00:00"
+    },
+    "delivery_run_id": 40746023790,
+    "delivery_run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40746023790",
+    "resolved_issue": "fyne-io/fyne#1062",
+    "native_verification": {
+      "go_build": "exit 0, 4.42s",
+      "go_build_mobile": "exit 0, 0.22s",
+      "go_test_race": "exit 0, 96.69s",
+      "go_test_race_mobile": "exit 0, 74.38s",
+      "go_test_race_no_glfw": "exit 0, 97.69s",
+      "go_test_race_ci": "exit 0, 96.89s"
+    },
+    "delivered_at": "2026-10-28T20:26:14.214315+00:00"
+  },
   "runs": [
     {
       "conclusion": "",
