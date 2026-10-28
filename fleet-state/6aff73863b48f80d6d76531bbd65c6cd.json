@@ -2,8 +2,8 @@
   "task_id": "6aff73863b48f80d6d76531bbd65c6cd",
   "repo": "Expensify/App",
   "issue_number": 104231,
-  "status": "FAILED_ENGINEER",
-  "dispatch_id": "7b299922a48a4e46b85df0c0e39cb205",
+  "status": "DISPATCHING",
+  "dispatch_id": "eaa3957e37c14aa5bf48aeb3b612b2d7",
   "admission": {
     "funding": {
       "amount": "250",
@@ -45,14 +45,14 @@
       "https://github.com/Expensify/App/issues/104231#issuecomment-6452854097"
     ],
     "source_issue": "https://github.com/Expensify/App/issues/104231",
-    "fetched_at": "2026-10-28T22:31:24.193255+00:00"
+    "fetched_at": "2026-10-28T22:56:21.887909+00:00"
   },
   "lanes": [
     "programs"
   ],
-  "dispatched_at": "2026-10-28T22:31:35.758613+00:00",
+  "dispatched_at": "2026-10-28T22:56:35.140069+00:00",
   "attempt": 2,
-  "updated_at": "2026-10-28T22:54:56.630953+00:00",
+  "updated_at": "2026-10-28T22:56:35.140085+00:00",
   "owner": "40780634905:1",
   "previous_owner": "40583553915:1",
   "previous_status": "DISPATCHED",
