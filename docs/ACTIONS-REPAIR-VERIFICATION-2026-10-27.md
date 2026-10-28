@@ -739,3 +739,228 @@ existing master suites were not modified.
 
 `combined_goal` remains `NOT_YET_ACHIEVED`: admission is not delivery. No verified PR exists,
 and this repair changes which issues reach the engineer, not whether one lands.
+
+---
+
+## RCA: why no bounty PR exists (2026-10-29)
+
+This section answers one question: **why has not a single bounty PR been produced by this pipeline
+to date?** It is grounded in the durable `fleet-state` ledger and in per-run Actions step and log
+data, never in run colour. A run can conclude `success` while the task is a terminal refusal, so
+"the run was green" is not evidence of anything and is not used as such here.
+
+`combined_goal` remains **`NOT_YET_ACHIEVED`**. This RCA changes no gate and no counter.
+
+### 1. The durable funnel: 30 tasks, 0 deliveries
+
+30 `fleet-state` records were read back. Not one reached any delivery-bearing status.
+
+| final status | tasks |
+| --- | --- |
+| `REJECTED_PREPARATION` | 12 |
+| `FAILED_MISSING_RECEIPT` | 11 |
+| `FAILED_ENGINEER` | 6 |
+| `CLAIMED` (still held) | 1 |
+| `VERIFIED` / `PUBLISHING` / `PUBLISHED_PENDING_CHECKS` / `DELIVERED` | **0** |
+
+Reading the 12 refusals honestly: most are *correct*. They include a link-farm/SEO spam issue, two
+daily-digest notices, an EPIC meta-issue, an external contest deliverable, an architecture umbrella
+with no code scope, and issues already resolved or already carrying a competing PR. Refusing those
+is the admission contract working, not the pipeline breaking. Supply quality is a real constraint,
+but it is not the reason the funnel yields zero: there are 18 further tasks that were genuinely
+worked and still produced no PR.
+
+### 2. Attributing 35 run-records to the failing step
+
+35 run-records cover 30 distinct tasks (five tasks were retried). Cross-tabulating final status
+against the first failing step and the job conclusion:
+
+| records | final status | first failing step | job |
+| --- | --- | --- | --- |
+| 12 | `REJECTED_PREPARATION` | none (step `success`) | success |
+| 7 | `FAILED_ENGINEER` | Cline step failure | failure |
+| 6 | `FAILED_MISSING_RECEIPT` | Cline step failure | failure |
+| 5 | `FAILED_MISSING_RECEIPT` | none | **failure** |
+| 1 | `FAILED_MISSING_RECEIPT` | `Install the executable actually used by the worker` | failure |
+| 1 | `FAILED_MISSING_RECEIPT` | `Configure runner memory headroom` | failure |
+| 1 | `FAILED_ENGINEER` | `Configure runner memory headroom` | failure |
+| 1 | (cancelled) | Cline step `[cancelled]` | cancelled |
+| 1 | `CLAIMED` | none (never completed) | running |
+
+Note the shape of the 5 anomalous rows: **failure with no failing step**. Their signature is the
+Cline step left `in_progress` with `conclusion: null` while `upload-artifact` and `post-checkout`
+are still `pending`. That is a runner killed in the middle of a step, not a step that failed.
+
+### 3. The 14 Cline-step failures, by actual cause
+
+A terminal-signal classifier ran over all 14 runs whose Cline step is recorded as failed, reading
+the job log of each. Six carried an explicit shutdown signal (`exit_143` plus "The runner has
+received a shutdown signal"). For the remaining eight, the decisive terminating line was extracted
+verbatim.
+
+| primary cause | runs |
+| --- | --- |
+| `RUNNER_SHUTDOWN` | 6 |
+| `PREPARATION_BLOCKED` | 3 |
+| `BASELINE_MISMATCH` | 2 |
+| `FILENOTFOUND_PREP` | 2 |
+| `JOB_CANCELLED` | 1 |
+| **genuine engineering/model failure** | **0** |
+
+**Zero of the 14 Cline-step failures is an engineering failure.** Not one is a model that wrote bad
+code, a test plan that could not pass, or a fix that did not apply. Every one is either the runner
+dying, a contract artefact missing, a baseline disagreement, or an already-terminal refusal that was
+mislabelled on the way out.
+
+### 4. Cause A: the baseline gate is an always-losing race on fast-moving repos
+
+Reading the real artefact of run `40719193494` (`Expensify/App#70080`), downloaded from the run:
+
+| field | value |
+| --- | --- |
+| `action` | `retry` |
+| `base_sha` | `abc9784f1045a74710fabb9e6c020d82c840624d` (committed `2026-10-28T15:45:21Z`) |
+| `default_branch` | `main` |
+| preparation window | `15:46:05Z` to `16:28:18Z` (42 minutes) |
+
+The baseline was **correct when it was taken**: `abc9784f` was `main` at the moment preparation
+began. But 8 commits landed on `Expensify/App` `main` inside the 42-minute preparation window, the
+last of them (`e3f2b2e889`) at `16:25:36Z` -- about two and a half minutes before the gate ran. The
+gate at `scripts/actions_delivery.py:177-179` compares the prepared baseline against **live**
+upstream at the end of preparation:
+
+```
+upstream = api.api(f"repos/{repo}/commits/{prepared['default_branch']}")
+if base != upstream["sha"]:
+    raise ValueError("Prepared baseline is not the current upstream default")
+```
+
+Measured velocity for that repository in the same day: 100 commits spanning
+`2026-10-28T09:01:08Z` to `19:20:56Z`, roughly 9.7 merges per hour, on a repository of
+`3,373,546` KB. Any preparation window longer than about six minutes loses this comparison by
+construction. **This failure mode is structural on fast repositories: the longer the agent works,
+the more certainly it fails.** It cannot be fixed by making preparation faster; it has to be fixed
+by what the gate means.
+
+### 5. Cause B: Cline declared `main` while delivering a feature-branch HEAD
+
+Run `40729296273` (`librepods-org/librepods#878`), artefact values:
+
+| field | value |
+| --- | --- |
+| `action` | `retry` |
+| `base_sha` | `3d4d2703da39e9903e9789484b838bd5a0930207` |
+| `default_branch` | **`main`** |
+
+Live branch map for that repository:
+
+| branch | HEAD | date |
+| --- | --- | --- |
+| `main` | `89356c08ce` | `2026-10-16T17:26:17Z` |
+| `android/rewrite` | `3d4d2703da` | `2026-10-28T10:26:57Z` |
+
+So Cline prepared against `android/rewrite` HEAD and labelled it `main`. The issue is
+`enhancement / help wanted / android`, open, and the reported regression component was
+`android/privileged` -- the work genuinely belongs on the Android branch, not on a `main` that has
+not moved in twelve days.
+
+**The harness refusal was correct.** It caught a false baseline claim. This is recorded explicitly
+because the tempting "fix" -- relaxing the baseline gate -- would have let a wrongly-labelled base
+through. The real gap is that **no legal way exists for Cline to declare a non-default base**, so a
+correct decision and a correct refusal together produce a dead end.
+
+### 6. Cause C: Cline exits 0 without writing its deliverable, and the host reports a crash
+
+Run `40673403288` (`#104400`) and run `40720474625` (`#75905`) share one signature. The downloaded
+artefact for `40673403288` contains
+`4d8e11eab5464777a09e9e6774e3dea9.context.json` (714,246 bytes) and **no `preparation.json` at
+all**. The job log shows:
+
+```
+END CLINE pid=2404 exit=0 elapsed=3331.4s
+```
+
+Cline ran 55 minutes and exited **zero** without writing the one file the contract requires. The
+host then executes, at `scripts/kaggle_engine_worker.py:2826`:
+
+```
+with open(report_path, encoding='utf-8') as handle:
+```
+
+which raises a bare `FileNotFoundError`. The blanket handler at
+`scripts/actions_delivery.py:492-496` stamps that as `FAILED_ENGINEER`:
+
+```
+except Exception as exc:
+    write_json(artifacts() / (args.phase + "-failure.json"),
+               {"status": "FAILED_" + args.phase.upper(), "diagnostic": str(exc), "at": utcnow()})
+    raise
+```
+
+Two distinct facts are therefore collapsed into one misleading word. The agent **did not fail to
+engineer**; it failed to **report**, and the host converted its own unguarded `open()` into an
+apparent engineering failure. The `diagnostic` field preserves the truth
+(`"No such file or directory: ...preparation.json"`) but no consumer reads it as a taxonomy.
+
+### 7. Cause D: runner death is reported as an engineer failure
+
+Six of the fourteen are `RUNNER_SHUTDOWN`. They are stamped `FAILED_ENGINEER` (or
+`FAILED_MISSING_RECEIPT`) by the same blanket handler, because a killed step surfaces to Python as
+an exception, not as a distinguishable signal. The pipeline has no concept of "the machine went
+away", so it accuses the engineer.
+
+Five further runs (`40662290045`, `40592395695`, `40670777360`, `40583553915`, `40591329401`) have
+no recoverable job log at all -- `BlobNotFound`. A missing log is not evidence of anything by
+itself; those five are identified as mid-step kills only by the step-state signature in section 2,
+and that limit is stated rather than papered over.
+
+### 8. Cause E: the pathological claim
+
+Run `40746023790` (`fyne-io/fyne#1062`) has been `in_progress` since `2026-10-28T18:32:08Z`, more
+than 24 hours against its own 300-minute step and 330-minute job timeouts. The engineer job is
+`in_progress`, the Cline step is `in_progress` with `conclusion: null`, and `upload-artifact` and
+`post-checkout` are `pending`. The task is pinned at `CLAIMED` by two independent locks:
+
+1. `StateStore.claim` (`scripts/actions_github.py:199-200`) raises
+   `"A live Actions run already owns this task"` while the prior record's `status != "completed"`.
+2. `retry_eligible(state)` never selects `CLAIMED`, so re-dispatch will not pick it up either.
+
+That issue can never be retried until the claim is reset by hand. There is no expiry, no liveness
+probe, and no reconcile path that notices a run which stopped being alive.
+
+### 9. What is NOT broken (corrections recorded so the wrong lesson is not learned)
+
+- **The 3 `PREPARATION_BLOCKED` mislabels are already fixed and cannot recur on that path.**
+  `git show ff608856a6e5:scripts/actions_delivery.py` contains no `PreparationBlocked` and no
+  `reject_preparation`. The guard at `:170-174` was added by `de8cc08`, which is an ancestor of
+  HEAD `003b486`. Those three runs predate the fix.
+- **The admission contract is not the bottleneck for worked tasks.** 18 tasks passed admission and
+  were genuinely worked without producing a PR; only the refusal set is dominated by supply noise.
+- **The remote engineer design is not the failure.** No run shows a returned patch that failed to
+  apply, or a native test plan that could not pass. The failures are artefact, baseline and
+  infrastructure, not craft.
+- **Discovery cron is erratic, not dead.** Of the last 16 discovery runs, exactly 1 was
+  `event=schedule` (`40571754781`, `2026-10-27T19:44:03Z`, head `8439a46`); the other 15 were
+  `workflow_dispatch`. That is a trigger-reliability problem, not a stopped pipeline.
+
+### 10. The one-line answer
+
+The pipeline has never delivered because **the stage after admission fails for reasons that have
+nothing to do with engineering**: a baseline gate that loses a race by construction on any
+repository that merges while the agent works, an artefact contract with no legal way to declare a
+non-default base, a host `open()` that turns a missing report into an apparent crash, a blanket
+exception handler that labels machine death as engineer failure, and a claim with no expiry that
+can pin a task forever. Fixing those five removes the entire obstacle set proven here. None of them
+requires weakening a gate; two of them (Cause B, Cause C) require the harness to be **more**
+precise, not more permissive.
+
+### Open, stated plainly
+
+- No verified PR exists. `combined_goal` is `NOT_YET_ACHIEVED`.
+- The recommended repairs, their exact sites, tests and acceptance criteria are specified in
+  [the fix blueprint](ACTIONS-FIX-BLUEPRINT-2026-10-29.md). This RCA implements nothing.
+- `xpex-systems-ai/GXEON-AI#452` (external docs/contest deliverable) is still admitted; the
+  by-design gate does not cover that class.
+- `MarkDude-design/ALLurbaseRnotbelong2us#2` is still refused as `BY_DESIGN` for the right outcome
+  and the wrong reason; that needs the class-level "does this issue request a code change at all?"
+  gate, which stays unbuilt until a hand-labelled sample exists.

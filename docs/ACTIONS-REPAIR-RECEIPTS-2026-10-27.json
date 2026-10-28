@@ -1399,5 +1399,235 @@
     },
     "combined_goal": "NOT_YET_ACHIEVED",
     "why_still_unachieved": "admission is not delivery: no verified PR exists, and this change alters which issues reach the engineer, not whether one lands"
+  },
+  "rca_no_pr": {
+    "observed_at_note": "Appended 2026-10-29. Read-only forensic RCA. Implements nothing; changes no gate and no counter.",
+    "question": "why has not a single bounty PR been produced to date",
+    "evidence_standard": "durable fleet-state ledger plus per-run Actions step and log data; run colour is never treated as evidence because a run can conclude success while the task is a terminal refusal",
+    "combined_goal": "NOT_YET_ACHIEVED",
+    "durable_funnel": {
+      "tasks_total": 30,
+      "source": "scratch/_rca_fleet_state.py -> scratch/_rca_fleet_state.json",
+      "by_final_status": {
+        "REJECTED_PREPARATION": 12,
+        "FAILED_MISSING_RECEIPT": 11,
+        "FAILED_ENGINEER": 6,
+        "CLAIMED": 1
+      },
+      "reached_delivery_statuses": 0,
+      "delivery_statuses_checked": [
+        "VERIFIED",
+        "PUBLISHING",
+        "PUBLISHED_PENDING_CHECKS",
+        "DELIVERED"
+      ],
+      "reading_of_the_12_refusals": "largely correct refusals (link farm / SEO spam, daily digests, EPIC meta-issue, external contest deliverable, architecture umbrella, already-resolved or competing PR): supply quality, not pipeline breakage",
+      "tasks_genuinely_worked_without_pr": 18
+    },
+    "run_attribution": {
+      "run_records": 35,
+      "distinct_tasks": 30,
+      "source": "scratch/_rca_failure_steps.py -> scratch/_rca_run_failures.json",
+      "cross_tab": [
+        {
+          "records": 12,
+          "final_status": "REJECTED_PREPARATION",
+          "first_failed_step": null,
+          "job": "success"
+        },
+        {
+          "records": 7,
+          "final_status": "FAILED_ENGINEER",
+          "first_failed_step": "Cline step",
+          "job": "failure"
+        },
+        {
+          "records": 6,
+          "final_status": "FAILED_MISSING_RECEIPT",
+          "first_failed_step": "Cline step",
+          "job": "failure"
+        },
+        {
+          "records": 5,
+          "final_status": "FAILED_MISSING_RECEIPT",
+          "first_failed_step": null,
+          "job": "failure"
+        },
+        {
+          "records": 1,
+          "final_status": "FAILED_MISSING_RECEIPT",
+          "first_failed_step": "Install the executable actually used by the worker",
+          "job": "failure"
+        },
+        {
+          "records": 1,
+          "final_status": "FAILED_MISSING_RECEIPT",
+          "first_failed_step": "Configure runner memory headroom",
+          "job": "failure"
+        },
+        {
+          "records": 1,
+          "final_status": "FAILED_ENGINEER",
+          "first_failed_step": "Configure runner memory headroom",
+          "job": "failure"
+        },
+        {
+          "records": 1,
+          "final_status": "cancelled",
+          "first_failed_step": "Cline step [cancelled]",
+          "job": "cancelled"
+        },
+        {
+          "records": 1,
+          "final_status": "CLAIMED",
+          "first_failed_step": null,
+          "job": "running"
+        }
+      ],
+      "mid_step_kill_signature": "Cline step in_progress with conclusion null while upload-artifact and post-checkout remain pending (the 5 failure-with-no-failing-step rows)"
+    },
+    "cline_step_failures": {
+      "total": 14,
+      "source": "scratch/_rca_terminal_signal.py -> scratch/_rca_terminal_signals.json; scratch/_rca_error_lines.py -> scratch/_rca_error_lines.json",
+      "by_primary_cause": {
+        "RUNNER_SHUTDOWN": 6,
+        "PREPARATION_BLOCKED": 3,
+        "BASELINE_MISMATCH": 2,
+        "FILENOTFOUND_PREP": 2,
+        "JOB_CANCELLED": 1
+      },
+      "genuine_engineering_or_model_failures": 0,
+      "finding": "zero of fourteen Cline-step failures is an engineering failure; every one is runner death, a missing contract artefact, a baseline disagreement, or an already-terminal refusal mislabelled on the way out"
+    },
+    "cause_a_baseline_race": {
+      "run": "40719193494",
+      "repo": "Expensify/App",
+      "issue": 70080,
+      "artefact": "C:/Users/Admin/AppData/Local/Temp/opencode/rca_40719193494/task-engineering-40719193494/delivery-supervisor/614895b4ad534522892e5723f0852b46.preparation.json",
+      "action": "retry",
+      "base_sha": "abc9784f1045a74710fabb9e6c020d82c840624d",
+      "base_commit_date": "2026-10-28T15:45:21Z",
+      "default_branch": "main",
+      "preparation_window": {
+        "start": "2026-10-28T15:46:05Z",
+        "end": "2026-10-28T16:28:18Z",
+        "minutes": 42
+      },
+      "commits_landed_inside_window": 8,
+      "last_commit_inside_window": {
+        "sha": "e3f2b2e889",
+        "at": "2026-10-28T16:25:36Z",
+        "minutes_before_gate": 2.5
+      },
+      "gate_site": "scripts/actions_delivery.py:177-179",
+      "gate_code": "upstream = api.api(f\"repos/{repo}/commits/{prepared['default_branch']}\")\nif base != upstream[\"sha\"]:\n    raise ValueError(\"Prepared baseline is not the current upstream default\")",
+      "measured_velocity": {
+        "commits": 100,
+        "window": "2026-10-28T09:01:08Z..2026-10-28T19:20:56Z",
+        "merges_per_hour": 9.7,
+        "repo_size_kb": 3373546
+      },
+      "conclusion": "baseline was correct at t0, the gate compares against live upstream at t_end, so this is a structural always-losing race on any repository that merges while the agent works"
+    },
+    "cause_b_false_base_label": {
+      "run": "40729296273",
+      "repo": "librepods-org/librepods",
+      "issue": 878,
+      "artefact": "C:/Users/Admin/AppData/Local/Temp/opencode/rca_40729296273/task-engineering-40729296273/delivery-supervisor/d6bede36976a4edd8689235953e6b312.preparation.json",
+      "action": "retry",
+      "declared_base_sha": "3d4d2703da39e9903e9789484b838bd5a0930207",
+      "declared_default_branch": "main",
+      "live_branch_map": {
+        "main": {
+          "head": "89356c08ce",
+          "date": "2026-10-16T17:26:17Z"
+        },
+        "android/rewrite": {
+          "head": "3d4d2703da",
+          "date": "2026-10-28T10:26:57Z"
+        }
+      },
+      "issue_labels": [
+        "enhancement",
+        "help wanted",
+        "android"
+      ],
+      "reported_regression_component": "android/privileged",
+      "verdict": "Cline prepared against android/rewrite HEAD and declared main; the harness refusal was CORRECT and must not be relaxed",
+      "real_gap": "no legal way exists for Cline to declare a non-default base, so a correct decision plus a correct refusal yields a dead end"
+    },
+    "cause_c_missing_deliverable": {
+      "runs": [
+        "40673403288",
+        "40720474625"
+      ],
+      "artefact": "C:/Users/Admin/AppData/Local/Temp/opencode/rca_40673403288/task-engineering-40673403288/",
+      "artefact_contents": "4d8e11eab5464777a09e9e6774e3dea9.context.json (714246 B) present; NO preparation.json",
+      "log_line": "END CLINE pid=2404 exit=0 elapsed=3331.4s",
+      "unguarded_site": "scripts/kaggle_engine_worker.py:2826",
+      "unguarded_code": "with open(report_path, encoding='utf-8') as handle:",
+      "raised": "FileNotFoundError: No such file or directory: ...preparation.json",
+      "misclassification_site": "scripts/actions_delivery.py:492-496",
+      "conclusion": "Cline ran 55 minutes and exited ZERO without writing the one required file; the host converted its own unguarded open() into an apparent engineering failure"
+    },
+    "cause_d_runner_death": {
+      "count": 6,
+      "signature": "exit_143 plus 'The runner has received a shutdown signal'",
+      "misclassification": "stamped FAILED_ENGINEER or FAILED_MISSING_RECEIPT by the same blanket exception handler because a killed step surfaces as an exception, not a distinguishable signal",
+      "logs_permanently_absent": {
+        "runs": [
+          "40662290045",
+          "40592395695",
+          "40670777360",
+          "40583553915",
+          "40591329401"
+        ],
+        "reason": "BlobNotFound",
+        "note": "a missing log is not evidence of anything by itself; these five are mid-step kills only by step-state signature"
+      }
+    },
+    "cause_e_pathological_claim": {
+      "run": "40746023790",
+      "repo": "fyne-io/fyne",
+      "issue": 1062,
+      "run_created_at": "2026-10-28T18:32:08Z",
+      "engineer_job_started_at": "2026-10-28T18:32:29Z",
+      "observed_state": "run in_progress past 24h against its own 300-minute step and 330-minute job timeouts",
+      "step_state": {
+        "cline_step": "in_progress / conclusion null",
+        "upload-artifact": "pending",
+        "post-checkout": "pending"
+      },
+      "lock_1": "scripts/actions_github.py:199-200 raises 'A live Actions run already owns this task' while prior status != completed",
+      "lock_2": "retry_eligible() never selects CLAIMED",
+      "conclusion": "pinned by two independent locks with no expiry and no liveness probe; cannot be retried until the claim is reset by hand"
+    },
+    "corrections_recorded": {
+      "preparation_blocked_mislabels_already_fixed": "git show ff608856a6e5:scripts/actions_delivery.py contains no PreparationBlocked and no reject_preparation; the guard at :170-174 was added by de8cc08, an ancestor of HEAD 003b486, so those 3 runs predate the fix and cannot recur on that path",
+      "admission_contract_is_not_the_bottleneck": "18 tasks passed admission and were genuinely worked without a PR; only the refusal set is dominated by supply noise",
+      "remote_engineer_design_is_not_the_failure": "no run shows a returned patch that failed to apply or a native plan that could not pass",
+      "cron_is_erratic_not_dead": {
+        "last_runs_examined": 16,
+        "event_schedule": 1,
+        "event_workflow_dispatch": 15,
+        "the_single_schedule_run": {
+          "run": "40571754781",
+          "at": "2026-10-27T19:44:03Z",
+          "head_sha": "8439a46"
+        },
+        "conclusion": "trigger reliability problem, not a stopped pipeline"
+      }
+    },
+    "one_line_answer": "the stage after admission fails for reasons unrelated to engineering: a baseline gate that loses a race by construction, an artefact contract with no legal non-default base, an unguarded open() that turns a missing report into an apparent crash, a blanket handler that labels machine death as engineer failure, and a claim with no expiry",
+    "fixes_specified_in": "docs/ACTIONS-FIX-BLUEPRINT-2026-10-29.md",
+    "gates_weakened_by_this_rca": 0,
+    "gates_to_be_weakened_by_the_proposed_fixes": 0,
+    "still_open": [
+      "no verified PR exists",
+      "xpex-systems-ai/GXEON-AI#452 (external docs/contest deliverable) still admitted; by-design gate does not cover that class",
+      "MarkDude-design/ALLurbaseRnotbelong2us#2 still refused BY_DESIGN for the right outcome and wrong reason; needs the class-level gate that stays unbuilt until a hand-labelled sample exists",
+      "heartbeat is not installed as a scheduled task or laptop watchdog",
+      "download_patch fails with 'fatal: No url found for submodule path during repo in .gitmodules'"
+    ]
   }
 }
