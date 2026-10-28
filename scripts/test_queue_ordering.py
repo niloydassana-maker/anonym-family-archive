@@ -140,7 +140,15 @@ class QueueWindowTests(unittest.TestCase):
 
         self.assertEqual([row[0] for row in rows], [newer])
 
-    def test_hydration_window_covers_measured_111_hit_current_cycle(self):
+    def test_measured_111_fresh_hits_lead_the_window_and_leftovers_stay_reachable(self):
+        """The 2026-10-28 measured cycle queued 111 fresh hits; the declared batch is 60.
+
+        The starvation defect this file pins is a fresh hit waiting behind the whole
+        historical backlog, not behind one cycle. When a cycle queues more fresh hits
+        than the API-throttled batch can hydrate, the window spends its entire budget
+        on fresh hits first, and the leftovers keep their lead over the backlog so the
+        next window drains them before it inspects a single stale row.
+        """
         fresh_rows = []
         for number in range(111):
             repo = "fresh-%02d/project" % (number % 7)
@@ -154,9 +162,22 @@ class QueueWindowTests(unittest.TestCase):
         selected = pending_window(fresh_rows + backlog_rows,
                                   priority_ids={row[0] for row in fresh_rows})
 
-        self.assertEqual(HYDRATION_BATCH, 120)
+        self.assertEqual(HYDRATION_BATCH, 60)
         self.assertEqual(len(selected), HYDRATION_BATCH)
-        self.assertTrue({row[0] for row in fresh_rows}.issubset({row[0] for row in selected}))
+        selected_ids = {row[0] for row in selected}
+        fresh_ids = {row[0] for row in fresh_rows}
+        self.assertTrue(selected_ids.issubset(fresh_ids))
+        self.assertEqual(len(selected_ids & fresh_ids), HYDRATION_BATCH)
+
+        # The 51 unhydrated fresh hits are not buried behind the backlog: the next
+        # window hydrates every leftover before it touches a backlog row.
+        leftover = [row for row in fresh_rows if row[0] not in selected_ids]
+        self.assertEqual(len(leftover), 111 - HYDRATION_BATCH)
+        next_selected = pending_window(leftover + backlog_rows,
+                                       priority_ids={row[0] for row in leftover})
+        self.assertEqual([row[0] for row in next_selected[:len(leftover)]],
+                         [row[0] for row in leftover])
+        self.assertEqual(len(next_selected), HYDRATION_BATCH)
 
 
 class PriorityPreferredOrderTests(unittest.TestCase):
@@ -184,19 +205,25 @@ class PriorityPreferredOrderTests(unittest.TestCase):
 
 
 class PriorityQueryConfigTests(unittest.TestCase):
-    def test_global_bounty_title_fast_lane_is_additive_to_all_global_lanes(self):
+    def test_paid_program_fast_lane_runs_every_cycle_and_stays_additive(self):
         from actions_dispatch import PRIORITY_DISCOVERY_QUERIES, QUERIES
 
         self.assertEqual(len(PRIORITY_DISCOVERY_QUERIES), 1)
         query = PRIORITY_DISCOVERY_QUERIES[0]
-        self.assertEqual(query, 'bounty in:title')
-        self.assertNotIn('repo:', query)
+        self.assertEqual(query, 'repo:Expensify/App label:External label:Bug in:title '
+                                 '"$250" -label:"Awaiting Payment" is:issue is:open')
+        self.assertIn('repo:', query)
         compiled = build_issue_search_queries(query)[0]
         for qualifier in ['is:issue', 'is:open', 'is:public', 'archived:false',
                           'no:assignee', '-linked:pr']:
             self.assertIn(qualifier, compiled)
+        # Additive: the global lanes keep scanning their own horizons, and the generic
+        # title query rotates in the normal lane instead of re-flooding the durable
+        # queue on every cycle.
         self.assertIn('bounty in:title', QUERIES['normal'])
-        self.assertTrue(any(query.startswith('label:"Status: Available"') for query in QUERIES['programs']))
+        self.assertNotIn('bounty in:title', PRIORITY_DISCOVERY_QUERIES)
+        self.assertTrue(any(program.startswith('label:"Status: Available"')
+                            for program in QUERIES['programs']))
 
 
 class PrecheckTests(unittest.TestCase):

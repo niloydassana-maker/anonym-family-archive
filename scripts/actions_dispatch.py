@@ -364,7 +364,7 @@ def dispatch(api, store, context, proof, lanes, remote_repair=False):
     return identity
 
 
-HYDRATION_BATCH = 120
+HYDRATION_BATCH = 60
 HYDRATION_PER_REPO = 4
 
 
@@ -640,9 +640,11 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
         horizon.complete(expression, window, len(rows), 1000, saturated=saturated)
 
     try:
-        # A global high-intent query runs every cycle so new bounty issues are not delayed
-        # behind the rotating lanes. Standard server-side filters still apply, while the
-        # existing funding, engineering, and competition evidence gates remain unchanged.
+        # A small, quality-oriented paid-program query runs every cycle so a paying task
+        # is never delayed behind the rotating lanes. It is additive: the normal, startup,
+        # founder, and rotating program lanes below keep scanning their full horizons, and
+        # every lane's fresh hits still enter the bounded hydration priority list inside
+        # search_and_queue.
         for expression in PRIORITY_DISCOVERY_QUERIES:
             search_and_queue("programs", expression)
         for lane in lanes:
