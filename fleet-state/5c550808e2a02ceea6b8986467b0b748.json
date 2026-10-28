@@ -1,0 +1,64 @@
+{
+  "task_id": "5c550808e2a02ceea6b8986467b0b748",
+  "repo": "Expensify/App",
+  "issue_number": 70080,
+  "status": "DISPATCHING",
+  "dispatch_id": "3e72294052a84cf8959b9c5d91bfe055",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/70080",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "bug",
+      "issue",
+      "issuecomment",
+      "issues",
+      "regression"
+    ],
+    "component_references": [
+      "EMAIL"
+    ],
+    "source_locations": [],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/70080",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-3282854489",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-3944078366",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-4626390336",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-4746409283",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-4813665494",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-4872101243",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5147759336",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5375513239",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5445640518",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5562468596",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5575572173",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5624282608",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5625912438",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5692661767",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5704445254",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5736618958",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5739684748",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5790155789",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-5840172998",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-6388667710",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-6419138307",
+      "https://github.com/Expensify/App/issues/70080#issuecomment-6419146914"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/70080",
+    "fetched_at": "2026-10-28T15:45:13.483564+00:00"
+  },
+  "lanes": [
+    "programs"
+  ],
+  "dispatched_at": "2026-10-28T15:45:29.197790+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T15:45:29.197809+00:00"
+}
