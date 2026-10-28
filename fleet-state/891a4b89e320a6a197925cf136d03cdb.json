@@ -2,7 +2,7 @@
   "task_id": "891a4b89e320a6a197925cf136d03cdb",
   "repo": "dotnet/runtime",
   "issue_number": 36748,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "4c8b0e432e26419e91eda06e31ba2648",
   "admission": {
     "funding": {
@@ -49,6 +49,12 @@
     "startup"
   ],
   "dispatched_at": "2026-10-28T05:11:43.950711+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-28T05:11:45.515405+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-28T05:12:15.594593+00:00",
+  "owner": "40636556767:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40636556767",
+  "harness_sha": "1faafe40e39d1b9beda95445f10e139e68924414",
+  "claimed_at": "2026-10-28T05:12:15.594577+00:00"
 }
