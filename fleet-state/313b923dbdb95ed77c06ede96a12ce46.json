@@ -2,7 +2,7 @@
   "task_id": "313b923dbdb95ed77c06ede96a12ce46",
   "repo": "ruohong2018/ruohong2018.github.io",
   "issue_number": 671,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "a6e7c7ce3732442bbf7b4a7305878db1",
   "admission": {
     "funding": {
@@ -35,11 +35,59 @@
   ],
   "dispatched_at": "2026-10-28T06:26:18.310717+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T06:26:30.495116+00:00",
+  "updated_at": "2026-10-28T06:28:34.557429+00:00",
   "owner": "40643852696:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40643852696",
   "harness_sha": "1faafe40e39d1b9beda95445f10e139e68924414",
-  "claimed_at": "2026-10-28T06:26:30.495095+00:00"
+  "claimed_at": "2026-10-28T06:26:30.495095+00:00",
+  "at": "2026-10-28T06:28:21.938817+00:00",
+  "reason": "Cline preparation blocked: Issue #671 '[\u6bcf\u65e5\u4fe1\u606f\u6d41] 2024-12-13' is an auto-generated daily security-news digest, not a request for a concrete code change. Classification evidence: (1) Full issue body is 37,849 chars and consists solely of a curated list of yesterday's security-blog/RSS article titles+links (Der Flounder, Security Boulevard, SecWiki, etc.) with no reproducible defect, feature request, or maintenance task. (2) The repo is an automated picker/rss aggregator (bot.py, yarb.py, utils.py, .github/workflows/daily.yml run `python3 yarb.py` then `gh issue create --title \"[\u6bcf\u65e5\u4fe1\u606f\u6d41] <date>\" -F today.md --label daily`); issue #671 was produced by that workflow and carries only the auto-applied 'daily' label (sole issue event: 'labeled'). It is a content/documentation deliverable, not engineering work. (3) The only comment (issuecomment-2543352605, author HarrisonElliot) is unsolicited financial spam soliciting MT-103 bank-to-bank wire-transfer 'receivers/mandates' via WhatsApp +639074707546; it is unrelated to the codebase and mentions no repository change. (4) The advertised $4,000 'funding' is an auto-admission artifact whose source_url is the issue itself with no verifiable funding commitment/payer contract; no external funder or escrow exists. (5) The admission 'technical_signals' (bypass, performance) and 'component_references' (ENISA) are keyword noise harvested from the news links, not an engineering specification. Because the issue requests no concrete code change, does not fix a real repo defect, and its only human input is spam, it is out of scope for a code PR; producing any implementation would be an out-of-scope fallback. Per policy, action=blocked and the checkout is left unchanged (clean, on master at the upstream base SHA, no fix/bounty-671 branch, no product edits).",
+  "declared_reason": "Issue #671 '[\u6bcf\u65e5\u4fe1\u606f\u6d41] 2024-12-13' is an auto-generated daily security-news digest, not a request for a concrete code change. Classification evidence: (1) Full issue body is 37,849 chars and consists solely of a curated list of yesterday's security-blog/RSS article titles+links (Der Flounder, Security Boulevard, SecWiki, etc.) with no reproducible defect, feature request, or maintenance task. (2) The repo is an automated picker/rss aggregator (bot.py, yarb.py, utils.py, .github/workflows/daily.yml run `python3 yarb.py` then `gh issue create --title \"[\u6bcf\u65e5\u4fe1\u606f\u6d41] <date>\" -F today.md --label daily`); issue #671 was produced by that workflow and carries only the auto-applied 'daily' label (sole issue event: 'labeled'). It is a content/documentation deliverable, not engineering work. (3) The only comment (issuecomment-2543352605, author HarrisonElliot) is unsolicited financial spam soliciting MT-103 bank-to-bank wire-transfer 'receivers/mandates' via WhatsApp +639074707546; it is unrelated to the codebase and mentions no repository change. (4) The advertised $4,000 'funding' is an auto-admission artifact whose source_url is the issue itself with no verifiable funding commitment/payer contract; no external funder or escrow exists. (5) The admission 'technical_signals' (bypass, performance) and 'component_references' (ENISA) are keyword noise harvested from the news links, not an engineering specification. Because the issue requests no concrete code change, does not fix a real repo defect, and its only human input is spam, it is out of scope for a code PR; producing any implementation would be an out-of-scope fallback. Per policy, action=blocked and the checkout is left unchanged (clean, on master at the upstream base SHA, no fix/bounty-671 branch, no product edits).",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/ruohong2018--ruohong2018.github.io--671",
+    "base_sha": "7c755d350dd0ed0882910f164da4389fa951ddfe",
+    "default_branch": "master",
+    "sources": [
+      {
+        "path": "requirements.txt",
+        "sha256": "116c08e02cbb0f92aef8e277a45c1f0628bf517eb332ce52399a41f024c927f0"
+      },
+      {
+        "path": "install.sh",
+        "sha256": "e893c3d8899015f56b8aba0502fe6ba36e4cd8e8fd9fe28cfac7904c07d80e81"
+      },
+      {
+        "path": ".github/workflows/daily.yml",
+        "sha256": "0976c4913dd5741d2acc400154315a64a900e1b506735685d0651326a33f1378"
+      },
+      {
+        "path": "config.json",
+        "sha256": "5c8d99974aebae28e535fcef799a7b631c8387b8e26ba85844a4334dca52ed78"
+      },
+      {
+        "path": "README.md",
+        "sha256": "8b1f7c31b11fb439fe3ad0310726758c805049f6727029b83845c29b25ce1b0e"
+      },
+      {
+        "path": "_config.yml",
+        "sha256": "e4aaaffc6245c7b7c067648548cab09df53b23626f58a44f275974d3e3492b2b"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "4000",
+      "currency": "USD",
+      "usd_value": "4000",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$4,000",
+      "source_url": "https://github.com/ruohong2018/ruohong2018.github.io/issues/671",
+      "payer": "ruohong2018"
+    }
+  },
+  "finished_at": "2026-10-28T06:28:33.746276+00:00"
 }
