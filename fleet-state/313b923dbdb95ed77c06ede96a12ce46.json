@@ -1,0 +1,39 @@
+{
+  "task_id": "313b923dbdb95ed77c06ede96a12ce46",
+  "repo": "ruohong2018/ruohong2018.github.io",
+  "issue_number": 671,
+  "status": "DISPATCHING",
+  "dispatch_id": "a6e7c7ce3732442bbf7b4a7305878db1",
+  "admission": {
+    "funding": {
+      "amount": "4000",
+      "currency": "USD",
+      "usd_value": "4000",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$4,000",
+      "source_url": "https://github.com/ruohong2018/ruohong2018.github.io/issues/671",
+      "payer": "ruohong2018"
+    },
+    "technical_signals": [
+      "bypass",
+      "performance"
+    ],
+    "component_references": [
+      "ENISA"
+    ],
+    "source_locations": [],
+    "engineering_evidence_sources": [
+      "https://github.com/ruohong2018/ruohong2018.github.io/issues/671"
+    ],
+    "source_issue": "https://github.com/ruohong2018/ruohong2018.github.io/issues/671",
+    "fetched_at": "2026-10-28T06:26:16.853579+00:00"
+  },
+  "lanes": [
+    "normal"
+  ],
+  "dispatched_at": "2026-10-28T06:26:18.310717+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T06:26:18.310736+00:00"
+}
