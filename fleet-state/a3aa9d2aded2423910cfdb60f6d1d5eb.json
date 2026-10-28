@@ -2,7 +2,7 @@
   "task_id": "a3aa9d2aded2423910cfdb60f6d1d5eb",
   "repo": "fyne-io/fyne",
   "issue_number": 1062,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "ef48664bc4594ac9ba9989047538487d",
   "admission": {
     "funding": {
@@ -37,6 +37,12 @@
     "startup"
   ],
   "dispatched_at": "2026-10-28T18:32:04.857409+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-28T18:32:06.641521+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-28T18:32:22.321534+00:00",
+  "owner": "40746023790:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40746023790",
+  "harness_sha": "003b486747f248753363fa0cad5e39e557162dc0",
+  "claimed_at": "2026-10-28T18:32:22.321516+00:00"
 }
