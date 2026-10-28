@@ -2,7 +2,7 @@
   "task_id": "5c550808e2a02ceea6b8986467b0b748",
   "repo": "Expensify/App",
   "issue_number": 70080,
-  "status": "CLAIMED",
+  "status": "FAILED_ENGINEER",
   "dispatch_id": "3e72294052a84cf8959b9c5d91bfe055",
   "admission": {
     "funding": {
@@ -60,11 +60,22 @@
   ],
   "dispatched_at": "2026-10-28T15:45:29.197790+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T15:45:58.212456+00:00",
+  "updated_at": "2026-10-28T16:28:33.131586+00:00",
   "owner": "40719193494:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40719193494",
   "harness_sha": "646936cc49cbb02c3feef670f38b9c5e10e8fc96",
-  "claimed_at": "2026-10-28T15:45:58.212435+00:00"
+  "claimed_at": "2026-10-28T15:45:58.212435+00:00",
+  "diagnostic": "Prepared baseline is not the current upstream default",
+  "at": "2026-10-28T16:28:18.226034+00:00",
+  "failures": [
+    {
+      "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40719193494",
+      "status": "FAILED_ENGINEER",
+      "diagnostic": "Prepared baseline is not the current upstream default",
+      "at": "2026-10-28T16:28:18.226034+00:00"
+    }
+  ],
+  "finished_at": "2026-10-28T16:28:32.378511+00:00"
 }
