@@ -2,7 +2,7 @@
   "task_id": "5e8420eba3abfc3738c8c0502ccd67aa",
   "repo": "librepods-org/librepods",
   "issue_number": 878,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "d09ce31335754fbe84311a5e8de6ec3a",
   "admission": {
     "funding": {
@@ -32,6 +32,12 @@
     "startup"
   ],
   "dispatched_at": "2026-10-28T16:46:36.267385+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-28T16:46:38.309420+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-28T16:46:51.989203+00:00",
+  "owner": "40729296273:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40729296273",
+  "harness_sha": "a89c939e9671efdbd5451586edd1edb64b31f547",
+  "claimed_at": "2026-10-28T16:46:51.989187+00:00"
 }
