@@ -2,7 +2,7 @@
   "task_id": "8f4d0c37364f18f2345d7317ab9e7f6e",
   "repo": "alfrexo95/bounty-bot",
   "issue_number": 28,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "e2622cfdcd354bf0a433756a868414f0",
   "admission": {
     "funding": {
@@ -34,11 +34,63 @@
   ],
   "dispatched_at": "2026-10-28T16:04:03.142023+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T16:04:18.896368+00:00",
+  "updated_at": "2026-10-28T16:08:21.601580+00:00",
   "owner": "40722280120:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40722280120",
   "harness_sha": "646936cc49cbb02c3feef670f38b9c5e10e8fc96",
-  "claimed_at": "2026-10-28T16:04:18.896352+00:00"
+  "claimed_at": "2026-10-28T16:04:18.896352+00:00",
+  "at": "2026-10-28T16:08:04.661453+00:00",
+  "reason": "Cline preparation blocked: Issue #28 requests no concrete code change to this repository and reports no reproducible defect. It is an AUTOMATED, SELF-REFERENTIAL bounty advertisement emitted by the repository's own bot: its body is the exact template built by bounty_bot.py::crear_notificacion() (\ud83e\udd16 **Bounty con Pago Garantizado (Escrow)** ... 'Este issue fue creado autom\u00e1ticamente por tu bot'). The body is a crypto payment solicitation (BTC/ETH/LTC/Lightning addresses plus 'I would appreciate it if the bounty could be paid in crypto') and its only 'Enlace' points to the bot's OWN earlier issue #27 (https://github.com/alfrexo95/bounty-bot/issues/27). Issue #28 exists because bounty_bot.py lacks the self-exclusion guard that search_web3_bounties.py has, so the bot re-wrapped its own issue #27; this is confirmed by the recursively nested title '\ud83d\udcb0 Bounty Seguro ($$100): \ud83d\udcb0 Bounty Seguro ($$100): [Bounty] USDC-qu'. The issue supplies no acceptance criteria, no component_references, no source_locations, and no engineering_evidence beyond itself (admission.component_references=[], source_locations=[], technical_signals=['issue','issues']). Funding is unverifiable: the 'payer' is alfrexo95 (the bot owner themselves), the 'USDC Escrow' platform is asserted only inside the bot-authored text, and the issue itself instructs 'Verifica que el escrow est\u00e9 activo antes de trabajar'. The only patch proposed in-thread (comment 6384661514) edits functions check_bounty_status()/process_payment() that DO NOT EXIST anywhere in the repository, i.e. it is a hallucinated diff against a non-existent file layout. Two further comments (6395595096, 6396267402) are contributors asking for acceptance criteria/escrow confirmation with no maintainer response, and their claimed '\ud83d\udea9 PRs #15 and #23' are in fact ISSUES (#15 open, #23 closed), not pull requests. No open pull request addresses #28 (open PRs are #55 -> issue #54 and #34 -> issue #21; GitHub search for repo:alfrexo95/bounty-bot is:pr 28 returns total_count=0), and no fix/bounty-28 branch exists upstream. Per the classification rule, an automated payment/escrow solicitation with no repository change request must not be converted into a fallback proposal or pull request, so the checkout (clean, at upstream base SHA 65509fb123516bab8e3af9fd70c968aa0b604d38 on main) is left unchanged.",
+  "declared_reason": "Issue #28 requests no concrete code change to this repository and reports no reproducible defect. It is an AUTOMATED, SELF-REFERENTIAL bounty advertisement emitted by the repository's own bot: its body is the exact template built by bounty_bot.py::crear_notificacion() (\ud83e\udd16 **Bounty con Pago Garantizado (Escrow)** ... 'Este issue fue creado autom\u00e1ticamente por tu bot'). The body is a crypto payment solicitation (BTC/ETH/LTC/Lightning addresses plus 'I would appreciate it if the bounty could be paid in crypto') and its only 'Enlace' points to the bot's OWN earlier issue #27 (https://github.com/alfrexo95/bounty-bot/issues/27). Issue #28 exists because bounty_bot.py lacks the self-exclusion guard that search_web3_bounties.py has, so the bot re-wrapped its own issue #27; this is confirmed by the recursively nested title '\ud83d\udcb0 Bounty Seguro ($$100): \ud83d\udcb0 Bounty Seguro ($$100): [Bounty] USDC-qu'. The issue supplies no acceptance criteria, no component_references, no source_locations, and no engineering_evidence beyond itself (admission.component_references=[], source_locations=[], technical_signals=['issue','issues']). Funding is unverifiable: the 'payer' is alfrexo95 (the bot owner themselves), the 'USDC Escrow' platform is asserted only inside the bot-authored text, and the issue itself instructs 'Verifica que el escrow est\u00e9 activo antes de trabajar'. The only patch proposed in-thread (comment 6384661514) edits functions check_bounty_status()/process_payment() that DO NOT EXIST anywhere in the repository, i.e. it is a hallucinated diff against a non-existent file layout. Two further comments (6395595096, 6396267402) are contributors asking for acceptance criteria/escrow confirmation with no maintainer response, and their claimed '\ud83d\udea9 PRs #15 and #23' are in fact ISSUES (#15 open, #23 closed), not pull requests. No open pull request addresses #28 (open PRs are #55 -> issue #54 and #34 -> issue #21; GitHub search for repo:alfrexo95/bounty-bot is:pr 28 returns total_count=0), and no fix/bounty-28 branch exists upstream. Per the classification rule, an automated payment/escrow solicitation with no repository change request must not be converted into a fallback proposal or pull request, so the checkout (clean, at upstream base SHA 65509fb123516bab8e3af9fd70c968aa0b604d38 on main) is left unchanged.",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/alfrexo95--bounty-bot--28",
+    "base_sha": "65509fb123516bab8e3af9fd70c968aa0b604d38",
+    "default_branch": "main",
+    "sources": [
+      {
+        "path": "requirements.txt",
+        "sha256": "57939a85f2b6816720fb80a4219ad886a547420927049f58244f09654e7489a0"
+      },
+      {
+        "path": "bounty_bot.py",
+        "sha256": "4e7350b68048ecfe919077b75e9d63b61ede8be5e4a0563dd026ca381b08a5d1"
+      },
+      {
+        "path": "search_web3_bounties.py",
+        "sha256": "dd5d5db11c12b285d8d26d840a43f509f543aa2f591555c836c7e9695d385607"
+      },
+      {
+        "path": ".github/workflows/bot.yml",
+        "sha256": "e5b937a6ddfdf188faa3660105149f65a1c80c63f6e5f75f4420978f4f35938f"
+      },
+      {
+        "path": ".github/workflows/web3_bounties.yml",
+        "sha256": "a8665cd5570b172f6648f30229379161ce6db71b0889bf5be77e276b35e3fb08"
+      },
+      {
+        "path": "seen_issues.json",
+        "sha256": "8510c2814a5d2d5e189714241222aaac844d8cebad41f6885426cc30c3a67cc7"
+      },
+      {
+        "path": "seen_web3.json",
+        "sha256": "b4f8b8fa01fd803024cdb166956b9b2e51a2df88b6553f1b145b4efda55bc156"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "100",
+      "currency": "USD",
+      "usd_value": "100",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$100",
+      "source_url": "https://github.com/alfrexo95/bounty-bot/issues/28",
+      "payer": "alfrexo95"
+    }
+  },
+  "finished_at": "2026-10-28T16:08:20.902557+00:00"
 }
