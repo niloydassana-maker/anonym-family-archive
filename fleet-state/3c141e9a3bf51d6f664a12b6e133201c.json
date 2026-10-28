@@ -2,7 +2,7 @@
   "task_id": "3c141e9a3bf51d6f664a12b6e133201c",
   "repo": "Expensify/App",
   "issue_number": 104461,
-  "status": "CLAIMED",
+  "status": "FAILED_MISSING_RECEIPT",
   "dispatch_id": "ac5639b939b0467da6c9ccb52302251a",
   "admission": {
     "funding": {
@@ -38,11 +38,18 @@
   ],
   "dispatched_at": "2026-10-28T09:11:14.406127+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T09:11:45.346634+00:00",
+  "updated_at": "2026-10-28T10:15:16.080687+00:00",
   "owner": "40662290045:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40662290045",
   "harness_sha": "be3ab68bfeade867fdc87ea892060353610ca16a",
-  "claimed_at": "2026-10-28T09:11:45.346618+00:00"
+  "claimed_at": "2026-10-28T09:11:45.346618+00:00",
+  "failures": [
+    {
+      "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40662290045",
+      "status": "FAILED_MISSING_RECEIPT"
+    }
+  ],
+  "finished_at": "2026-10-28T10:15:15.545434+00:00"
 }
