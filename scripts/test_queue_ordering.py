@@ -128,6 +128,16 @@ class QueueWindowTests(unittest.TestCase):
         self.assertEqual(prioritized[0][0], fresh)
         self.assertIn(fresh, {row[0] for row in pending_window(prioritized)})
 
+    def test_priority_across_lanes_uses_newest_issue_first(self):
+        con = database()
+        older = add(con, "normal/repo", 1, updated="2026-10-27T01:00:00Z")
+        newer = add(con, "startup/repo", 1, updated="2026-10-28T00:00:00Z")
+        con.commit()
+
+        rows = queue_window(con, limit=1, priority_ids=[older, newer])
+
+        self.assertEqual([row[0] for row in rows], [newer])
+
 
 class PriorityPreferredOrderTests(unittest.TestCase):
     def test_current_cycle_good_repository_hit_stays_ahead_of_newer_backlog(self):
@@ -139,6 +149,18 @@ class PriorityPreferredOrderTests(unittest.TestCase):
 
         ordered = preferred_order(rows, {"known/repo": "OK"}, {priority})
         self.assertEqual([row[0] for row in ordered], [priority, newer])
+
+    def test_fresh_unknown_hit_precedes_stale_known_good_backlog(self):
+        con = database()
+        stale = add(con, "known/repo", 1, updated="2026-10-01T00:00:00Z")
+        fresh = add(con, "new/repo", 1, updated="2026-10-28T00:00:00Z")
+        rows = list(con.execute(
+            "SELECT task_id,payload,lanes,signature,rowid FROM pending ORDER BY rowid"))
+
+        ordered = preferred_order(rows, {"known/repo": "OK"}, {fresh})
+
+        self.assertEqual([row[0] for row in ordered], [fresh, stale])
+        self.assertEqual([row[0] for row in pending_window(ordered)], [fresh, stale])
 
 
 class PriorityQueryConfigTests(unittest.TestCase):

@@ -410,13 +410,14 @@ def queue_window(con, limit=QUEUE_WINDOW, priority_ids=()):
     rows, seen = [], set()
     select = ("SELECT task_id,payload,lanes,signature,rowid FROM pending "
               "WHERE status='pending' AND task_id=?")
+    current_hits = []
     for identity in priority_ids:
-        if len(rows) >= limit:
-            break
         row = con.execute(select, (identity,)).fetchone()
         if row and row[0] not in seen:
             seen.add(row[0])
-            rows.append(row)
+            current_hits.append(row)
+    current_hits.sort(key=lambda row: row[3] or "", reverse=True)
+    rows.extend(current_hits[:limit])
     remaining = max(0, limit - len(rows))
     if remaining:
         half = max(1, remaining // 2)
@@ -479,11 +480,13 @@ def precheck_repository_intent(api, con, rows, cache, limit=INTENT_PRECHECK_MAX)
 
 
 def preferred_order(rows, verdicts, priority_ids=()):
-    """Known-good repositories first, freshest candidate first inside that band.
+    """Fresh query hits first, then known-good repositories, with retired farms removed.
 
-    A repository whose merge history is measured and healthy deserves the batch before an
-    unknown one, and inside a band the most recently updated issue is the one most likely
-    to still be unfunded-and-open when we arrive.
+    A fresh issue should be hydrated in the cycle that discovered it. Otherwise a large
+    backlog of previously checked, known-good repositories can fill the bounded hydration
+    window for many cycles and starve current results. Within the fresh band, measured-good
+    repositories lead; the historical backlog then keeps the existing good-before-unknown
+    order.
     """
     priority_ids = set(priority_ids)
     good, rest = [], []
@@ -493,14 +496,15 @@ def preferred_order(rows, verdicts, priority_ids=()):
         elif verdicts.get(repository_of(row[1])) != "REPOSITORY_DOES_NOT_MERGE":
             rest.append(row)
     good.sort(key=lambda row: row[3] or "", reverse=True)
-    # Keep current-cycle query matches ahead of the backlog after repository precheck.
-    # Known-good repositories still outrank unprobed ones, and within each band priority
-    # follows the fresh-search ordering supplied by queue_window.
-    good_priority = [row for row in good if row[0] in priority_ids]
+    # Keep current-cycle query matches ahead of the historical backlog after repository
+    # precheck. Freshness leads; measured-good repositories lead only within that fresh band.
+    good_priority = sorted((row for row in good if row[0] in priority_ids),
+                           key=lambda row: row[3] or "", reverse=True)
+    rest_priority = sorted((row for row in rest if row[0] in priority_ids),
+                           key=lambda row: row[3] or "", reverse=True)
     good_rest = [row for row in good if row[0] not in priority_ids]
-    rest_priority = [row for row in rest if row[0] in priority_ids]
     rest_other = [row for row in rest if row[0] not in priority_ids]
-    return good_priority + good_rest + rest_priority + rest_other
+    return good_priority + rest_priority + good_rest + rest_other
 
 
 def retry_eligible(state):
@@ -560,7 +564,7 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
     priority_ids = []
     verdicts = {r[0]: r[1] for r in con.execute("SELECT repository,verdict FROM repo_intent")}
 
-    def search_and_queue(lane, expression, prioritize_recent=False):
+    def search_and_queue(lane, expression):
         window = horizon.window(expression)
         rows, total, saturated, branch_totals = query_expression_window(api, expression, window)
         recent, fresh_total, _fresh_saturated, fresh_branch_totals = query_expression_window(
@@ -601,12 +605,14 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
             con.execute("INSERT OR REPLACE INTO pending VALUES(?,?,?,?,?,?)",
                         (identity, json.dumps(item), json.dumps(sorted(lanes_seen)), signature,
                          old[2] if old else 0, status))
-        if prioritize_recent:
-            for item in recent:
-                repository = item["repository_url"].split("/repos/")[-1]
-                identity = task_id(repository, item["number"])
-                if identity not in priority_ids:
-                    priority_ids.append(identity)
+        # Give every lane's current-cycle results the same bounded hydration priority.
+        # Previously only the dedicated program fast lane populated this list, leaving
+        # fresh normal/startup/founder hits behind the accumulated historical backlog.
+        for item in recent:
+            repository = item["repository_url"].split("/repos/")[-1]
+            identity = task_id(repository, item["number"])
+            if identity not in priority_ids:
+                priority_ids.append(identity)
         con.commit()
         horizon.complete(expression, window, len(rows), 1000, saturated=saturated)
 
@@ -615,7 +621,7 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
         # the normal, startup, founder, and rotating program lanes below continue to scan
         # their full configured horizons.
         for expression in PRIORITY_PROGRAM_QUERIES:
-            search_and_queue("programs", expression, prioritize_recent=True)
+            search_and_queue("programs", expression)
         for lane in lanes:
             start_row = con.execute("SELECT position FROM cursors WHERE lane=?", (lane,)).fetchone()
             start = start_row[0] if start_row else 0
@@ -626,6 +632,7 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                         (lane, (start + queries_per_lane) % len(QUERIES[lane])))
             con.commit()
         queued = queue_window(con, priority_ids=priority_ids)
+        priority_set = set(priority_ids)
         verdicts, probed_intent, retired = precheck_repository_intent(
             api, con, queued, intent_cache)
         queued = preferred_order(queued, verdicts, priority_ids)
@@ -636,11 +643,12 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                                             if verdicts.get(repository_of(row[1])) == "OK")}),
               flush=True)
         pending_rows = pending_window(queued)
-        if len(pending_rows) < len(queued):
-            print(json.dumps({"phase": "HYDRATION_WINDOW", "queued": len(queued),
-                              "selected": len(pending_rows),
-                              "distinct_repositories": len({json.loads(row[1]).get("repository_url", "")
-                                                            for row in pending_rows})}), flush=True)
+        print(json.dumps({"phase": "HYDRATION_WINDOW", "queued": len(queued),
+                          "selected": len(pending_rows),
+                          "current_cycle_hits_queued": sum(row[0] in priority_set for row in queued),
+                          "current_cycle_hits_selected": sum(row[0] in priority_set for row in pending_rows),
+                          "distinct_repositories": len({json.loads(row[1]).get("repository_url", "")
+                                                        for row in pending_rows})}), flush=True)
         # Read the queue row positionally: ``queue_window`` yields
         # (task_id,payload,lanes,signature,rowid) so a freshly discovered source can be
         # recognised at the newest edge, while a window built elsewhere may carry fewer
