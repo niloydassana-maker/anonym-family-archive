@@ -93,6 +93,11 @@ class AdmissionTests(unittest.TestCase):
 
 
 class TransportTests(unittest.TestCase):
+    def test_live_discovery_workflow_advances_three_queries_per_lane(self):
+        workflow = (Path(__file__).resolve().parents[1] / ".github" / "workflows" /
+                    "bounty-discovery.yml").read_text(encoding="utf-8")
+        self.assertRegex(workflow, r"--queries-per-lane\s+3\b")
+
     def test_or_search_carries_common_bounty_context_and_trailing_filters(self):
         expressions = [
             ('label:bounty "auth" OR "permission" OR "unauthorized" is:issue is:open',

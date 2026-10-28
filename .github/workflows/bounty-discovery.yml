@@ -34,7 +34,7 @@ jobs:
     - name: Reconcile actual results and repair owned failing PRs
       run: python3 -u scripts/actions_reconcile.py --repair
     - name: Search all lanes and dispatch qualified originals
-      run: python3 -u scripts/actions_dispatch.py --live --once --queries-per-lane 2 --max-dispatches 2
+      run: python3 -u scripts/actions_dispatch.py --live --once --queries-per-lane 3 --max-dispatches 2
     - uses: actions/cache/save@v4
       if: always()
       with:
