@@ -2,7 +2,7 @@
   "task_id": "65a0f0930b83d41d4618458c0efb2869",
   "repo": "bolivian-peru/os-moda",
   "issue_number": 3,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "ebc2ca44e0384d279dd137be99fd7c7d",
   "admission": {
     "funding": {
@@ -49,11 +49,58 @@
   ],
   "dispatched_at": "2026-10-28T00:05:10.124445+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T00:05:22.189213+00:00",
+  "updated_at": "2026-10-28T00:08:12.982318+00:00",
   "owner": "40606461264:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40606461264",
   "harness_sha": "1cafe162e31ed98ccc25f579aca988e652b692cb",
-  "claimed_at": "2026-10-28T00:05:22.189198+00:00"
+  "claimed_at": "2026-10-28T00:05:22.189198+00:00",
+  "at": "2026-10-28T00:07:59.393831+00:00",
+  "reason": "Cline preparation blocked: Issue #3 is a video-production / marketing bounty, not a concrete code change to this repository. Title: '\ud83c\udfc6 BOUNTY (1 SOL): Film \"Two AI Agents Talking Across Continents\" Mesh Demo'. Body deliverable is explicitly: 'Film a real demo of two osModa servers communicating via encrypted P2P mesh. Upload to YouTube. Earn 1 SOL.' Requirements are non-engineering: two real servers with different IPs, real camera filming the screen, 60-90s split-screen, 720p minimum, upload public to YouTube, link repo + spawn.os.moda, post link in the issue, plus vertical/landscape social edits and hashtags. Repository labels confirm the class: 'bounty' (Community bounty \u2014 earn SOL for completing this), 'video-demo' (Requires filming a real demo video), 'testing' (Testing bounty \u2014 help us find and fix bugs). The maintainer (bolivian-peru, issue comment id 3981669467) states verbatim: 'This is not a code bounty. There is no bug to fix. There is no PR to submit. This is a video production bounty. You need two physical servers, a camera, and the ability to film a real demo of two osModa mesh nodes communicating.' and rejects PR/unit-test/AI-narration fallbacks: 'We need a real human filming a real screen showing real servers running osModa... A real video uploaded to YouTube.' Therefore no reproducible defect, no specific engineering feature, and no focused code-level maintenance request exists to implement in bolivian-peru/os-moda. This is a documentation/marketing (video) deliverable requiring external hardware (two servers, camera) and out-of-band YouTube publication. Per policy, action=blocked; the checkout was left unchanged (read-only baseline clone only, no product edits, no new refs). Funding is live (1 SOL / $101.08, payer bolivian-peru, issue state=open), so the block is on issue classification, not on withdrawn funding or competing PR.",
+  "declared_reason": "Issue #3 is a video-production / marketing bounty, not a concrete code change to this repository. Title: '\ud83c\udfc6 BOUNTY (1 SOL): Film \"Two AI Agents Talking Across Continents\" Mesh Demo'. Body deliverable is explicitly: 'Film a real demo of two osModa servers communicating via encrypted P2P mesh. Upload to YouTube. Earn 1 SOL.' Requirements are non-engineering: two real servers with different IPs, real camera filming the screen, 60-90s split-screen, 720p minimum, upload public to YouTube, link repo + spawn.os.moda, post link in the issue, plus vertical/landscape social edits and hashtags. Repository labels confirm the class: 'bounty' (Community bounty \u2014 earn SOL for completing this), 'video-demo' (Requires filming a real demo video), 'testing' (Testing bounty \u2014 help us find and fix bugs). The maintainer (bolivian-peru, issue comment id 3981669467) states verbatim: 'This is not a code bounty. There is no bug to fix. There is no PR to submit. This is a video production bounty. You need two physical servers, a camera, and the ability to film a real demo of two osModa mesh nodes communicating.' and rejects PR/unit-test/AI-narration fallbacks: 'We need a real human filming a real screen showing real servers running osModa... A real video uploaded to YouTube.' Therefore no reproducible defect, no specific engineering feature, and no focused code-level maintenance request exists to implement in bolivian-peru/os-moda. This is a documentation/marketing (video) deliverable requiring external hardware (two servers, camera) and out-of-band YouTube publication. Per policy, action=blocked; the checkout was left unchanged (read-only baseline clone only, no product edits, no new refs). Funding is live (1 SOL / $101.08, payer bolivian-peru, issue state=open), so the block is on issue classification, not on withdrawn funding or competing PR.",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/bolivian-peru--os-moda--3",
+    "base_sha": "b8e418f3dd10a34f38fdaa6e9902c4d1ff0423cb",
+    "default_branch": "main",
+    "sources": [
+      {
+        "path": "Cargo.toml",
+        "sha256": "42975941640d72db504874423be8eb573561b99bf9a328ef5e2c92c55e2d12b4"
+      },
+      {
+        "path": "Cargo.lock",
+        "sha256": "a33832db6c6a3143efebedc3c6a64ded6e9234ccafa9cf7cc54d18e029c6fbc0"
+      },
+      {
+        "path": "flake.nix",
+        "sha256": "e6eae17f90862ccbcff9f6bb27bda23ed8882045fb798e21c3dcfb962e6f236d"
+      },
+      {
+        "path": "flake.lock",
+        "sha256": "dd666b48927ace7a70e24a05f741f1c5351b1ea6b3f85375af185fe1a3789434"
+      },
+      {
+        "path": ".github/workflows/ci.yml",
+        "sha256": "5d907f3668f8076984479f61d47a883f76f4b6b2a96afaff8e6b86dc4e060316"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "1",
+      "currency": "SOL",
+      "usd_value": "101.08",
+      "quote": {
+        "usd_rate": "101.08",
+        "source_url": "https://api.coinbase.com/v2/prices/SOL-USD/spot",
+        "observed_at": "2026-10-28T00:05:20.838865+00:00",
+        "quote_date": null
+      },
+      "raw": "1 SOL",
+      "source_url": "https://github.com/bolivian-peru/os-moda/issues/3#issuecomment-3981669467",
+      "payer": "bolivian-peru"
+    }
+  },
+  "finished_at": "2026-10-28T00:08:12.258670+00:00"
 }
