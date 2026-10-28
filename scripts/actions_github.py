@@ -120,11 +120,17 @@ class GitHub:
                             and last == (comments[-1]["id"] if comments else None))
             except GitHubError as exc:
                 count_evidence["diagnostic"] = str(exc)
+        default_branch = metadata.get("default_branch", "main")
         return {"repo": repo, "issue_number": number, "title": issue["title"],
                 "body": issue.get("body") or "", "issue": issue,
                 "repository": metadata, "comments": comments,
                 "author_comments": [c.get("body") or "" for c in comments],
-                "fetched_at": utcnow(), "complete_comments": complete, "comment_count_evidence": count_evidence}
+                "fetched_at": utcnow(), "complete_comments": complete,
+                "comment_count_evidence": count_evidence,
+                "base_branch": default_branch}
+
+
+CLAIM_TTL_SECONDS = 1800  # 30 minutes: a claim older than this with no live run is expired
 
 
 class StateStore:
@@ -192,12 +198,41 @@ class StateStore:
             if old.get("status") in ("PUBLISHED_PENDING_CHECKS", "AWAITING_REVIEW"):
                 raise ValueError("Owned PR is pending; reconcile it before another engineering run")
             if old.get("owner") == owner and old.get("status") == "CLAIMED":
-                return old
+                # Same owner re-claiming: refresh the lease timestamp.
+                claimed_at = old.get("claimed_at")
+                if claimed_at:
+                    claimed = datetime.fromisoformat(claimed_at.replace("Z", "+00:00"))
+                    age = (datetime.now(timezone.utc) - claimed).total_seconds()
+                    if age > CLAIM_TTL_SECONDS:
+                        # Lease expired even for the same owner: fall through to re-claim.
+                        pass
+                    else:
+                        return old
+                else:
+                    return old
             active = old.get("status") in ("CLAIMED", "ENGINEERING", "VERIFIED", "PUBLISHING")
             if active:
-                prior = self.api.api(f"repos/{self.repo}/actions/runs/{old['owner'].split(':')[0]}")
-                if prior["status"] != "completed":
-                    raise ValueError("A live Actions run already owns this task")
+                # F5: claim lease expiry — a stale claim with no live run is expired,
+                # not a permanent lock. A missing run API result means the runner
+                # is gone; treat the claim as expired.
+                run_id = old.get("owner", "").split(":")[0]
+                prior = None
+                try:
+                    prior = self.api.api(f"repos/{self.repo}/actions/runs/{run_id}")
+                except GitHubError:
+                    prior = None
+                if prior is not None and prior.get("status") != "completed":
+                    # Also expire by age if the run record exists but the claim is stale.
+                    claimed_at = old.get("claimed_at")
+                    if claimed_at:
+                        claimed = datetime.fromisoformat(claimed_at.replace("Z", "+00:00"))
+                        age = (datetime.now(timezone.utc) - claimed).total_seconds()
+                        if age > CLAIM_TTL_SECONDS:
+                            pass  # expired: fall through to re-claim
+                        else:
+                            raise ValueError("A live Actions run already owns this task")
+                    else:
+                        raise ValueError("A live Actions run already owns this task")
             attempt = int(old.get("attempt", 0)) + 1
             if attempt > (4 if recovery else 3):
                 raise ValueError("Bounded recovery attempts exhausted")

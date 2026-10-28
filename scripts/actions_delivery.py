@@ -21,6 +21,70 @@ from bounty_admission import admit, competition
 from bounty_fx import quote
 
 
+class PreparationRace(RuntimeError):
+    """The prepared baseline is still on the server's line of history, but upstream
+    modified a file the plan will touch. Retryable: not an accusation, not a refusal."""
+    def __init__(self, base, live_sha, overlap):
+        self.base = base
+        self.live_sha = live_sha
+        self.overlap = overlap
+        super().__init__(
+            f"preparation race: base={base[:12]} live={live_sha[:12]} "
+            f"overlap={sorted(overlap)}")
+
+
+class ClineDeliverableMissing(RuntimeError):
+    """Cline completed but produced no verification receipt at all."""
+    def __init__(self, path, elapsed=None, exit_code=None):
+        self.path = path
+        self.elapsed = elapsed
+        self.exit_code = exit_code
+        msg = f"Cline delivered no report at {path}"
+        if elapsed is not None:
+            msg += f" after {elapsed:.1f}s"
+        if exit_code is not None:
+            msg += f" (exit {exit_code})"
+        super().__init__(msg)
+
+
+class ClineDeliverableInvalid(RuntimeError):
+    """Cline produced a receipt but it is malformed or refuses to validate."""
+    def __init__(self, path, reason):
+        self.path = path
+        self.reason = reason
+        super().__init__(f"Cline deliverable invalid at {path}: {reason}")
+
+
+def write_json_atomic(path, document):
+    """Write JSON to a temp path in the same directory, then os.replace so a reader
+    never observes a partial document."""
+    tmp = path.with_name(path.name + ".tmp")
+    write_json(tmp, document)
+    os.replace(tmp, path)
+
+
+def prepared_touched_files(prepared):
+    """Derive the set of files the prepared plan will touch, from the contract-validated
+    regression plan plus any source paths the plan names."""
+    touched = set()
+    plan = prepared.get("plan")
+    if plan is not None:
+        component = plan.component if hasattr(plan, "component") else None
+        if component:
+            touched.add(component)
+        for attr in ("source_paths", "files", "touched"):
+            paths = getattr(plan, attr, None) or prepared.get(attr, [])
+            for p in paths:
+                if isinstance(p, str):
+                    touched.add(p)
+    rp = prepared.get("regression_plan") or {}
+    if isinstance(rp, dict):
+        comp = rp.get("component")
+        if comp:
+            touched.add(comp)
+    return touched
+
+
 def artifacts():
     root = Path(os.environ.get("FLEET_ARTIFACT_DIR", "fleet-artifacts")).resolve()
     root.mkdir(parents=True, exist_ok=True)
@@ -173,10 +237,22 @@ def engineer():
         reject_preparation(blocked, task, repo, number)
         return
     root, base = prepared["worktree"], prepared["base_sha"]
+    default_branch = prepared["default_branch"]
     try:
-        upstream = api.api(f"repos/{repo}/commits/{prepared['default_branch']}")
-        if base != upstream["sha"]:
+        comparison = api.api(f"repos/{repo}/compare/{base}...{default_branch}")
+        status = comparison.get("status")
+        if status == "diverged":
             raise ValueError("Prepared baseline is not the current upstream default")
+        live_sha = comparison["commits"][-1]["sha"] if comparison.get("commits") else base
+        touched = prepared_touched_files(prepared)
+        moved = {entry["filename"] for entry in comparison.get("files", [])}
+        overlap = touched & moved
+        write_json_atomic(artifacts() / "baseline-relationship.json", {
+            "base": base, "live_sha": live_sha, "status": status,
+            "ahead_by": comparison.get("ahead_by", 0), "overlap": sorted(overlap),
+        })
+        if overlap:
+            raise PreparationRace(base, live_sha, sorted(overlap))
         if git(root, "remote", "get-url", "upstream").stdout.decode().strip().removesuffix(".git") != (
                 "https://github.com/" + repo):
             raise ValueError("Unexpected upstream remote")
@@ -226,6 +302,8 @@ def engineer():
                         recovery = {"status": "REQUIRES_CLINE_RECONCILIATION", "archive": str(archive),
                                     "diagnostic": str(exc)}
                     write_json(artifacts() / "recovery.json", recovery)
+    except PreparationRace:
+        raise
         # Resume the real owned patch after checking the untouched current base.
         # Source is fetched as Git objects; no credentials are given to Cline.
         if task.get("owned_pr_number"):
@@ -256,6 +334,20 @@ def engineer():
         arch["full_delivery_context"] = prepared["context_path"]
         cases = worker.model_scenarios(task["title"], body, arch)
         feedback = json.dumps(task.get("prior_failures", []))
+
+        # F3: write-early intake skeleton before Cline starts, so a failure inside
+        # Cline's own startup still leaves a document that distinguishes "Cline never
+        # wrote a report" from "Cline crashed while writing one".
+        report_path = artifacts() / "preparation.json"
+        write_json_atomic(report_path, {
+            "action": "incomplete",
+            "base_sha": base,
+            "base_branch": prepared.get("base_branch", default_branch),
+            "default_branch": default_branch,
+            "started_at": utcnow(),
+            "run": state.get("owner", ""),
+        })
+
         for release_turn in range(1, 4):
             ok, run, diagnostic = worker.run_engineering_iteration_loop(
                 root, repo, number, task["title"], body, arch, plan, cases, base,
@@ -266,6 +358,11 @@ def engineer():
                 if worker.cline_turn_timeout_seconds() <= 0:
                     raise RuntimeError("CLINE_TOTAL_BUDGET_EXHAUSTED after preserving the current worktree")
                 continue
+            # F3: Cline reported success but produced no verification receipt at all.
+            # This is not an engineering failure: Cline ran and exited, but the
+            # artefact contract was not satisfied.
+            if not report_path.exists():
+                raise ClineDeliverableMissing(report_path, elapsed=None, exit_code=0)
             try:
                 if git(root, "rev-parse", "HEAD").stdout.decode().strip() != base:
                     raise ValueError("Cline changed Git HEAD before release verification")
@@ -489,8 +586,35 @@ def main():
             publish()
         else:
             finish(args.job_status)
+    except PreparationRace as exc:
+        # F4: preparation race is retryable, never an engineer failure.
+        write_json(artifacts() / (args.phase + "-failure.json"),
+                   {"status": "FAILED_PREPARATION_RACE",
+                    "diagnostic": str(exc),
+                    "base": exc.base, "live_sha": exc.live_sha, "overlap": exc.overlap,
+                    "at": utcnow()})
+        raise
+    except ClineDeliverableMissing as exc:
+        # F4: Cline produced no receipt at all — machine/infrastructure issue,
+        # never an engineer failure.
+        write_json(artifacts() / (args.phase + "-failure.json"),
+                   {"status": "FAILED_DELIVERABLE_MISSING",
+                    "diagnostic": str(exc),
+                    "path": exc.path, "elapsed": exc.elapsed, "exit_code": exc.exit_code,
+                    "at": utcnow()})
+        raise
+    except ClineDeliverableInvalid as exc:
+        # F4: Cline produced a malformed receipt — deliverable contract violation,
+        # not an engineer coding failure.
+        write_json(artifacts() / (args.phase + "-failure.json"),
+                   {"status": "FAILED_DELIVERABLE_INVALID",
+                    "diagnostic": str(exc),
+                    "path": exc.path, "reason": exc.reason,
+                    "at": utcnow()})
+        raise
     except Exception as exc:
-        # No success fallthrough. Existing workspace/checkpoints remain intact.
+        # Genuine engineering failure: everything that is not an infrastructure,
+        # delivery-contract, or preparation-race fault.
         write_json(artifacts() / (args.phase + "-failure.json"),
                    {"status": "FAILED_" + args.phase.upper(), "diagnostic": str(exc), "at": utcnow()})
         raise
