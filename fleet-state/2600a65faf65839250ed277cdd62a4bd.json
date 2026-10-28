@@ -2,7 +2,7 @@
   "task_id": "2600a65faf65839250ed277cdd62a4bd",
   "repo": "keepassxreboot/keepassxc",
   "issue_number": 255,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "3fd272e43b3e4452b366a26421085acd",
   "admission": {
     "funding": {
@@ -40,11 +40,51 @@
   ],
   "dispatched_at": "2026-10-28T06:12:08.745563+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T06:12:26.508523+00:00",
+  "updated_at": "2026-10-28T06:14:42.566542+00:00",
   "owner": "40642430953:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40642430953",
   "harness_sha": "1faafe40e39d1b9beda95445f10e139e68924414",
-  "claimed_at": "2026-10-28T06:12:26.508504+00:00"
+  "claimed_at": "2026-10-28T06:12:26.508504+00:00",
+  "at": "2026-10-28T06:14:29.215231+00:00",
+  "reason": "Cline preparation blocked: Issue #255 'Add Nitrokey Pro and PKCS#11 support' is a maintainer-labeled EPIC (label: EPIC) feature request, not a concrete repository change, and its funding is withdrawn. Withdrawn funding: the admission's claim is a $200 USD Bountysource bounty recorded at https://github.com/keepassxreboot/keepassxc/issues/255#issuecomment-569517148 ('Added $200 bounty, get to work guys!', droidmonkey, 2019-12-29). The same payer/project lead later removed it: 'We don't endorse any bounty system anymore' (droidmonkey, 2023-01-30, issuecomment-1425171200) and, answering a direct 'is the bounty still available?' question on 2025-10-03, 'Also, there are no bounties.' (droidmonkey, 2025-10-04, issuecomment-3366106387). The Bountysource platform is also dead: https://app.bountysource.com/issues/41676090-add-nitrokey-pro-and-pkcs-11-support and https://api.bountysource.com/issues/41676090 both fail to resolve (curl exit 6 / HTTP 000). No live, verifiable funding remains. Generic product idea without an agreed repository change: the issue is an open-ended architecture request spanning 2017-02-04 to 2026-04-01 with 155 comments and 140 reactions and no agreed design; the maintainer explicitly discourages it: 'Doing PKCS#11 with the current KDBX spec creates a huge mess. I DO NOT recommend working on this at all.' (droidmonkey, 2025-10-04, issuecomment-3366106387). The design is still contested as of 2026-04-01 (CardContact vs droidmonkey vs phoerious on on-device AES vs derived-key wrapping), and maintainer phoerious states any PKCS#11 PR 'should be integrated with the ongoing work on FIDO2 (which should be merged first I think)' (2026-03-31, issuecomment-4162875175), pointing at the still-open, unmerged groundwork PR #10311. This requires a full redesign of KDBX key derivation (phoerious, 2026-04-01: 'this would require a full redesign of how we encrypt and decrypt files'), not a focused code-level fix. No competing implementation PR exists yet (GitHub search: repo:keepassxreboot/keepassxc 'pkcs11' in:title type:pr => 0; 'nitrokey' type:pr => 2, both closed challenge-response PRs #9397/#9631), so the sole disqualifier is withdrawn funding plus the absence of a bounded, maintainer-sanctioned code change. Per the classification rule, a withdrawn-funding and generic-product-epic issue must be written as blocked, so the checkout was left unchanged (no worktree was created at /tmp/bounty-workspaces/repos/keepassxreboot--keepassxc--255).",
+  "declared_reason": "Issue #255 'Add Nitrokey Pro and PKCS#11 support' is a maintainer-labeled EPIC (label: EPIC) feature request, not a concrete repository change, and its funding is withdrawn. Withdrawn funding: the admission's claim is a $200 USD Bountysource bounty recorded at https://github.com/keepassxreboot/keepassxc/issues/255#issuecomment-569517148 ('Added $200 bounty, get to work guys!', droidmonkey, 2019-12-29). The same payer/project lead later removed it: 'We don't endorse any bounty system anymore' (droidmonkey, 2023-01-30, issuecomment-1425171200) and, answering a direct 'is the bounty still available?' question on 2025-10-03, 'Also, there are no bounties.' (droidmonkey, 2025-10-04, issuecomment-3366106387). The Bountysource platform is also dead: https://app.bountysource.com/issues/41676090-add-nitrokey-pro-and-pkcs-11-support and https://api.bountysource.com/issues/41676090 both fail to resolve (curl exit 6 / HTTP 000). No live, verifiable funding remains. Generic product idea without an agreed repository change: the issue is an open-ended architecture request spanning 2017-02-04 to 2026-04-01 with 155 comments and 140 reactions and no agreed design; the maintainer explicitly discourages it: 'Doing PKCS#11 with the current KDBX spec creates a huge mess. I DO NOT recommend working on this at all.' (droidmonkey, 2025-10-04, issuecomment-3366106387). The design is still contested as of 2026-04-01 (CardContact vs droidmonkey vs phoerious on on-device AES vs derived-key wrapping), and maintainer phoerious states any PKCS#11 PR 'should be integrated with the ongoing work on FIDO2 (which should be merged first I think)' (2026-03-31, issuecomment-4162875175), pointing at the still-open, unmerged groundwork PR #10311. This requires a full redesign of KDBX key derivation (phoerious, 2026-04-01: 'this would require a full redesign of how we encrypt and decrypt files'), not a focused code-level fix. No competing implementation PR exists yet (GitHub search: repo:keepassxreboot/keepassxc 'pkcs11' in:title type:pr => 0; 'nitrokey' type:pr => 2, both closed challenge-response PRs #9397/#9631), so the sole disqualifier is withdrawn funding plus the absence of a bounded, maintainer-sanctioned code change. Per the classification rule, a withdrawn-funding and generic-product-epic issue must be written as blocked, so the checkout was left unchanged (no worktree was created at /tmp/bounty-workspaces/repos/keepassxreboot--keepassxc--255).",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/keepassxreboot--keepassxc--255",
+    "base_sha": "0491ec6f06e3e0a634eff1e4b744321b10e4e3e6",
+    "default_branch": "develop",
+    "sources": [
+      {
+        "path": "CMakeLists.txt",
+        "sha256": "0bff8f60d8344fde2e6109a7cd08a5c1a6b9e6f4964556582960d0fde71fe137"
+      },
+      {
+        "path": "vcpkg.json",
+        "sha256": "9fb6124461dec3fc5e034350717576356f1be74c43fb66f85892a419fe7bd46f"
+      },
+      {
+        "path": "vcpkg-configuration.json",
+        "sha256": "d0b7e824f648003b081e3ff55ba2148d897bc2264dfdbc09f7c90920b772021e"
+      },
+      {
+        "path": ".github/workflows/codeql.yml",
+        "sha256": "269d070f456dd81af740faf539ef1ae4cbfb3e41e7b24d3a23ecdc85cf82c18f"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "200",
+      "currency": "USD",
+      "usd_value": "200",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$200",
+      "source_url": "https://github.com/keepassxreboot/keepassxc/issues/255#issuecomment-569517148",
+      "payer": "droidmonkey"
+    }
+  },
+  "finished_at": "2026-10-28T06:14:41.777057+00:00"
 }
