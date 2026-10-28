@@ -4,7 +4,7 @@
   ],
   "normal": [
     "commenter:algora-pbc is:issue is:open \"bounty\"",
-    "label:\"💎 Bounty\" is:issue is:open",
+    "label:\"\u00f0\u0178\u2019\u017d Bounty\" is:issue is:open",
     "\"/bounty $\" is:issue is:open",
     "opire.dev is:issue is:open",
     "\"/reward\" is:issue is:open",
@@ -17,7 +17,7 @@
     "label:bounty \"$200\" is:issue is:open",
     "label:bounty \"$500\" is:issue is:open",
     "\"will pay\" \"$100\" is:issue is:open",
-    "label:\"💰 Bounty\" is:issue is:open",
+    "label:\"\u00f0\u0178\u2019\u00b0 Bounty\" is:issue is:open",
     "bounty in:title",
     "\"will pay\"",
     "label:bounty",
@@ -25,7 +25,7 @@
   ],
   "startup": [
     "\"/bounty $\" is:issue is:open",
-    "label:\"💎 Bounty\" is:issue is:open",
+    "label:\"\u00f0\u0178\u2019\u017d Bounty\" is:issue is:open",
     "commenter:algora-pbc is:issue is:open \"bounty\"",
     "\"/bounty\" \"wallet\" OR \"solana\" OR \"token\" is:issue is:open",
     "label:bounty \"wallet\" OR \"solana\" OR \"token\" is:issue is:open",
@@ -72,6 +72,19 @@
     "repo:stakwork/sphinx-tribes-frontend label:bounties is:issue is:open",
     "repo:keepassxreboot/keepassxc label:\"bounty :moneybag:\" is:issue is:open",
     "label:\"Status: Available\" is:issue is:open archived:false",
-    "label:bounties is:issue is:open archived:false"
+    "label:bounties is:issue is:open archived:false",
+    "label:bug \"will pay\" is:issue is:open",
+    "label:bug \"$250\" is:issue is:open",
+    "label:bug \"$200\" is:issue is:open",
+    "label:bug \"$150\" is:issue is:open",
+    "label:bug \"$100\" is:issue is:open",
+    "label:bug \"I will pay\" is:issue is:open",
+    "label:bug \"bounty\" is:issue is:open",
+    "label:bug \"reward\" is:issue is:open",
+    "label:bug \"fix\" \"will pay\" is:issue is:open",
+    "label:bug \"fix\" \"$250\" is:issue is:open",
+    "label:bug \"fix\" \"$200\" is:issue is:open",
+    "label:bug \"fix\" \"$150\" is:issue is:open",
+    "label:bug \"fix\" \"$100\" is:issue is:open"
   ]
 }
