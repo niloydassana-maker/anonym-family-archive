@@ -368,31 +368,43 @@ HYDRATION_BATCH = 120
 HYDRATION_PER_REPO = 4
 
 
-def pending_window(rows, limit=HYDRATION_BATCH, per_repo=HYDRATION_PER_REPO):
-    """Breadth-first hydration window over queued search results.
+def pending_window(rows, limit=HYDRATION_BATCH, per_repo=HYDRATION_PER_REPO, priority_ids=()):
+    """Hydrate current-cycle search hits first, then breadth-first backlog rows.
 
     GitHub search returns a repository as a unit: one project can publish hundreds
     of matching issues and consume the whole per-cycle hydration budget while every
     unrelated origin waits forever. Selection therefore takes at most ``per_repo``
-    sources from each repository first, then fills the rest of the batch from the
-    leftovers, so breadth is gained without ever shrinking the per-cycle budget and
-    a queue that genuinely holds a single origin still receives the full batch.
+    backlog sources from each repository first, then fills the rest of the batch from
+    leftovers. Fresh query hits already passed the global query contract and lead the
+    bounded window, even when a single repository contributes several of them.
     ``rows`` are queue tuples whose first three fields are
     ``(task_id, payload, lanes)``, in durable queue order. Extra trailing fields are
     ignored here and read by the caller.
     """
-    chosen, counted, rest = [], Counter(), []
+    chosen, counted, rest, seen = [], Counter(), [], set()
+    priority = set(priority_ids)
     for row in rows:
+        if row[0] in priority and row[0] not in seen and len(chosen) < limit:
+            repository = json.loads(row[1]).get("repository_url", "").split("/repos/")[-1]
+            chosen.append(row)
+            counted[repository] += 1
+            seen.add(row[0])
+    for row in rows:
+        if row[0] in seen:
+            continue
         repository = json.loads(row[1]).get("repository_url", "").split("/repos/")[-1]
         if len(chosen) < limit and counted[repository] < per_repo:
             counted[repository] += 1
             chosen.append(row)
+            seen.add(row[0])
         else:
             rest.append(row)
     for row in rest:
         if len(chosen) >= limit:
             break
-        chosen.append(row)
+        if row[0] not in seen:
+            chosen.append(row)
+            seen.add(row[0])
     return chosen
 
 
@@ -653,7 +665,7 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                           "known_good": sum(1 for row in queued
                                             if verdicts.get(repository_of(row[1])) == "OK")}),
               flush=True)
-        pending_rows = pending_window(queued)
+        pending_rows = pending_window(queued, priority_ids=priority_ids)
         print(json.dumps({"phase": "HYDRATION_WINDOW", "queued": len(queued),
                           "selected": len(pending_rows),
                           "current_cycle_hits_queued": sum(row[0] in priority_set for row in queued),

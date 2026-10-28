@@ -142,14 +142,16 @@ class QueueWindowTests(unittest.TestCase):
     def test_hydration_window_covers_measured_111_hit_current_cycle(self):
         fresh_rows = []
         for number in range(111):
-            repo = "fresh-%02d/project" % (number % 49)
+            repo = "fresh-%02d/project" % (number % 7)
             fresh_rows.append(("fresh#%d" % number, payload(repo, number),
                                json.dumps(["normal"]), "2026-10-28T01:12:00Z", number))
-        backlog_rows = [("backlog#%d" % number, payload("old/project", number),
+        backlog_rows = [("backlog#%d" % number,
+                         payload("old-%02d/project" % (number % 100), number),
                          json.dumps(["normal"]), "2026-10-20T00:00:00Z", 1000 + number)
-                        for number in range(40)]
+                        for number in range(400)]
 
-        selected = pending_window(fresh_rows + backlog_rows)
+        selected = pending_window(fresh_rows + backlog_rows,
+                                  priority_ids={row[0] for row in fresh_rows})
 
         self.assertEqual(HYDRATION_BATCH, 120)
         self.assertEqual(len(selected), HYDRATION_BATCH)
