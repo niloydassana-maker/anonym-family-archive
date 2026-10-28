@@ -550,12 +550,25 @@ def competition(api, repo, number, own_head=None):
             raise ValueError("Competing open PR: " + pr["html_url"])
     for event in api.pages(f"repos/{repo}/issues/{number}/timeline"):
         linked = (event.get("source") or {}).get("issue") or {}
-        if linked.get("state") != "open" or not linked.get("pull_request"):
+        if not linked.get("pull_request"):
             continue
         pull = api.api(linked["pull_request"]["url"].removeprefix("https://api.github.com/"))
         if pull["base"]["repo"]["full_name"].lower() != repo.lower():
             continue
         if own_head and pull["head"]["sha"] == own_head:
             continue
-        raise ValueError("Linked open PR: " + pull["html_url"])
+        if linked.get("state") == "open":
+            raise ValueError("Linked open PR: " + pull["html_url"])
+        if pull.get("merged_at"):
+            body = pull.get("body") or ""
+            fixed_section = re.search(
+                r"(?ims)^\s*#{1,6}\s*fixed issues\s*:?[ \t]*\r?\n"
+                r"(.*?)(?=^\s*#{1,6}\s|\Z)", body)
+            section_mentions_issue = bool(fixed_section and pattern.search(fixed_section.group(1)))
+            direct_fix_reference = re.search(
+                rf"\b(?:fix(?:es|ed)?|clos(?:e[sd])?|resolv(?:e[sd])?)\b"
+                rf"[^\r\n]{{0,160}}(?:#\s*{number}(?!\d)|/issues/{number}(?!\d))",
+                "\n".join((pull.get("title") or "", body)), re.I)
+            if section_mentions_issue or direct_fix_reference:
+                raise ValueError("Issue already resolved by merged PR: " + pull["html_url"])
     return True

@@ -200,6 +200,16 @@ def query_exclusion_status(item):
     return ""
 
 
+def refreshed_query_exclusion(context):
+    """Reapply server-query exclusions to the live issue before dispatch.
+
+    A search row can become assigned or receive a disqualifying label while it waits in
+    the durable queue. Its stale search snapshot must not be enough to start delivery.
+    """
+    issue = context.get("issue") if isinstance(context, dict) else None
+    return query_exclusion_status(issue if isinstance(issue, dict) else {})
+
+
 def retire_query_excluded_pending(con):
     """Retire cached rows that the current server-side query now excludes.
 
@@ -711,6 +721,14 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                                else "already_owned"] += 1
                         continue
                     current = api.issue_context(candidate["context"]["repo"], candidate["context"]["issue_number"])
+                    query_exclusion = refreshed_query_exclusion(current)
+                    if query_exclusion:
+                        con.execute("UPDATE pending SET checked=?,status=? WHERE task_id=?",
+                                    (time.time(), query_exclusion, identity))
+                        con.execute("DELETE FROM candidates WHERE task_id=?", (identity,))
+                        con.commit()
+                        counts["CURRENT_" + query_exclusion.upper()] += 1
+                        continue
                     proof, reason = admit(current, quote=quote)
                     if not proof:
                         con.execute("DELETE FROM candidates WHERE task_id=?", (identity,))

@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 from actions_dispatch import (QUERY_EXCLUDED_EXPERIMENT, QUERY_EXCLUDED_VIDEO_DEMO,
                               build_issue_search_queries, discover, query_window,
-                              retire_query_excluded_pending)
+                              refreshed_query_exclusion, retire_query_excluded_pending)
 from actions_github import GitHub, GitHubError, StateStore, task_id
 from actions_reconcile import classify_checks
 from actions_release import (git, manifest, protect_baseline_tests, regression_proof,
@@ -231,6 +231,37 @@ class TransportTests(unittest.TestCase):
         api = SimpleNamespace(pages=lambda *a, **k: [pr])
         with self.assertRaisesRegex(ValueError, "Competing"):
             competition(api, "owner/project", 7)
+
+    def test_merged_fixed_pr_in_timeline_excludes_still_open_issue(self):
+        event = {"event": "cross-referenced", "source": {"issue": {
+            "state": "closed", "pull_request": {"url": "https://api.github.com/repos/owner/project/pulls/88"}}}}
+        pull = {"base": {"repo": {"full_name": "owner/project"}},
+                "head": {"sha": "merged-head"}, "merged_at": "2026-10-26T17:34:41Z",
+                "body": "### Fixed Issues\n\nhttps://github.com/owner/project/issues/7",
+                "html_url": "https://github.com/owner/project/pull/88"}
+        api = SimpleNamespace(
+            pages=lambda endpoint, **kwargs: [event] if "/timeline" in endpoint else [],
+            api=lambda endpoint: pull)
+        with self.assertRaisesRegex(ValueError, "resolved by merged PR"):
+            competition(api, "owner/project", 7)
+
+    def test_merged_related_pr_without_fixed_issue_claim_does_not_block(self):
+        event = {"event": "cross-referenced", "source": {"issue": {
+            "state": "closed", "pull_request": {"url": "https://api.github.com/repos/owner/project/pulls/88"}}}}
+        pull = {"base": {"repo": {"full_name": "owner/project"}},
+                "head": {"sha": "merged-head"}, "merged_at": "2026-10-26T17:34:41Z",
+                "body": "### Related Issues\n\nhttps://github.com/owner/project/issues/7",
+                "html_url": "https://github.com/owner/project/pull/88"}
+        api = SimpleNamespace(
+            pages=lambda endpoint, **kwargs: [event] if "/timeline" in endpoint else [],
+            api=lambda endpoint: pull)
+        self.assertTrue(competition(api, "owner/project", 7))
+
+    def test_live_issue_refresh_reapplies_query_exclusions(self):
+        context = {"issue": {"assignees": [{"login": "contributor"}], "labels": []}}
+        self.assertEqual(refreshed_query_exclusion(context), "query_excluded_assigned")
+        context["issue"] = {"assignees": [], "labels": [{"name": "video-demo"}]}
+        self.assertEqual(refreshed_query_exclusion(context), QUERY_EXCLUDED_VIDEO_DEMO)
 
     def test_ownership_and_attempt_bounds(self):
         store = StateStore()

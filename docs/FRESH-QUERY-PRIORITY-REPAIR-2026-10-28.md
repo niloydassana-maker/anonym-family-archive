@@ -105,3 +105,37 @@ status and reward amount, not just trust a historical comment.
 This follow-up repairs one confirmed precision bug. It does not claim a qualified task or a
 verified PR; discovery still needs a live candidate to pass the complete unchanged quality and
 competition gates.
+
+## Follow-up: stale post-merge task and refreshed query exclusions — 2026-10-28
+
+The live delivery receipt for [Expensify/App#101616](https://github.com/Expensify/App/issues/101616)
+showed that it remained open during its payment window after its fix had already shipped. The
+issue timeline links merged [PR #103877](https://github.com/Expensify/App/pull/103877), whose
+`Fixed Issues` section names the issue; the PR was merged on 2026-10-26. Cline correctly
+recognized that the requested behavior was already fixed, but only after the delivery run had
+started. This was stale discovery/admission state, not an engineering defect in the task.
+
+`competition()` now follows closed PR references from the issue timeline and blocks only when
+the linked PR is merged and explicitly identifies this issue as fixed (in a `Fixed Issues`
+section or a direct fixes/closes/resolves reference). A merged PR that mentions the issue only
+as related remains non-blocking. Immediately before dispatch, the dispatcher also reapplies the
+same server-query exclusions to the freshly fetched issue context. A candidate that became
+assigned or acquired an excluded label while waiting in the durable queue is retired before
+delivery.
+
+### Verification receipts
+
+- `python -W error scripts/test_actions_migration.py` — 38 passed; one newline-path test skipped
+  because Windows does not permit newline characters in filenames.
+- `python -W error scripts/test_icu_pipeline_suite.py` — all 16 sections passed, 100% green.
+- `python -W error scripts/test_discovery_repairs.py` — 16 passed.
+- `python -W error scripts/test_queue_ordering.py` — 22 passed.
+- Ruff on the three changed Python files and Python byte-compilation — clean.
+- Live GitHub `competition()` check for `Expensify/App#101616` returned
+  `Issue already resolved by merged PR: https://github.com/Expensify/App/pull/103877`.
+
+This closes the measured stale-resolution path and the stale-assignee/label path at dispatch.
+It does not claim a new qualified task, dispatch, or verified PR; the preceding discovery
+receipt still had zero qualified candidates. The next live discovery run must report its own
+qualified, dispatched, and verified-PR counts before influx or delivery quality can be called
+successful.
