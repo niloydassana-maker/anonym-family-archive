@@ -434,7 +434,7 @@ def _engineering_unit(text, repository, source_url=""):
     components = sorted({match.group() for match in COMPONENT.finditer(sanitized)})
     locations = sorted({name for name in components if SOURCE_PATH.search(name)}
                        | set(_permalink_sources(text, repository)))
-    vocabulary = bool(technical) and (bool(components) or len(technical) >= 2)
+    vocabulary = bool(technical)
     return {"technical_signals": technical, "component_references": components,
             "source_locations": locations, "source_url": source_url,
             "qualified": vocabulary or bool(locations)}

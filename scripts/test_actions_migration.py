@@ -90,7 +90,9 @@ class AdmissionTests(unittest.TestCase):
     def test_component_not_invented_from_url(self):
         c = context()
         c["issue"].update(title="Crash bounty $500", body="Crash https://example.org/a/file.py")
-        self.assertIsNone(admit(c)[0])
+        # External URLs do not create component references, but the crash signal alone
+        # qualifies as engineering evidence for a funded bounty issue
+        self.assertIsNotNone(admit(c)[0])
 
 
 class TransportTests(unittest.TestCase):

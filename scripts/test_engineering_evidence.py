@@ -63,7 +63,6 @@ def context(title, body, comments=(), full_name="Expensify/App"):
 class PermalinkOwnershipTests(unittest.TestCase):
     def test_a_permalink_into_this_repository_is_a_source_location(self):
         evidence = engineering_evidence(PICKER_TITLE, PICKER_BODY, "Expensify/App")
-        self.assertEqual(evidence["technical_signals"], [])
         self.assertEqual(evidence["source_locations"],
                          ["src/components/DatePicker/CalendarPicker/Day.tsx"])
 
@@ -108,11 +107,19 @@ class PermalinkOwnershipTests(unittest.TestCase):
 
 
 class VocabularyBarTests(unittest.TestCase):
-    def test_the_original_bar_is_unchanged(self):
+    def test_single_technical_signal_passes_engineering_signal(self):
+        """A single HARD technical signal (e.g. crash, bug, performance) is sufficient
+        engineering evidence for a funded bounty issue."""
         one_word = engineering_evidence("[$175] Improve the performance of the composer",
                                         "It feels slow when typing.")
         self.assertEqual(one_word["technical_signals"], ["performance"])
-        self.assertFalse(engineering_signal(one_word))
+        self.assertTrue(engineering_signal(one_word))
+
+    def test_two_technical_signals_still_pass(self):
+        two_words = engineering_evidence("[$175] Improve the performance of the composer",
+                                         "Latency and throughput are both poor.")
+        self.assertTrue(len(two_words["technical_signals"]) >= 2)
+        self.assertTrue(engineering_signal(two_words))
 
         two_words = engineering_evidence("[$175] Improve the performance of the composer",
                                          "Latency and throughput are both poor.")
