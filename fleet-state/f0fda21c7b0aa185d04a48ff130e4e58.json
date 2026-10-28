@@ -1,0 +1,49 @@
+{
+  "task_id": "f0fda21c7b0aa185d04a48ff130e4e58",
+  "repo": "Expensify/App",
+  "issue_number": 104400,
+  "status": "DISPATCHING",
+  "dispatch_id": "71a3eecaa82d4be3b3011db3a0eb4d06",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/104400",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "issue",
+      "problem"
+    ],
+    "component_references": [
+      "EMAIL"
+    ],
+    "source_locations": [],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6350925554",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6351259211",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6352304565",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6392514607",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6398800256",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6402721844",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6407185908",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6407764098",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6421252980",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6429627925",
+      "https://github.com/Expensify/App/issues/104400#issuecomment-6440316522"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/104400",
+    "fetched_at": "2026-10-28T15:52:57.029362+00:00"
+  },
+  "lanes": [
+    "programs"
+  ],
+  "dispatched_at": "2026-10-28T15:53:09.638840+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T15:53:09.638860+00:00"
+}
