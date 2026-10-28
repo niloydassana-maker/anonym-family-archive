@@ -775,6 +775,17 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                                           "reason": reason, "reported_comments": context["issue"].get("comments"),
                                           "visible_comments": len(context["comments"])}), flush=True)
                         continue
+                    issue_labels = [l.get("name", "") if isinstance(l, dict) else str(l) for l in context["issue"].get("labels", [])]
+                    is_code, code_reason = is_code_change_request(
+                        context["issue"].get("title", ""),
+                        context["issue"].get("body", "") or "",
+                        issue_labels,
+                    )
+                    if not is_code:
+                        counts[code_reason] += 1
+                        print(json.dumps({"phase": "ADMISSION", "repo": context["repo"], "issue_number": context["issue_number"],
+                                          "reason": code_reason}), flush=True)
+                        continue
                     merge_ok, merge_reason = repository_intent(
                         merge_evidence(api, context["repo"], intent_cache))
                     if not merge_ok:
@@ -833,6 +844,17 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                         con.execute("DELETE FROM candidates WHERE task_id=?", (identity,))
                         con.commit()
                         counts["admission_changed." + reason] += 1
+                        continue
+                    current_labels = [l.get("name", "") if isinstance(l, dict) else str(l) for l in current["issue"].get("labels", [])]
+                    is_code, code_reason = is_code_change_request(
+                        current["issue"].get("title", ""),
+                        current["issue"].get("body", "") or "",
+                        current_labels,
+                    )
+                    if not is_code:
+                        con.execute("DELETE FROM candidates WHERE task_id=?", (identity,))
+                        con.commit()
+                        counts["admission_changed." + code_reason] += 1
                         continue
                     competition(api, current["repo"], current["issue_number"], own_head=(state or {}).get("head_sha"))
                     dispatched.append(dispatch(api, store, current, proof, candidate["lanes"]))
@@ -1016,3 +1038,6 @@ def is_code_change_request(title: str, body: str, labels: list) -> tuple:
 
     # --- 4. FAIL-OPEN: admit anything ambiguous ----------------------------
     return (True, "unclear_fail_open")
+
+if __name__ == "__main__":
+    main()
