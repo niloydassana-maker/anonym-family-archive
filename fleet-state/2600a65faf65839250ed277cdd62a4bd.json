@@ -2,7 +2,7 @@
   "task_id": "2600a65faf65839250ed277cdd62a4bd",
   "repo": "keepassxreboot/keepassxc",
   "issue_number": 255,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "3fd272e43b3e4452b366a26421085acd",
   "admission": {
     "funding": {
@@ -39,6 +39,12 @@
     "startup"
   ],
   "dispatched_at": "2026-10-28T06:12:08.745563+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-28T06:12:10.448407+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-28T06:12:26.508523+00:00",
+  "owner": "40642430953:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40642430953",
+  "harness_sha": "1faafe40e39d1b9beda95445f10e139e68924414",
+  "claimed_at": "2026-10-28T06:12:26.508504+00:00"
 }
