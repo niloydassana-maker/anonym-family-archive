@@ -2,7 +2,7 @@
   "task_id": "6ea16241e9826e7564875e0f6405a2c4",
   "repo": "Cyon0x/earnly",
   "issue_number": 1,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "321b8100bbb54c2cbea73a1eb837175a",
   "admission": {
     "funding": {
@@ -35,6 +35,12 @@
     "startup"
   ],
   "dispatched_at": "2026-10-28T19:21:50.231090+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-28T19:21:53.203591+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-28T19:22:05.400008+00:00",
+  "owner": "40753630638:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40753630638",
+  "harness_sha": "003b486747f248753363fa0cad5e39e557162dc0",
+  "claimed_at": "2026-10-28T19:22:05.399991+00:00"
 }
