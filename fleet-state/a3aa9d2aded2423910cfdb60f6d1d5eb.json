@@ -38,7 +38,7 @@
   ],
   "dispatched_at": "2026-10-28T18:32:04.857409+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T22:27:20.655229+00:00",
+  "updated_at": "2026-10-28T22:48:08.890059+00:00",
   "owner": "40746023790:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
@@ -62,5 +62,5 @@
     "failures": [],
     "state": "NO_REMOTE_CHECKS"
   },
-  "observed_at": "2026-10-28T22:27:20.655207+00:00"
+  "observed_at": "2026-10-28T22:48:08.890039+00:00"
 }
