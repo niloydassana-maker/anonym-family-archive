@@ -364,7 +364,7 @@ def dispatch(api, store, context, proof, lanes, remote_repair=False):
     return identity
 
 
-HYDRATION_BATCH = 60
+HYDRATION_BATCH = 120
 HYDRATION_PER_REPO = 4
 
 
@@ -411,8 +411,9 @@ def queue_window(con, limit=QUEUE_WINDOW, priority_ids=()):
     """Prioritize current-cycle matches, then read both edges of the backlog.
 
     ``ORDER BY checked,rowid`` alone made a new candidate unreachable: with 3,131 rows
-    waiting and a hydration batch of 60, a candidate discovered this cycle sat behind
-    roughly fifty cycles of work, and the six-hour re-queue then pushed refreshed rows
+    waiting and a bounded hydration batch, a candidate discovered this cycle sat behind
+    roughly twenty-seven cycles of work at the current batch size, and the six-hour
+    re-queue then pushed refreshed rows
     behind the same block. A bounded priority list now keeps fresh query hits in the
     hydration window even when later queries add thousands of rows in the same cycle;
     the remaining capacity still drains both the backlog and newest queue edge.

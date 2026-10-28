@@ -1,9 +1,9 @@
 """Fixtures for the discovery queue: windowing, repository pre-check and ordering.
 
 The 2026-10-27 backlog made a fresh candidate unreachable. ``ORDER BY checked,rowid``
-reads oldest-first, so with 3,131 rows waiting and a hydration batch of 60 a candidate
-found this cycle sat behind roughly fifty cycles of work; the six-hour re-queue then
-pushed refreshed rows behind the same block. ``queue_window`` reads both edges instead.
+reads oldest-first, so with 3,131 rows waiting a candidate could sit behind roughly
+twenty-seven cycles of a 120-row hydration batch; the six-hour re-queue then pushed
+refreshed rows behind the same block. ``queue_window`` reads both edges instead.
 
 Two other repairs are pinned here. A repository that carries many pull requests and has
 merged none is a farm: 885 of 3,311 queued rows sat in such repositories and each was
@@ -18,6 +18,7 @@ import time
 import unittest
 
 from actions_dispatch import (
+    HYDRATION_BATCH,
     INTENT_REFRESH_S,
     QUEUE_WINDOW,
     REPO_INTENT_RETIRED,
@@ -137,6 +138,22 @@ class QueueWindowTests(unittest.TestCase):
         rows = queue_window(con, limit=1, priority_ids=[older, newer])
 
         self.assertEqual([row[0] for row in rows], [newer])
+
+    def test_hydration_window_covers_measured_111_hit_current_cycle(self):
+        fresh_rows = []
+        for number in range(111):
+            repo = "fresh-%02d/project" % (number % 49)
+            fresh_rows.append(("fresh#%d" % number, payload(repo, number),
+                               json.dumps(["normal"]), "2026-10-28T01:12:00Z", number))
+        backlog_rows = [("backlog#%d" % number, payload("old/project", number),
+                         json.dumps(["normal"]), "2026-10-20T00:00:00Z", 1000 + number)
+                        for number in range(40)]
+
+        selected = pending_window(fresh_rows + backlog_rows)
+
+        self.assertEqual(HYDRATION_BATCH, 120)
+        self.assertEqual(len(selected), HYDRATION_BATCH)
+        self.assertTrue({row[0] for row in fresh_rows}.issubset({row[0] for row in selected}))
 
 
 class PriorityPreferredOrderTests(unittest.TestCase):

@@ -10,7 +10,7 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from actions_dispatch import (QUERY_EXCLUDED_EXPERIMENT, QUERY_EXCLUDED_VIDEO_DEMO,
+from actions_dispatch import (HYDRATION_BATCH, QUERY_EXCLUDED_EXPERIMENT, QUERY_EXCLUDED_VIDEO_DEMO,
                               build_issue_search_queries, discover, query_window,
                               refreshed_query_exclusion, retire_query_excluded_pending)
 from actions_github import GitHub, GitHubError, StateStore, task_id
@@ -199,11 +199,11 @@ class TransportTests(unittest.TestCase):
 
     def test_hydration_budget_keeps_every_unprocessed_search_result(self):
         items = [{"repository_url": "https://api.github.com/repos/owner/project", "number": n,
-                  "updated_at": "fixture"} for n in range(1, 102)]
+                  "updated_at": "fixture"} for n in range(1, HYDRATION_BATCH + 42)]
         def get(endpoint):
             if "search/issues?" in endpoint:
                 rows = items[:30] if "per_page=30" in endpoint else items[100:] if "&page=2" in endpoint else items[:100]
-                return {"items": rows, "total_count": 101}
+                return {"items": rows, "total_count": len(items)}
             raise AssertionError(endpoint)
         fake = SimpleNamespace(api=get, issue_context=lambda repo, number: context(), pages=lambda *a, **k: [])
         import sqlite3
@@ -213,7 +213,7 @@ class TransportTests(unittest.TestCase):
             with sqlite3.connect(Path(folder) / "discovery.sqlite3") as con:
                 counts = dict(con.execute("SELECT status,count(*) FROM pending GROUP BY status"))
             con.close()
-            self.assertEqual(counts, {"checked": 60, "pending": 41})
+            self.assertEqual(counts, {"checked": HYDRATION_BATCH, "pending": 41})
             con = sqlite3.connect(Path(folder) / "discovery.sqlite3")
             con.execute("UPDATE metadata SET value='previous broken policy' WHERE name='admission_policy'")
             con.execute("UPDATE pending SET status='checked'")
@@ -224,7 +224,7 @@ class TransportTests(unittest.TestCase):
             con = sqlite3.connect(Path(folder) / "discovery.sqlite3")
             counts = dict(con.execute("SELECT status,count(*) FROM pending GROUP BY status"))
             con.close()
-            self.assertEqual(counts, {"checked": 60, "pending": 41})
+            self.assertEqual(counts, {"checked": HYDRATION_BATCH, "pending": 41})
 
     def test_current_open_competition(self):
         pr = {"title": "Fix #7", "body": "", "head": {"ref": "fix/7", "sha": "a", "repo": None}, "html_url": "unit fixture"}
