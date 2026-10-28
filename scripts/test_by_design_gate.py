@@ -224,6 +224,13 @@ class PrecisionOnUnseenTrafficTests(unittest.TestCase):
         self.assertIsNone(declared_by_design(context([comment(
             body, login="danieldirimini-myzubster", association="COLLABORATOR")])))
 
+    def test_a_spaced_bug_fix_description_is_not_the_marker(self):
+        body = ("That's basically it. It's also not high up on my personal priority list, as it is "
+                "a entirely new feature (not a bug fix) and I am not using nor intend to use RCS "
+                "myself.")
+        self.assertIsNone(declared_by_design(context([comment(
+            body, login="mar-v-in", association="MEMBER")])))
+
     def test_the_bare_verdict_still_matches_at_the_end_of_a_sentence(self):
         verdict = declared_by_design(context([comment("This is not a bug.")]))
         self.assertEqual(verdict["verdict"], "BY_DESIGN")

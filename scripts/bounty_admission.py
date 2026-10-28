@@ -61,7 +61,7 @@ EXFILTRATION = re.compile(
 # earlier comment.
 BY_DESIGN = re.compile(
     r"\bworks as (?:designed|intended)\b|\bworking as (?:designed|intended)\b|"
-    r"\bby design\b|\bnot a bug(?![\w-])|\bnot a defect(?![\w-])|"
+    r"\bby design\b|\bnot a bug(?![\w-]|\s+fix\b)|\bnot a defect(?![\w-])|"
     r"\bno code change (?:is )?(?:needed|required|necessary)\b|"
     r"\bwon'?t fix\b|"
     r"\bexpected behaviou?r\b[^.\n]{0,60}\bby design\b", re.I)
@@ -73,6 +73,8 @@ BY_DESIGN = re.compile(
 # verdict on a reported behaviour, and the hyphen made the phrase match anyway. Measured live
 # 2026-10-27 on MyZubster-Ecosystem/myzubster#1613, whose maintainer wrote that the issue "remains
 # an invitation to test real Seller-Free onboarding, not a bug-fix task or payable bounty".
+# The spaced form "not a bug fix" is excluded too: live microg/GmsCore#2994 used that phrase to
+# describe RCS as a new feature, not to declare its behavior intentional.
 # A bare ``wontfix`` is deliberately NOT prose here. In prose it is almost always the name of
 # a label or a pointer to another issue ("Closed/wontfix #627 ..."), which says nothing about
 # the behaviour reported on this issue. Measured live 2026-10-27 on

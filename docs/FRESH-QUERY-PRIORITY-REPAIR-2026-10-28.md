@@ -44,7 +44,64 @@ qualified candidate was hidden in that queue.
 
 ## Live verification status
 
-The baseline run above confirms raw search supply and zero qualified admissions. A post-deploy
-discovery run is still required to verify that fresh current-cycle hits are selected from the
-backlog, then whether any meet the unchanged quality gates. No qualified influx or verified PR
-is claimed by this repair record yet.
+The post-deploy discovery run [40608596686](https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40608596686)
+completed successfully on `9016ef500b5534d4a15ce46744fd11647358310a`. Its hydration record was
+`queued=1985`, `selected=60`, `current_cycle_hits_queued=6`, and
+`current_cycle_hits_selected=6`. This is a direct receipt that all six new-cycle hits in the
+queue reached the bounded inspection window.
+
+The run still produced `qualified_fresh=0`, `qualified_unique=0`, and `dispatched=[]`, with
+`pending_hydration=7136`. The 60 inspected candidates were rejected by the unchanged gates:
+28 lacked hard issue evidence, 25 lacked a current issuer-backed offer, one was closed or
+read-only, three were mirror/non-engineering, and one had a competition/unknown result. The
+repair fixed backlog starvation; it did **not** produce a qualified task or a verified PR.
+
+The live search receipt also shows why the next iteration must improve source/query yield rather
+than alter admission: this cycle's scheduled queries returned many broad historical matches
+(`label:bounty "$200"` total 91 and `label:bounty "$500"` total 49), while the currently updated
+subset was small. The sampled issues did not carry enough current payer and engineering evidence
+to pass. We have not yet demonstrated a live query that returns a candidate meeting every gate.
+
+## Follow-up: repair one measured false-negative
+
+Live GitHub reads on 2026-10-28 found `microg/GmsCore#2994`, an open, unassigned RCS bounty
+issue titled `[BOUNTY] RCS Support [14999$]`. Its maintainer comment
+[#issuecomment-4643350506](https://github.com/microg/GmsCore/issues/2994#issuecomment-4643350506)
+describes RCS as an entirely new feature "(not a bug fix)". The prior `BY_DESIGN` expression
+matched the shorter substring `not a bug`, incorrectly treating the task description as a
+maintainer verdict that the reported behaviour was intentional.
+
+The expression now excludes both `not a bug-fix` and `not a bug fix` while retaining the bare
+`not a bug` verdict. A regression case uses the exact live maintainer sentence. Verification
+against the live issue and comment now returns `live_declared_by_design: null`; the existing
+bare-verdict test still returns `BY_DESIGN`.
+
+This issue is **not** eligible for dispatch: live GitHub data shows open draft PR
+[#3924](https://github.com/microg/GmsCore/pull/3924), which explicitly says it is related to
+`#2994`. The competition gate keeps the issue out. This precision repair produces no dispatch
+for the measured issue and is not counted as influx.
+
+The live BountyHub search `commenter:bountyhub-bot is:issue is:open updated:>=2026-10-21`
+returned four issues: `react/react#37620` and three `microg/GmsCore` issues. Inspecting the React
+result found a `$100` BountyHub comment but also 12 open PR search matches for the same issue,
+including existing fixes. It is likewise preempted. BountyHub's documentation says its comments
+mark bounty creation/reward events, creators may choose pay-in-advance or pay-on-solution, and
+retraction is available when there is no open claim
+([creator docs](https://www.bountyhub.dev/en/docs/create-bounty),
+[platform description](https://www.bountyhub.dev/en)). These samples do not justify a global
+`bountyhub-bot` payer exception: a safe source integration also needs to verify current bounty
+status and reward amount, not just trust a historical comment.
+
+### Verification receipts
+
+- `python -W error scripts/test_by_design_gate.py` — 30 tests passed.
+- `python -W error scripts/test_admission_trust.py` — 7 tests passed.
+- `python -W error scripts/test_engineering_evidence.py` — 14 tests passed.
+- `python -W error scripts/test_markup_and_funding_gate.py` — 10 tests passed.
+- `python -W error scripts/test_icu_pipeline_suite.py` — all 16 sections passed, 100% green.
+- Live GitHub reevaluation of issue `#2994` and maintainer comment `4643350506` returned no
+  by-design verdict; live PR `#3924` remains open and related.
+
+This follow-up repairs one confirmed precision bug. It does not claim a qualified task or a
+verified PR; discovery still needs a live candidate to pass the complete unchanged quality and
+competition gates.
