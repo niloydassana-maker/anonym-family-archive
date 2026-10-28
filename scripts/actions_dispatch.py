@@ -424,11 +424,7 @@ def dispatch(api, store, context, proof, lanes, remote_repair=False):
     def reserve(old):
         if old:
             status = old.get("status", "")
-            retryable = (status.startswith("FAILED") or status in ("DISPATCHED", "DISPATCHING")) and \
-                int(old.get("attempt", 0)) < 3 and (re.search(
-                r"timeout|timed out|429|502|503|provider|gateway|network|connection|tokenharbor|publication",
-                json.dumps(old.get("failures") or old.get("diagnostic") or ""), re.I)
-                or (remote_repair and status == "FAILED_REMOTE_CHECKS"))
+            retryable = retry_eligible(old) and int(old.get("attempt", 0)) < 3
             if not retryable:
                 raise ValueError("Existing durable task state: " + status)
         return {**(old or {}), "task_id": identity, "repo": repo, "issue_number": number,
