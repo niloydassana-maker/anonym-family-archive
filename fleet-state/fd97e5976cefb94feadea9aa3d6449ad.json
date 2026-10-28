@@ -2,7 +2,7 @@
   "task_id": "fd97e5976cefb94feadea9aa3d6449ad",
   "repo": "Expensify/App",
   "issue_number": 101675,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "6a84a20d33da4814b1b937e9c0d75c1e",
   "admission": {
     "funding": {
@@ -52,11 +52,83 @@
   ],
   "dispatched_at": "2026-10-28T09:52:16.400305+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T09:52:40.413255+00:00",
+  "updated_at": "2026-10-28T10:09:05.914707+00:00",
   "owner": "40667627168:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40667627168",
   "harness_sha": "3f179de8153fad83822dc649b3237cd759c9d0ee",
-  "claimed_at": "2026-10-28T09:52:40.413237+00:00"
+  "claimed_at": "2026-10-28T09:52:40.413237+00:00",
+  "at": "2026-10-28T10:08:54.019424+00:00",
+  "reason": "Cline preparation blocked: blocked: no reproducible defect on upstream's default branch at the checked-out base_sha 0a22a58626cdaa6856f7928708b1b900b498c4ce (main, 2026-10-28T09:01:08Z). Issue #101675 reports the Concierge \"Was that response useful?\" rating disappearing after Account > Troubleshoot > Clear cache and restart (reported on 9.4.90-0). Root cause, confirmed by maintainer @lakchote in issue comment 10: Clear cache and restart wipes Onyx so every reportActionsReactions_* key is gone, and the reset only calls OpenApp, which never returns reportActionsReactions_* (only AddEmojiReaction / RemoveEmojiReaction / OpenReport / GetPaginatedActions do), so the still-mounted thread is never re-opened. That exact gap was already closed upstream by the merged PR #101131 \"Re-fetch the report when a cache clear wipes its memory-only loaded stamp\" (merged 2026-09-30T14:30:04Z, merge commit d324a7c20ee8d85eb2513c0ba1a8880e24e66e1a, first shipped in 9.5.0-5), which is present on the default branch at src/pages/inbox/ReportFetchHandler.tsx L539-558. Executed evidence on the UNCHANGED base (no product edits, git status clean on fix/bounty-101675 at base_sha): (1) a regression test that encodes this issue's exact flow (thread report loaded with a reportActionsReactions_<conciergeActionID> row -> wipe that reaction key and RAM_ONLY_REPORT_LOADING_STATE the way clearOnyxAndResetApp does -> assert openReport is issued for the thread report) PASSES on base, so the reaction data is re-hydrated from the server again; (2) removing only PR #101131's fetchReport() call makes that same assertion fail with 'Number of calls: 0' and also makes the repository's own guard test 'calls openReport again when the memory-only loaded stamp is wiped underneath a mounted screen' fail \u2014 this proves both that the assertion is the genuine defect assertion and that the base already satisfies it (i.e. no failing-on-base assertion exists to drive a new fix); (3) the repository's own baseline suites are green unmodified: tests/unit/ReportFetchHandlerTest.tsx 28/28 passed, tests/ui/ReportActionsListTest.tsx + tests/ui/AncestorReportActionItemTest.tsx 41/41 passed; (4) GitHub search of repo:Expensify/App for PRs referencing 101675 returns total_count 0, so there is no competing open PR. Independently corroborated in-thread: @lakchote demoted the deploy blocker and stated no code change is needed; QA @mvtglobally posted 'Issue not reproducible during KI retests. (First week)' on 2026-10-24; and the offending-PR author @oqildev withdrew his own proposal on 2026-10-10 after measuring that the cache-clear re-fetch already exists on main. Funding is still live ($250, Upwork job 2108855321546788148, last price increase 2026-10-24), but the requested deliverable is not a new code change: any PR would either be a no-op or re-implement the already-merged fix, so this is classified as an already-resolved/competing-fix case and the checkout is left unchanged. Toolchain/environment notes for the recorded plan: the repo pins node 26.12.1 (.nvmrc, engines) and bun 1.4.4 (.bun-version) with .npmrc engine-strict=true, and npm 11.20.0; those exact pins were installed (node 26.12.1 from nodejs.org into /opt/bounty-tools, bun 1.4.4 via bun.sh) and npm ci then succeeded (3104 packages, patch-package OK, postInstall.sh ran setup-skia-web). The host started with 2 vCPU / 7.8GiB RAM and a 97%-full root filesystem; the unused /swapfile_extra (10GiB, 0 bytes used per /proc/swaps and not referenced in /etc/fstab) was removed to free space before cloning. Full-repo 'npm run lint' is declared in .github/workflows/lint.yml to require a 16vcpu/32GB runner (ESLINT_CONCURRENCY=2, NODE_OPTIONS=--max_old_space_size=14336) and is NOT runnable on this host, so changed-file linting is the resource-safe equivalent.",
+  "declared_reason": "blocked: no reproducible defect on upstream's default branch at the checked-out base_sha 0a22a58626cdaa6856f7928708b1b900b498c4ce (main, 2026-10-28T09:01:08Z). Issue #101675 reports the Concierge \"Was that response useful?\" rating disappearing after Account > Troubleshoot > Clear cache and restart (reported on 9.4.90-0). Root cause, confirmed by maintainer @lakchote in issue comment 10: Clear cache and restart wipes Onyx so every reportActionsReactions_* key is gone, and the reset only calls OpenApp, which never returns reportActionsReactions_* (only AddEmojiReaction / RemoveEmojiReaction / OpenReport / GetPaginatedActions do), so the still-mounted thread is never re-opened. That exact gap was already closed upstream by the merged PR #101131 \"Re-fetch the report when a cache clear wipes its memory-only loaded stamp\" (merged 2026-09-30T14:30:04Z, merge commit d324a7c20ee8d85eb2513c0ba1a8880e24e66e1a, first shipped in 9.5.0-5), which is present on the default branch at src/pages/inbox/ReportFetchHandler.tsx L539-558. Executed evidence on the UNCHANGED base (no product edits, git status clean on fix/bounty-101675 at base_sha): (1) a regression test that encodes this issue's exact flow (thread report loaded with a reportActionsReactions_<conciergeActionID> row -> wipe that reaction key and RAM_ONLY_REPORT_LOADING_STATE the way clearOnyxAndResetApp does -> assert openReport is issued for the thread report) PASSES on base, so the reaction data is re-hydrated from the server again; (2) removing only PR #101131's fetchReport() call makes that same assertion fail with 'Number of calls: 0' and also makes the repository's own guard test 'calls openReport again when the memory-only loaded stamp is wiped underneath a mounted screen' fail \u2014 this proves both that the assertion is the genuine defect assertion and that the base already satisfies it (i.e. no failing-on-base assertion exists to drive a new fix); (3) the repository's own baseline suites are green unmodified: tests/unit/ReportFetchHandlerTest.tsx 28/28 passed, tests/ui/ReportActionsListTest.tsx + tests/ui/AncestorReportActionItemTest.tsx 41/41 passed; (4) GitHub search of repo:Expensify/App for PRs referencing 101675 returns total_count 0, so there is no competing open PR. Independently corroborated in-thread: @lakchote demoted the deploy blocker and stated no code change is needed; QA @mvtglobally posted 'Issue not reproducible during KI retests. (First week)' on 2026-10-24; and the offending-PR author @oqildev withdrew his own proposal on 2026-10-10 after measuring that the cache-clear re-fetch already exists on main. Funding is still live ($250, Upwork job 2108855321546788148, last price increase 2026-10-24), but the requested deliverable is not a new code change: any PR would either be a no-op or re-implement the already-merged fix, so this is classified as an already-resolved/competing-fix case and the checkout is left unchanged. Toolchain/environment notes for the recorded plan: the repo pins node 26.12.1 (.nvmrc, engines) and bun 1.4.4 (.bun-version) with .npmrc engine-strict=true, and npm 11.20.0; those exact pins were installed (node 26.12.1 from nodejs.org into /opt/bounty-tools, bun 1.4.4 via bun.sh) and npm ci then succeeded (3104 packages, patch-package OK, postInstall.sh ran setup-skia-web). The host started with 2 vCPU / 7.8GiB RAM and a 97%-full root filesystem; the unused /swapfile_extra (10GiB, 0 bytes used per /proc/swaps and not referenced in /etc/fstab) was removed to free space before cloning. Full-repo 'npm run lint' is declared in .github/workflows/lint.yml to require a 16vcpu/32GB runner (ESLINT_CONCURRENCY=2, NODE_OPTIONS=--max_old_space_size=14336) and is NOT runnable on this host, so changed-file linting is the resource-safe equivalent.",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/Expensify--App--101675",
+    "base_sha": "0a22a58626cdaa6856f7928708b1b900b498c4ce",
+    "default_branch": "main",
+    "sources": [
+      {
+        "path": "package.json",
+        "sha256": "c8c1d006f53def253b696ab8a6a241f0609228a42e7616bafa0078af93067879"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "b6436c5520de11d6141512e4c26de600f8bc8160864a9c0974b0cc0740120e89"
+      },
+      {
+        "path": ".npmrc",
+        "sha256": "69ea58ba516f05b1d79599ef3d6ad54280973685e2e8282b9de3930b182fbafa"
+      },
+      {
+        "path": ".nvmrc",
+        "sha256": "2a4a3fac7ea8694f168266bd3a930b3fc5faa6e503d577d99c024f74582e4cb5"
+      },
+      {
+        "path": ".bun-version",
+        "sha256": "d03d8b268b4171328ac2458ce8ca82d69a1fde38469d4e4faae4f8fa8d8a5e35"
+      },
+      {
+        "path": "jest.config.js",
+        "sha256": "3762333843cf91624ff95934f1514145a4d67fe069815edefa779449ac7b8c25"
+      },
+      {
+        "path": ".github/workflows/test.yml",
+        "sha256": "e47a7ad0f11b255ae847be6fb5bc0a8ef5dc882b27c3ad1a5aacf22dec57a7af"
+      },
+      {
+        "path": ".github/workflows/typecheck.yml",
+        "sha256": "1b6c9fc4b8302ab6a2d15c901ecd08f5b1e6a72a2566a9462913a477b8b4ae58"
+      },
+      {
+        "path": ".github/workflows/lint.yml",
+        "sha256": "c320f7cd1382810f0e508d58cad09810571e3ff07b59e481bc4f7f1f3f5c14e9"
+      },
+      {
+        "path": "scripts/postInstall.sh",
+        "sha256": "cb09ee84be5ca9f1f41f7f5d7a691db55131c6fd681dce163b974df0730ead0a"
+      },
+      {
+        "path": "CLAUDE.md",
+        "sha256": "a53a5ff41062b8e6f8ebcb52acfa5248b24b4c4c7f0f00ea2cfbca91086bd2a4"
+      },
+      {
+        "path": "AGENTS.md",
+        "sha256": "4b8602b997dd411cf4f88feb34bda93dfa3ae03456a5f26177fdf7950c3d0217"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/101675",
+      "payer": "melvin-bot[bot]"
+    }
+  },
+  "finished_at": "2026-10-28T10:09:04.972313+00:00"
 }
