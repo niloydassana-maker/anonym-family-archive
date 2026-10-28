@@ -2,7 +2,7 @@
   "task_id": "fd97e5976cefb94feadea9aa3d6449ad",
   "repo": "Expensify/App",
   "issue_number": 101675,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "6a84a20d33da4814b1b937e9c0d75c1e",
   "admission": {
     "funding": {
@@ -51,6 +51,12 @@
     "programs"
   ],
   "dispatched_at": "2026-10-28T09:52:16.400305+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-28T09:52:18.247983+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-28T09:52:40.413255+00:00",
+  "owner": "40667627168:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40667627168",
+  "harness_sha": "3f179de8153fad83822dc649b3237cd759c9d0ee",
+  "claimed_at": "2026-10-28T09:52:40.413237+00:00"
 }
