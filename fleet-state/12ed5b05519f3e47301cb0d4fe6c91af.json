@@ -2,7 +2,7 @@
   "task_id": "12ed5b05519f3e47301cb0d4fe6c91af",
   "repo": "superpreviousattending/canyonendrum",
   "issue_number": 546,
-  "status": "CLAIMED",
+  "status": "REJECTED_PREPARATION",
   "dispatch_id": "e435bfc9e30949729df25faeb414ad27",
   "admission": {
     "funding": {
@@ -39,11 +39,39 @@
   ],
   "dispatched_at": "2026-10-28T06:26:25.400886+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T06:26:38.173312+00:00",
+  "updated_at": "2026-10-28T06:28:28.639182+00:00",
   "owner": "40643864811:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40643864811",
   "harness_sha": "1faafe40e39d1b9beda95445f10e139e68924414",
-  "claimed_at": "2026-10-28T06:26:38.173270+00:00"
+  "claimed_at": "2026-10-28T06:26:38.173270+00:00",
+  "at": "2026-10-28T06:28:18.350381+00:00",
+  "reason": "Cline preparation blocked: Issue #546 is non-engineering SEO/link-farm spam, not a concrete code change request. Title is a 40+ word keyword-stuffed gibberish string ('protecting Discover islamic the tracking Power carol of suggestion Prefrontal christine Cortex upgrade Convo efforts Agent honda by catherine Virtuals entities Staking lindsay on boys Base increasing - brad 260 slight APR insights That opt Works magnitude for cordless You'). Body is a 64,986-char HTML marketing article titled 'Introduction to Staking on Base with CONVO' about staking a crypto token 'Prefrontal Cortex Convo Agent by Virtuals (CONVO)' for a claimed '260% return', with spam-evasion HTML comments injected between every word (e.g. '<!--spain-->', '<!--dollars-->') and outbound promotional links (https://4ad4268ac8.com/76391a9a63 rendered as '8c3e856200.com'). There is no reproducible defect, no engineering feature, and no code-level maintenance requested. Additionally the target repository is empty of source: default branch 'main' has exactly one commit '97f65b624f5292e07df253a5d98974c6ada54bc4 Initial commit' and a single 14-byte file README.md ('# canyonendrum'); GitHub reports size=0, language=null, languages={}, open_issues_count=1000, pulled_at==created_at (2025-06-22T07:42:58Z). There is no component, manifest, dependency, CI, or test to change, and no open/competing PR (pulls list is empty; only branch is 'main'). This falls under the blocked categories: generic product/marketing idea with no repository change, documentation/marketing deliverable, and spam link-farm content. Checkout left unchanged (only a read-only clone to establish the baseline).",
+  "declared_reason": "Issue #546 is non-engineering SEO/link-farm spam, not a concrete code change request. Title is a 40+ word keyword-stuffed gibberish string ('protecting Discover islamic the tracking Power carol of suggestion Prefrontal christine Cortex upgrade Convo efforts Agent honda by catherine Virtuals entities Staking lindsay on boys Base increasing - brad 260 slight APR insights That opt Works magnitude for cordless You'). Body is a 64,986-char HTML marketing article titled 'Introduction to Staking on Base with CONVO' about staking a crypto token 'Prefrontal Cortex Convo Agent by Virtuals (CONVO)' for a claimed '260% return', with spam-evasion HTML comments injected between every word (e.g. '<!--spain-->', '<!--dollars-->') and outbound promotional links (https://4ad4268ac8.com/76391a9a63 rendered as '8c3e856200.com'). There is no reproducible defect, no engineering feature, and no code-level maintenance requested. Additionally the target repository is empty of source: default branch 'main' has exactly one commit '97f65b624f5292e07df253a5d98974c6ada54bc4 Initial commit' and a single 14-byte file README.md ('# canyonendrum'); GitHub reports size=0, language=null, languages={}, open_issues_count=1000, pulled_at==created_at (2025-06-22T07:42:58Z). There is no component, manifest, dependency, CI, or test to change, and no open/competing PR (pulls list is empty; only branch is 'main'). This falls under the blocked categories: generic product/marketing idea with no repository change, documentation/marketing deliverable, and spam link-farm content. Checkout left unchanged (only a read-only clone to establish the baseline).",
+  "evidence": {
+    "action": "blocked",
+    "worktree": "/tmp/bounty-workspaces/repos/superpreviousattending--canyonendrum--546",
+    "base_sha": "97f65b624f5292e07df253a5d98974c6ada54bc4",
+    "default_branch": "main",
+    "sources": [
+      {
+        "path": "README.md",
+        "sha256": "2f085873dd4573b3391ffee223ac3b7c3426e3349d870deb12f8d3f65cdc493c"
+      }
+    ],
+    "run_url": "",
+    "admission": {
+      "amount": "1000",
+      "currency": "USD",
+      "usd_value": "1000",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$1,000",
+      "source_url": "https://github.com/superpreviousattending/canyonendrum/issues/546",
+      "payer": "superpreviousattending"
+    }
+  },
+  "finished_at": "2026-10-28T06:28:28.094928+00:00"
 }
