@@ -424,7 +424,8 @@ def dispatch(api, store, context, proof, lanes, remote_repair=False):
     def reserve(old):
         if old:
             status = old.get("status", "")
-            retryable = status.startswith("FAILED") and int(old.get("attempt", 0)) < 3 and (re.search(
+            retryable = (status.startswith("FAILED") or status in ("DISPATCHED", "DISPATCHING")) and \
+                int(old.get("attempt", 0)) < 3 and (re.search(
                 r"timeout|timed out|429|502|503|provider|gateway|network|connection|tokenharbor|publication",
                 json.dumps(old.get("failures") or old.get("diagnostic") or ""), re.I)
                 or (remote_repair and status == "FAILED_REMOTE_CHECKS"))
@@ -627,10 +628,14 @@ def retry_eligible(state):
     re-queued ``xpex-systems-ai/GXEON-AI#452``.
 
     ``FAILED_*`` stays retryable: a real fault is worth another attempt, bounded elsewhere.
+    ``DISPATCHED`` and ``DISPATCHING`` also stay retryable: a dispatch that was sent to GitHub
+    but never produced a PR (e.g., GitHub API transient failure, competition appeared after
+    dispatch, or the dispatch was interrupted) should be retried on the next cycle.
     """
     if not state:
         return True
-    return str(state.get("status", "")).startswith("FAILED")
+    status = str(state.get("status", ""))
+    return status.startswith("FAILED") or status in ("DISPATCHED", "DISPATCHING")
 
 
 def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=None):
