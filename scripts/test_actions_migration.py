@@ -5,11 +5,14 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import sqlite3
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from actions_dispatch import build_issue_search_queries, discover, query_window
+from actions_dispatch import (QUERY_EXCLUDED_EXPERIMENT, QUERY_EXCLUDED_VIDEO_DEMO,
+                              build_issue_search_queries, discover, query_window,
+                              retire_query_excluded_pending)
 from actions_github import GitHub, GitHubError, StateStore, task_id
 from actions_reconcile import classify_checks
 from actions_release import (git, manifest, protect_baseline_tests, regression_proof,
@@ -108,9 +111,35 @@ class TransportTests(unittest.TestCase):
                     self.assertIn("is:open", query)
                     self.assertIn("no:assignee", query)
                     self.assertIn("-linked:pr", query)
+                    self.assertIn("-label:video-demo", query)
                     self.assertNotIn(" OR ", query)
                     self.assertEqual(query.count("is:issue"), 1)
                     self.assertEqual(query.count("is:open"), 1)
+
+    def test_video_and_experiment_labels_are_excluded_in_query_and_cached_queue(self):
+        queries = build_issue_search_queries('label:bounty "mesh demo" OR "agent" is:issue is:open')
+        self.assertEqual(len(queries), 2)
+        self.assertTrue(all("-label:video-demo" in query for query in queries))
+
+        con = sqlite3.connect(":memory:")
+        con.execute("CREATE TABLE pending(task_id TEXT PRIMARY KEY,payload TEXT,lanes TEXT,"
+                    "signature TEXT,checked REAL DEFAULT 0,status TEXT DEFAULT 'pending')")
+        rows = [
+            ("video", {"labels": [{"name": "video-demo"}], "assignees": []}),
+            ("experiment", {"labels": [{"name": "type/experiment"}], "assignees": []}),
+            ("engineering", {"labels": [{"name": "bounty"}], "assignees": []}),
+        ]
+        for identity, payload in rows:
+            con.execute("INSERT INTO pending(task_id,payload,status) VALUES(?,?, 'pending')",
+                        (identity, json.dumps(payload)))
+        retired = retire_query_excluded_pending(con)
+        statuses = dict(con.execute("SELECT task_id,status FROM pending"))
+        self.assertEqual(retired[QUERY_EXCLUDED_VIDEO_DEMO], 1)
+        self.assertEqual(retired[QUERY_EXCLUDED_EXPERIMENT], 1)
+        self.assertEqual(statuses["video"], QUERY_EXCLUDED_VIDEO_DEMO)
+        self.assertEqual(statuses["experiment"], QUERY_EXCLUDED_EXPERIMENT)
+        self.assertEqual(statuses["engineering"], "pending")
+        con.close()
 
     def test_or_inside_quoted_text_is_not_split(self):
         queries = build_issue_search_queries('"wallet OR token" is:issue is:open')

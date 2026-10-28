@@ -24,10 +24,12 @@ PRIORITY_PROGRAM_QUERIES = tuple(QUERY_CONFIG.pop("priority_programs", ()))
 QUERIES = QUERY_CONFIG
 SEARCH_QUALIFIERS = (
     "is:issue", "is:open", "is:public", "archived:false",
-    "-label:type/experiment", "no:assignee", "-linked:pr",
+    "-label:type/experiment", "-label:video-demo", "no:assignee", "-linked:pr",
 )
-QUERY_POLICY_VERSION = "unassigned-no-closing-pr-contextual-branches-v3"
+QUERY_POLICY_VERSION = "unassigned-no-closing-pr-no-video-demo-contextual-branches-v4"
 QUERY_EXCLUDED_ASSIGNED = "query_excluded_assigned"
+QUERY_EXCLUDED_EXPERIMENT = "query_excluded_experiment"
+QUERY_EXCLUDED_VIDEO_DEMO = "query_excluded_video_demo"
 SEARCH_QUALIFIER_ATOM = re.compile(r"^-?[A-Za-z][A-Za-z0-9_-]*:")
 
 
@@ -176,24 +178,47 @@ def has_assignees(item):
     return assignees not in (None, "")
 
 
-def retire_assigned_pending(con):
-    """Retire cached search rows that the new server-side query now excludes.
+def has_label(item, label_name):
+    """Read a label name from GitHub search's REST issue representation."""
+    labels = item.get("labels")
+    if not isinstance(labels, list):
+        return False
+    return any(
+        (label.get("name") if isinstance(label, dict) else label) == label_name
+        for label in labels
+    )
+
+
+def query_exclusion_status(item):
+    """Return a durable queue status for exclusions enforced by GitHub search."""
+    if has_assignees(item):
+        return QUERY_EXCLUDED_ASSIGNED
+    if has_label(item, "type/experiment"):
+        return QUERY_EXCLUDED_EXPERIMENT
+    if has_label(item, "video-demo"):
+        return QUERY_EXCLUDED_VIDEO_DEMO
+    return ""
+
+
+def retire_query_excluded_pending(con):
+    """Retire cached rows that the current server-side query now excludes.
 
     The Actions cache can outlive a query-policy deployment. Replaying an old assigned
-    hit would bypass `no:assignee` even though all new GitHub searches use it, so migrate
-    that cached search evidence once when the policy changes.
+    issue or an explicitly non-engineering video deliverable would bypass the new GitHub
+    query qualifiers, so migrate that cached search evidence when the policy changes.
     """
-    retired = 0
+    retired = Counter()
     for identity, payload in con.execute("SELECT task_id,payload FROM pending").fetchall():
         try:
             item = json.loads(payload)
         except (TypeError, json.JSONDecodeError):
             continue
-        if isinstance(item, dict) and has_assignees(item):
-            retired += con.execute(
+        status = query_exclusion_status(item) if isinstance(item, dict) else ""
+        if status:
+            retired[status] += con.execute(
                 "UPDATE pending SET status=? WHERE task_id=?",
-                (QUERY_EXCLUDED_ASSIGNED, identity)).rowcount
-    return retired
+                (status, identity)).rowcount
+    return dict(retired)
 
 
 def _query_compiled_window(api, q, fresh=0):
@@ -523,12 +548,12 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
         con.execute("UPDATE pending SET status='pending',checked=0")
         con.execute("DELETE FROM candidates")
         con.execute("INSERT OR REPLACE INTO metadata VALUES('admission_policy',?)", (policy,))
-        assigned_retired = retire_assigned_pending(con)
+        query_excluded_retired = retire_query_excluded_pending(con)
         con.commit()
         print(json.dumps({"phase": "SEARCH_POLICY_MIGRATION",
                           "version": QUERY_POLICY_VERSION,
                           "qualifiers": list(SEARCH_QUALIFIERS),
-                          "assigned_cache_rows_retired": assigned_retired}), flush=True)
+                          "query_excluded_cache_rows_retired": query_excluded_retired}), flush=True)
     counts = Counter()
     candidates = {}
     intent_cache = {}
@@ -564,12 +589,13 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
             lanes_seen = set(json.loads(old[0])) if old else set()
             lanes_seen.add(lane)
             signature = item.get("updated_at", "")
-            was_query_excluded = bool(old and old[3] == QUERY_EXCLUDED_ASSIGNED)
+            was_query_excluded = bool(old and str(old[3]).startswith("query_excluded_"))
             pending = (was_query_excluded or not old or old[1] != signature
                        or time.time() - old[2] > 21600)
             status = "pending" if pending else old[3]
-            if has_assignees(item):
-                status = QUERY_EXCLUDED_ASSIGNED
+            excluded_status = query_exclusion_status(item)
+            if excluded_status:
+                status = excluded_status
             elif verdicts.get(repository) == "REPOSITORY_DOES_NOT_MERGE":
                 status = REPO_INTENT_RETIRED
             con.execute("INSERT OR REPLACE INTO pending VALUES(?,?,?,?,?,?)",

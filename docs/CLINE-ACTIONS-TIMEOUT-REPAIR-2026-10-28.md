@@ -44,7 +44,10 @@ the earlier effective deadline.
 - `python -W error scripts/test_cline_delivery_ownership.py` — 12 passed.
 - `python -W error scripts/test_icu_pipeline_suite.py` — all 16 sections passed, 100% green.
 
-These local checks verify the shared-budget behavior and workflow wiring. They do not prove a
-new Actions task has completed a four-hour run. The first post-deployment delivery is still the
-required live receipt for the extended Cline runway; only a verified pull request counts as a
-completed bounty delivery.
+These local checks verify the shared-budget behavior and workflow wiring. Post-deployment
+delivery [`40606461264`](https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40606461264)
+successfully launched Cline and produced a verified refusal after about 80 seconds because
+`bolivian-peru/os-moda#3` requires a real video, not a code change. That confirms Cline runs on
+the deployed Actions path, but it does not exercise the four-hour runway or count as a PR. A
+long-running engineering task and a real verified pull request remain the live proof required
+for delivery completion.
