@@ -10,10 +10,11 @@ import zipfile
 
 import autonomous_icu_pipeline as dispatcher
 import kaggle_engine_worker as worker
+from fleet_recovery_policy import is_repaired_infrastructure_failure
 
 
 class PartitionRegressionTests(unittest.TestCase):
-    def test_cline_engineering_timeout_is_sixty_minutes_for_every_ecosystem(self):
+    def test_cline_engineering_standalone_timeout_is_at_least_sixty_minutes(self):
         ecosystems = [
             [], ['typescript'], ['javascript'], ['python'], ['rust'], ['go'],
             ['typescript', 'rust'], ['unknown'],
@@ -21,6 +22,33 @@ class PartitionRegressionTests(unittest.TestCase):
         for ecosystem in ecosystems:
             with self.subTest(ecosystem=ecosystem):
                 self.assertGreaterEqual(worker.cline_turn_timeout_seconds(ecosystem), 3600)
+
+    def test_actions_cline_budget_is_shared_across_turns_and_expires(self):
+        worker.set_cline_execution_budget(None)
+        try:
+            with patch.object(worker.time, 'monotonic', side_effect=[100.0, 100.0, 3700.0, 14500.0]):
+                worker.set_cline_execution_budget(14400)
+                self.assertEqual(worker.cline_turn_timeout_seconds(['typescript']), 14400)
+                self.assertEqual(worker.cline_turn_timeout_seconds(['typescript']), 10800)
+                self.assertEqual(worker.cline_turn_timeout_seconds(['typescript']), 0)
+        finally:
+            worker.set_cline_execution_budget(None)
+
+    def test_actions_delivery_installs_four_hour_budget_before_first_cline_phase(self):
+        root = Path(__file__).resolve().parent.parent
+        delivery = (root / 'scripts' / 'actions_delivery.py').read_text(encoding='utf-8')
+        workflow = (root / '.github' / 'workflows' / 'engine2.yml').read_text(encoding='utf-8')
+        self.assertLess(delivery.index('worker.set_cline_execution_budget(cline_budget)'),
+                        delivery.index('worker.run_cline_claim_intake(task, lease)'))
+        self.assertIn("CLINE_TOTAL_BUDGET_SECONDS: '14400'", workflow)
+
+    def test_four_hour_cline_timeout_is_recognized_as_repaired_infrastructure_failure(self):
+        reason = 'Cline execution failed (exit -1): Command timed out after 14400 seconds'
+        self.assertTrue(is_repaired_infrastructure_failure(reason))
+        self.assertTrue(is_repaired_infrastructure_failure(
+            'CLINE_TOTAL_BUDGET_EXHAUSTED after preserving the current worktree'))
+        self.assertFalse(is_repaired_infrastructure_failure(
+            'Cline execution failed: Command timed out after 7200 seconds'))
 
     def test_real_collector_reads_new_nested_tests_and_unusual_names(self):
         for module in (dispatcher, worker):

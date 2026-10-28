@@ -60,6 +60,10 @@ query, `label:bounty "tool" OR "function calling"`, returns `[134, 0]`. The comp
 searches each branch independently and unions duplicate issues; it does not use a parenthesized
 whole query.
 
+The contextual compiler was subsequently deployed and exercised in Actions run
+[`40603676054`](https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40603676054);
+the per-branch query and supply outcome are recorded below.
+
 This repair only changes search scope and cache policy version. It does not change the payer,
 engineering, repository-intent, or competition gates. Run `40602001407` had raw lane counts
 `programs=36`, `normal=83`, `startup=142`, `founder=5`; its bounded sample recorded 31
@@ -139,6 +143,17 @@ The same run's final receipt was `qualified_fresh=0`, `qualified_unique=0`,
 `CURRENT_ISSUER_OFFER_MISSING`, three by-design declarations, two closed/read-only issues,
 and one mirror/non-engineering item. The query repair is deployed and verified; the influx
 plus quality delivery goal is still open because this cycle produced no qualified task.
+
+The next cursor rotation, Actions run
+[`40605520311`](https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40605520311),
+also completed successfully on `a1b1a60`. Its raw lane counts were `programs=26`,
+`normal=31`, `startup=271`, and `founder=207`. The `/reward` query returned 68,655 historical
+matches (4,982 in the seven-day query); its historical window was saturated and returned no
+hydrated rows in that partition, so it remains for horizon subdivision. The bounded admission
+sample logged 29 `CURRENT_ISSUER_OFFER_MISSING`, 28 `HARD_ISSUE_EVIDENCE_MISSING`, and three
+by-design refusals. Final counts remained `qualified_fresh=0`, `qualified_unique=0`,
+`dispatched=[]`, with 5,890 pending hydration rows. This is continued raw influx, not a task
+or PR success receipt.
 
 ## Current funding-program eligibility check
 

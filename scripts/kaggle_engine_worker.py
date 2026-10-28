@@ -2142,9 +2142,26 @@ def preserve_cline_edits(worktree: str) -> str:
     return f"{destination} sha256={digest}"
 
 
+_CLINE_EXECUTION_DEADLINE = None
+
+
+def set_cline_execution_budget(seconds: Optional[int]) -> None:
+    """Set one shared Cline deadline for a complete delivery, not a fresh timer per turn."""
+    global _CLINE_EXECUTION_DEADLINE
+    if seconds is None:
+        _CLINE_EXECUTION_DEADLINE = None
+        return
+    budget = int(seconds)
+    if budget <= 0:
+        raise ValueError("Cline execution budget must be positive")
+    _CLINE_EXECUTION_DEADLINE = time.monotonic() + budget
+
+
 def cline_turn_timeout_seconds(ecosystems: Optional[List[str]] = None) -> int:
-    """Give every Cline engineering turn the same bounded 60-minute runway."""
-    return 3600
+    """Use the 60-minute standalone default or the remaining shared delivery budget."""
+    if _CLINE_EXECUTION_DEADLINE is None:
+        return 3600
+    return max(0, int(_CLINE_EXECUTION_DEADLINE - time.monotonic()))
 
 
 def run_cline_engineering_turn(
@@ -2176,6 +2193,8 @@ def run_cline_engineering_turn(
     command = cline_worktree_command(worktree, prompt)
     ecosystems = arch.get('ecosystems') or [arch.get('ecosystem')]
     turn_timeout = cline_turn_timeout_seconds(ecosystems)
+    if turn_timeout <= 0:
+        return False, [], [], "CLINE_TOTAL_BUDGET_EXHAUSTED: no Cline execution time remains."
     _command_log(f'CLINE_TURN START repo={repo} issue={issue_number} timeout={turn_timeout}s')
     cline_started = time.monotonic()
     result = run_command_safe(command, cwd=worktree, timeout=turn_timeout)

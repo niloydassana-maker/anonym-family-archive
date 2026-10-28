@@ -158,6 +158,9 @@ def engineer():
         write_json(artifacts() / "engineering-result.json", {"status": "CANARY_PASSED", "at": utcnow(),
                                                "harness_sha": os.environ["GITHUB_SHA"]})
         return
+    cline_budget = int(os.environ.get("CLINE_TOTAL_BUDGET_SECONDS", "14400"))
+    worker.set_cline_execution_budget(cline_budget)
+    print(json.dumps({"phase": "CLINE_BUDGET", "total_seconds": cline_budget}), flush=True)
     task, state = document["context"], document["state"]
     repo, number = task["repo"], task["issue_number"]
     lease = SimpleNamespace(run_id=state["owner"], attempt=state["attempt"], lost=threading.Event(),
@@ -260,6 +263,8 @@ def engineer():
             if not ok:
                 feedback = diagnostic
                 worker.preserve_cline_edits(root)
+                if worker.cline_turn_timeout_seconds() <= 0:
+                    raise RuntimeError("CLINE_TOTAL_BUDGET_EXHAUSTED after preserving the current worktree")
                 continue
             try:
                 if git(root, "rev-parse", "HEAD").stdout.decode().strip() != base:

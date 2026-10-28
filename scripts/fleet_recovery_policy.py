@@ -127,7 +127,8 @@ def is_retryable_failure(reason: str) -> bool:
 def is_repaired_infrastructure_failure(reason: str) -> bool:
     """Only the controller faults repaired in this release may be authorized."""
     return not _HARD_FAILURE.search(reason or '') and bool(re.search(
-        r're-authenticate your Cline account|Cline execution failed.*Command timed out after (?:900|2400|3600) seconds',
+        r're-authenticate your Cline account|CLINE_TOTAL_BUDGET_EXHAUSTED|'
+        r'Cline execution failed.*Command timed out after (?:900|2400|3600|14400) seconds',
         reason or '', re.IGNORECASE,
     ))
 
