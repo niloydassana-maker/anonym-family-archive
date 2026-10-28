@@ -1,0 +1,55 @@
+{
+  "task_id": "2f232cf043266b0ecec52b2ff28744ea",
+  "repo": "Expensify/App",
+  "issue_number": 101234,
+  "status": "DISPATCHING",
+  "dispatch_id": "8e478afe61e047d99df412bc0a4b608d",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/101234",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "invariant",
+      "regression"
+    ],
+    "component_references": [
+      "EMAIL",
+      "OnyxUpdateManagerError",
+      "Report/index.ts",
+      "hasFocus()",
+      "src/libs/actions/Report/index.ts"
+    ],
+    "source_locations": [
+      "Report/index.ts",
+      "src/components/MoneyRequestReportView/MoneyRequestReportActionsList.tsx",
+      "src/hooks/useMarkAsRead.ts",
+      "src/libs/Network/SequentialQueue.ts",
+      "src/libs/ReportUtils.ts",
+      "src/libs/Visibility/index.native.ts",
+      "src/libs/actions/OnyxUpdates.ts",
+      "src/libs/actions/Report/index.ts",
+      "src/libs/actions/User.ts",
+      "src/pages/inbox/report/ReportActionsList.tsx"
+    ],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/101234#issuecomment-5687516777",
+      "https://github.com/Expensify/App/issues/101234#issuecomment-6290574723"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/101234",
+    "fetched_at": "2026-10-28T08:49:59.443909+00:00"
+  },
+  "lanes": [
+    "programs"
+  ],
+  "dispatched_at": "2026-10-28T08:50:10.029679+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T08:50:10.029697+00:00"
+}
