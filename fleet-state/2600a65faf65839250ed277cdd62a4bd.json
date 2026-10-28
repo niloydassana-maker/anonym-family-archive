@@ -2,7 +2,7 @@
   "task_id": "2600a65faf65839250ed277cdd62a4bd",
   "repo": "keepassxreboot/keepassxc",
   "issue_number": 255,
-  "status": "DISPATCHING",
+  "status": "DISPATCHED",
   "dispatch_id": "3fd272e43b3e4452b366a26421085acd",
   "admission": {
     "funding": {
@@ -40,5 +40,5 @@
   ],
   "dispatched_at": "2026-10-28T06:12:08.745563+00:00",
   "attempt": 0,
-  "updated_at": "2026-10-28T06:12:08.745580+00:00"
+  "updated_at": "2026-10-28T06:12:10.448407+00:00"
 }
