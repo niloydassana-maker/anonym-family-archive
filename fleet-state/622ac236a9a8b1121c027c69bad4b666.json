@@ -1,0 +1,56 @@
+{
+  "task_id": "622ac236a9a8b1121c027c69bad4b666",
+  "repo": "Expensify/App",
+  "issue_number": 101425,
+  "status": "DISPATCHING",
+  "dispatch_id": "62ca0d2e9e344aa6809ddf68d3fe9580",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/101425",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "compiler",
+      "crash",
+      "regression"
+    ],
+    "component_references": [
+      "EMAIL",
+      "EXCLUDE_FROM_LAST_VISITED_PATH"
+    ],
+    "source_locations": [
+      "android/app/src/main/java/com/expensify/chat/ShareActionHandlerModule.kt",
+      "android/app/src/main/java/com/expensify/chat/intentHandler/FileIntentHandler.kt",
+      "src/CONST/runtimeDefaults.ts",
+      "src/hooks/useOnboardingFlow.ts",
+      "src/libs/Navigation/AppNavigator/AuthScreens.tsx",
+      "src/libs/Navigation/AppNavigator/Navigators/OnboardingModalNavigator.tsx",
+      "src/libs/Navigation/AppNavigator/createRootStackNavigator/GetStateForActionHandlers.ts",
+      "src/libs/Navigation/AppNavigator/createRootStackNavigator/RootStackRouter.ts",
+      "src/libs/Navigation/NavigationRoot.tsx",
+      "src/libs/actions/Link.ts",
+      "src/libs/actions/Welcome/OnboardingFlow.ts",
+      "src/libs/navigateAfterOnboarding.ts",
+      "src/pages/OnboardingWorkEmail/index.native.tsx",
+      "src/pages/Share/ShareRootPage.tsx"
+    ],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/101425#issuecomment-5715216310"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/101425",
+    "fetched_at": "2026-10-28T10:15:57.433423+00:00"
+  },
+  "lanes": [
+    "programs"
+  ],
+  "dispatched_at": "2026-10-28T10:16:11.902584+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T10:16:11.902601+00:00"
+}
