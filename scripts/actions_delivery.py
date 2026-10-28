@@ -79,6 +79,36 @@ def write_json_atomic(path, document):
     os.replace(tmp, path)
 
 
+def validate_preparation(report, path):
+    """Validate a Cline preparation report before any downstream phase reads it.
+
+    Validates: action in {retry, reject, incomplete}, base_sha is 40-char hex,
+    plan present when action == retry, regression_plan.component present.
+    Raises ClineDeliverableInvalid on any violation.
+    """
+    if not isinstance(report, dict):
+        raise ClineDeliverableInvalid(path, "not a JSON object")
+
+    action = report.get("action")
+    if action not in ("retry", "reject", "incomplete"):
+        raise ClineDeliverableInvalid(path, f"invalid action: {action!r}")
+
+    base_sha = report.get("base_sha", "")
+    if not isinstance(base_sha, str) or len(base_sha) != 40 or not all(c in "0123456789abcdef" for c in base_sha):
+        raise ClineDeliverableInvalid(path, f"invalid base_sha: {base_sha!r}")
+
+    if action == "retry":
+        plan = report.get("plan")
+        if not plan:
+            raise ClineDeliverableInvalid(path, "retry action missing plan")
+        if not isinstance(plan, dict) or "component" not in plan:
+            raise ClineDeliverableInvalid(path, "retry plan missing regression_plan.component")
+
+    rp = report.get("regression_plan") or {}
+    if isinstance(rp, dict) and "component" not in rp:
+        raise ClineDeliverableInvalid(path, "regression_plan missing component")
+
+
 def prepared_touched_files(prepared):
     """Derive the set of files the prepared plan will touch, from the contract-validated
     regression plan plus any source paths the plan names."""
@@ -379,6 +409,9 @@ def engineer():
             # artefact contract was not satisfied.
             if not report_path.exists():
                 raise ClineDeliverableMissing(report_path, elapsed=None, exit_code=0)
+            # F3: Validate the report before any downstream phase reads it.
+            report = read_json(report_path)
+            validate_preparation(report, report_path)
             try:
                 if git(root, "rev-parse", "HEAD").stdout.decode().strip() != base:
                     raise ValueError("Cline changed Git HEAD before release verification")
