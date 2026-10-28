@@ -1,0 +1,38 @@
+{
+  "task_id": "241a034f34060192efacb54f277fc379",
+  "repo": "alfrexo95/bounty-bot",
+  "issue_number": 27,
+  "status": "DISPATCHING",
+  "dispatch_id": "33a7166198c644f694f645a0d34617a3",
+  "admission": {
+    "funding": {
+      "amount": "100",
+      "currency": "USD",
+      "usd_value": "100",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$100",
+      "source_url": "https://github.com/alfrexo95/bounty-bot/issues/27",
+      "payer": "alfrexo95"
+    },
+    "technical_signals": [
+      "issue",
+      "issues"
+    ],
+    "component_references": [],
+    "source_locations": [],
+    "engineering_evidence_sources": [
+      "https://github.com/alfrexo95/bounty-bot/issues/27"
+    ],
+    "source_issue": "https://github.com/alfrexo95/bounty-bot/issues/27",
+    "fetched_at": "2026-10-28T16:04:07.424956+00:00"
+  },
+  "lanes": [
+    "normal",
+    "startup"
+  ],
+  "dispatched_at": "2026-10-28T16:04:08.796670+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T16:04:08.796691+00:00"
+}
