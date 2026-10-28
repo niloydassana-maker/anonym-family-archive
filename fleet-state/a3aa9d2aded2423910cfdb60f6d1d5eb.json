@@ -2,7 +2,7 @@
   "task_id": "a3aa9d2aded2423910cfdb60f6d1d5eb",
   "repo": "fyne-io/fyne",
   "issue_number": 1062,
-  "status": "DISPATCHING",
+  "status": "DISPATCHED",
   "dispatch_id": "ef48664bc4594ac9ba9989047538487d",
   "admission": {
     "funding": {
@@ -38,5 +38,5 @@
   ],
   "dispatched_at": "2026-10-28T18:32:04.857409+00:00",
   "attempt": 0,
-  "updated_at": "2026-10-28T18:32:04.857428+00:00"
+  "updated_at": "2026-10-28T18:32:06.641521+00:00"
 }
