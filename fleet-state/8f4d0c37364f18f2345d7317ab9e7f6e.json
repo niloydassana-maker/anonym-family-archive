@@ -2,7 +2,7 @@
   "task_id": "8f4d0c37364f18f2345d7317ab9e7f6e",
   "repo": "alfrexo95/bounty-bot",
   "issue_number": 28,
-  "status": "DISPATCHING",
+  "status": "DISPATCHED",
   "dispatch_id": "e2622cfdcd354bf0a433756a868414f0",
   "admission": {
     "funding": {
@@ -34,5 +34,5 @@
   ],
   "dispatched_at": "2026-10-28T16:04:03.142023+00:00",
   "attempt": 0,
-  "updated_at": "2026-10-28T16:04:03.142043+00:00"
+  "updated_at": "2026-10-28T16:04:05.055106+00:00"
 }
