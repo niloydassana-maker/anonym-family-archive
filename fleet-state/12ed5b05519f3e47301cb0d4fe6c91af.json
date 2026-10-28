@@ -2,7 +2,7 @@
   "task_id": "12ed5b05519f3e47301cb0d4fe6c91af",
   "repo": "superpreviousattending/canyonendrum",
   "issue_number": 546,
-  "status": "DISPATCHING",
+  "status": "DISPATCHED",
   "dispatch_id": "e435bfc9e30949729df25faeb414ad27",
   "admission": {
     "funding": {
@@ -39,5 +39,5 @@
   ],
   "dispatched_at": "2026-10-28T06:26:25.400886+00:00",
   "attempt": 0,
-  "updated_at": "2026-10-28T06:26:25.400904+00:00"
+  "updated_at": "2026-10-28T06:26:27.366570+00:00"
 }
