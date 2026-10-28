@@ -2,7 +2,7 @@
   "task_id": "313b923dbdb95ed77c06ede96a12ce46",
   "repo": "ruohong2018/ruohong2018.github.io",
   "issue_number": 671,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "a6e7c7ce3732442bbf7b4a7305878db1",
   "admission": {
     "funding": {
@@ -34,6 +34,12 @@
     "normal"
   ],
   "dispatched_at": "2026-10-28T06:26:18.310717+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-28T06:26:20.409924+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-28T06:26:30.495116+00:00",
+  "owner": "40643852696:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40643852696",
+  "harness_sha": "1faafe40e39d1b9beda95445f10e139e68924414",
+  "claimed_at": "2026-10-28T06:26:30.495095+00:00"
 }
