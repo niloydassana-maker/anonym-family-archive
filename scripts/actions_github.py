@@ -131,6 +131,17 @@ class GitHub:
 
 
 CLAIM_TTL_SECONDS = 1800  # 30 minutes: a claim older than this with no live run is expired
+CLAIM_LEASE_GRACE_SECONDS = 300  # 5 minutes grace beyond workflow job timeout
+
+
+def _lease_expires_at(claimed_at: str) -> str:
+    """Compute lease expiry timestamp from claimed_at."""
+    from datetime import datetime, timezone, timedelta
+    claimed = datetime.fromisoformat(claimed_at.replace("Z", "+00:00"))
+    return (claimed + timedelta(seconds=CLAIM_TTL_SECONDS + CLAIM_LEASE_GRACE_SECONDS)).isoformat()
+
+
+pass
 
 
 class StateStore:
@@ -139,6 +150,34 @@ class StateStore:
         self.api = api or GitHub()
         self.repo = repository(repo or os.environ.get("GITHUB_REPOSITORY", "isearchxsolve/anonym-family-archive"))
         self.branch = "bounty-control"
+
+    def _lease_expired_and_dead(self, old, probes: int = 2) -> bool:
+        """Return True if the claim lease has expired AND the owner run is provably dead.
+
+        A lease is expired when lease_expires_at is in the past. A dead owner means
+        the Actions run is completed or the API probe fails twice in a row.
+        Unknown (probe error) is never treated as dead.
+        """
+        expires = old.get("lease_expires_at")
+        if not expires:
+            return False
+        try:
+            expires_dt = datetime.fromisoformat(expires.replace("Z", "+00:00"))
+        except (ValueError, AttributeError):
+            return False
+        if datetime.now(timezone.utc) < expires_dt:
+            return False  # Lease not yet expired
+
+        # Lease expired - check if owner is provably dead
+        run_id = old.get("owner", "").split(":")[0]
+        for _ in range(probes):
+            try:
+                run = self.api.api(f"repos/{self.repo}/actions/runs/{run_id}")
+            except GitHubError:
+                continue  # Probe error is not proof of death
+            if run.get("status") == "completed":
+                return True  # Completed is unambiguous: owner is done
+        return False  # Unknown is never treated as dead
 
     def ensure(self):
         try:
@@ -215,30 +254,17 @@ class StateStore:
                 # F5: claim lease expiry — a stale claim with no live run is expired,
                 # not a permanent lock. A missing run API result means the runner
                 # is gone; treat the claim as expired.
-                run_id = old.get("owner", "").split(":")[0]
-                prior = None
-                try:
-                    prior = self.api.api(f"repos/{self.repo}/actions/runs/{run_id}")
-                except GitHubError:
-                    prior = None
-                if prior is not None and prior.get("status") != "completed":
-                    # Also expire by age if the run record exists but the claim is stale.
-                    claimed_at = old.get("claimed_at")
-                    if claimed_at:
-                        claimed = datetime.fromisoformat(claimed_at.replace("Z", "+00:00"))
-                        age = (datetime.now(timezone.utc) - claimed).total_seconds()
-                        if age > CLAIM_TTL_SECONDS:
-                            pass  # expired: fall through to re-claim
-                        else:
-                            raise ValueError("A live Actions run already owns this task")
-                    else:
-                        raise ValueError("A live Actions run already owns this task")
+                if self._lease_expired_and_dead(old):
+                    pass  # expired: fall through to re-claim
+                else:
+                    raise ValueError("A live Actions run already owns this task")
             attempt = int(old.get("attempt", 0)) + 1
             if attempt > (4 if recovery else 3):
                 raise ValueError("Bounded recovery attempts exhausted")
             return {**old, "status": "CLAIMED", "attempt": attempt, "owner": owner,
                     "previous_owner": old.get("owner"), "previous_status": old.get("status"),
-                    "run_url": run_url, "harness_sha": harness_sha, "claimed_at": utcnow()}
+                    "run_url": run_url, "harness_sha": harness_sha, "claimed_at": utcnow(),
+                    "lease_expires_at": _lease_expires_at(utcnow())}
         return self.mutate(identity, reserve)
 
     def owned_update(self, identity, owner, **fields):

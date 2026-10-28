@@ -55,6 +55,22 @@ class ClineDeliverableInvalid(RuntimeError):
         super().__init__(f"Cline deliverable invalid at {path}: {reason}")
 
 
+class RunnerShutdown(RuntimeError):
+    """The Actions runner shut down mid-delivery (exit_143, shutdown signal)."""
+    def __init__(self, message=None, inferred=False):
+        self.message = message
+        self.inferred = inferred
+        super().__init__(message or "Runner shutdown detected")
+
+
+class InfrastructureFault(RuntimeError):
+    """Infrastructure failure: disk, network, executable install, toolchain."""
+    def __init__(self, subsystem, detail=""):
+        self.subsystem = subsystem
+        self.detail = detail
+        super().__init__(f"Infrastructure fault in {subsystem}: {detail}")
+
+
 def write_json_atomic(path, document):
     """Write JSON to a temp path in the same directory, then os.replace so a reader
     never observes a partial document."""
@@ -237,7 +253,7 @@ def engineer():
         reject_preparation(blocked, task, repo, number)
         return
     root, base = prepared["worktree"], prepared["base_sha"]
-    default_branch = prepared["default_branch"]
+    default_branch = prepared.get("base_branch") or prepared["default_branch"]
     try:
         comparison = api.api(f"repos/{repo}/compare/{base}...{default_branch}")
         status = comparison.get("status")
@@ -480,7 +496,7 @@ def publish():
     if not proof:
         raise ValueError("Release funding/issue state blocked: " + reason)
     competition(api, repo, number, own_head=state.get("head_sha") or head)
-    current_base = api.api(f"repos/{repo}/commits/{receipt['default_branch']}")["sha"]
+    current_base = api.api(f"repos/{repo}/commits/{receipt.get('base_branch') or receipt['default_branch']}")["sha"]
     if current_base != receipt["base_sha"]:
         raise ValueError("Upstream base changed after native verification; rebase and reverify before publication")
     account = api.api("user")["login"]
@@ -610,6 +626,24 @@ def main():
                    {"status": "FAILED_DELIVERABLE_INVALID",
                     "diagnostic": str(exc),
                     "path": exc.path, "reason": exc.reason,
+                    "at": utcnow()})
+        raise
+    except RunnerShutdown as exc:
+        # F4: Runner shutdown mid-delivery — infrastructure fault, not engineer failure.
+        write_json(artifacts() / (args.phase + "-failure.json"),
+                   {"status": "FAILED_RUNNER_SHUTDOWN",
+                    "diagnostic": str(exc),
+                    "inferred": exc.inferred,
+                    "message": exc.message,
+                    "at": utcnow()})
+        raise
+    except InfrastructureFault as exc:
+        # F4: Infrastructure fault — disk, network, executable install, toolchain.
+        write_json(artifacts() / (args.phase + "-failure.json"),
+                   {"status": "FAILED_INFRASTRUCTURE",
+                    "diagnostic": str(exc),
+                    "subsystem": exc.subsystem,
+                    "detail": exc.detail,
                     "at": utcnow()})
         raise
     except Exception as exc:
