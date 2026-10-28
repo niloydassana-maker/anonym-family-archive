@@ -110,7 +110,7 @@ HARD = re.compile(
     r"cross.tenant|serialization|compilers?|parsers?|memory|latency|throughput|"
     r"regressions?|crash\w*|panic\w*|corrupt\w*|transactions?|consensus|ABI|"
     r"performance|distributed|schedulers?|algorithms?|cryptograph\w*|"
-    r"encryption|signatures?|deadlocks?)\b", re.I)
+    r"encryption|signatures?|deadlocks?|bug\w*|error\w*|fail\w*|broken|issue\w*|problem\w*|defect\w*)\b", re.I)
 COMPONENT = re.compile(
     r"(?<!https://)(?:[\w.-]+/)+[\w.-]+\.[a-zA-Z0-9]+|"
     r"\b[A-Za-z_][A-Za-z0-9_:]*\(\)|\b(?:E[A-Z0-9_]{4,}|[A-Z][A-Za-z]+Error)\b")
