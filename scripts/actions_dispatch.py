@@ -1069,5 +1069,61 @@ def is_code_change_request(title: str, body: str, labels: list) -> tuple:
     # --- 4. FAIL-OPEN: admit anything ambiguous ----------------------------
     return (True, "unclear_fail_open")
 
+# ---------------------------------------------------------------------------
+# F8: Cron heartbeat - make discovery trigger observable and self-healing
+# ---------------------------------------------------------------------------
+
+def heartbeat(now=None, cadence=3600, margin=1200, cooldown=1800):
+    """Heartbeat that fires discovery when it has gone stale.
+
+    Returns (action, reason) where action is "fire" or "hold".
+    """
+    latest = newest_schedule_run()
+    if latest is None:
+        return ("fire", "no_scheduled_run_observed")
+    if any(running(r) for r in recent_runs()):
+        return ("hold", "already_running")
+    age = (now or utcnow()) - latest["created_at"]
+    if age < cadence - margin:
+        return ("hold", "fresh")
+    if within_cooldown(age):
+        return ("hold", "cooldown")
+    return ("fire", "stale")
+
+
+def newest_schedule_run():
+    """Return the most recent schedule-evented discovery run, or None."""
+    try:
+        runs = api.api(f"repos/{store.repo}/actions/runs?per_page=50")
+        schedule_runs = [
+            r for r in runs.get("workflow_runs", [])
+            if r.get("event") == "schedule"
+        ]
+        if not schedule_runs:
+            return None
+        schedule_runs.sort(key=lambda r: r.get("created_at", ""), reverse=True)
+        return schedule_runs[0]
+    except (GitHubError, OSError, ValueError, KeyError):
+        return None
+
+
+def recent_runs():
+    """Return recently running discovery runs."""
+    try:
+        runs = api.api(f"repos/{store.repo}/actions/runs?per_page=50")
+        return [
+            r for r in runs.get("workflow_runs", [])
+            if r.get("status") in ("queued", "in_progress")
+        ]
+    except (GitHubError, OSError, ValueError, KeyError):
+        return []
+
+
+def within_cooldown(age):
+    """Check if within cooldown period after last fire."""
+    cooldown = 1800  # 30 minutes
+    return age < cooldown
+
+
 if __name__ == "__main__":
     main()
