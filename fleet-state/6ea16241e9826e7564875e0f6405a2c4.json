@@ -2,7 +2,7 @@
   "task_id": "6ea16241e9826e7564875e0f6405a2c4",
   "repo": "Cyon0x/earnly",
   "issue_number": 1,
-  "status": "DISPATCHING",
+  "status": "DISPATCHED",
   "dispatch_id": "321b8100bbb54c2cbea73a1eb837175a",
   "admission": {
     "funding": {
@@ -36,5 +36,5 @@
   ],
   "dispatched_at": "2026-10-28T19:21:50.231090+00:00",
   "attempt": 0,
-  "updated_at": "2026-10-28T19:21:50.231106+00:00"
+  "updated_at": "2026-10-28T19:21:53.203591+00:00"
 }
