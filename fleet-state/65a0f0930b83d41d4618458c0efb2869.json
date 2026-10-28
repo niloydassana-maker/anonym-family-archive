@@ -2,7 +2,7 @@
   "task_id": "65a0f0930b83d41d4618458c0efb2869",
   "repo": "bolivian-peru/os-moda",
   "issue_number": 3,
-  "status": "DISPATCHING",
+  "status": "DISPATCHED",
   "dispatch_id": "ebc2ca44e0384d279dd137be99fd7c7d",
   "admission": {
     "funding": {
@@ -49,5 +49,5 @@
   ],
   "dispatched_at": "2026-10-28T00:05:10.124445+00:00",
   "attempt": 0,
-  "updated_at": "2026-10-28T00:05:10.124463+00:00"
+  "updated_at": "2026-10-28T00:05:11.837940+00:00"
 }
