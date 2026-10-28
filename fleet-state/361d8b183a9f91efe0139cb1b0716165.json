@@ -1,0 +1,57 @@
+{
+  "task_id": "361d8b183a9f91efe0139cb1b0716165",
+  "repo": "Expensify/App",
+  "issue_number": 102241,
+  "status": "DISPATCHING",
+  "dispatch_id": "6e23108141ec437a831aa925bc0278c7",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/102241",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "bug",
+      "crash",
+      "error",
+      "failure",
+      "issue",
+      "issues",
+      "regression"
+    ],
+    "component_references": [
+      "EMAIL",
+      "RangeError",
+      "format()"
+    ],
+    "source_locations": [
+      "src/components/Search/SearchList/ListItem/DateCell.tsx",
+      "src/components/Search/hooks/useSearchColumnWidths.ts"
+    ],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/102241",
+      "https://github.com/Expensify/App/issues/102241#issuecomment-5826203644",
+      "https://github.com/Expensify/App/issues/102241#issuecomment-5826205381",
+      "https://github.com/Expensify/App/issues/102241#issuecomment-5879445494",
+      "https://github.com/Expensify/App/issues/102241#issuecomment-6089815837",
+      "https://github.com/Expensify/App/issues/102241#issuecomment-6179294703",
+      "https://github.com/Expensify/App/issues/102241#issuecomment-6237135772",
+      "https://github.com/Expensify/App/issues/102241#issuecomment-6278236129",
+      "https://github.com/Expensify/App/issues/102241#issuecomment-6375419939"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/102241",
+    "fetched_at": "2026-10-28T18:46:18.434422+00:00"
+  },
+  "lanes": [
+    "programs"
+  ],
+  "dispatched_at": "2026-10-28T18:46:28.250780+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T18:46:28.250800+00:00"
+}
