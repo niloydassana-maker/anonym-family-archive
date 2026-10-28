@@ -2,7 +2,7 @@
   "task_id": "a3aa9d2aded2423910cfdb60f6d1d5eb",
   "repo": "fyne-io/fyne",
   "issue_number": 1062,
-  "status": "PUBLISHING",
+  "status": "PUBLISHED_PENDING_CHECKS",
   "dispatch_id": "ef48664bc4594ac9ba9989047538487d",
   "admission": {
     "funding": {
@@ -38,7 +38,7 @@
   ],
   "dispatched_at": "2026-10-28T18:32:04.857409+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T20:25:59.100987+00:00",
+  "updated_at": "2026-10-28T20:26:13.073165+00:00",
   "owner": "40746023790:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
@@ -47,5 +47,10 @@
   "claimed_at": "2026-10-28T18:32:22.321516+00:00",
   "proposed_head": "4a32ff7c24d319fdba38cf353aa94f8937fb5934",
   "proposed_branch": "fix/bounty-1062-a3aa9d-1",
-  "verified_run": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40746023790"
+  "verified_run": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40746023790",
+  "pr_url": "https://github.com/fyne-io/fyne/pull/6637",
+  "pr_number": 6637,
+  "head_sha": "4a32ff7c24d319fdba38cf353aa94f8937fb5934",
+  "branch": "fix/bounty-1062-a3aa9d-1",
+  "release_digest": "642d6b7d218fb8062d2e50743de6b831699b5c077b0d8135920d0f9086415589"
 }
