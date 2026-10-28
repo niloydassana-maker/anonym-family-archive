@@ -1,0 +1,42 @@
+{
+  "task_id": "3c141e9a3bf51d6f664a12b6e133201c",
+  "repo": "Expensify/App",
+  "issue_number": 104461,
+  "status": "DISPATCHING",
+  "dispatch_id": "ac5639b939b0467da6c9ccb52302251a",
+  "admission": {
+    "funding": {
+      "amount": "250",
+      "currency": "USD",
+      "usd_value": "250",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$250",
+      "source_url": "https://github.com/Expensify/App/issues/104461",
+      "payer": "melvin-bot[bot]"
+    },
+    "technical_signals": [
+      "regression"
+    ],
+    "component_references": [
+      "EMAIL"
+    ],
+    "source_locations": [
+      "src/components/ValidateCodeInput.tsx",
+      "src/hooks/useDynamicBackPath.ts",
+      "src/pages/settings/Profile/Contacts/DynamicContactMethodDetailsPage.tsx"
+    ],
+    "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/104461#issuecomment-6289493442"
+    ],
+    "source_issue": "https://github.com/Expensify/App/issues/104461",
+    "fetched_at": "2026-10-28T09:11:03.482676+00:00"
+  },
+  "lanes": [
+    "programs"
+  ],
+  "dispatched_at": "2026-10-28T09:11:14.406127+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T09:11:14.406145+00:00"
+}
