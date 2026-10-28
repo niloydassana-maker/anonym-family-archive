@@ -2,8 +2,8 @@
   "task_id": "a44638111bdf2514b4e4dee1f4e49205",
   "repo": "Expensify/App",
   "issue_number": 100120,
-  "status": "FAILED_MISSING_RECEIPT",
-  "dispatch_id": "386f85fd79a64bcd9a0aee19651e01e4",
+  "status": "DISPATCHING",
+  "dispatch_id": "b94ba66923e74a8984021c0aa5091ce4",
   "admission": {
     "funding": {
       "amount": "250",
@@ -17,6 +17,16 @@
       "payer": "melvin-bot[bot]"
     },
     "technical_signals": [
+      "bug",
+      "defect",
+      "defects",
+      "error",
+      "fails",
+      "failure",
+      "issue",
+      "issuecomment",
+      "issues",
+      "problem",
       "regression",
       "transaction",
       "transactions"
@@ -32,18 +42,33 @@
       "src/libs/actions/IOU/SplitTransactionUpdate.ts"
     ],
     "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/100120",
       "https://github.com/Expensify/App/issues/100120#issuecomment-5807508947",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-5807511497",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-5899678099",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6047623041",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6115715764",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6157040549",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6189982254",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6252004277",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6278189117",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6375433841",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6398800275",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6399861474",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6421281567",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6421307475",
+      "https://github.com/Expensify/App/issues/100120#issuecomment-6429628519",
       "https://github.com/Expensify/App/issues/100120#issuecomment-6448598170"
     ],
     "source_issue": "https://github.com/Expensify/App/issues/100120",
-    "fetched_at": "2026-10-27T21:20:52.824002+00:00"
+    "fetched_at": "2026-10-28T23:39:29.930030+00:00"
   },
   "lanes": [
     "programs"
   ],
-  "dispatched_at": "2026-10-27T21:21:03.878298+00:00",
+  "dispatched_at": "2026-10-28T23:39:39.519566+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-27T21:51:53.648200+00:00",
+  "updated_at": "2026-10-28T23:39:39.519581+00:00",
   "owner": "40586051300:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
