@@ -2,8 +2,8 @@
   "task_id": "361d8b183a9f91efe0139cb1b0716165",
   "repo": "Expensify/App",
   "issue_number": 102241,
-  "status": "FAILED_MISSING_RECEIPT",
-  "dispatch_id": "6e23108141ec437a831aa925bc0278c7",
+  "status": "DISPATCHING",
+  "dispatch_id": "bf183c095b8d425986d9e4fc8df247f5",
   "admission": {
     "funding": {
       "amount": "250",
@@ -46,14 +46,14 @@
       "https://github.com/Expensify/App/issues/102241#issuecomment-6375419939"
     ],
     "source_issue": "https://github.com/Expensify/App/issues/102241",
-    "fetched_at": "2026-10-28T18:46:18.434422+00:00"
+    "fetched_at": "2026-10-28T22:31:10.418921+00:00"
   },
   "lanes": [
     "programs"
   ],
-  "dispatched_at": "2026-10-28T18:46:28.250780+00:00",
+  "dispatched_at": "2026-10-28T22:31:20.397956+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T18:50:29.986451+00:00",
+  "updated_at": "2026-10-28T22:31:20.397975+00:00",
   "owner": "40748239200:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
