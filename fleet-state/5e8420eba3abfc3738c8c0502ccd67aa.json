@@ -1,0 +1,37 @@
+{
+  "task_id": "5e8420eba3abfc3738c8c0502ccd67aa",
+  "repo": "librepods-org/librepods",
+  "issue_number": 878,
+  "status": "DISPATCHING",
+  "dispatch_id": "d09ce31335754fbe84311a5e8de6ec3a",
+  "admission": {
+    "funding": {
+      "amount": "100",
+      "currency": "USD",
+      "usd_value": "100",
+      "quote": {
+        "basis": "USD face value"
+      },
+      "raw": "$100",
+      "source_url": "https://github.com/librepods-org/librepods/issues/878",
+      "payer": "kavishdevar"
+    },
+    "technical_signals": [
+      "issuecomment",
+      "issues"
+    ],
+    "component_references": [],
+    "source_locations": [],
+    "engineering_evidence_sources": [
+      "https://github.com/librepods-org/librepods/issues/878"
+    ],
+    "source_issue": "https://github.com/librepods-org/librepods/issues/878",
+    "fetched_at": "2026-10-28T16:46:33.779571+00:00"
+  },
+  "lanes": [
+    "startup"
+  ],
+  "dispatched_at": "2026-10-28T16:46:36.267385+00:00",
+  "attempt": 0,
+  "updated_at": "2026-10-28T16:46:36.267402+00:00"
+}
