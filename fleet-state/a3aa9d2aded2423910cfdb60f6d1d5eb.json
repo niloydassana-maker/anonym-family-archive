@@ -38,7 +38,7 @@
   ],
   "dispatched_at": "2026-10-28T18:32:04.857409+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-28T20:26:13.073165+00:00",
+  "updated_at": "2026-10-28T20:26:26.298788+00:00",
   "owner": "40746023790:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
@@ -52,5 +52,7 @@
   "pr_number": 6637,
   "head_sha": "4a32ff7c24d319fdba38cf353aa94f8937fb5934",
   "branch": "fix/bounty-1062-a3aa9d-1",
-  "release_digest": "642d6b7d218fb8062d2e50743de6b831699b5c077b0d8135920d0f9086415589"
+  "release_digest": "642d6b7d218fb8062d2e50743de6b831699b5c077b0d8135920d0f9086415589",
+  "at": "2026-10-28T20:26:14.214315+00:00",
+  "finished_at": "2026-10-28T20:26:25.841584+00:00"
 }
