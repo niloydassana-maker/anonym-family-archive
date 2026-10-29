@@ -137,6 +137,42 @@ passed through a shell argument or appeared in process listings.
 
 ---
 
+## 4a. First live cycle — what it caught
+
+The first real discovery cycle on the new account was worth more than any local suite, because
+it executed paths the suites did not reach. Two defects surfaced immediately:
+
+1. **`repository_velocity` raised `NameError: timedelta`.** The function used `timedelta`
+   without importing it, so the cycle crashed *after* admission and **dispatched nothing**. The
+   velocity tests covered the sort key and the budget but never called the measurement itself.
+2. **It returned `0` on an API error.** Zero means "provably quiet", so an unmeasurable repo
+   ranked as the quietest in its band and would have been attempted first — the exact opposite
+   of the contract. It now returns `None`, which sorts last and yields the full budget.
+
+Both are fixed in `83075af`, with tests that call `repository_velocity` directly
+(commit count, per-cycle caching, and error-is-`None`).
+
+### Lane priority
+
+Candidates are now queued by band before velocity (`6c69292`):
+`programs(0) → founder(1) → startup(2) → normal(3) → other(4)`. Priority dominates across
+bands; velocity only breaks ties inside a band. Without this, a busy normal-lane issue could
+outrank a founder issue purely because its repository happened to be quieter.
+
+### Live receipts after the restart
+
+| observation | value |
+| --- | --- |
+| discovery `40847048909` | success — dispatched 2 deliveries |
+| delivery `40847696604` (Expensify/App#101234) | claim 23s, engineer entered Cline |
+| delivery `40847726807` (Expensify/App#104341) | claim 21s, engineer entered Cline |
+| lease for #101234 | `09:11:52Z → 13:16:52Z` (4h05m = 14400s + 300s grace) |
+| lease for #104341 | `09:12:04Z → 13:17:04Z` |
+| headroom step | completed on both — no longer aborts the job (F7) |
+
+The two lease values are the F5 fix observed in production: the old code would have written a
+35-minute lease against a 4-hour run.
+
 ## 5. Operational runbook
 
 **Push** (the global git config pins the old username, so it must be overridden):
