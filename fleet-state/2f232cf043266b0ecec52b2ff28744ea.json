@@ -2,7 +2,7 @@
   "task_id": "2f232cf043266b0ecec52b2ff28744ea",
   "repo": "Expensify/App",
   "issue_number": 101234,
-  "status": "CLAIMED",
+  "status": "FAILED_ENGINEER",
   "dispatch_id": "0980c45cada44250ad3bd3e461369029",
   "admission": {
     "funding": {
@@ -71,7 +71,7 @@
   ],
   "dispatched_at": "2026-10-29T09:11:27.710333+00:00",
   "attempt": 3,
-  "updated_at": "2026-10-29T09:11:52.530924+00:00",
+  "updated_at": "2026-10-29T10:44:44.671162+00:00",
   "owner": "40847696604:1",
   "previous_owner": "40783157643:1",
   "previous_status": "DISPATCHED",
@@ -86,8 +86,20 @@
     {
       "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40783157643",
       "status": "FAILED_MISSING_RECEIPT"
+    },
+    {
+      "run_url": "https://github.com/niloydassana-maker/anonym-family-archive/actions/runs/40847696604",
+      "status": "FAILED_ENGINEER",
+      "kind": "engineer",
+      "retryable": true,
+      "diagnostic": "CLINE_TOTAL_BUDGET_EXHAUSTED after preserving the current worktree",
+      "at": "2026-10-29T10:44:32.562385+00:00"
     }
   ],
-  "finished_at": "2026-10-28T23:30:25.071429+00:00",
-  "lease_expires_at": "2026-10-29T13:16:52.530871+00:00"
+  "finished_at": "2026-10-29T10:44:44.265142+00:00",
+  "lease_expires_at": "2026-10-29T13:16:52.530871+00:00",
+  "kind": "engineer",
+  "retryable": true,
+  "diagnostic": "CLINE_TOTAL_BUDGET_EXHAUSTED after preserving the current worktree",
+  "at": "2026-10-29T10:44:32.562385+00:00"
 }
