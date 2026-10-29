@@ -2,7 +2,7 @@
   "task_id": "acb559c7610f2a4205d1ec20e332e923",
   "repo": "Expensify/App",
   "issue_number": 100290,
-  "status": "CLAIMED",
+  "status": "FAILED_ENGINEER",
   "dispatch_id": "0cd555758ef74b5bb84132e2eb00b9fe",
   "admission": {
     "funding": {
@@ -71,7 +71,7 @@
   ],
   "dispatched_at": "2026-10-28T23:34:33.036302+00:00",
   "attempt": 3,
-  "updated_at": "2026-10-28T23:34:53.472633+00:00",
+  "updated_at": "2026-10-29T00:22:58.773697+00:00",
   "owner": "40788316065:1",
   "previous_owner": "40783127058:1",
   "previous_status": "DISPATCHED",
@@ -88,10 +88,16 @@
       "status": "FAILED_ENGINEER",
       "diagnostic": "[Errno 2] No such file or directory: '/tmp/fleet-artifacts/delivery-supervisor/37f4acd473fa4673b02e06af62b82996.preparation.json'",
       "at": "2026-10-28T23:15:59.101559+00:00"
+    },
+    {
+      "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40788316065",
+      "status": "FAILED_ENGINEER",
+      "diagnostic": "Cline preparation must leave a clean, unchanged upstream baseline",
+      "at": "2026-10-29T00:22:44.384819+00:00"
     }
   ],
-  "finished_at": "2026-10-28T23:16:24.662045+00:00",
-  "diagnostic": "[Errno 2] No such file or directory: '/tmp/fleet-artifacts/delivery-supervisor/37f4acd473fa4673b02e06af62b82996.preparation.json'",
-  "at": "2026-10-28T23:15:59.101559+00:00",
+  "finished_at": "2026-10-29T00:22:58.014213+00:00",
+  "diagnostic": "Cline preparation must leave a clean, unchanged upstream baseline",
+  "at": "2026-10-29T00:22:44.384819+00:00",
   "lease_expires_at": "2026-10-29T00:09:53.472614+00:00"
 }
