@@ -58,6 +58,46 @@ class BudgetTests(unittest.TestCase):
         self.assertLess(FAST_PREPARATION_BUDGET_SECONDS, FULL_PREPARATION_BUDGET_SECONDS)
 
 
+class PriorityTests(unittest.TestCase):
+    """Lane priority bands, and the interaction with velocity."""
+
+    def test_the_bands_are_ordered_programs_founder_startup_normal_other(self):
+        from actions_dispatch import candidate_priority_key
+        self.assertEqual(candidate_priority_key({"lanes": {"programs"}}), 0)
+        self.assertEqual(candidate_priority_key({"lanes": {"founder"}}), 1)
+        self.assertEqual(candidate_priority_key({"lanes": {"startup"}}), 2)
+        self.assertEqual(candidate_priority_key({"lanes": {"normal"}}), 3)
+        self.assertEqual(candidate_priority_key({"lanes": {"mystery"}}), 4)
+
+    def test_the_best_matching_lane_wins_when_several_apply(self):
+        from actions_dispatch import candidate_priority_key
+        self.assertEqual(candidate_priority_key({"lanes": {"normal", "programs"}}), 0)
+        self.assertEqual(candidate_priority_key({"lanes": {"startup", "founder"}}), 1)
+
+    def test_an_empty_or_missing_candidate_is_lowest_priority(self):
+        from actions_dispatch import candidate_priority_key
+        self.assertEqual(candidate_priority_key({}), 4)
+        self.assertEqual(candidate_priority_key(None), 4)
+
+    def test_priority_dominates_velocity_across_bands(self):
+        from actions_dispatch import candidate_sort_key
+        candidates = {
+            "busy_founder": {"lanes": {"founder"}, "velocity_24h": 200},
+            "quiet_normal": {"lanes": {"normal"}, "velocity_24h": 0},
+        }
+        order = [k for k, _ in sorted(candidates.items(), key=candidate_sort_key)]
+        self.assertEqual(order, ["busy_founder", "quiet_normal"])
+
+    def test_velocity_decides_inside_a_band(self):
+        from actions_dispatch import candidate_sort_key
+        candidates = {
+            "busy": {"lanes": {"normal"}, "velocity_24h": 200},
+            "quiet": {"lanes": {"normal"}, "velocity_24h": 2},
+        }
+        order = [k for k, _ in sorted(candidates.items(), key=candidate_sort_key)]
+        self.assertEqual(order, ["quiet", "busy"])
+
+
 class HeadroomTests(unittest.TestCase):
     def test_5_headroom_arithmetic_is_unchanged(self):
         self.assertEqual(max(0, 4 - 0), 4)

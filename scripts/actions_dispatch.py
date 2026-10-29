@@ -283,6 +283,29 @@ def velocity_sort_key(item):
     return (0, velocity)
 
 
+def candidate_priority_key(candidate: dict) -> int:
+    """Queue priority: programs(0) founder(1) startup(2) normal(3) other(4)."""
+    lanes = set((candidate or {}).get("lanes", ()))
+    if "programs" in lanes:
+        return 0
+    if "founder" in lanes:
+        return 1
+    if "startup" in lanes:
+        return 2
+    if "normal" in lanes:
+        return 3
+    return 4
+
+
+def candidate_sort_key(item):
+    """Priority band first, then the quietest repository inside that band.
+
+    Priority must dominate: a busy founder issue still outranks a quiet normal one, and
+    velocity only decides between candidates of the same band.
+    """
+    return (candidate_priority_key(item[1]), velocity_sort_key(item))
+
+
 def repository_velocity(api, repo, cache=None):
     """Count commits on the default branch in the last 24 hours.
 
@@ -884,15 +907,15 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
             runs = api.api(f"repos/{store.repo}/actions/runs?per_page=100")["workflow_runs"]
             active = sum(r["status"] != "completed" and r.get("path", "").endswith("engine2.yml") for r in runs)
             headroom = max(0, 4 - active)
-            # F6: Measure velocity per repo and sort by velocity ascending
-            # (quiet repos first) within the candidate set.
+            # F6: measure velocity per repo; queue by priority band, then quietest first
+            # inside the band.
             velocity_cache = {}
             for identity, candidate in candidates.items():
                 repo = candidate["context"]["repo"]
                 candidate["velocity_24h"] = repository_velocity(api, repo, velocity_cache)
                 candidate["preparation_budget_seconds"] = preparation_budget_seconds(
                     candidate["velocity_24h"])
-            candidates = dict(sorted(candidates.items(), key=velocity_sort_key))
+            candidates = dict(sorted(candidates.items(), key=candidate_sort_key))
             for identity, candidate in candidates.items():
                 if len(dispatched) >= min(max_dispatches, headroom):
                     break
