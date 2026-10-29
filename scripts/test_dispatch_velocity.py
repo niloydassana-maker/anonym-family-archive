@@ -65,5 +65,61 @@ class HeadroomTests(unittest.TestCase):
         self.assertEqual(max(0, 4 - 9), 0)
 
 
+class MeasurementTests(unittest.TestCase):
+    """``repository_velocity`` itself, which the ordering tests could not reach.
+
+    It used ``timedelta`` without importing it, so the first live dispatch cycle raised
+    ``NameError`` after admission and before any dispatch happened.
+    """
+
+    def test_it_counts_commits_on_the_default_branch(self):
+        from actions_dispatch import repository_velocity
+
+        class API:
+            def __init__(self, rows):
+                self.rows, self.paths = rows, []
+
+            def api(self, path):
+                self.paths.append(path)
+                return self.rows
+
+        api = API([{"sha": "a"}, {"sha": "b"}])
+        self.assertEqual(repository_velocity(api, "unit/runtime"), 2)
+        self.assertIn("since=", api.paths[0])
+
+    def test_a_measurement_is_cached_for_the_cycle(self):
+        from actions_dispatch import repository_velocity
+
+        class API:
+            def __init__(self):
+                self.calls = 0
+
+            def api(self, path):
+                self.calls += 1
+                return [{"sha": "a"}]
+
+        api, cache = API(), {}
+        repository_velocity(api, "unit/runtime", cache)
+        repository_velocity(api, "unit/runtime", cache)
+        self.assertEqual(api.calls, 1)
+
+    def test_an_api_error_is_unmeasured_not_zero(self):
+        from actions_dispatch import repository_velocity
+        from actions_github import GitHubError
+
+        class API:
+            def api(self, path):
+                raise GitHubError("503 upstream")
+
+        self.assertIsNone(repository_velocity(API(), "unit/runtime"))
+
+    def test_an_unmeasured_repository_yields_the_full_budget(self):
+        self.assertEqual(preparation_budget_seconds(None), FULL_PREPARATION_BUDGET_SECONDS)
+
+    def test_an_unmeasured_repository_sorts_after_a_measured_quiet_one(self):
+        candidates = {"unmeasured": {"velocity_24h": None}, "quiet": {"velocity_24h": 0}}
+        self.assertEqual(ordered(candidates), ["quiet", "unmeasured"])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

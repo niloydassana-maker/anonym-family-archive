@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import os
@@ -286,18 +286,25 @@ def velocity_sort_key(item):
 def repository_velocity(api, repo, cache=None):
     """Count commits on the default branch in the last 24 hours.
 
-    Cached per cycle to avoid hitting the GitHub search rate limit.
-    Returns the number of commits; higher = busier repo = slower dispatch.
+    Cached per cycle to avoid hitting the GitHub search rate limit. Higher = busier repo =
+    slower dispatch.
+
+    Returns ``None`` when the velocity could not be measured. It must not return ``0``
+    there: ``0`` means "provably quiet", so an API failure would be sorted as the quietest
+    repository in its band and attempted first -- the exact opposite of the intent. ``None``
+    sorts last and yields the full preparation budget.
     """
     if cache is not None and repo in cache:
         return cache[repo]
     owner, name = repo.split("/", 1)
-    since = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%d")
+    since = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    count = None
     try:
-        result = api.api(f"repos/{owner}/{name}/commits?since={since}&per_page=1")
-        count = len(result) if isinstance(result, list) else 0
+        result = api.api(f"repos/{owner}/{name}/commits?since={since}&per_page=100")
+        if isinstance(result, list):
+            count = len(result)  # capped at 100 per page, which is enough to rank contention
     except (GitHubError, OSError, ValueError, TypeError):
-        count = 0
+        count = None
     if cache is not None:
         cache[repo] = count
     return count
