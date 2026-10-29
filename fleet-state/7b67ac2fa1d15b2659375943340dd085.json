@@ -2,7 +2,7 @@
   "task_id": "7b67ac2fa1d15b2659375943340dd085",
   "repo": "Expensify/App",
   "issue_number": 102333,
-  "status": "CLAIMED",
+  "status": "FAILED_DELIVERABLE_MISSING",
   "dispatch_id": "ad5a33908f944bb6b33e28641ef658d2",
   "admission": {
     "funding": {
@@ -69,7 +69,7 @@
   ],
   "dispatched_at": "2026-10-29T09:47:11.295962+00:00",
   "attempt": 2,
-  "updated_at": "2026-10-29T09:47:37.897649+00:00",
+  "updated_at": "2026-10-29T10:06:49.327736+00:00",
   "owner": "40852362096:1",
   "previous_owner": "40591329401:1",
   "previous_status": "DISPATCHED",
@@ -80,8 +80,24 @@
     {
       "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40591329401",
       "status": "FAILED_MISSING_RECEIPT"
+    },
+    {
+      "run_url": "https://github.com/niloydassana-maker/anonym-family-archive/actions/runs/40852362096",
+      "status": "FAILED_DELIVERABLE_MISSING",
+      "kind": "deliverable_invalid",
+      "retryable": true,
+      "diagnostic": "Cline deliverable invalid at /tmp/fleet-artifacts/delivery-supervisor/547d2cda92e04c1b81e51fe7d3febc58.preparation.json: action=incomplete: the preparation skeleton was never replaced, so the agent finished without reporting",
+      "path": "/tmp/fleet-artifacts/delivery-supervisor/547d2cda92e04c1b81e51fe7d3febc58.preparation.json",
+      "reason": "action=incomplete: the preparation skeleton was never replaced, so the agent finished without reporting",
+      "at": "2026-10-29T10:06:35.591661+00:00"
     }
   ],
-  "finished_at": "2026-10-27T23:00:43.529994+00:00",
-  "lease_expires_at": "2026-10-29T13:52:37.897597+00:00"
+  "finished_at": "2026-10-29T10:06:48.636968+00:00",
+  "lease_expires_at": "2026-10-29T13:52:37.897597+00:00",
+  "kind": "deliverable_invalid",
+  "retryable": true,
+  "diagnostic": "Cline deliverable invalid at /tmp/fleet-artifacts/delivery-supervisor/547d2cda92e04c1b81e51fe7d3febc58.preparation.json: action=incomplete: the preparation skeleton was never replaced, so the agent finished without reporting",
+  "path": "/tmp/fleet-artifacts/delivery-supervisor/547d2cda92e04c1b81e51fe7d3febc58.preparation.json",
+  "reason": "action=incomplete: the preparation skeleton was never replaced, so the agent finished without reporting",
+  "at": "2026-10-29T10:06:35.591661+00:00"
 }
