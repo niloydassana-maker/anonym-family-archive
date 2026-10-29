@@ -2,7 +2,7 @@
   "task_id": "5c550808e2a02ceea6b8986467b0b748",
   "repo": "Expensify/App",
   "issue_number": 70080,
-  "status": "CLAIMED",
+  "status": "FAILED_ENGINEER",
   "dispatch_id": "fe24546684b240fb99647b3cba301011",
   "admission": {
     "funding": {
@@ -90,23 +90,29 @@
   ],
   "dispatched_at": "2026-10-28T23:39:56.183440+00:00",
   "attempt": 2,
-  "updated_at": "2026-10-28T23:40:20.332349+00:00",
+  "updated_at": "2026-10-29T00:37:16.465459+00:00",
   "owner": "40788917972:1",
   "previous_owner": "40719193494:1",
   "previous_status": "DISPATCHED",
   "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40788917972",
   "harness_sha": "7099d057446250316321e5a9cfdab4130b5caba0",
   "claimed_at": "2026-10-28T23:40:20.332318+00:00",
-  "diagnostic": "Prepared baseline is not the current upstream default",
-  "at": "2026-10-28T16:28:18.226034+00:00",
+  "diagnostic": "BLOCKED_BASELINE: Preparation repair dropped an existing baseline test target",
+  "at": "2026-10-29T00:36:54.588146+00:00",
   "failures": [
     {
       "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40719193494",
       "status": "FAILED_ENGINEER",
       "diagnostic": "Prepared baseline is not the current upstream default",
       "at": "2026-10-28T16:28:18.226034+00:00"
+    },
+    {
+      "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40788917972",
+      "status": "FAILED_ENGINEER",
+      "diagnostic": "BLOCKED_BASELINE: Preparation repair dropped an existing baseline test target",
+      "at": "2026-10-29T00:36:54.588146+00:00"
     }
   ],
-  "finished_at": "2026-10-28T16:28:32.378511+00:00",
+  "finished_at": "2026-10-29T00:37:15.993842+00:00",
   "lease_expires_at": "2026-10-29T00:15:20.332332+00:00"
 }
