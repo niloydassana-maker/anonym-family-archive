@@ -29,7 +29,7 @@ import subprocess
 import sys
 import time
 
-DEFAULT_REPO = "isearchxsolve/anonym-family-archive"
+DEFAULT_REPO = os.environ.get("BOUNTY_REPOSITORY") or "niloydassana-maker/anonym-family-archive"
 DEFAULT_WORKFLOW = "bounty-discovery.yml"
 DEFAULT_REF = "master"
 

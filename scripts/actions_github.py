@@ -16,6 +16,12 @@ class GitHubError(RuntimeError):
     pass
 
 
+# The bounty account owns the fork/PR identity. It is read once from the environment so a
+# mirror to another account is one variable, not a seventeen-file rename.
+BOUNTY_ACCOUNT = os.environ.get("BOUNTY_ACCOUNT", "niloydassana-maker")
+DEFAULT_REPOSITORY = os.environ.get("BOUNTY_REPOSITORY") or BOUNTY_ACCOUNT + "/anonym-family-archive"
+
+
 def repository(value):
     if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", value):
         raise ValueError("Invalid GitHub repository")
@@ -165,7 +171,7 @@ class StateStore:
     """Contents API SHA compare-and-swap on a dedicated control branch."""
     def __init__(self, api=None, repo=None):
         self.api = api or GitHub()
-        self.repo = repository(repo or os.environ.get("GITHUB_REPOSITORY", "isearchxsolve/anonym-family-archive"))
+        self.repo = repository(repo or os.environ.get("GITHUB_REPOSITORY") or DEFAULT_REPOSITORY)
         self.branch = "bounty-control"
 
     def _lease_expired_and_dead(self, old, probes: int = 2) -> bool:

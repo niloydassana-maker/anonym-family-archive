@@ -56,6 +56,10 @@ _last_fleet_poll_log = 0.0
 _fleet_poll_failures = 0
 
 # Cloud sandbox and paths
+# The bounty account owns the fork/PR identity (fork URL, commit author, --head owner).
+# Read from the environment so a mirror to another account is one variable.
+BOUNTY_ACCOUNT = os.environ.get("BOUNTY_ACCOUNT", "niloydassana-maker")
+
 SANDBOX_DIR = os.environ.get("FLEET_SANDBOX_DIR", "/tmp/sandbox")
 PACKET_DIR = os.environ.get("FLEET_ARTIFACT_DIR") or (
     "/kaggle/working/fleet-artifacts" if os.path.isdir('/kaggle/working') else "/tmp/candidate_packets")
@@ -2462,7 +2466,7 @@ def prepare_isolated_worktree(repo: str, number: int, default_branch: Optional[s
     work_dir = os.path.join(SANDBOX_DIR, "repos", unique_name)
     os.makedirs(os.path.dirname(work_dir), exist_ok=True)
 
-    fork_url = f"https://github.com/isearchxsolve/{repo_name}"
+    fork_url = f"https://github.com/{BOUNTY_ACCOUNT}/{repo_name}"
     upstream_url = f"https://github.com/{repo}.git"
 
     branch_out, branch_err, branch_code = run_cmd(
@@ -2706,7 +2710,7 @@ def commit_and_open_pr(
         fail("No safe, verified file set is available for commit.")
         return None
     for argv, operation in (
-        (["git", "-C", worktree, "config", "user.name", "isearchxsolve"], "config user.name"),
+        (["git", "-C", worktree, "config", "user.name", BOUNTY_ACCOUNT], "config user.name"),
         (["git", "-C", worktree, "config", "user.email", "isearch.xsolve@gmail.com"], "config user.email"),
         (["git", "-C", worktree, "diff", "--check"], "diff check"),
     ):
@@ -2763,7 +2767,7 @@ def commit_and_open_pr(
     pr_cmd = [
         "gh", "pr", "create",
         "--repo", repo,
-        "--head", f"isearchxsolve:{branch_name}",
+        "--head", f"{BOUNTY_ACCOUNT}:{branch_name}",
         "--base", default_branch,
         "--title", f"fix: #{number} - {title}",
         "--body", pr_body

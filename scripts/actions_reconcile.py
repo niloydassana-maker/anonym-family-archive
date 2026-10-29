@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import json
 import time
 
-from actions_github import GitHub, GitHubError, StateStore, utcnow
+from actions_github import BOUNTY_ACCOUNT, GitHub, GitHubError, StateStore, utcnow
 
 ACTIVE_STATUSES = ("CLAIMED", "ENGINEERING", "VERIFIED", "PUBLISHING")
 # engine2.yml runs the engineering job with timeout-minutes: 300.
@@ -150,7 +150,7 @@ def reconcile(repair=False, api=None, store=None):
         if (status.startswith("FAILED") or status == "PUBLISHING") and record.get("proposed_head"):
             matches = [p for p in api.pages(f"repos/{record['repo']}/pulls", state="open")
                        if p["head"]["sha"] == record["proposed_head"]
-                       and p["head"]["repo"] and p["head"]["repo"]["owner"]["login"] == "isearchxsolve"]
+                       and p["head"]["repo"] and p["head"]["repo"]["owner"]["login"] == BOUNTY_ACCOUNT]
             if len(matches) == 1:
                 fields = {"status": "PUBLISHED_PENDING_CHECKS", "head_sha": record["proposed_head"],
                           "pr_number": matches[0]["number"], "pr_url": matches[0]["html_url"],

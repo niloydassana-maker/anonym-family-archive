@@ -3,7 +3,12 @@ from __future__ import annotations
 
 from datetime import date, datetime, timezone
 from decimal import Decimal
+import os
 import re
+
+# Bounty identity: whichever account the pipeline runs as. An own-PR is recognised by this
+# login, so a mirror to another account must not leave the old one hardcoded here.
+BOUNTY_ACCOUNT = os.environ.get("BOUNTY_ACCOUNT", "niloydassana-maker")
 
 FLOOR = Decimal("80")
 TRUSTED_BOTS = {"algora-pbc", "algora-io[bot]", "polar-sh[bot]", "opire[bot]"}
@@ -579,7 +584,7 @@ def competition(api, repo, number, own_head=None):
     pattern = re.compile(rf"(?:#\s*|/issues/|\bissue\s+){number}(?!\d)|(?:^|[-_/]){number}(?:$|[-_/])", re.I)
     for pr in api.pages(f"repos/{repo}/pulls", state="open"):
         if own_head and pr["head"]["sha"] == own_head and pr["head"]["repo"] and (
-                pr["head"]["repo"]["owner"]["login"] == "isearchxsolve"):
+                pr["head"]["repo"]["owner"]["login"] == BOUNTY_ACCOUNT):
             continue
         text = "\n".join([pr.get("title") or "", pr.get("body") or "", pr["head"]["ref"]])
         if pattern.search(text):

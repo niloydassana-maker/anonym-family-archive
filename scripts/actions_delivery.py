@@ -13,7 +13,8 @@ import tempfile
 import threading
 from types import SimpleNamespace
 
-from actions_github import GitHub, GitHubError, StateStore, issue_number, repository, task_id, utcnow
+from actions_github import (BOUNTY_ACCOUNT, GitHub, GitHubError, StateStore, issue_number,
+                            repository, task_id, utcnow)
 from actions_release import (git, manifest, product_paths, protect_baseline_tests,
                              regression_proof, require_commands, safe_path, status_paths,
                              validate_plan_contract, write_json, restore_checkpoint)
@@ -620,7 +621,7 @@ def engineer():
         else:
             raise RuntimeError("Bounded Cline delivery repair exhausted: " + feedback)
         git(root, "diff", "--check")
-        git(root, "config", "user.name", "isearchxsolve")
+        git(root, "config", "user.name", BOUNTY_ACCOUNT)
         git(root, "config", "user.email", "isearch.xsolve@gmail.com")
         git(root, "add", "--", *paths)
         git(root, "-c", "commit.gpgsign=false", "commit", "-m", f"fix: #{number} - {task['title']}")

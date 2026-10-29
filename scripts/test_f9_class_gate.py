@@ -15,16 +15,22 @@ Constraints:
 """
 
 import json
+from pathlib import Path
 import sys
 import unittest
 
-sys.path.insert(0, 'D:/anonym/scripts')
-from actions_dispatch import is_code_change_request
+# Resolve relative to this file. The suite previously hardcoded an absolute Windows path to
+# the author's checkout, so it could only ever pass on that one machine -- which is why it was
+# absent from CI. Every other suite is portable; this one now is too.
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from actions_dispatch import is_code_change_request  # noqa: E402
+
+SAMPLE = HERE / 'f11_sample' / 'f11_labeling_sample_60.json'
 
 
 def load_sample():
-    with open('D:/anonym/scripts/f11_sample/f11_labeling_sample_60.json',
-              encoding='utf-8', errors='replace') as f:
+    with open(SAMPLE, encoding='utf-8', errors='replace') as f:
         return json.load(f)
 
 
