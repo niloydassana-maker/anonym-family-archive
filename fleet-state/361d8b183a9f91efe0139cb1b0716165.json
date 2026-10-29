@@ -2,7 +2,7 @@
   "task_id": "361d8b183a9f91efe0139cb1b0716165",
   "repo": "Expensify/App",
   "issue_number": 102241,
-  "status": "CLAIMED",
+  "status": "FAILED_ENGINEER",
   "dispatch_id": "341e69ec07b54f08894c0b230cef9076",
   "admission": {
     "funding": {
@@ -53,7 +53,7 @@
   ],
   "dispatched_at": "2026-10-28T23:34:04.138682+00:00",
   "attempt": 3,
-  "updated_at": "2026-10-28T23:34:23.379776+00:00",
+  "updated_at": "2026-10-29T00:17:59.331527+00:00",
   "owner": "40788258225:1",
   "previous_owner": "40780605684:1",
   "previous_status": "DISPATCHED",
@@ -68,8 +68,16 @@
     {
       "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40780605684",
       "status": "FAILED_MISSING_RECEIPT"
+    },
+    {
+      "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40788258225",
+      "status": "FAILED_ENGINEER",
+      "diagnostic": "Cline preparation must leave a clean, unchanged upstream baseline",
+      "at": "2026-10-29T00:17:45.642731+00:00"
     }
   ],
-  "finished_at": "2026-10-28T23:14:23.198303+00:00",
-  "lease_expires_at": "2026-10-29T00:09:23.379758+00:00"
+  "finished_at": "2026-10-29T00:17:58.710444+00:00",
+  "lease_expires_at": "2026-10-29T00:09:23.379758+00:00",
+  "diagnostic": "Cline preparation must leave a clean, unchanged upstream baseline",
+  "at": "2026-10-29T00:17:45.642731+00:00"
 }
