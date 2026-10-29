@@ -6,6 +6,13 @@ import re
 import subprocess
 import uuid
 
+# F3/F4: the typed delivery failures are RuntimeError subclasses, so the blanket
+# ``except ValueError`` below never caught them and one could escape this boundary as an
+# unhandled exception -- which the host then stamped as an engineer failure. They are matched
+# by class name so this module stays dependency-free (it is bundled for Kaggle as source).
+CLASSIFIED_DELIVERY_FAILURES = ('ClineDeliverableMissing', 'ClineDeliverableInvalid',
+                                'InfrastructureFault', 'RunnerShutdown', 'PreparationRace')
+
 
 def source_snapshot(worktree):
     def git(*args):
@@ -142,6 +149,15 @@ Finish after saving the artifact; do not claim delivery or test success from inf
         return True, recovered, str(journal)
     except (ValueError, OSError, TypeError) as exc:
         evidence['status'] = 'REPAIR_BLOCKED'
+        evidence['diagnostic'] = str(exc)
+        return False, plan, str(exc)
+    except RuntimeError as exc:
+        # A typed delivery failure is a diagnosis, not an engineering verdict: classify it
+        # and keep the journal and artifacts rather than letting it escape unhandled.
+        if type(exc).__name__ not in CLASSIFIED_DELIVERY_FAILURES:
+            raise
+        evidence['status'] = 'REPAIR_BLOCKED'
+        evidence['classification'] = type(exc).__name__
         evidence['diagnostic'] = str(exc)
         return False, plan, str(exc)
     finally:

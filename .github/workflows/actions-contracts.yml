@@ -24,7 +24,7 @@ jobs:
     - name: Compile platform adapters
       run: python3 -W error -m py_compile scripts/actions_github.py scripts/actions_dispatch.py scripts/actions_delivery.py scripts/actions_reconcile.py
         scripts/actions_release.py scripts/bounty_admission.py scripts/bounty_fx.py scripts/kaggle_engine_worker.py scripts/delivery_supervisor.py
-        scripts/discovery_heartbeat.py
+        scripts/discovery_heartbeat.py scripts/delivery_errors.py scripts/f11_refusal_census.py scripts/failure_digest.py
     - name: Test migration contracts and unchanged master suites
       env:
         PYTHONIOENCODING: utf-8
@@ -54,4 +54,30 @@ jobs:
 
         python3 -W error scripts/test_fresh_discovery_schedule.py
 
-        python3 -W error scripts/test_engineering_evidence.py'
+        python3 -W error scripts/test_engineering_evidence.py
+
+        python3 -W error scripts/test_baseline_relationship.py
+
+        python3 -W error scripts/test_base_branch.py
+
+        python3 -W error scripts/test_cline_deliverable.py
+
+        python3 -W error scripts/test_failure_taxonomy.py
+
+        python3 -W error scripts/test_claim_lease.py
+
+        python3 -W error scripts/test_dispatch_velocity.py
+
+        python3 -W error scripts/test_preflight.py
+
+        python3 -W error scripts/test_download_patch_submodule.py
+
+        python3 -W error scripts/test_heartbeat.py
+
+        python3 -W error scripts/test_code_change_class.py
+
+        python3 -W error scripts/test_f9_class_gate.py
+
+        python3 -W error scripts/test_refusal_census.py
+
+        python3 -W error scripts/test_failure_digest.py'

@@ -130,18 +130,35 @@ class GitHub:
                 "base_branch": default_branch}
 
 
-CLAIM_TTL_SECONDS = 1800  # 30 minutes: a claim older than this with no live run is expired
-CLAIM_LEASE_GRACE_SECONDS = 300  # 5 minutes grace beyond workflow job timeout
+CLAIM_TTL_SECONDS = 1800  # floor only: the derived lease is always longer than a legal run
+CLAIM_LEASE_GRACE_SECONDS = 300  # 5 minutes grace beyond the workflow's own Cline budget
+DEFAULT_CLINE_TOTAL_BUDGET_SECONDS = 14400  # engine2.yml CLINE_TOTAL_BUDGET_SECONDS
+
+
+def cline_total_budget_seconds() -> int:
+    """The workflow's own Cline budget, as exported into this process's environment.
+
+    F5 requires the lease to be derived from the run's real budget because a fixed short
+    TTL expires while a legitimate run is still working -- and a lease that is shorter than
+    a legal run turns the sweeper into the cause of the deadlock it exists to clear. An
+    absent or malformed value falls back to the workflow default, never to a short lease.
+    """
+    try:
+        return max(0, int(os.environ.get("CLINE_TOTAL_BUDGET_SECONDS")))
+    except (TypeError, ValueError):
+        return DEFAULT_CLINE_TOTAL_BUDGET_SECONDS
+
+
+def lease_seconds() -> int:
+    """Never shorter than a legitimate run: the budget plus grace, with a hard floor."""
+    return max(CLAIM_TTL_SECONDS, cline_total_budget_seconds() + CLAIM_LEASE_GRACE_SECONDS)
 
 
 def _lease_expires_at(claimed_at: str) -> str:
     """Compute lease expiry timestamp from claimed_at."""
     from datetime import datetime, timezone, timedelta
     claimed = datetime.fromisoformat(claimed_at.replace("Z", "+00:00"))
-    return (claimed + timedelta(seconds=CLAIM_TTL_SECONDS + CLAIM_LEASE_GRACE_SECONDS)).isoformat()
-
-
-pass
+    return (claimed + timedelta(seconds=lease_seconds())).isoformat()
 
 
 class StateStore:
@@ -250,18 +267,21 @@ class StateStore:
                 else:
                     return old
             active = old.get("status") in ("CLAIMED", "ENGINEERING", "VERIFIED", "PUBLISHING")
+            takeover = {}
             if active:
                 # F5: claim lease expiry — a stale claim with no live run is expired,
-                # not a permanent lock. A missing run API result means the runner
-                # is gone; treat the claim as expired.
+                # not a permanent lock. Expiry alone is never enough: the owner must also
+                # be provably dead, so a live run is never double-dispatched.
                 if self._lease_expired_and_dead(old):
-                    pass  # expired: fall through to re-claim
+                    # A takeover is a diagnostic event, never a silent reset.
+                    takeover = {"takeover_reason": "lease expired and owner run is provably dead",
+                                "takeover_at": utcnow()}
                 else:
                     raise ValueError("A live Actions run already owns this task")
             attempt = int(old.get("attempt", 0)) + 1
             if attempt > (4 if recovery else 3):
                 raise ValueError("Bounded recovery attempts exhausted")
-            return {**old, "status": "CLAIMED", "attempt": attempt, "owner": owner,
+            return {**old, **takeover, "status": "CLAIMED", "attempt": attempt, "owner": owner,
                     "previous_owner": old.get("owner"), "previous_status": old.get("status"),
                     "run_url": run_url, "harness_sha": harness_sha, "claimed_at": utcnow(),
                     "lease_expires_at": _lease_expires_at(utcnow())}

@@ -19,56 +19,11 @@ from actions_release import (git, manifest, product_paths, protect_baseline_test
                              validate_plan_contract, write_json, restore_checkpoint)
 from bounty_admission import admit, competition
 from bounty_fx import quote
-
-
-class PreparationRace(RuntimeError):
-    """The prepared baseline is still on the server's line of history, but upstream
-    modified a file the plan will touch. Retryable: not an accusation, not a refusal."""
-    def __init__(self, base, live_sha, overlap):
-        self.base = base
-        self.live_sha = live_sha
-        self.overlap = overlap
-        super().__init__(
-            f"preparation race: base={base[:12]} live={live_sha[:12]} "
-            f"overlap={sorted(overlap)}")
-
-
-class ClineDeliverableMissing(RuntimeError):
-    """Cline completed but produced no verification receipt at all."""
-    def __init__(self, path, elapsed=None, exit_code=None):
-        self.path = path
-        self.elapsed = elapsed
-        self.exit_code = exit_code
-        msg = f"Cline delivered no report at {path}"
-        if elapsed is not None:
-            msg += f" after {elapsed:.1f}s"
-        if exit_code is not None:
-            msg += f" (exit {exit_code})"
-        super().__init__(msg)
-
-
-class ClineDeliverableInvalid(RuntimeError):
-    """Cline produced a receipt but it is malformed or refuses to validate."""
-    def __init__(self, path, reason):
-        self.path = path
-        self.reason = reason
-        super().__init__(f"Cline deliverable invalid at {path}: {reason}")
-
-
-class RunnerShutdown(RuntimeError):
-    """The Actions runner shut down mid-delivery (exit_143, shutdown signal)."""
-    def __init__(self, message=None, inferred=False):
-        self.message = message
-        self.inferred = inferred
-        super().__init__(message or "Runner shutdown detected")
-
-
-class InfrastructureFault(RuntimeError):
-    """Infrastructure failure: disk, network, executable install, toolchain."""
-    def __init__(self, subsystem, detail=""):
-        self.subsystem = subsystem
-        self.detail = detail
-        super().__init__(f"Infrastructure fault in {subsystem}: {detail}")
+# The typed failures live in a dependency-free module because the worker has to raise the
+# same classes and must never import this adapter back (it is imported lazily here).
+from delivery_errors import (PREPARATION_ACTIONS, ClineDeliverableInvalid,
+                             ClineDeliverableMissing, InfrastructureFault, PreparationRace,
+                             RunnerShutdown, validate_preparation)
 
 
 def write_json_atomic(path, document):
@@ -79,34 +34,88 @@ def write_json_atomic(path, document):
     os.replace(tmp, path)
 
 
-def validate_preparation(report, path):
-    """Validate a Cline preparation report before any downstream phase reads it.
+def submodule_without_url(text):
+    """Return the first ``[submodule ...]`` section that declares no ``url``, or None.
 
-    Validates: action in {retry, reject, incomplete}, base_sha is 40-char hex,
-    plan present when action == retry, regression_plan.component present.
-    Raises ClineDeliverableInvalid on any violation.
+    A ``.gitmodules`` whose entry has no url is the recorded defect: git then fails with
+    ``fatal: No url found for submodule path during repo in .gitmodules`` and a repository
+    unrelated to the issue becomes silently un-deliverable.
     """
-    if not isinstance(report, dict):
-        raise ClineDeliverableInvalid(path, "not a JSON object")
+    section, sections, order = None, {}, []
+    for raw in text.splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if line.startswith("[submodule"):
+            section = line
+            if section not in sections:
+                sections[section] = ""
+                order.append(section)
+            continue
+        if section and "=" in line:
+            key, value = line.split("=", 1)
+            if key.strip() == "url":
+                sections[section] = value.strip()
+    for name in order:
+        if not sections[name]:
+            return name
+    return None
 
-    action = report.get("action")
-    if action not in ("retry", "reject", "incomplete"):
-        raise ClineDeliverableInvalid(path, f"invalid action: {action!r}")
 
-    base_sha = report.get("base_sha", "")
-    if not isinstance(base_sha, str) or len(base_sha) != 40 or not all(c in "0123456789abcdef" for c in base_sha):
-        raise ClineDeliverableInvalid(path, f"invalid base_sha: {base_sha!r}")
+def malformed_submodules(root):
+    """The broken section name when ``.gitmodules`` exists and is malformed, else None."""
+    path = Path(root) / ".gitmodules"
+    if not path.is_file():
+        return None
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+    return submodule_without_url(text)
 
-    if action == "retry":
-        plan = report.get("plan")
-        if not plan:
-            raise ClineDeliverableInvalid(path, "retry action missing plan")
-        if not isinstance(plan, dict) or "component" not in plan:
-            raise ClineDeliverableInvalid(path, "retry plan missing regression_plan.component")
 
-    rp = report.get("regression_plan") or {}
-    if isinstance(rp, dict) and "component" not in rp:
-        raise ClineDeliverableInvalid(path, "regression_plan missing component")
+def download_patch(root, task, patch_dir, base, repo=""):
+    """F10: fetch and apply the owned PR patch with submodule machinery out of the way.
+
+    The recorded failure is ``fatal: No url found for submodule path during repo in
+    .gitmodules``, which blocked delivery at a stage unrelated to the issue. Three
+    guarantees, matching the blueprint:
+
+    * every git invocation here runs with ``submodule.recurse=false`` because the patch
+      concerns the top-level tree and downloading it must never initialise submodules;
+    * a malformed ``.gitmodules`` is named ``InfrastructureFault("submodule")`` with the
+      repository, so the class is visible instead of buried in a raw ``fatal:`` line;
+    * therefore the failure can never be recorded as ``FAILED_ENGINEER``.
+
+    Returns the patch path that was applied.
+    """
+    broken = malformed_submodules(root)
+    if broken:
+        raise InfrastructureFault("submodule", (repo + ": " if repo else "") +
+                                  ".gitmodules is malformed: " + broken + " declares no url")
+    number = int(task["owned_pr_number"])
+    applied = subprocess.run(["git", "-c", "core.hooksPath=/dev/null", "-c", "submodule.recurse=false",
+                              "-C", str(root), "fetch", "upstream", "refs/pull/" + str(number) + "/head"],
+                             capture_output=True, timeout=180)
+    if applied.returncode:
+        stderr = applied.stderr.decode("utf-8", errors="replace")
+        if "submodule" in stderr.lower():
+            raise InfrastructureFault("submodule", (repo + ": " if repo else "") + stderr.strip()[:500])
+        raise RuntimeError(stderr)
+    prior_head = git(root, "rev-parse", "FETCH_HEAD").stdout.decode().strip()
+    if prior_head != task["owned_head"]:
+        raise ValueError("Owned PR changed since claim; reconcile before repair")
+    ancestor = git(root, "merge-base", base, prior_head).stdout.decode().strip()
+    patch = git(root, "diff", "--binary", ancestor, prior_head).stdout
+    patch_file = Path(patch_dir) / "owned-pr.patch"
+    patch_file.write_bytes(patch)
+    result = subprocess.run(["git", "-c", "core.hooksPath=/dev/null", "-c", "submodule.recurse=false",
+                             "-C", str(root), "apply", "--3way", str(patch_file)],
+                            capture_output=True, timeout=180)
+    if result.returncode:
+        stderr = result.stderr.decode("utf-8", errors="replace")
+        if "submodule" in stderr.lower():
+            raise InfrastructureFault("submodule", (repo + ": " if repo else "") + stderr.strip()[:500])
+        raise RuntimeError(stderr)
+    return patch_file
 
 
 def preflight(checks):
@@ -122,14 +131,14 @@ def preflight(checks):
 
 
 def check_disk_space(path, min_free_gb=5):
-    """Check free disk space above a floor."""
+    """Check free disk space above a floor; returns (subsystem, ok, detail)."""
     import shutil
     try:
         usage = shutil.disk_usage(path)
         free_gb = usage.free / (1024 ** 3)
-        return free_gb >= min_free_gb, f"{free_gb:.1f} GB free (need {min_free_gb} GB)"
+        return "disk", free_gb >= min_free_gb, f"{free_gb:.1f} GB free (need {min_free_gb} GB)"
     except OSError:
-        return False, "cannot read disk usage"
+        return "disk", False, "cannot read disk usage"
 
 
 def check_free_memory(min_free_mb=512):
@@ -141,10 +150,10 @@ def check_free_memory(min_free_mb=512):
             if line.startswith("MemAvailable:"):
                 free_kb = int(line.split()[1])
                 free_mb = free_kb / 1024
-                return free_mb >= min_free_mb, f"{free_mb:.0f} MB free (need {min_free_mb} MB)"
+                return "memory", free_mb >= min_free_mb, f"{free_mb:.0f} MB free (need {min_free_mb} MB)"
     except (OSError, ValueError):
         pass
-    return False, "cannot read memory info"
+    return "memory", False, "cannot read memory info"
 
 
 def check_executable(cmd, args=("--version",)):
@@ -152,13 +161,13 @@ def check_executable(cmd, args=("--version",)):
     import shutil
     path = shutil.which(cmd)
     if path is None:
-        return False, f"{cmd} not found on PATH"
+        return "executable", False, f"{cmd} not found on PATH"
     try:
         import subprocess
         result = subprocess.run([cmd] + list(args), capture_output=True, timeout=10)
-        return result.returncode == 0, f"{cmd} version check returned {result.returncode}"
+        return "executable", result.returncode == 0, f"{cmd} version check returned {result.returncode}"
     except (OSError, subprocess.TimeoutExpired):
-        return False, f"{cmd} not executable"
+        return "executable", False, f"{cmd} not executable"
 
 
 def check_git_version(min_version="2.20"):
@@ -167,15 +176,15 @@ def check_git_version(min_version="2.20"):
     try:
         result = subprocess.run(["git", "--version"], capture_output=True, text=True, timeout=10)
         if result.returncode != 0:
-            return False, "git version check failed"
+            return "git", False, "git version check failed"
         version_str = result.stdout.strip().split()[-1]
         version_parts = [int(x) for x in version_str.split(".")[:3]]
         min_parts = [int(x) for x in min_version.split(".")[:3]]
         if version_parts < min_parts:
-            return False, f"git {version_str} < {min_version}"
-        return True, f"git {version_str}"
+            return "git", False, f"git {version_str} < {min_version}"
+        return "git", True, f"git {version_str}"
     except (OSError, subprocess.TimeoutExpired, ValueError):
-        return False, "git version check failed"
+        return "git", False, "git version check failed"
 
 
 def prepared_touched_files(prepared):
@@ -198,6 +207,117 @@ def prepared_touched_files(prepared):
         if comp:
             touched.add(comp)
     return touched
+
+
+def baseline_overlap(comparison, touched):
+    """Decide the prepared baseline's relationship to its declared branch.
+
+    Pure decision: no network, no git. ``comparison`` is the GitHub compare payload and
+    ``touched`` is the set of files the contract-validated plan will change.
+
+    Returns ``(status, live_sha, overlap, unknown)``. A payload that carries no ``files``
+    list cannot prove the patch is disjoint, so ``unknown`` is True and the caller refuses
+    closed: a missing key is never evidence that upstream changed nothing (F1 test 7).
+    """
+    status = comparison.get("status")
+    commits = comparison.get("commits") or []
+    live_sha = commits[-1].get("sha") if commits else None
+    if "files" not in comparison:
+        return status, live_sha, set(), True
+    moved = {entry["filename"] for entry in (comparison.get("files") or [])
+             if isinstance(entry, dict) and entry.get("filename")}
+    return status, live_sha, touched & moved, False
+
+
+BASELINE_ADMITTED = ("identical", "ahead")
+
+
+def require_baseline_relationship(status):
+    """Refuse a prepared base that is not on the declared branch's line of history.
+
+    The rule is ancestry-or-equality, which is exactly what the compare payload measures
+    when it is asked about ``base_sha...base_branch``:
+
+    * ``identical`` -- the base is the branch head. Admitted.
+    * ``ahead``     -- the branch moved on; the base is still an ancestor. Admitted, and the
+      per-file disjointness check decides whether the patch is safe (F1).
+    * ``diverged``  -- the base is on some other line of history. The librepods artefact
+      (``base_sha`` = ``android/rewrite`` HEAD declared as ``main``) is this case, and this
+      is the refusal that must never be weakened.
+    * ``behind``    -- the base is a *descendant* of the branch head, so it is not reachable
+      from it either: commits that the branch does not have are baked in. Reachable only
+      after a rewind or a force-push, and re-preparing is the only safe answer.
+
+    Anything else -- including an unrecognised status -- is refused closed: an unproven
+    relationship is never treated as a safe one.
+    """
+    if status in BASELINE_ADMITTED:
+        return status
+    if status == "diverged":
+        raise ValueError("Prepared baseline is not the current upstream default")
+    raise ValueError(
+        "Prepared baseline is not on the declared base branch's history "
+        f"(relationship {status!r})")
+
+
+def resolve_base_branch(api, repo, prepared):
+    """Resolve the declared base branch against the server's own branch list (F2).
+
+    ``base_branch`` defaults to ``default_branch`` so every existing artefact stays valid.
+    A branch the server does not have is a refusal -- no invention is possible. Only a
+    genuine 404 becomes a refusal; a throttled or transient GitHub failure stays a failure
+    so a slow API is never recorded as a bad declaration.
+    """
+    declared = prepared.get("base_branch") or prepared["default_branch"]
+    try:
+        branch = api.api(f"repos/{repo}/branches/{declared}")
+    except GitHubError as exc:
+        message = str(exc)
+        if "HTTP 404" in message or "Not Found" in message or "Not found" in message:
+            raise ValueError(
+                f"Declared base branch {declared!r} does not exist in {repo}") from exc
+        raise
+    head = (branch or {}).get("commit") or {}
+    if not head.get("sha"):
+        raise ValueError(f"Branch {declared!r} returned no head commit")
+    return declared, head["sha"]
+
+
+def baseline_relationship(api, repo, prepared, receipt_path=None):
+    """Resolve the declared base branch, measure the relationship, record it, then decide.
+
+    This is the whole gate in one place so it can be exercised without a runner: the branch
+    declaration is resolved against the server's own branch list (F2), the compare payload
+    is measured (F1), the receipt is written before any verdict so a refusal explains itself,
+    and only then does the decision raise.
+
+    Returns the receipt document. Raises ``ValueError`` for a false or unknown declaration
+    and ``PreparationRace`` when the baseline is genuinely stale under a correct patch.
+    """
+    base = prepared["base_sha"]
+    base_branch, branch_head = resolve_base_branch(api, repo, prepared)
+    prepared["base_branch"] = base_branch
+    comparison = api.api(f"repos/{repo}/compare/{base}...{base_branch}")
+    status, live_sha, overlap, unknown = baseline_overlap(
+        comparison, prepared_touched_files(prepared))
+    record = {
+        "base": base, "base_branch": base_branch, "branch_head": branch_head,
+        "live_sha": live_sha or base, "status": status,
+        "ahead_by": comparison.get("ahead_by", 0),
+        "overlap": sorted(overlap), "overlap_unknown": unknown,
+    }
+    # The relationship is recorded before it is judged: a refusal has to explain itself from
+    # the artefact, and a raised exception would otherwise discard the only measurement.
+    if receipt_path is not None:
+        write_json_atomic(Path(receipt_path), record)
+    require_baseline_relationship(status)
+    if unknown:
+        raise PreparationRace(base, record["live_sha"], set(), unknown=True,
+                              ahead_by=record["ahead_by"])
+    if overlap:
+        raise PreparationRace(base, record["live_sha"], sorted(overlap),
+                              ahead_by=record["ahead_by"])
+    return record
 
 
 def artifacts():
@@ -337,7 +457,16 @@ def engineer():
         write_json(artifacts() / "engineering-result.json", {"status": "CANARY_PASSED", "at": utcnow(),
                                                "harness_sha": os.environ["GITHUB_SHA"]})
         return
+    # F6: a velocity-contended dispatch carries a shorter preparation window in its payload.
+    # An absent or unusable value leaves the four-hour budget untouched, because an unmeasured
+    # velocity must never shorten a legitimate run.
     cline_budget = int(os.environ.get("CLINE_TOTAL_BUDGET_SECONDS", "14400"))
+    try:
+        preferred = int(os.environ.get("PREPARATION_BUDGET_SECONDS", "") or 0)
+    except (TypeError, ValueError):
+        preferred = 0
+    if 0 < preferred < cline_budget:
+        cline_budget = preferred
     worker.set_cline_execution_budget(cline_budget)
     print(json.dumps({"phase": "CLINE_BUDGET", "total_seconds": cline_budget}), flush=True)
     task, state = document["context"], document["state"]
@@ -352,22 +481,16 @@ def engineer():
         reject_preparation(blocked, task, repo, number)
         return
     root, base = prepared["worktree"], prepared["base_sha"]
-    default_branch = prepared.get("base_branch") or prepared["default_branch"]
     try:
-        comparison = api.api(f"repos/{repo}/compare/{base}...{default_branch}")
-        status = comparison.get("status")
-        if status == "diverged":
-            raise ValueError("Prepared baseline is not the current upstream default")
-        live_sha = comparison["commits"][-1]["sha"] if comparison.get("commits") else base
-        touched = prepared_touched_files(prepared)
-        moved = {entry["filename"] for entry in comparison.get("files", [])}
-        overlap = touched & moved
-        write_json_atomic(artifacts() / "baseline-relationship.json", {
-            "base": base, "live_sha": live_sha, "status": status,
-            "ahead_by": comparison.get("ahead_by", 0), "overlap": sorted(overlap),
-        })
-        if overlap:
-            raise PreparationRace(base, live_sha, sorted(overlap))
+        # F1+F2: one gate. The declared branch is resolved server-side, the prepared base
+        # must still sit on that branch's history, no file the plan touches may have moved,
+        # and the relationship is recorded before any verdict is reached.
+        baseline_record = baseline_relationship(
+            api, repo, prepared, artifacts() / "baseline-relationship.json")
+        # F2: the resolved declaration travels with the release receipt, so publication
+        # checks currency against the branch the patch was actually built on instead of
+        # silently falling back to the default branch.
+        base_branch = baseline_record["base_branch"]
         if git(root, "remote", "get-url", "upstream").stdout.decode().strip().removesuffix(".git") != (
                 "https://github.com/" + repo):
             raise ValueError("Unexpected upstream remote")
@@ -417,20 +540,11 @@ def engineer():
                         recovery = {"status": "REQUIRES_CLINE_RECONCILIATION", "archive": str(archive),
                                     "diagnostic": str(exc)}
                     write_json(artifacts() / "recovery.json", recovery)
-    except PreparationRace:
-        raise
         # Resume the real owned patch after checking the untouched current base.
         # Source is fetched as Git objects; no credentials are given to Cline.
         if task.get("owned_pr_number"):
-            git(root, "fetch", "upstream", f"refs/pull/{int(task['owned_pr_number'])}/head")
-            prior_head = git(root, "rev-parse", "FETCH_HEAD").stdout.decode().strip()
-            if prior_head != task["owned_head"]:
-                raise ValueError("Owned PR changed since claim; reconcile before repair")
-            ancestor = git(root, "merge-base", base, prior_head).stdout.decode().strip()
-            patch = git(root, "diff", "--binary", ancestor, prior_head).stdout
-            patch_file = artifacts() / "owned-pr.patch"
-            patch_file.write_bytes(patch)
-            git(root, "apply", "--3way", str(patch_file))
+            # F10: submodule machinery stays out of the patch path (see download_patch).
+            download_patch(root, task, artifacts(), base, repo)
         regression_file = artifacts() / "regression.json"
         body = task["body"] + (
             "\n\nDelivery contract: write " + str(regression_file) + " as JSON with "
@@ -450,19 +564,9 @@ def engineer():
         cases = worker.model_scenarios(task["title"], body, arch)
         feedback = json.dumps(task.get("prior_failures", []))
 
-        # F3: write-early intake skeleton before Cline starts, so a failure inside
-        # Cline's own startup still leaves a document that distinguishes "Cline never
-        # wrote a report" from "Cline crashed while writing one".
-        report_path = artifacts() / "preparation.json"
-        write_json_atomic(report_path, {
-            "action": "incomplete",
-            "base_sha": base,
-            "base_branch": prepared.get("base_branch", default_branch),
-            "default_branch": default_branch,
-            "started_at": utcnow(),
-            "run": state.get("owner", ""),
-        })
-
+        # F3's write-early skeleton belongs to the worker, at Cline's real report path
+        # (folder/<identity>.preparation.json). A copy written here would land at a
+        # different path, after Cline had already run, and could never be replaced by it.
         # F7: Pre-flight checks before Cline runs.
         preflight([
             check_disk_space(".", min_free_gb=5),
@@ -528,7 +632,8 @@ def engineer():
                    "repo": repo, "issue_number": number, "owner": state["owner"],
                    "harness_sha": os.environ["GITHUB_SHA"], "base_sha": base, "head_sha": head,
                    "tree_sha": git(root, "rev-parse", "HEAD^{tree}").stdout.decode().strip(),
-                   "default_branch": prepared["default_branch"], "files": before,
+                   "default_branch": prepared["default_branch"],
+                   "base_branch": base_branch, "files": before,
                    "plan": asdict(plan), "sources": prepared["sources"], "regression": regression,
                    "baseline": [asdict(r) for r in baseline], "verification": results,
                    "admission": task["admission"], "run_url": state["run_url"], "at": utcnow()}
@@ -647,7 +752,8 @@ def publish():
     else:
         competition(api, repo, number)
         pr = api.api(f"repos/{repo}/pulls", "POST",
-                     {"head": account + ":" + branch, "base": context["repository"]["default_branch"],
+                     {"head": account + ":" + branch,
+                      "base": receipt.get("base_branch") or context["repository"]["default_branch"],
                       "title": f"fix: #{number} - {context['title']}", "body": body})
     store.owned_update(identity, run_owner, status="PUBLISHED_PENDING_CHECKS", pr_url=pr["html_url"],
                        pr_number=pr["number"], head_sha=head, branch=branch,
@@ -717,8 +823,11 @@ def main():
         # F4: preparation race is retryable, never an engineer failure.
         write_json(artifacts() / (args.phase + "-failure.json"),
                    {"status": "FAILED_PREPARATION_RACE",
+                    "kind": "preparation_race", "retryable": True,
                     "diagnostic": str(exc),
-                    "base": exc.base, "live_sha": exc.live_sha, "overlap": exc.overlap,
+                    "base": exc.base, "live_sha": exc.live_sha,
+                    "ahead_by": exc.ahead_by,
+                    "overlap": sorted(exc.overlap), "overlap_unknown": exc.unknown,
                     "at": utcnow()})
         raise
     except ClineDeliverableMissing as exc:
@@ -726,15 +835,19 @@ def main():
         # never an engineer failure.
         write_json(artifacts() / (args.phase + "-failure.json"),
                    {"status": "FAILED_DELIVERABLE_MISSING",
+                    "kind": "deliverable_missing", "retryable": True,
                     "diagnostic": str(exc),
                     "path": exc.path, "elapsed": exc.elapsed, "exit_code": exc.exit_code,
                     "at": utcnow()})
         raise
     except ClineDeliverableInvalid as exc:
-        # F4: Cline produced a malformed receipt — deliverable contract violation,
-        # not an engineer coding failure.
+        # F4 closes the deliverable status set at Missing plus Invalid. A malformed,
+        # skeleton, or contract-violating receipt is a deliverable that did not arrive
+        # in a usable form, so it lands under the same status and carries its reason in
+        # ``kind`` and ``reason`` rather than inventing a status the ledger never defined.
         write_json(artifacts() / (args.phase + "-failure.json"),
-                   {"status": "FAILED_DELIVERABLE_INVALID",
+                   {"status": "FAILED_DELIVERABLE_MISSING",
+                    "kind": "deliverable_invalid", "retryable": True,
                     "diagnostic": str(exc),
                     "path": exc.path, "reason": exc.reason,
                     "at": utcnow()})
@@ -743,6 +856,7 @@ def main():
         # F4: Runner shutdown mid-delivery — infrastructure fault, not engineer failure.
         write_json(artifacts() / (args.phase + "-failure.json"),
                    {"status": "FAILED_RUNNER_SHUTDOWN",
+                    "kind": "runner_shutdown", "retryable": True,
                     "diagnostic": str(exc),
                     "inferred": exc.inferred,
                     "message": exc.message,
@@ -752,6 +866,7 @@ def main():
         # F4: Infrastructure fault — disk, network, executable install, toolchain.
         write_json(artifacts() / (args.phase + "-failure.json"),
                    {"status": "FAILED_INFRASTRUCTURE",
+                    "kind": "infrastructure", "retryable": True,
                     "diagnostic": str(exc),
                     "subsystem": exc.subsystem,
                     "detail": exc.detail,
@@ -761,7 +876,9 @@ def main():
         # Genuine engineering failure: everything that is not an infrastructure,
         # delivery-contract, or preparation-race fault.
         write_json(artifacts() / (args.phase + "-failure.json"),
-                   {"status": "FAILED_" + args.phase.upper(), "diagnostic": str(exc), "at": utcnow()})
+                   {"status": "FAILED_" + args.phase.upper(),
+                    "kind": "engineer", "retryable": True,
+                    "diagnostic": str(exc), "at": utcnow()})
         raise
 
 

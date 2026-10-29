@@ -71,8 +71,8 @@ def refusal_reasons(receipts):
     reasons = Counter()
     for r in receipts:
         for reason, count in r.get("counts", {}).items():
-            if k.startswith("admission_changed.") or k.startswith("CURRENT_"):
-                reasons[k] += count
+            if reason.startswith("admission_changed.") or reason.startswith("CURRENT_"):
+                reasons[reason] += count
     return dict(reasons)
 
 

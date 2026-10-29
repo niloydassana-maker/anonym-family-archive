@@ -31,6 +31,7 @@ from datetime import datetime, timezone
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional, Any, Callable
 from delivery_supervisor import supervise as supervise_delivery, validate_plan as validate_delivery_plan
+from delivery_errors import ClineDeliverableInvalid, ClineDeliverableMissing, validate_preparation
 from fleet_recovery_policy import (
     CLAIM_LEASE_SECONDS, CLAIM_HEARTBEAT_SECONDS, FLEET_LEASE_CHANNEL, RECOVERY_RELEASE, current_claim, event_run,
     is_nonsoftware_data_task, recovery_decision, task_reference, non_engineering_dispatch_reason,
@@ -1565,6 +1566,42 @@ def _command_log(message: str) -> None:
         print(f"[{datetime.now(timezone.utc).strftime('%H:%M:%S UTC')}] [{ENGINE_ID}] {message}", flush=True)
 
 
+def _write_json_atomic(path: str, document) -> None:
+    """Write JSON beside the target, then os.replace, so a reader never sees a partial file."""
+    tmp = path + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as handle:
+        json.dump(document, handle, ensure_ascii=False, indent=2)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(tmp, path)
+
+
+def read_preparation(path, elapsed=None, exit_code=None):
+    """The single reader for a preparation report (F3).
+
+    Exit zero does not imply a report. Run ``40673403288`` ran 55 minutes, exited 0, and left
+    no ``preparation.json`` at all; a bare ``open()`` turned that into ``FileNotFoundError``
+    and the adapter stamped it ``FAILED_ENGINEER``. Each failure mode is named here:
+
+    * absent -> ``ClineDeliverableMissing``, carrying elapsed time and exit code by
+      construction so the artefact explains itself without a log dig;
+    * unreadable or unparseable -> ``ClineDeliverableInvalid`` with the real error verbatim;
+    * a skeleton that Cline never replaced, or any contract violation ->
+      ``ClineDeliverableInvalid`` from ``validate_preparation``.
+
+    Nothing downstream may read the report any other way, so a skeleton can never be mistaken
+    for a verdict.
+    """
+    if not os.path.exists(path):
+        raise ClineDeliverableMissing(path, elapsed=elapsed, exit_code=exit_code)
+    try:
+        with open(path, encoding='utf-8') as handle:
+            report = json.load(handle)
+    except (OSError, ValueError) as exc:
+        raise ClineDeliverableInvalid(path, str(exc)) from exc
+    return validate_preparation(report, path)
+
+
 def run_streamed_process(argv, cwd=None, timeout=120, input=None, stdin=None, stream_output=True):
     """Capture both streams losslessly while exposing real progress and deadlines."""
     started = time.monotonic()
@@ -2759,6 +2796,14 @@ def run_cline_claim_intake(task, lease):
     worktree = os.path.join(SANDBOX_DIR, 'repos', repo.replace('/', '--') + '--' + str(number))
     with open(context_path, 'w', encoding='utf-8') as handle:
         json.dump(task, handle, ensure_ascii=False, indent=2)
+    # F3: write-early skeleton at Cline's real report path, before its command is built, so
+    # an artefact directory can never exist without a preparation document and a failure
+    # inside Cline's own startup still explains itself. Cline's final write replaces it.
+    _write_json_atomic(report_path, {
+        'action': 'incomplete', 'base_sha': '', 'base_branch': '',
+        'default_branch': '', 'started_at': datetime.now(timezone.utc).isoformat(),
+        'run': getattr(lease, 'run_id', ''),
+    })
     checkout_instruction = (
         f"Prepare an isolated checkout at {worktree}, from upstream's current default branch. "
         f"Set origin and upstream to the public repository https://github.com/{repo}.git "
@@ -2823,8 +2868,11 @@ Do not claim delivery. Save the real plan and receipts, then finish this prepara
         if os.path.exists(os.path.join(worktree, '.git')):
             _command_log('CLINE_PREPARATION_EDITS_PRESERVED ' + preserve_cline_edits(worktree))
         raise RuntimeError('Cline preparation failed: ' + _sanitize_runtime_diagnostic(result.stderr or result.stdout, 1000))
-    with open(report_path, encoding='utf-8') as handle:
-        report = json.load(handle)
+    # Exit zero does not imply a report: the single reader names each failure mode (absent,
+    # unparseable, or a skeleton Cline never replaced) instead of surfacing a bare
+    # FileNotFoundError that the host would stamp as an engineering failure.
+    report = read_preparation(report_path, elapsed=result.duration_s,
+                              exit_code=result.exit_code)
     if report.get('action') != 'retry':
         # A refusal is a verdict, not a transient fault: it is terminal for this dispatch.
         # Raising a plain RuntimeError here converted a correct "not a warranted change"

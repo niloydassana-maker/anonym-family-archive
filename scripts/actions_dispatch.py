@@ -249,6 +249,40 @@ def has_label(item, label_name):
     )
 
 
+# F6: a contended repository is given a shorter preparation window so it is exposed to the
+# preparation race for less time. This is a mitigation, never a fix -- F1 is the fix -- and
+# it changes no admission decision, only how long a winning run is allowed to take.
+VELOCITY_CONTENDED_THRESHOLD = 20  # commits on the default branch in the last 24h
+FAST_PREPARATION_BUDGET_SECONDS = 5400
+FULL_PREPARATION_BUDGET_SECONDS = 14400
+
+
+def preparation_budget_seconds(velocity):
+    """Return the Cline budget for a candidate.
+
+    Shorter only when velocity was actually measured and exceeds the contention threshold.
+    An unmeasurable velocity yields the full budget: an absent measurement must never be
+    allowed to shorten a real run.
+    """
+    if not isinstance(velocity, int) or isinstance(velocity, bool):
+        return FULL_PREPARATION_BUDGET_SECONDS
+    return FAST_PREPARATION_BUDGET_SECONDS if velocity > VELOCITY_CONTENDED_THRESHOLD \
+        else FULL_PREPARATION_BUDGET_SECONDS
+
+
+def velocity_sort_key(item):
+    """Sort ``(identity, candidate)`` pairs quietest-first within a band.
+
+    An unmeasured velocity sorts last and is never treated as zero: comparing ``None`` to an
+    ``int`` raised ``TypeError`` and would have aborted a whole dispatch cycle the first time
+    one repository's velocity probe failed.
+    """
+    velocity = item[1].get("velocity_24h")
+    if not isinstance(velocity, int) or isinstance(velocity, bool):
+        return (1, 0)
+    return (0, velocity)
+
+
 def repository_velocity(api, repo, cache=None):
     """Count commits on the default branch in the last 24 hours.
 
@@ -438,7 +472,7 @@ def context_candidates(api, item, visited=None):
     yield context
 
 
-def dispatch(api, store, context, proof, lanes, remote_repair=False):
+def dispatch(api, store, context, proof, lanes, remote_repair=False, preparation_budget=None):
     repo, number = context["repo"], context["issue_number"]
     identity, dispatch_id = task_id(repo, number), uuid.uuid4().hex
     def reserve(old):
@@ -451,8 +485,10 @@ def dispatch(api, store, context, proof, lanes, remote_repair=False):
                 "status": "DISPATCHING", "dispatch_id": dispatch_id, "admission": proof,
                 "lanes": sorted(set(lanes)), "dispatched_at": utcnow(), "attempt": (old or {}).get("attempt", 0)}
     store.mutate(identity, reserve)
+    budget = preparation_budget if isinstance(preparation_budget, int) else FULL_PREPARATION_BUDGET_SECONDS
     payload = {"event_type": "bounty_task_dispatch", "client_payload": {
-        "repo": repo, "issue_number": number, "task_id": identity, "lanes": sorted(set(lanes)), "mode": "deliver"}}
+        "repo": repo, "issue_number": number, "task_id": identity, "lanes": sorted(set(lanes)),
+        "mode": "deliver", "preparation_budget_seconds": budget}}
     api.api(f"repos/{store.repo}/dispatches", "POST", payload)
     def acknowledge(old):
         if old and old.get("dispatch_id") == dispatch_id and old["status"] == "DISPATCHING":
@@ -847,12 +883,9 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
             for identity, candidate in candidates.items():
                 repo = candidate["context"]["repo"]
                 candidate["velocity_24h"] = repository_velocity(api, repo, velocity_cache)
-            candidates = dict(
-                sorted(
-                    candidates.items(),
-                    key=lambda item: item[1].get("velocity_24h", 0),
-                )
-            )
+                candidate["preparation_budget_seconds"] = preparation_budget_seconds(
+                    candidate["velocity_24h"])
+            candidates = dict(sorted(candidates.items(), key=velocity_sort_key))
             for identity, candidate in candidates.items():
                 if len(dispatched) >= min(max_dispatches, headroom):
                     break
@@ -889,11 +922,15 @@ def discover(lanes, max_dispatches=2, live=False, queries_per_lane=2, state_dir=
                         counts["admission_changed." + code_reason] += 1
                         continue
                     competition(api, current["repo"], current["issue_number"], own_head=(state or {}).get("head_sha"))
-                    dispatched.append(dispatch(api, store, current, proof, candidate["lanes"]))
+                    dispatched.append(dispatch(api, store, current, proof, candidate["lanes"],
+                                              preparation_budget=candidate.get("preparation_budget_seconds")))
                 except (ValueError, GitHubError) as exc:
                     counts["dispatch_deferred"] += 1
                     print(json.dumps({"phase": "DISPATCH_DIAGNOSTIC", "task_id": identity, "error": str(exc)}), flush=True)
         summary = {"at": utcnow(), "mode": "LIVE" if live else "READ_ONLY", "counts": dict(counts),
+                   # F6: the ordering is auditable after the fact, not inferred from logs.
+                   "candidate_velocity": {identity: candidate.get("velocity_24h")
+                                          for identity, candidate in candidates.items()},
                    "qualified_fresh": fresh_count, "qualified_unique": len(candidates), "dispatched": dispatched,
                    "pending_hydration": con.execute("SELECT count(*) FROM pending WHERE status='pending'").fetchone()[0]}
         with (folder / "receipts.jsonl").open("a", encoding="utf-8") as handle:

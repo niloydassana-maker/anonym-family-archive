@@ -30,10 +30,15 @@ def checkout(root):
 
 def document(root, test=None):
     test = test or ['corepack', 'pnpm@9', 'test']
+    # The intake prompt requires a regression_plan naming the defect component, and
+    # validate_preparation enforces it. This fixture predated that contract, so it carries
+    # the field now; no assertion in this suite depends on its absence.
     return {'action': 'retry', 'reason': 'Unit fixture plan, not an installation receipt',
             'sources': [{'path': 'package.json', 'sha256': hashlib.sha256((root / 'package.json').read_bytes()).hexdigest()}],
             'plan': {'bootstrap': [], 'baseline_tests': [test], 'final_tests': [test],
-                     'linters': [], 'format_checks': []}}
+                     'linters': [], 'format_checks': []},
+            'regression_plan': {'component': 'package.json', 'command': test,
+                                'expected_failure': 'unit fixture regression assertion'}}
 
 
 class DeliveryOwnershipTests(unittest.TestCase):

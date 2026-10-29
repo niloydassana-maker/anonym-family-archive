@@ -2,8 +2,96 @@
 import argparse
 from datetime import datetime, timezone
 import json
+import time
 
-from actions_github import GitHub, StateStore, utcnow
+from actions_github import GitHub, GitHubError, StateStore, utcnow
+
+ACTIVE_STATUSES = ("CLAIMED", "ENGINEERING", "VERIFIED", "PUBLISHING")
+# engine2.yml runs the engineering job with timeout-minutes: 300.
+DEFAULT_JOB_TIMEOUT_SECONDS = 300 * 60
+SWEEP_GRACE_SECONDS = 300
+
+
+def _release(store, record, status, diagnostic, **fields):
+    """Move a task out of an active status, refusing to overwrite a concurrent change."""
+    identity = record["task_id"]
+    expected = record.get("updated_at")
+
+    def update(old):
+        if not old or old.get("updated_at") != expected:
+            raise ValueError("Concurrent state change; sweep deferred")
+        return {**old, **fields, "status": status, "diagnostic": diagnostic,
+                "observed_at": utcnow()}
+
+    state = store.mutate(identity, update)
+    return {"task_id": identity, "previous": record.get("status"), "status": state["status"],
+            "swept": bool(fields.get("swept")), "at": utcnow()}
+
+
+def sweep_stale_runs(api, store, job_timeout_seconds=None, cancel_wait_seconds=5):
+    """F5: release tasks whose owning run has outlived its own job window.
+
+    A record is swept only on proof, never on absence of life:
+
+    * the owner must parse as a real run id -- a missing or malformed owner is written
+      ``FAILED_MISSING_TERMINAL_RECEIPT`` with a diagnostic instead of guessed at;
+    * the run must still be ``in_progress`` (a completed run belongs to the existing
+      reconciliation branch) and must have outlived ``job_timeout + grace``;
+    * the run is cancelled through the API and the cancellation is awaited, then the task
+      is written ``FAILED_RUNNER_SHUTDOWN`` with ``swept: true``.
+
+    ``attempt`` is deliberately untouched: the selector is never widened to accept
+    ``CLAIMED``, so a sweep makes a task retryable through the ordinary bounded budget and
+    a flapping run cannot loop forever.
+    """
+    timeout = DEFAULT_JOB_TIMEOUT_SECONDS if job_timeout_seconds is None else int(job_timeout_seconds)
+    limit = timeout + SWEEP_GRACE_SECONDS
+    receipts = []
+    for record in store.records() or ():
+        if record.get("status") not in ACTIVE_STATUSES:
+            continue
+        run_id = str(record.get("owner") or "").split(":")[0]
+        if not run_id.isdigit():
+            receipts.append(_release(
+                store, record, "FAILED_MISSING_TERMINAL_RECEIPT",
+                "Claim owner is missing or malformed; refusing to guess a run", swept=False))
+            continue
+        try:
+            run = api.api(f"repos/{store.repo}/actions/runs/{run_id}")
+        except GitHubError:
+            continue  # unknown is never proof of death
+        if run.get("status") == "completed":
+            continue  # the existing completed-run branch owns this case
+        started = run.get("created_at") or run.get("run_started_at")
+        if not started:
+            started = record.get("claimed_at")
+        if not started:
+            continue  # no clock to measure: refuse to guess an age
+        try:
+            age = (datetime.now(timezone.utc)
+                   - datetime.fromisoformat(str(started).replace("Z", "+00:00"))).total_seconds()
+        except ValueError:
+            continue
+        if age <= limit:
+            continue
+        try:
+            api.api(f"repos/{store.repo}/actions/runs/{run_id}/cancel", "POST", {})
+        except GitHubError:
+            pass  # the release below is still correct: the run is past its budget
+        deadline = time.time() + max(0.0, float(cancel_wait_seconds))
+        while time.time() < deadline:
+            time.sleep(min(1.0, max(0.0, deadline - time.time())))
+            try:
+                if api.api(f"repos/{store.repo}/actions/runs/{run_id}").get("status") == "completed":
+                    break
+            except GitHubError:
+                break
+        receipts.append(_release(
+            store, record, "FAILED_RUNNER_SHUTDOWN",
+            f"Run {run_id} outlived the {timeout}s job timeout (age {int(age)}s); cancelled and released",
+            swept=True, swept_run=run_id, job_timeout_seconds=timeout,
+            takeover_reason="stale run exceeded job timeout and grace"))
+    return receipts
 
 
 def classify_checks(api, repo, head):
@@ -39,8 +127,10 @@ def classify_checks(api, repo, head):
 
 def reconcile(repair=False, api=None, store=None):
     api, store = api or GitHub(), store or StateStore()
-    receipts = []
-    for record in store.records():
+    # F5: the sweeper runs before the existing branches, so a run that outlived its own job
+    # window is released rather than left pinned in CLAIMED forever.
+    receipts = list(sweep_stale_runs(api, store))
+    for record in store.records() or ():
         status = record["status"]
         fields = {}
         if status in ("DISPATCHING", "DISPATCHED"):
