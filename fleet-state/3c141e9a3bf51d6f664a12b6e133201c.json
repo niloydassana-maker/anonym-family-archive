@@ -2,7 +2,7 @@
   "task_id": "3c141e9a3bf51d6f664a12b6e133201c",
   "repo": "Expensify/App",
   "issue_number": 104461,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "92e37bd3f4ec4e049d2ac5b95a21e065",
   "admission": {
     "funding": {
@@ -47,19 +47,20 @@
     "programs"
   ],
   "dispatched_at": "2026-10-29T09:46:54.709605+00:00",
-  "attempt": 1,
-  "updated_at": "2026-10-29T09:46:56.229227+00:00",
-  "owner": "40662290045:1",
-  "previous_owner": null,
+  "attempt": 2,
+  "updated_at": "2026-10-29T09:47:20.805055+00:00",
+  "owner": "40852325249:1",
+  "previous_owner": "40662290045:1",
   "previous_status": "DISPATCHED",
-  "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40662290045",
-  "harness_sha": "be3ab68bfeade867fdc87ea892060353610ca16a",
-  "claimed_at": "2026-10-28T09:11:45.346618+00:00",
+  "run_url": "https://github.com/niloydassana-maker/anonym-family-archive/actions/runs/40852325249",
+  "harness_sha": "9b8bc50df5f047d7f44d19d3b0d22c7c64805951",
+  "claimed_at": "2026-10-29T09:47:20.804987+00:00",
   "failures": [
     {
       "run_url": "https://github.com/isearchxsolve/anonym-family-archive/actions/runs/40662290045",
       "status": "FAILED_MISSING_RECEIPT"
     }
   ],
-  "finished_at": "2026-10-28T10:15:15.545434+00:00"
+  "finished_at": "2026-10-28T10:15:15.545434+00:00",
+  "lease_expires_at": "2026-10-29T13:52:20.805006+00:00"
 }
