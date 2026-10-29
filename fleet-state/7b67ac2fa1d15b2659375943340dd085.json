@@ -2,8 +2,8 @@
   "task_id": "7b67ac2fa1d15b2659375943340dd085",
   "repo": "Expensify/App",
   "issue_number": 102333,
-  "status": "FAILED_MISSING_RECEIPT",
-  "dispatch_id": "8bb4b674af59422fb1dfe9885b4aab49",
+  "status": "DISPATCHING",
+  "dispatch_id": "ad5a33908f944bb6b33e28641ef658d2",
   "admission": {
     "funding": {
       "amount": "250",
@@ -17,6 +17,12 @@
       "payer": "melvin-bot[bot]"
     },
     "technical_signals": [
+      "bug",
+      "error",
+      "fail",
+      "issue",
+      "issues",
+      "problem",
       "regression",
       "regressions",
       "transaction",
@@ -36,20 +42,34 @@
       "src/libs/actions/User.ts"
     ],
     "engineering_evidence_sources": [
+      "https://github.com/Expensify/App/issues/102333",
       "https://github.com/Expensify/App/issues/102333#issuecomment-5837655679",
-      "https://github.com/Expensify/App/issues/102333#issuecomment-5890891618"
+      "https://github.com/Expensify/App/issues/102333#issuecomment-5861815364",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-5879455547",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-5890891618",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-5934331930",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-5944839634",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6063888597",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6069990177",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6097303979",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6141719606",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6157270172",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6189085158",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6278239535",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6301231801",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6392804175",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6429628185",
+      "https://github.com/Expensify/App/issues/102333#issuecomment-6454533032"
     ],
     "source_issue": "https://github.com/Expensify/App/issues/102333",
-    "fetched_at": "2026-10-27T21:59:48.693437+00:00"
+    "fetched_at": "2026-10-29T09:46:58.917600+00:00"
   },
   "lanes": [
-    "founder",
-    "normal",
     "programs"
   ],
-  "dispatched_at": "2026-10-27T21:59:59.700921+00:00",
+  "dispatched_at": "2026-10-29T09:47:11.295962+00:00",
   "attempt": 1,
-  "updated_at": "2026-10-27T23:00:44.226257+00:00",
+  "updated_at": "2026-10-29T09:47:11.295980+00:00",
   "owner": "40591329401:1",
   "previous_owner": null,
   "previous_status": "DISPATCHED",
