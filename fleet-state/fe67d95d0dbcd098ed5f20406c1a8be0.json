@@ -2,7 +2,7 @@
   "task_id": "fe67d95d0dbcd098ed5f20406c1a8be0",
   "repo": "Expensify/App",
   "issue_number": 104341,
-  "status": "DISPATCHED",
+  "status": "CLAIMED",
   "dispatch_id": "4a442ba5245a4a38bc1f3fe16c6171a4",
   "admission": {
     "funding": {
@@ -44,6 +44,13 @@
     "programs"
   ],
   "dispatched_at": "2026-10-29T09:11:42.093909+00:00",
-  "attempt": 0,
-  "updated_at": "2026-10-29T09:11:44.012095+00:00"
+  "attempt": 1,
+  "updated_at": "2026-10-29T09:12:04.683777+00:00",
+  "owner": "40847726807:1",
+  "previous_owner": null,
+  "previous_status": "DISPATCHED",
+  "run_url": "https://github.com/niloydassana-maker/anonym-family-archive/actions/runs/40847726807",
+  "harness_sha": "83075af82636ac03b867d216fa02a7c47659de22",
+  "claimed_at": "2026-10-29T09:12:04.683706+00:00",
+  "lease_expires_at": "2026-10-29T13:17:04.683724+00:00"
 }
