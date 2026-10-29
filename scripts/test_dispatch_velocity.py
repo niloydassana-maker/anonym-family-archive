@@ -112,20 +112,45 @@ class MeasurementTests(unittest.TestCase):
     ``NameError`` after admission and before any dispatch happened.
     """
 
-    def test_it_counts_commits_on_the_default_branch(self):
+    def test_it_uses_the_exact_search_total(self):
         from actions_dispatch import repository_velocity
 
         class API:
-            def __init__(self, rows):
-                self.rows, self.paths = rows, []
+            def __init__(self):
+                self.paths = []
 
             def api(self, path):
                 self.paths.append(path)
-                return self.rows
+                return {"total_count": 1234}
 
-        api = API([{"sha": "a"}, {"sha": "b"}])
-        self.assertEqual(repository_velocity(api, "unit/runtime"), 2)
-        self.assertIn("since=", api.paths[0])
+        api = API()
+        self.assertEqual(repository_velocity(api, "unit/runtime"), 1234)
+        self.assertIn("search/commits", api.paths[0])
+        self.assertIn("repo%3Aunit%2Fruntime", api.paths[0])
+
+    def test_a_busy_repository_is_not_flattened_to_one_page(self):
+        # The list endpoint caps at 100 per page, which ranked every busy repo as tied.
+        from actions_dispatch import repository_velocity
+
+        class API:
+            def api(self, path):
+                if path.startswith("search/commits"):
+                    return {"total_count": 4871}
+                return [{"sha": str(i)} for i in range(100)]
+
+        self.assertEqual(repository_velocity(API(), "unit/runtime"), 4871)
+
+    def test_it_falls_back_to_the_listing_when_search_fails(self):
+        from actions_dispatch import repository_velocity
+        from actions_github import GitHubError
+
+        class API:
+            def api(self, path):
+                if path.startswith("search/commits"):
+                    raise GitHubError("422 search unavailable")
+                return [{"sha": "a"}, {"sha": "b"}]
+
+        self.assertEqual(repository_velocity(API(), "unit/runtime"), 2)
 
     def test_a_measurement_is_cached_for_the_cycle(self):
         from actions_dispatch import repository_velocity

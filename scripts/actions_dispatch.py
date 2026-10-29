@@ -322,12 +322,27 @@ def repository_velocity(api, repo, cache=None):
     owner, name = repo.split("/", 1)
     since = (datetime.now(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
     count = None
+    # Search returns an exact total in one request. Listing commits caps at one page of 100,
+    # which made every busy repository read 100 and rank them all as tied -- useless for
+    # exactly the repositories that get dispatched.
+    query = urlencode({"q": "repo:" + owner + "/" + name + " committer-date:>" + since,
+                       "per_page": 1})
     try:
-        result = api.api(f"repos/{owner}/{name}/commits?since={since}&per_page=100")
-        if isinstance(result, list):
-            count = len(result)  # capped at 100 per page, which is enough to rank contention
+        result = api.api("search/commits?" + query)
+        if isinstance(result, dict) and isinstance(result.get("total_count"), int):
+            count = result["total_count"]
+        elif isinstance(result, list):
+            count = len(result)
     except (GitHubError, OSError, ValueError, TypeError):
         count = None
+    if count is None:
+        # Fallback: a single page of the commits list, exact only below 100.
+        try:
+            listed = api.api(f"repos/{owner}/{name}/commits?since={since}&per_page=100")
+            if isinstance(listed, list):
+                count = len(listed)
+        except (GitHubError, OSError, ValueError, TypeError):
+            count = None
     if cache is not None:
         cache[repo] = count
     return count
